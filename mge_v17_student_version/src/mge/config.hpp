@@ -1,3 +1,5 @@
+#ifndef config_h
+#define config_h
 namespace config {
     #include <string>
     const std::string MGE_MODEL_PATH ("mge/models/");
@@ -6,3 +8,4 @@ namespace config {
     const std::string MGE_FONT_PATH ("mge/fonts/");
     const std::string MGE_LEVEL_PATH ("mge/levels/");
 }
+#endif //config_h

@@ -2,6 +2,7 @@
 #version 330 // for glsl version (12 is for older versions , say opengl 2.1
 
 uniform sampler2D   textureDiffuse;
+uniform sampler2D   textureSpecular;
 uniform vec3        lightPosition[28];
 uniform vec3        lightColor[28];
 uniform float       lightIntensity[28];
@@ -11,6 +12,7 @@ uniform int         lightAttenuation[28];
 uniform vec3        lightDirection[28];
 uniform int         lightCount;
 uniform int         tiling;
+uniform int         specularMultiplier;
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
@@ -76,13 +78,14 @@ void main( void ) {
 
 
     vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord * tiling));
+    vec3 MaterialSpecularColor = vec3(texture(textureSpecular,texCoord * tiling));
 
 
 
     vec3 combinedColor;
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
         vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) *lightColor[activeLight] * MaterialDiffuseColor;
-        vec3 MaterialSpecularColor = vec3(.3,.3,.3);
+        vec3 MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
         float distance = length(Position_worldspace - lightPosition[activeLight]);
 

@@ -5,6 +5,7 @@
 #include "mge/core/Texture.hpp"
 #include "mge/materials/AbstractMaterial.hpp"
 #include "mge/core/World.hpp"
+#include "mge/config.hpp"
 
 /**
  * Simple single texture material, this is a sample which doesn't cache anything upfront and
@@ -13,7 +14,7 @@
 class TextureMaterial : public AbstractMaterial
 {
     public:
-        TextureMaterial (Texture* pDiffuseTexture, float pTiling = 1);
+        TextureMaterial (Texture* pDiffuseTexture, float pTiling = 1, float pSpecularMultiplier = 1, Texture* pSpecularTexture = Texture::load(config::MGE_TEXTURE_PATH + "white.png"));
         virtual ~TextureMaterial ();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
@@ -26,6 +27,8 @@ class TextureMaterial : public AbstractMaterial
         static void _lazyInitializeShader();
 
         Texture* _diffuseTexture;
+        Texture* _specularTexture;
+        float _specularMultiplier;
         float _tiling;
         TextureMaterial(const TextureMaterial&);
         TextureMaterial& operator=(const TextureMaterial&);

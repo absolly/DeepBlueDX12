@@ -4,12 +4,12 @@
 #include "mge/core/Texture.hpp"
 #include "mge/core/Mesh.hpp"
 #include "mge/core/GameObject.hpp"
-#include "mge/config.hpp"
 #include "mge/core/Light.hpp"
 
 ShaderProgram* TextureMaterial::_shader = NULL;
 
-TextureMaterial::TextureMaterial(Texture * pDiffuseTexture, float pTiling):_diffuseTexture(pDiffuseTexture), _tiling(pTiling) {
+TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture):
+_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier) {
     _lazyInitializeShader();
 }
 
@@ -37,6 +37,11 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _diffuseTexture->getId());
     glUniform1i (_shader->getUniformLocation("textureDiffuse"), 0);
+
+    //setup texture slot 1
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, _specularTexture->getId());
+    glUniform1i (_shader->getUniformLocation("textureSpecular"), 1);
 
 
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
@@ -68,6 +73,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1fv(_shader->getUniformLocation("lightIntensity"), 28, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
+    glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),         1, GL_FALSE, glm::value_ptr(pViewMatrix));

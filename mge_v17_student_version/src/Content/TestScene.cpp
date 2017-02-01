@@ -66,8 +66,12 @@ void TestScene::_initializeScene() {
     //MATERIALS
 
     AbstractMaterial* colorMaterial = new WobbleMaterial (Texture::load (config::MGE_TEXTURE_PATH+"color.jpg"));
-    AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"grass_texture.jpg"), 10);
-    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"));
+
+    //0 specular ground material
+    AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"grass_texture.jpg"), 10, 0);
+
+    //10 specular teapot material
+    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
 
     //SCENE SETUP
     GameObject* plane = new GameObject ("plane", glm::vec3(0,0,0));
