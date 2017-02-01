@@ -46,7 +46,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glm::vec3 lightDirection[128] {};
     glm::vec3 lightColor[128] {};
     GLint lightType[128] {};
-    GLint lightFalloff[128]{};
+    glm::vec3 lightFalloff[128]{};
     GLfloat lightIntensity[128] {};
 
     int i = 0;
@@ -55,7 +55,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
         lightColor[i] = light->getColor();
         lightType[i] = ((int)light->type);
-        lightFalloff[i] = ((int)light->falloff);
+        lightFalloff[i] = light->falloff;
         lightIntensity[i] = light->intensity;
         i++;
     }
@@ -63,7 +63,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform3fv(_shader->getUniformLocation("lightDirection"), 128, glm::value_ptr(lightDirection[0]));
     glUniform3fv(_shader->getUniformLocation("lightColor"), 128, glm::value_ptr(lightColor[0]));
     glUniform1iv(_shader->getUniformLocation("lightType"), 128, lightType);
-    glUniform1iv(_shader->getUniformLocation("lightFalloff"), 128, lightFalloff);
+    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 128, glm::value_ptr(lightFalloff[0]));
     glUniform1fv(_shader->getUniformLocation("lightIntensity"), 128, lightIntensity);
 
     //pass in all MVP matrices separately

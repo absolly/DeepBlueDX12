@@ -103,7 +103,7 @@ void MGEDemo::_initializeScene() {
     camera->setBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 
     glm::vec3* lightColor = new glm::vec3(0.5f,0.5f,.5f);
-    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,10,0), *lightColor, 100.f);
+    Light* light;
     light->setMesh (cubeMeshF);
     AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
     light->setBehaviour(new LookAt(teapot));

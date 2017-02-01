@@ -7,9 +7,9 @@ uniform vec3        lightColor[128];
 uniform float       lightIntensity[128];
 uniform int         activeLight;
 uniform int         lightType[128];
-uniform int         lightFalloff[128];
+uniform vec3        lightFalloff[128];
 uniform int         lightAttenuation[128];
-uniform vec3         lightDirection[128];
+uniform vec3        lightDirection[128];
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
@@ -47,24 +47,12 @@ void main( void ) {
     float distance = length(Position_worldspace - lightPosition[activeLight]);
     vec3 color;
 
-    float falloff;
-
-    switch(lightFalloff[activeLight]) {
-    //constant falloff
-    case 0:
-        falloff = 0;
-        break;
-
-    //linear falloff
-    case 1:
-        falloff = distance;
-        break;
-
-    //quadratic falloff
-    case 2:
-        falloff = distance*distance;
-        break;
+    float falloff = lightIntensity[activeLight]/(lightFalloff[activeLight].x + lightFalloff[activeLight].y * distance + lightFalloff[activeLight].z * distance * distance);
+    if(falloff < 0){
+        fragment_color = vec4(1,0,0,1);
+        return;
     }
+
 
     switch(lightType[activeLight]) {
     case 0:
@@ -73,9 +61,9 @@ void main( void ) {
             // Ambient : simulates indirect lighting
             MaterialAmbientColor +
             // Diffuse : "color" of the object
-            MaterialDiffuseColor * lightColor[activeLight] * lightIntensity[activeLight] * cosTheta / (1 + falloff)
+            falloff *( MaterialDiffuseColor * lightColor[activeLight] * cosTheta
             // Specular : reflective highlight, like a mirror
-            + MaterialSpecularColor * lightColor[activeLight] * lightIntensity[activeLight] * pow(cosAlpha,50) / (1 + falloff);
+            + MaterialSpecularColor * lightColor[activeLight] * pow(cosAlpha,50)) ;
 
         fragment_color = vec4(color,1);
         break;
@@ -86,9 +74,9 @@ void main( void ) {
             // Ambient : simulates indirect lighting
             MaterialAmbientColor +
             // Diffuse : "color" of the object
-            MaterialDiffuseColor * lightColor[activeLight] * lightIntensity[activeLight] * cosTheta
+            falloff *(MaterialDiffuseColor * lightColor[activeLight] * lightIntensity[activeLight] * cosTheta
             // Specular : reflective highlight, like a mirror
-            + MaterialSpecularColor * lightColor[activeLight] * lightIntensity[activeLight] * pow(cosAlpha,50) ;
+            + MaterialSpecularColor * lightColor[activeLight] * lightIntensity[activeLight] * pow(cosAlpha,50)) ;
 
         fragment_color = vec4(color,1);
         break;
@@ -110,9 +98,9 @@ void main( void ) {
                 //spotEffect = 0;
 
 
-                //att = spotEffect / (lightAttenuation[activeLight].x +
-                //     lightAttenuation[activeLight].y * distance +
-                //   lightAttenuation[activeLight].z * distance * distance);
+               // att = spotEffect * lightIntensity[activeLight] / (lightAttenuation[activeLight].x +
+                 //    lightAttenuation[activeLight].y * distance +
+                  // lightAttenuation[activeLight].z * distance * distance);
 
                 color =
                     //MaterialDiffuseColor;

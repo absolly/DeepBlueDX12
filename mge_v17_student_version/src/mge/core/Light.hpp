@@ -11,19 +11,14 @@ class Light : public GameObject {
             DIRECTIONAL,
             SPOT
         };
-        enum lightFalloff{
-            CONSTANT,
-            LINEAR,
-            QUADRATIC
-        };
 
-        Light(lightType pType, std::string pName, glm::vec3 pPosition, glm::vec3 pColor = glm::vec3(1,1,1), float pIntensity = 1.0f, lightFalloff pFalloff = lightFalloff::QUADRATIC, float pAngle = 45.0f);
+        Light(lightType pType, std::string pName, glm::vec3 pPosition, glm::vec3 pColor = glm::vec3(1,1,1), float pIntensity = 300, glm::vec3 pFalloff = glm::vec3(0,0,1), float pAngle = 45.0f);
         virtual ~Light();
         Light(const Light& other);
         Light& operator=(const Light& other);
 
         lightType type;
-        lightFalloff falloff;
+        glm::vec3 falloff;
         void setColor(glm::vec3 pColor);
         glm::vec3 getColor();
         float intensity;
