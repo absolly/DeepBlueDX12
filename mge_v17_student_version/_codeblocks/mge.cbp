@@ -208,7 +208,9 @@
 		<Unit filename="../assets/mge/shaders/texture.vs" />
 		<Unit filename="../assets/mge/shaders/wobble.fs" />
 		<Unit filename="../assets/mge/shaders/wobble.vs" />
+		<Unit filename="../assets/mge/textures/black.png" />
 		<Unit filename="../assets/mge/textures/bricks.jpg" />
+		<Unit filename="../assets/mge/textures/grass_texture.jpg" />
 		<Unit filename="../assets/mge/textures/land.jpg" />
 		<Unit filename="../assets/mge/textures/terrain/diffuse1.jpg" />
 		<Unit filename="../assets/mge/textures/terrain/diffuse2.jpg" />
@@ -217,6 +219,7 @@
 		<Unit filename="../assets/mge/textures/terrain/heightmap.png" />
 		<Unit filename="../assets/mge/textures/terrain/splatmap.png" />
 		<Unit filename="../assets/mge/textures/terrain/water.jpg" />
+		<Unit filename="../assets/mge/textures/white.png" />
 		<Unit filename="../src/Content/TestScene.cpp" />
 		<Unit filename="../src/Content/TestScene.hpp" />
 		<Unit filename="../src/glm.hpp" />
