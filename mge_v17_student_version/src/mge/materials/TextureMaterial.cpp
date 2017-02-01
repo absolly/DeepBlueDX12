@@ -9,7 +9,7 @@
 
 ShaderProgram* TextureMaterial::_shader = NULL;
 
-TextureMaterial::TextureMaterial(Texture * pDiffuseTexture):_diffuseTexture(pDiffuseTexture) {
+TextureMaterial::TextureMaterial(Texture * pDiffuseTexture, float pTiling):_diffuseTexture(pDiffuseTexture), _tiling(pTiling) {
     _lazyInitializeShader();
 }
 
@@ -67,6 +67,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform3fv(_shader->getUniformLocation("lightFalloff"), 28, glm::value_ptr(lightFalloff[0]));
     glUniform1fv(_shader->getUniformLocation("lightIntensity"), 28, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
+    glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),         1, GL_FALSE, glm::value_ptr(pViewMatrix));

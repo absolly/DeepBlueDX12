@@ -13,7 +13,7 @@
 class TextureMaterial : public AbstractMaterial
 {
     public:
-        TextureMaterial (Texture* pDiffuseTexture);
+        TextureMaterial (Texture* pDiffuseTexture, float pTiling = 1);
         virtual ~TextureMaterial ();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
@@ -26,7 +26,7 @@ class TextureMaterial : public AbstractMaterial
         static void _lazyInitializeShader();
 
         Texture* _diffuseTexture;
-
+        float _tiling;
         TextureMaterial(const TextureMaterial&);
         TextureMaterial& operator=(const TextureMaterial&);
 

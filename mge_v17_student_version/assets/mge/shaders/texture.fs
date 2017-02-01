@@ -10,6 +10,7 @@ uniform vec3        lightFalloff[28];
 uniform int         lightAttenuation[28];
 uniform vec3        lightDirection[28];
 uniform int         lightCount;
+uniform int         tiling;
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
@@ -74,7 +75,7 @@ vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMateria
 void main( void ) {
 
 
-    vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord));
+    vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord * tiling));
 
 
 
