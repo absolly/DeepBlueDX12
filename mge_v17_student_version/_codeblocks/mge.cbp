@@ -217,6 +217,8 @@
 		<Unit filename="../assets/mge/textures/terrain/heightmap.png" />
 		<Unit filename="../assets/mge/textures/terrain/splatmap.png" />
 		<Unit filename="../assets/mge/textures/terrain/water.jpg" />
+		<Unit filename="../src/Content/TestScene.cpp" />
+		<Unit filename="../src/Content/TestScene.hpp" />
 		<Unit filename="../src/glm.hpp" />
 		<Unit filename="../src/main.cpp" />
 		<Unit filename="../src/mge/MGEDemo.cpp" />
