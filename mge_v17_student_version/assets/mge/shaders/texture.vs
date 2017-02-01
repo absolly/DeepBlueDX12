@@ -4,9 +4,9 @@
 uniform	mat4 	projectionMatrix;
 uniform	mat4 	viewMatrix;
 uniform	mat4 	modelMatrix;
-uniform vec3    lightPosition[128];
-uniform vec3    lightDirection[128];
-uniform int     lightType[128];
+uniform vec3    lightPosition[28];
+uniform vec3    lightDirection[28];
+uniform int     lightType[28];
 in vec3 vertex;
 in vec3 normal;
 in vec2 uv;
@@ -15,7 +15,7 @@ uniform int         lightCount;
 
 out vec2 texCoord; //make sure the texture coord is interpolated
 out vec3 Position_worldspace;
-out vec3 LightDirection_cameraspace[10];
+out vec3 LightDirection_cameraspace[28];
 out vec3 Normal_cameraspace;
 out vec3 EyeDirection_cameraspace;
 

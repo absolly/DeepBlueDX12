@@ -5,8 +5,9 @@
 
 
 Light::Light(lightType pType, std::string pName, glm::vec3 pPosition, glm::vec3 pColor, float pIntensity, glm::vec3 pFalloff, float pAngle)
-    : GameObject(pName, pPosition), type(pType), _color(pColor), intensity(pIntensity), falloff(pFalloff), angle(pAngle) {
+    : GameObject(pName, pPosition), type(pType), intensity(pIntensity), falloff(pFalloff), angle(pAngle) {
     //ctor
+    setColor(pColor);
 
 }
 

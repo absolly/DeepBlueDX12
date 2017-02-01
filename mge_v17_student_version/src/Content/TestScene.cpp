@@ -26,6 +26,7 @@ using namespace std;
 
 #include "mge/config.hpp"
 #include "Content/TestScene.hpp"
+#include <time.h>       /* time */
 
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
@@ -61,7 +62,7 @@ void TestScene::_initializeScene() {
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
     Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
     Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapot_smooth.obj");
-   // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
+    // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
     AbstractMaterial* colorMaterial = new WobbleMaterial (Texture::load (config::MGE_TEXTURE_PATH+"color.jpg"));
@@ -70,7 +71,7 @@ void TestScene::_initializeScene() {
 
     //SCENE SETUP
     GameObject* plane = new GameObject ("plane", glm::vec3(0,0,0));
-    plane->scale(glm::vec3(5,5,5));
+    plane->scale(glm::vec3(50,50,50));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(textureMaterial);
     _world->add(plane);
@@ -101,21 +102,31 @@ void TestScene::_initializeScene() {
     _world->add(monkey);
 
     camera->setBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
-
-    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
-    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
-    light->setMesh (cubeMeshF);
-    AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
-    light->setBehaviour(new LookAt(teapot));
-    light->setMaterial(colorMaterial2);
-    _world->add(light);
-
-    glm::vec3* lightColor2 = new glm::vec3(0.0f,0.0f,.5f);
-    Light* light2 = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,5), *lightColor2, 50, glm::vec3(0,0,1));
-    light2->setMesh (cubeMeshF);
-    light->setBehaviour(new LookAt(teapot));
-    light2->setMaterial(colorMaterial2);
-    _world->add(light2);
+//
+//    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
+//    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
+//    light->setMesh (cubeMeshF);
+//    AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
+//    light->setBehaviour(new LookAt(teapot));
+//    light->setMaterial(colorMaterial2);
+//    _world->add(light);
+//
+//    glm::vec3* lightColor2 = new glm::vec3(0.0f,0.0f,.5f);
+//    Light* light2 = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,5), *lightColor2, 50, glm::vec3(0,0,1));
+//    light2->setMesh (cubeMeshF);
+//    light->setBehaviour(new LookAt(teapot));
+//    light2->setMaterial(colorMaterial2);
+//    _world->add(light2);
+    srand (time(NULL));
+    for(int i = 0; i < 28; i++) {
+        glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
+        Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 50, glm::vec3(0,0,1));
+        light->setMesh (cubeMeshF);
+        AbstractMaterial* colorMaterial2 = new ColorMaterial ( glm::normalize(*lightColor));
+        //light->setBehaviour(new LookAt(teapot));
+        light->setMaterial(colorMaterial2);
+        _world->add(light);
+    }
 
 //    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 //    light3->setMesh (cubeMeshF);

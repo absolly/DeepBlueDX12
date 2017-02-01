@@ -2,19 +2,19 @@
 #version 330 // for glsl version (12 is for older versions , say opengl 2.1
 
 uniform sampler2D   textureDiffuse;
-uniform vec3        lightPosition[128];
-uniform vec3        lightColor[128];
-uniform float       lightIntensity[128];
-uniform int         lightType[128];
-uniform vec3        lightFalloff[128];
-uniform int         lightAttenuation[128];
-uniform vec3        lightDirection[128];
+uniform vec3        lightPosition[28];
+uniform vec3        lightColor[28];
+uniform float       lightIntensity[28];
+uniform int         lightType[28];
+uniform vec3        lightFalloff[28];
+uniform int         lightAttenuation[28];
+uniform vec3        lightDirection[28];
 uniform int         lightCount;
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
 in vec3 Normal_cameraspace;
-in vec3 LightDirection_cameraspace[10];//
+in vec3 LightDirection_cameraspace[28];//
 in vec3 EyeDirection_cameraspace;
 
 out vec4 fragment_color;
@@ -38,9 +38,9 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
     //  - Looking elsewhere -> < 1
     float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-    return pMaterialAmbientColor +
+    return pFalloff *(pMaterialAmbientColor +
             // Diffuse : "color" of the object
-            pFalloff *( pMaterialDiffuseColor * pLightColor * cosTheta
+             pMaterialDiffuseColor * pLightColor * cosTheta
             // Specular : reflective highlight, like a mirror
             + pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
 }

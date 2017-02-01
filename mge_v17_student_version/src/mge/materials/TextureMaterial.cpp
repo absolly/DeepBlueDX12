@@ -42,12 +42,12 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
     glUniform1i(_shader->getUniformLocation("activeLight"), 0);
 
-    glm::vec3 lightPosition[128] {};
-    glm::vec3 lightDirection[128] {};
-    glm::vec3 lightColor[128] {};
-    GLint lightType[128] {};
-    glm::vec3 lightFalloff[128]{};
-    GLfloat lightIntensity[128] {};
+    glm::vec3 lightPosition[28] {};
+    glm::vec3 lightDirection[28] {};
+    glm::vec3 lightColor[28] {};
+    GLint lightType[28] {};
+    glm::vec3 lightFalloff[28]{};
+    GLfloat lightIntensity[28] {};
 
     int i = 0;
     for(Light* light : World::activeLights) {
@@ -60,12 +60,12 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         i++;
     }
 
-    glUniform3fv(_shader->getUniformLocation("lightPosition"), 128, glm::value_ptr(lightPosition[0]));
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 128, glm::value_ptr(lightDirection[0]));
-    glUniform3fv(_shader->getUniformLocation("lightColor"), 128, glm::value_ptr(lightColor[0]));
-    glUniform1iv(_shader->getUniformLocation("lightType"), 128, lightType);
-    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 128, glm::value_ptr(lightFalloff[0]));
-    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 128, lightIntensity);
+    glUniform3fv(_shader->getUniformLocation("lightPosition"), 28, glm::value_ptr(lightPosition[0]));
+    glUniform3fv(_shader->getUniformLocation("lightDirection"), 28, glm::value_ptr(lightDirection[0]));
+    glUniform3fv(_shader->getUniformLocation("lightColor"), 28, glm::value_ptr(lightColor[0]));
+    glUniform1iv(_shader->getUniformLocation("lightType"), 28, lightType);
+    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 28, glm::value_ptr(lightFalloff[0]));
+    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 28, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
