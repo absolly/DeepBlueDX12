@@ -59,13 +59,14 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         lightIntensity[i] = light->intensity;
         i++;
     }
+
     glUniform3fv(_shader->getUniformLocation("lightPosition"), 128, glm::value_ptr(lightPosition[0]));
     glUniform3fv(_shader->getUniformLocation("lightDirection"), 128, glm::value_ptr(lightDirection[0]));
     glUniform3fv(_shader->getUniformLocation("lightColor"), 128, glm::value_ptr(lightColor[0]));
     glUniform1iv(_shader->getUniformLocation("lightType"), 128, lightType);
     glUniform3fv(_shader->getUniformLocation("lightFalloff"), 128, glm::value_ptr(lightFalloff[0]));
     glUniform1fv(_shader->getUniformLocation("lightIntensity"), 128, lightIntensity);
-
+    glUniform1i(_shader->getUniformLocation("lightCount"), i);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),         1, GL_FALSE, glm::value_ptr(pViewMatrix));

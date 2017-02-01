@@ -78,7 +78,7 @@ void TestScene::_initializeScene() {
     GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
     teapot->setMesh (teapotMeshS);
     teapot->setMaterial(textureMaterial2);
-  //teapot->setBehaviour (new KeysBehaviour());
+    teapot->setBehaviour (new KeysBehaviour());
     _world->add(teapot);
 
 //    for(int i = 0; i < 1000; i++){
@@ -102,19 +102,21 @@ void TestScene::_initializeScene() {
 
     camera->setBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 
-    glm::vec3* lightColor = new glm::vec3(0.5f,0.5f,.5f);
-    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,10,0), *lightColor, 1, glm::vec3(1,0,0));
+    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
+    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
     light->setMesh (cubeMeshF);
     AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
-    light->setBehaviour(new KeysBehaviour());
+    light->setBehaviour(new LookAt(teapot));
     light->setMaterial(colorMaterial2);
     _world->add(light);
 
-//    Light* light2 = new Light (Light::lightType::POINT, "light2", glm::vec3(0,2,0), *lightColor, 10.f, Light::lightFalloff::LINEAR);
-//    light2->setMesh (cubeMeshF);
-//    light2->setMaterial(colorMaterial2);
-//    _world->add(light2);
-//
+    glm::vec3* lightColor2 = new glm::vec3(0.0f,0.0f,.5f);
+    Light* light2 = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,5), *lightColor2, 50, glm::vec3(0,0,1));
+    light2->setMesh (cubeMeshF);
+    light->setBehaviour(new LookAt(teapot));
+    light2->setMaterial(colorMaterial2);
+    _world->add(light2);
+
 //    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 //    light3->setMesh (cubeMeshF);
 //    light3->setMaterial(colorMaterial2);
