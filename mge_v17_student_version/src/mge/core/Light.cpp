@@ -4,7 +4,7 @@
 //    Light* Light::activeLights[255] = {nullptr};
 
 
-Light::Light(lightType pType, std::string pName, glm::vec3 pPosition, glm::vec3 pColor, float pIntensity, lightFalloff pFalloff, float pAngle)
+Light::Light(lightType pType, std::string pName, glm::vec3 pPosition, glm::vec3 pColor, float pIntensity, glm::vec3 pFalloff, float pAngle)
     : GameObject(pName, pPosition), type(pType), _color(pColor), intensity(pIntensity), falloff(pFalloff), angle(pAngle) {
     //ctor
 
