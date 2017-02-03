@@ -3,36 +3,38 @@
 
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
-uniform vec3        lightPosition[28];
-uniform vec3        lightColor[28];
-uniform float       lightIntensity[28];
-uniform int         lightType[28];
-uniform vec3        lightFalloff[28];
-uniform int         lightAttenuation[28];
-uniform vec3        lightDirection[28];
+uniform sampler2D   textureNormal;
+uniform vec3        lightPosition[24];
+uniform vec3        lightColor[24];
+uniform float       lightIntensity[24];
+uniform int         lightType[24];
+uniform vec3        lightFalloff[24];
+uniform int         lightAttenuation[24];
+uniform vec3        lightDirection[24];
 uniform int         lightCount;
 uniform int         tiling;
 uniform int         specularMultiplier;
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
-in vec3 Normal_cameraspace;
-in vec3 LightDirection_cameraspace[28];//
-in vec3 EyeDirection_cameraspace;
-
+in vec3 LightDirection_tangentspace[24];//
+in vec3 EyeDirection_tangentspace;
+in mat3 TBN;
 out vec4 fragment_color;
 
-vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_cameraspace ) {
+vec3 FragNormal_tangentspace;
+
+vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
-    vec3 n = normalize( Normal_cameraspace );
+    vec3 n = normalize( FragNormal_tangentspace );
     // Direction of the light (from the fragment to the light)
-    vec3 l = normalize( pLightDirection_cameraspace );
+    vec3 l = normalize( pLightDirection_tangentspace );
 
     float cosTheta = clamp( dot( n,l ), 0,1 );
 
     // Eye vector (towards the camera)
-    vec3 E = normalize(EyeDirection_cameraspace);
+    vec3 E = normalize(EyeDirection_tangentspace);
     // Direction in which the triangle reflects the light
     vec3 R = reflect(-l,n);
     // Cosine of the angle between the Eye vector and the Reflect vector,
@@ -48,17 +50,17 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
             + pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
 }
 
-vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_cameraspace ) {
+vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
-    vec3 n = normalize( Normal_cameraspace );
+    vec3 n = normalize( FragNormal_tangentspace );
     // Direction of the light (from the fragment to the light)
-    vec3 l = normalize( pLightDirection_cameraspace );
+    vec3 l = normalize( pLightDirection_tangentspace );
 
     float cosTheta = clamp( dot( n,l ), 0,1 );
 
     // Eye vector (towards the camera)
-    vec3 E = normalize(EyeDirection_cameraspace);
+    vec3 E = normalize(EyeDirection_tangentspace);
     // Direction in which the triangle reflects the light
     vec3 R = reflect(-l,n);
     // Cosine of the angle between the Eye vector and the Reflect vector,
@@ -75,12 +77,10 @@ vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMateria
 }
 
 void main( void ) {
-
+    FragNormal_tangentspace = vec3(texture(textureNormal,texCoord * tiling));
 
     vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord * tiling));
     vec3 MaterialSpecularColor = vec3(texture(textureSpecular,texCoord * tiling));
-
-
 
     vec3 combinedColor;
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
@@ -92,10 +92,10 @@ void main( void ) {
         float falloff = lightIntensity[activeLight]/(lightFalloff[activeLight].x + lightFalloff[activeLight].y * distance + lightFalloff[activeLight].z * distance * distance);
         switch(lightType[activeLight]) {
         case 0:
-            combinedColor += calcPointLight(falloff, lightColor[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_cameraspace[activeLight]);
+            combinedColor += calcPointLight(falloff, lightColor[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
             break;
         case 1:
-            combinedColor += calcDirectionalLight(lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_cameraspace[activeLight]);
+            combinedColor += calcDirectionalLight(lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
             break;
 //        case  2:
 //            if(cosTheta > 0.0) {

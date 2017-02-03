@@ -33,6 +33,8 @@ class ColorMaterial : public AbstractMaterial
         static GLint _aVertex ;
         static GLint _aNormal;
         static GLint _aUV ;
+        static GLint _aTangent;
+        static GLint _aBitangent;
 
         //this one is unique per instance of color material
         glm::vec3 _diffuseColor;

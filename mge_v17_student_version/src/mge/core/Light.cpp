@@ -38,22 +38,22 @@ glm::vec3 Light::getColor() {
 
 void Light::setParent (GameObject* pGameObject) {
 
-    std::cout << "set parent of light called" << std::endl;
+   // std::cout << "set parent of light called" << std::endl;
     if(pGameObject != NULL) {
         World::activeLights.insert(this);
-        std::cout << "added new light object to list" << std::endl;
+        //std::cout << "added new light object to list" << std::endl;
 
-        std::cout << "Active Lights:" << std::endl;
+       // std::cout << "Active Lights:" << std::endl;
         for(Light* light : World::activeLights) {
-            std::cout << light->getName() << std::endl;
+//std::cout << light->getName() << std::endl;
         }
     } else {
         World::activeLights.erase(this);
-        std::cout << "removed light object from list" << std::endl;
+       // std::cout << "removed light object from list" << std::endl;
 
-        std::cout << "Active Lights:" << std::endl;
+        //std::cout << "Active Lights:" << std::endl;
         for(Light* light : World::activeLights) {
-            std::cout << light->getName() << std::endl;
+          //  std::cout << light->getName() << std::endl;
         }
     }
 

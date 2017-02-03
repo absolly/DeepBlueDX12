@@ -52,6 +52,8 @@ void WobbleMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const gl
     pMesh->streamToOpenGL(
         _shader->getAttribLocation("vertex"),
         _shader->getAttribLocation("normal"),
-        _shader->getAttribLocation("uv")
+        _shader->getAttribLocation("uv"),
+        _shader->getAttribLocation("tangent"),
+        _shader->getAttribLocation("bitangent")
     );
 }
