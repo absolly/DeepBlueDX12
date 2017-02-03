@@ -13,6 +13,8 @@ GLint ColorMaterial::_uDiffuseColor = 0;
 GLint ColorMaterial::_aVertex = 0;
 GLint ColorMaterial::_aNormal = 0;
 GLint ColorMaterial::_aUV = 0;
+GLint ColorMaterial::_aTangent = 0;
+GLint ColorMaterial::_aBitangent = 0;
 
 ColorMaterial::ColorMaterial(glm::vec3 pDiffuseColor):_diffuseColor (pDiffuseColor)
 {
@@ -35,6 +37,8 @@ void ColorMaterial::_lazyInitializeShader() {
         _aVertex = _shader->getAttribLocation("vertex");
         _aNormal = _shader->getAttribLocation("normal");
         _aUV =     _shader->getAttribLocation("uv");
+        _aTangent = _shader->getAttribLocation("tangent");
+        _aBitangent = _shader->getAttribLocation("bitangent");
     }
 }
 
@@ -58,6 +62,6 @@ void ColorMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm
     glUniform3fv (_uDiffuseColor, 1, glm::value_ptr(_diffuseColor));
 
     //now inform mesh of where to stream its data
-    pMesh->streamToOpenGL(_aVertex, _aNormal, _aUV);
+    pMesh->streamToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
 
 }

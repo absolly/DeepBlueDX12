@@ -8,8 +8,8 @@
 
 ShaderProgram* TextureMaterial::_shader = NULL;
 
-TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture):
-_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier) {
+TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture):
+_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture) {
     _lazyInitializeShader();
 }
 
@@ -43,16 +43,21 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glBindTexture(GL_TEXTURE_2D, _specularTexture->getId());
     glUniform1i (_shader->getUniformLocation("textureSpecular"), 1);
 
+    //setup texture slot 2
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, _normalTexture->getId());
+    glUniform1i (_shader->getUniformLocation("textureNormal"), 2);
+
 
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
     glUniform1i(_shader->getUniformLocation("activeLight"), 0);
 
-    glm::vec3 lightPosition[28] {};
-    glm::vec3 lightDirection[28] {};
-    glm::vec3 lightColor[28] {};
-    GLint lightType[28] {};
-    glm::vec3 lightFalloff[28]{};
-    GLfloat lightIntensity[28] {};
+    glm::vec3 lightPosition[24] {};
+    glm::vec3 lightDirection[24] {};
+    glm::vec3 lightColor[24] {};
+    GLint lightType[24] {};
+    glm::vec3 lightFalloff[24]{};
+    GLfloat lightIntensity[24] {};
 
     int i = 0;
     for(Light* light : World::activeLights) {
@@ -65,12 +70,12 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         i++;
     }
 
-    glUniform3fv(_shader->getUniformLocation("lightPosition"), 28, glm::value_ptr(lightPosition[0]));
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 28, glm::value_ptr(lightDirection[0]));
-    glUniform3fv(_shader->getUniformLocation("lightColor"), 28, glm::value_ptr(lightColor[0]));
-    glUniform1iv(_shader->getUniformLocation("lightType"), 28, lightType);
-    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 28, glm::value_ptr(lightFalloff[0]));
-    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 28, lightIntensity);
+    glUniform3fv(_shader->getUniformLocation("lightPosition"), 24, glm::value_ptr(lightPosition[0]));
+    glUniform3fv(_shader->getUniformLocation("lightDirection"), 24, glm::value_ptr(lightDirection[0]));
+    glUniform3fv(_shader->getUniformLocation("lightColor"), 24, glm::value_ptr(lightColor[0]));
+    glUniform1iv(_shader->getUniformLocation("lightType"), 24, lightType);
+    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 24, glm::value_ptr(lightFalloff[0]));
+    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 24, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
@@ -83,6 +88,8 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     pMesh->streamToOpenGL(
         _shader->getAttribLocation("vertex"),
         _shader->getAttribLocation("normal"),
-        _shader->getAttribLocation("uv")
+        _shader->getAttribLocation("uv"),
+        _shader->getAttribLocation("tangent"),
+        _shader->getAttribLocation("bitangent")
     );
 }

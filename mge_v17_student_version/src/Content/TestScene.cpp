@@ -68,7 +68,7 @@ void TestScene::_initializeScene() {
     AbstractMaterial* colorMaterial = new WobbleMaterial (Texture::load (config::MGE_TEXTURE_PATH+"color.jpg"));
 
     //0 specular ground material
-    AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"grass_texture.jpg"), 10, 0);
+    AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"grass_texture.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //10 specular teapot material
     AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
@@ -122,7 +122,7 @@ void TestScene::_initializeScene() {
 //    light2->setMaterial(colorMaterial2);
 //    _world->add(light2);
     srand (time(NULL));
-    for(int i = 0; i < 28; i++) {
+    for(int i = 0; i < 24; i++) {
         glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
         Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 50, glm::vec3(0,0,1));
         light->setMesh (cubeMeshF);

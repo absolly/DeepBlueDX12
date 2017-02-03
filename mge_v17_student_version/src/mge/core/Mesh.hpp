@@ -27,7 +27,7 @@ class Mesh
         /**
          * Streams the mesh to opengl using the given indexes for the different attributes
          */
-        void streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib);
+        void streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib);
 
         /**
          * Draws debug info (normals) for the mesh using the given matrices)
@@ -42,11 +42,15 @@ class Mesh
 		GLuint _indexBufferId;
 		GLuint _vertexBufferId;
 		GLuint _normalBufferId;
+		GLuint _tangentBufferId;
+		GLuint _bitangentBufferId;
 		GLuint _uvBufferId;
 
 	    //the actual data
 		std::vector<glm::vec3> _vertices;       //vec3 with 3d coords for all vertices
 		std::vector<glm::vec3> _normals;        //vec3 with 3d normal data
+		std::vector<glm::vec3> _tangents;        //vec3 with 3d tangent data
+		std::vector<glm::vec3> _bitangents;        //vec3 with 3d bitangent data
 		std::vector<glm::vec2> _uvs;            //vec2 for uv
 
 		//references to the vertices/normals & uvs in previous vectors
