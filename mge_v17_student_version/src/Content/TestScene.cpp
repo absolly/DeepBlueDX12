@@ -27,7 +27,8 @@ using namespace std;
 #include "mge/config.hpp"
 #include "Content/TestScene.hpp"
 #include <time.h>       /* time */
-
+#include <btBulletCollisionCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene():AbstractGame (),_hud(0) {
