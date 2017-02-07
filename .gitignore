@@ -53,6 +53,8 @@ $RECYCLE.BIN/
 bin/
 obj/
 
+"mge_v17_student_version/_vs2015/Debug Static (Win32)"
+"mge_v17_student_version/_vs2015/Release Static (Win32)"
 mge_v17_student_version/_vs2015/src
 mge_v17_student_version/_vs2015/**/*
 !mge_v17_student_version/_vs2015/**/dll
