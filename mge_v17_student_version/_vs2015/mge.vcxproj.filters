@@ -22,118 +22,127 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\glm.hpp">
+    <ClInclude Include="src\glm.hpp">
       <Filter>MGE Source files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\behaviours\AbstractBehaviour.hpp">
+    <ClInclude Include="src\mge\behaviours\AbstractBehaviour.hpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\AbstractGame.hpp">
+    <ClInclude Include="src\mge\core\AbstractGame.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\materials\AbstractMaterial.hpp">
+    <ClInclude Include="src\mge\materials\AbstractMaterial.hpp">
       <Filter>MGE Source files\mge\materials</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\Camera.hpp">
+    <ClInclude Include="src\mge\core\Camera.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\materials\ColorMaterial.hpp">
+    <ClInclude Include="src\mge\materials\ColorMaterial.hpp">
       <Filter>MGE Source files\mge\materials</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\util\DebugHud.hpp">
+    <ClInclude Include="src\mge\util\DebugHud.hpp">
       <Filter>MGE Source files\mge\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\GameObject.hpp">
+    <ClInclude Include="src\mge\core\GameObject.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\behaviours\KeysBehaviour.hpp">
+    <ClInclude Include="src\mge\behaviours\KeysBehaviour.hpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\behaviours\LookAt.hpp">
+    <ClInclude Include="src\mge\behaviours\LookAt.hpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\Mesh.hpp">
+    <ClInclude Include="src\mge\core\Mesh.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\Renderer.hpp">
+    <ClInclude Include="src\mge\core\Renderer.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\ShaderProgram.hpp">
+    <ClInclude Include="src\mge\core\ShaderProgram.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\Texture.hpp">
+    <ClInclude Include="src\mge\core\Texture.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\core\World.hpp">
+    <ClInclude Include="src\mge\core\World.hpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\behaviours\RotatingBehaviour.hpp">
+    <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\materials\TextureMaterial.hpp">
+    <ClInclude Include="src\mge\materials\TextureMaterial.hpp">
       <Filter>MGE Source files\mge\materials</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\MGEDemo.hpp">
+    <ClInclude Include="src\mge\MGEDemo.hpp">
       <Filter>MGE Source files\mge</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mge\config.hpp">
+    <ClInclude Include="src\mge\config.hpp">
       <Filter>MGE Source files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.h">
+      <Filter>MGE Source files\mge\behaviours</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>MGE Source files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\behaviours\AbstractBehaviour.cpp">
+    <ClCompile Include="src\mge\behaviours\AbstractBehaviour.cpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\AbstractGame.cpp">
+    <ClCompile Include="src\mge\core\AbstractGame.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\materials\AbstractMaterial.cpp">
+    <ClCompile Include="src\mge\materials\AbstractMaterial.cpp">
       <Filter>MGE Source files\mge\materials</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\Camera.cpp">
+    <ClCompile Include="src\mge\core\Camera.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\materials\ColorMaterial.cpp">
+    <ClCompile Include="src\mge\materials\ColorMaterial.cpp">
       <Filter>MGE Source files\mge\materials</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\util\DebugHud.cpp">
+    <ClCompile Include="src\mge\util\DebugHud.cpp">
       <Filter>MGE Source files\mge\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\GameObject.cpp">
+    <ClCompile Include="src\mge\core\GameObject.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\behaviours\KeysBehaviour.cpp">
+    <ClCompile Include="src\mge\behaviours\KeysBehaviour.cpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\behaviours\LookAt.cpp">
+    <ClCompile Include="src\mge\behaviours\LookAt.cpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\Mesh.cpp">
+    <ClCompile Include="src\mge\core\Mesh.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\Renderer.cpp">
+    <ClCompile Include="src\mge\core\Renderer.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\ShaderProgram.cpp">
+    <ClCompile Include="src\mge\core\ShaderProgram.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\Texture.cpp">
+    <ClCompile Include="src\mge\core\Texture.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\core\World.cpp">
+    <ClCompile Include="src\mge\core\World.cpp">
       <Filter>MGE Source files\mge\core</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\behaviours\RotatingBehaviour.cpp">
+    <ClCompile Include="src\mge\behaviours\RotatingBehaviour.cpp">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\materials\TextureMaterial.cpp">
+    <ClCompile Include="src\mge\materials\TextureMaterial.cpp">
       <Filter>MGE Source files\mge\materials</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mge\MGEDemo.cpp">
+    <ClCompile Include="src\mge\MGEDemo.cpp">
       <Filter>MGE Source files\mge</Filter>
     </ClCompile>
+    <ClCompile Include="src\mge\behaviours\CameraOrbitBehaviour.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>
