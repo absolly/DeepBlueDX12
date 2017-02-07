@@ -89,38 +89,43 @@ void AbstractGame::run() {
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
-    btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 
-    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-    btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-
-    btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-
-    dynamicsWorld->setGravity(btVector3(0, -10, 0));
-
-
-    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-
-    btCollisionShape* fallShape = new btSphereShape(1);
-
-
-    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-    btRigidBody::btRigidBodyConstructionInfo
-    groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-    dynamicsWorld->addRigidBody(groundRigidBody);
-
-
-    btDefaultMotionState* fallMotionState =
-        new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-    btScalar mass = 1;
-    btVector3 fallInertia(0, 0, 0);
-    fallShape->calculateLocalInertia(mass, fallInertia);
-    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
-    btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
-    dynamicsWorld->addRigidBody(fallRigidBody);
+//    ///start of physics setup
+//        //setup world settings
+//        btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+//
+//        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+//        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+//
+//        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+//
+//        btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+//
+//        dynamicsWorld->setGravity(btVector3(0, -10, 0));
+//        //--------------------
+//
+//        //setup collision shapes
+//        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+//
+//        btCollisionShape* fallShape = new btSphereShape(1);
+//
+//
+//    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+//    btRigidBody::btRigidBodyConstructionInfo
+//    groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+//    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+//    dynamicsWorld->addRigidBody(groundRigidBody);
+//
+//
+//    btDefaultMotionState* fallMotionState =
+//        new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+//    btScalar mass = 1;
+//    btVector3 fallInertia(0, 0, 0);
+//    fallShape->calculateLocalInertia(mass, fallInertia);
+//    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
+//    btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
+//    dynamicsWorld->addRigidBody(fallRigidBody);
+//    ///-----------------------
 
     while (_window->isOpen()) {
         timeSinceLastUpdate += updateClock.restart();
@@ -131,13 +136,7 @@ void AbstractGame::run() {
             while (timeSinceLastUpdate > timePerFrame) {
                 timeSinceLastUpdate -= timePerFrame;
                 _update(timePerFrame.asSeconds());
-
-                dynamicsWorld->stepSimulation(1 / 60.f, 10);
-
-                btTransform trans;
-                fallRigidBody->getMotionState()->getWorldTransform(trans);
-
-                std::cout << "sphere height: " << trans.getOrigin().getY() << std::endl;
+                _world->updatePhysics(timePerFrame.asSeconds());
             }
 
             _render();
@@ -150,25 +149,25 @@ void AbstractGame::run() {
         _processEvents();
     }
 
-    dynamicsWorld->removeRigidBody(fallRigidBody);
-    delete fallRigidBody->getMotionState();
-    delete fallRigidBody;
-
-    dynamicsWorld->removeRigidBody(groundRigidBody);
-    delete groundRigidBody->getMotionState();
-    delete groundRigidBody;
-
-
-    delete fallShape;
-
-    delete groundShape;
-
-
-    delete dynamicsWorld;
-    delete solver;
-    delete collisionConfiguration;
-    delete dispatcher;
-    delete broadphase;
+//    dynamicsWorld->removeRigidBody(fallRigidBody);
+//    delete fallRigidBody->getMotionState();
+//    delete fallRigidBody;
+//
+//    dynamicsWorld->removeRigidBody(groundRigidBody);
+//    delete groundRigidBody->getMotionState();
+//    delete groundRigidBody;
+//
+//
+//    delete fallShape;
+//
+//    delete groundShape;
+//
+//
+//    delete dynamicsWorld;
+//    delete solver;
+//    delete collisionConfiguration;
+//    delete dispatcher;
+//    delete broadphase;
 }
 
 void AbstractGame::_update(float pStep) {

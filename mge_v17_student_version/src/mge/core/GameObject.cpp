@@ -166,7 +166,6 @@ void GameObject::rotate(float pAngle, glm::vec3 pAxis)
 void GameObject::update(float pStep)
 {
 	if (_behaviour) _behaviour->update(pStep);
-
     for (int i = _children.size()-1; i >= 0; --i ) {
         _children[i]->update(pStep);
     }
