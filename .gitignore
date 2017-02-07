@@ -53,4 +53,6 @@ $RECYCLE.BIN/
 bin/
 obj/
 
-mge_v17_student_version\_vs2015\src
+mge_v17_student_version/_vs2015\src
+mge_v17_student_version/_vs2015/SFML/**/*
+!mge_v17_student_version/_vs2015/SFML/Win32/lib/
