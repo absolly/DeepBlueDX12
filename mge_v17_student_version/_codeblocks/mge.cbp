@@ -180,6 +180,9 @@
 		</Compiler>
 		<Linker>
 			<Add option="-llua53" />
+			<Add option="-lBulletDynamics" />
+			<Add option="-lBulletCollision" />
+			<Add option="-lLinearMath" />
 		</Linker>
 		<Unit filename="../assets/mge/fonts/arial.ttf" />
 		<Unit filename="../assets/mge/levels/exported_scene.lua" />
@@ -249,6 +252,8 @@
 		<Unit filename="../src/mge/core/LuaParser.hpp" />
 		<Unit filename="../src/mge/core/Mesh.cpp" />
 		<Unit filename="../src/mge/core/Mesh.hpp" />
+		<Unit filename="../src/mge/core/PhysicsObject.cpp" />
+		<Unit filename="../src/mge/core/PhysicsObject.hpp" />
 		<Unit filename="../src/mge/core/Renderer.cpp" />
 		<Unit filename="../src/mge/core/Renderer.hpp" />
 		<Unit filename="../src/mge/core/ShaderProgram.cpp" />

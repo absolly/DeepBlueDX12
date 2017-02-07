@@ -2,7 +2,11 @@
 
 #include "mge/core/AbstractGame.hpp"
 #include "Content/TestScene.hpp"
+#include <Windows.h>
 
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
 /**
  * Main entry point for the Micro Engine.
 

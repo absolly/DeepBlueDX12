@@ -11,6 +11,7 @@ using namespace std;
 #include "mge/core/Camera.hpp"
 
 #include "mge/core/GameObject.hpp"
+#include "mge/core/PhysicsObject.hpp"
 #include "mge/core/Light.hpp"
 #include "mge/materials/AbstractMaterial.hpp"
 
@@ -27,7 +28,6 @@ using namespace std;
 #include "mge/config.hpp"
 #include "Content/TestScene.hpp"
 #include <time.h>       /* time */
-
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene():AbstractGame (),_hud(0) {
@@ -74,11 +74,22 @@ void TestScene::_initializeScene() {
     AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
 
     //SCENE SETUP
-    GameObject* plane = new GameObject ("plane", glm::vec3(0,0,0));
+    PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
     plane->scale(glm::vec3(50,50,50));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(textureMaterial);
+
+    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+    groundShape->setLocalScaling(btVector3(50,50,50));
+
+    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+    btRigidBody::btRigidBodyConstructionInfo
+    groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+    plane->rigidBody = new btRigidBody(groundRigidBodyCI);
     _world->add(plane);
+    World::addRigidBody(plane->rigidBody);
+
+
 
     GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
     teapot->setMesh (teapotMeshS);
@@ -98,13 +109,25 @@ void TestScene::_initializeScene() {
 //    car->setMesh (carMesh);
 //    car->setMaterial(colorMaterial);
 //    _world->add(car);
+    for(int i = 0; i < 10; i++) {
+        for(int j = 0; j < 10; j++) {
+            PhysicsObject* monkey = new PhysicsObject ("monkey", glm::vec3(3,1,0));
+            monkey->setMesh (suzannaMeshF);
+            monkey->setMaterial(textureMaterial2);
+      //    monkey->setBehaviour (new RotatingBehaviour());
 
-    GameObject* monkey = new GameObject ("monkey", glm::vec3(3,1,0));
-    monkey->setMesh (suzannaMeshF);
-    monkey->setMaterial(textureMaterial2);
-    monkey->setBehaviour (new RotatingBehaviour());
-    _world->add(monkey);
+            btCollisionShape* fallShape = new btSphereShape(1);
+            btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0+i, 50+i, 0+i)));
+            btScalar mass = 1;
+            btVector3 fallInertia(0, 0, 0);
+            fallShape->calculateLocalInertia(mass, fallInertia);
+            btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
+            monkey->rigidBody = new btRigidBody(fallRigidBodyCI);
+            World::addRigidBody(monkey->rigidBody);
 
+            _world->add(monkey);
+        }
+    }
     camera->setBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
@@ -121,7 +144,9 @@ void TestScene::_initializeScene() {
 //    light->setBehaviour(new LookAt(teapot));
 //    light2->setMaterial(colorMaterial2);
 //    _world->add(light2);
-    srand (time(NULL));
+    float random = time(NULL);
+    std:: cout << "random seed: " << random << std::endl;
+    srand (random);
     for(int i = 0; i < 24; i++) {
         glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
         Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 50, glm::vec3(0,0,1));

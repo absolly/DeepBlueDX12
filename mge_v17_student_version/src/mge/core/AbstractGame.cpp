@@ -5,14 +5,13 @@ using namespace std;
 
 #include "mge/core/Renderer.hpp"
 #include "mge/core/World.hpp"
+#include <btBulletDynamicsCommon.h>
 
-AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0)
-{
+AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
 }
 
-AbstractGame::~AbstractGame()
-{
+AbstractGame::~AbstractGame() {
     //dtor
     delete _window;
     delete _renderer;
@@ -33,14 +32,14 @@ void AbstractGame::initialize() {
 ///SETUP
 
 void AbstractGame::_initializeWindow() {
-	cout << "Initializing window..." << endl;
-	_window = new sf::RenderWindow( sf::VideoMode(800,600), "My Game!", sf::Style::Default, sf::ContextSettings(24,8,0,3,3));
-	//_window->setVerticalSyncEnabled(true);
+    cout << "Initializing window..." << endl;
+    _window = new sf::RenderWindow( sf::VideoMode(800,600), "My Game!", sf::Style::Default, sf::ContextSettings(24,8,0,3,3));
+    //_window->setVerticalSyncEnabled(true);
     cout << "Window initialized." << endl << endl;
 }
 
 void AbstractGame::_printVersionInfo() {
-	cout << "Context info:" << endl;
+    cout << "Context info:" << endl;
     cout << "----------------------------------" << endl;
     //print some debug stats for whoever cares
     const GLubyte *renderer = glGetString( GL_RENDERER );
@@ -62,57 +61,113 @@ void AbstractGame::_printVersionInfo() {
 }
 
 void AbstractGame::_initializeGlew() {
-	cout << "Initializing GLEW..." << endl;
+    cout << "Initializing GLEW..." << endl;
     //initialize the opengl extension wrangler
     GLint glewStatus = glewInit();
-	cout << "Initialized GLEW, status (1 == OK, 0 == FAILED):" << (glewStatus == GLEW_OK) << endl << endl;
+    cout << "Initialized GLEW, status (1 == OK, 0 == FAILED):" << (glewStatus == GLEW_OK) << endl << endl;
 }
 
 void AbstractGame::_initializeRenderer() {
     //setup our own renderer
-	cout << "Initializing renderer..." << endl;
-	_renderer = new Renderer();
+    cout << "Initializing renderer..." << endl;
+    _renderer = new Renderer();
     cout << "Renderer done." << endl << endl;
 }
 
 void AbstractGame::_initializeWorld() {
     //setup the world
-	cout << "Initializing world..." << endl;
-	_world = new World();
+    cout << "Initializing world..." << endl;
+    _world = new World();
     cout << "World initialized." << endl << endl;
 }
 
 ///LOOP
 
-void AbstractGame::run()
-{
-	sf::Clock updateClock;
-	sf::Clock renderClock;
-	sf::Time timeSinceLastUpdate = sf::Time::Zero;
-	sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+void AbstractGame::run() {
+    sf::Clock updateClock;
+    sf::Clock renderClock;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 
 
-	while (_window->isOpen()) {
-		timeSinceLastUpdate += updateClock.restart();
+//    ///start of physics setup
+//        //setup world settings
+//        btBroadphaseInterface* broadphase = new btDbvtBroadphase();
+//
+//        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+//        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+//
+//        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+//
+//        btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+//
+//        dynamicsWorld->setGravity(btVector3(0, -10, 0));
+//        //--------------------
+//
+//        //setup collision shapes
+//        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+//
+//        btCollisionShape* fallShape = new btSphereShape(1);
+//
+//
+//    btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+//    btRigidBody::btRigidBodyConstructionInfo
+//    groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+//    btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+//    dynamicsWorld->addRigidBody(groundRigidBody);
+//
+//
+//    btDefaultMotionState* fallMotionState =
+//        new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+//    btScalar mass = 1;
+//    btVector3 fallInertia(0, 0, 0);
+//    fallShape->calculateLocalInertia(mass, fallInertia);
+//    btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
+//    btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
+//    dynamicsWorld->addRigidBody(fallRigidBody);
+//    ///-----------------------
 
-		if (timeSinceLastUpdate > timePerFrame)
-		{
+    while (_window->isOpen()) {
+        timeSinceLastUpdate += updateClock.restart();
+
+        if (timeSinceLastUpdate > timePerFrame) {
             glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		    while (timeSinceLastUpdate > timePerFrame) {
+            while (timeSinceLastUpdate > timePerFrame) {
                 timeSinceLastUpdate -= timePerFrame;
                 _update(timePerFrame.asSeconds());
-		    }
+                _world->updatePhysics(timePerFrame.asSeconds());
+            }
 
             _render();
             _window->display();
 
             float timeSinceLastRender = renderClock.restart().asSeconds();
             if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
-		}
+        }
 
-		_processEvents();
+        _processEvents();
     }
+
+//    dynamicsWorld->removeRigidBody(fallRigidBody);
+//    delete fallRigidBody->getMotionState();
+//    delete fallRigidBody;
+//
+//    dynamicsWorld->removeRigidBody(groundRigidBody);
+//    delete groundRigidBody->getMotionState();
+//    delete groundRigidBody;
+//
+//
+//    delete fallShape;
+//
+//    delete groundShape;
+//
+//
+//    delete dynamicsWorld;
+//    delete solver;
+//    delete collisionConfiguration;
+//    delete dispatcher;
+//    delete broadphase;
 }
 
 void AbstractGame::_update(float pStep) {
@@ -123,40 +178,39 @@ void AbstractGame::_render () {
     _renderer->render(_world);
 }
 
-void AbstractGame::_processEvents()
-{
-	sf::Event event;
-	bool exit = false;
+void AbstractGame::_processEvents() {
+    sf::Event event;
+    bool exit = false;
 
-	//we must empty the event queue
-	while( _window->pollEvent( event ) ) {
+    //we must empty the event queue
+    while( _window->pollEvent( event ) ) {
         //give all system event listeners a chance to handle events
         //optionally to be implemented by you...
         //SystemEventDispatcher::dispatchEvent(event);
 
         switch (event.type) {
-            case sf::Event::Closed:
+        case sf::Event::Closed:
+            exit = true;
+            break;
+        case sf::Event::KeyPressed:
+            if (event.key.code == sf::Keyboard::Escape) {
                 exit = true;
-                break;
-            case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::Escape) {
-                    exit = true;
-                }
-                break;
-            case sf::Event::Resized:
-                //would be better to move this to the renderer
-                //this version implements nonconstrained match viewport scaling
-                glViewport(0, 0, event.size.width, event.size.height);
-                break;
+            }
+            break;
+        case sf::Event::Resized:
+            //would be better to move this to the renderer
+            //this version implements nonconstrained match viewport scaling
+            glViewport(0, 0, event.size.width, event.size.height);
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
-	}
+    }
 
-	if (exit) {
+    if (exit) {
         _window->close();
-	}
+    }
 }
 
 
