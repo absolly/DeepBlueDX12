@@ -21,7 +21,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-
 ### C++ ###
 # Prerequisites
 *.d
@@ -53,3 +52,5 @@ $RECYCLE.BIN/
 # generated directories
 bin/
 obj/
+
+mge_v17_student_version\_vs2015\src

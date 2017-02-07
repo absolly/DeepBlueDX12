@@ -82,6 +82,13 @@
     <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.h">
       <Filter>MGE Source files\mge\behaviours</Filter>
     </ClInclude>
+    <ClInclude Include="src\Content\TestScene.hpp" />
+    <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.hpp" />
+    <ClInclude Include="src\mge\core\Light.hpp" />
+    <ClInclude Include="src\mge\core\LuaParser.hpp" />
+    <ClInclude Include="src\mge\core\PhysicsObject.hpp" />
+    <ClInclude Include="src\mge\materials\TerrainMaterial.hpp" />
+    <ClInclude Include="src\mge\materials\WobbleMaterial.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -139,6 +146,24 @@
       <Filter>MGE Source files\mge</Filter>
     </ClCompile>
     <ClCompile Include="src\mge\behaviours\CameraOrbitBehaviour.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Content\TestScene.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mge\core\Light.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mge\core\LuaParser.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mge\core\PhysicsObject.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mge\materials\TerrainMaterial.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mge\materials\WobbleMaterial.cpp">
       <Filter>MGE Source files</Filter>
     </ClCompile>
   </ItemGroup>

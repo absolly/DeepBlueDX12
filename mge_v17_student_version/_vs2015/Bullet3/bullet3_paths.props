@@ -9,7 +9,6 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>Bullet3/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libBulletDynamics.a;libBulletCollision.a;libLinearMath.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
