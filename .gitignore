@@ -55,5 +55,5 @@ obj/
 
 mge_v17_student_version/_vs2015/src
 mge_v17_student_version/_vs2015/**/*
-!mge_v17_student_version/_vs2015/SFML/Win32/lib/
-!mge_v17_student_version/_vs2015/Bullet3/bin/
+!mge_v17_student_version/_vs2015/**/*dll
+!mge_v17_student_version/_vs2015/**/*lib
