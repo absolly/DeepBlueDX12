@@ -20,6 +20,7 @@ using namespace std;
 #include "mge/materials/WobbleMaterial.hpp"
 
 #include "mge/behaviours/RotatingBehaviour.hpp"
+#include "mge/behaviours/RigidBody.hpp"
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
@@ -110,19 +111,19 @@ void TestScene::_initializeScene() {
 //    _world->add(car);
     for(int i = 0; i < 10; i++) {
         for(int j = 0; j < 10; j++) {
-            PhysicsObject* monkey = new PhysicsObject ("monkey", glm::vec3(3,1,0));
+
+				btCollisionShape* fallShape = new btSphereShape(1);
+				btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0 + i, 50 + i, 0 + i)));
+				btScalar mass = 1;
+				btVector3 fallInertia(0, 0, 0);
+				fallShape->calculateLocalInertia(mass, fallInertia);
+				btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
+
+            GameObject* monkey = new GameObject ("monkey", glm::vec3(3,1,0));
             monkey->setMesh (suzannaMeshF);
             monkey->setMaterial(textureMaterial2);
+			monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
       //    monkey->setBehaviour (new RotatingBehaviour());
-
-            btCollisionShape* fallShape = new btSphereShape(1);
-            btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0+i, 50+i, 0+i)));
-            btScalar mass = 1;
-            btVector3 fallInertia(0, 0, 0);
-            fallShape->calculateLocalInertia(mass, fallInertia);
-            btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
-            monkey->rigidBody = new btRigidBody(fallRigidBodyCI);
-            World::addRigidBody(monkey->rigidBody);
 
             _world->add(monkey);
         }

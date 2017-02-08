@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <glm.hpp>
+#include <btBulletDynamicsCommon.h>
 
 class AbstractBehaviour;
 class AbstractMaterial;
@@ -69,7 +70,6 @@ class GameObject
 
         int getChildCount();
         GameObject* getChildAt (int pIndex);
-
 	protected:
 		std::string _name;
 		glm::mat4 _transform;
@@ -96,10 +96,10 @@ inline BehaviourType * GameObject::getBehaviour()
 	BehaviourType* castedBehaviour;
 	for each (AbstractBehaviour* behaviour in _behaviours)
 	{
-		castedBehaviour = static_cast<BehaviourType*>(behaviour);
+		castedBehaviour = dynamic_cast<BehaviourType*>(behaviour);
 		if (castedBehaviour) return castedBehaviour;
 	}
-	return NULL;
+	return nullptr;
 }
 
 #endif // GAMEOBJECT_H

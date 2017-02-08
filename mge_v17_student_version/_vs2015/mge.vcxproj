@@ -21,13 +21,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Static|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Static|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -118,6 +118,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\KeysBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\LookAt.hpp" />
+    <ClInclude Include="src\mge\behaviours\RigidBody.hpp" />
     <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp" />
     <ClInclude Include="src\mge\config.hpp" />
     <ClInclude Include="src\mge\core\AbstractGame.hpp" />
@@ -147,6 +148,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\behaviours\CameraOrbitBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\KeysBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\LookAt.cpp" />
+    <ClCompile Include="src\mge\behaviours\RigidBody.cpp" />
     <ClCompile Include="src\mge\behaviours\RotatingBehaviour.cpp" />
     <ClCompile Include="src\mge\core\AbstractGame.cpp" />
     <ClCompile Include="src\mge\core\Camera.cpp" />

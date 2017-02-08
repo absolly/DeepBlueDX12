@@ -11,6 +11,7 @@ using namespace std;
 #include "mge/core/Camera.hpp"
 #include "mge/core/Mesh.hpp"
 #include "mge/materials/AbstractMaterial.hpp"
+#include "mge/behaviours/RigidBody.hpp"
 
 Renderer::Renderer() {
     glEnable( GL_DEPTH_TEST );
@@ -58,14 +59,17 @@ void Renderer::renderChildren (GameObject* pGameObject, const glm::mat4& pModelM
     GameObject* child = 0;
     for (int i = 0; i < childCount; i++) {
         child = pGameObject->getChildAt(i);
-        PhysicsObject* physicsChild = dynamic_cast<PhysicsObject*>(child);
-        if(physicsChild != nullptr && physicsChild->rigidBody != nullptr) {
+
+		RigidBody* rigidBody = child->getBehaviour<RigidBody>();
+
+        if(rigidBody != nullptr) {
             glm::vec3 childScale;
             childScale.x = glm::length( child->getTransform()[0]);
             childScale.y = glm::length( child->getTransform()[1]);
             childScale.z = glm::length( child->getTransform()[2]);
             btTransform trans;
-            physicsChild->rigidBody->getMotionState()->getWorldTransform(trans);
+			rigidBody->rigidBody->getMotionState()->getWorldTransform(trans);
+
             glm::mat4 glmTrans;
             trans.getOpenGLMatrix(glm::value_ptr(glmTrans));
             child->setTransform(glmTrans);
