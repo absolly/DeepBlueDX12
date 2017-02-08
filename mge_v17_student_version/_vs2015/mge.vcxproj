@@ -203,8 +203,10 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.h" />
     <ClInclude Include="src\Content\Core\Input.h" />
+    <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
     <ClInclude Include="src\Content\GameObjects\Player.h" />
     <ClInclude Include="src\Content\TestScene.hpp" />
     <ClInclude Include="src\glm.hpp" />
@@ -236,8 +238,10 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\util\DebugHud.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
     <ClCompile Include="src\Content\Core\Input.cpp" />
+    <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
     <ClCompile Include="src\Content\GameObjects\Player.cpp" />
     <ClCompile Include="src\Content\TestScene.cpp" />
     <ClCompile Include="src\main.cpp" />

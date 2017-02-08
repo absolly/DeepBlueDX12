@@ -30,6 +30,8 @@
     <ClCompile Include="src\mge\util\DebugHud.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
     <ClCompile Include="src\Content\Core\Input.cpp" />
+    <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />
+    <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -64,6 +66,8 @@
     <ClInclude Include="src\Content\Core\Input.h" />
     <ClInclude Include="src\mge\MGEDemo.hpp" />
     <ClInclude Include="src\mge\util\DebugHud.hpp" />
+    <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
+    <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
