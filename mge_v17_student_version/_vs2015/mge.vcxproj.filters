@@ -28,6 +28,8 @@
     <ClCompile Include="src\mge\materials\WobbleMaterial.cpp" />
     <ClCompile Include="src\mge\MGEDemo.cpp" />
     <ClCompile Include="src\mge\util\DebugHud.cpp" />
+    <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
+    <ClCompile Include="src\Content\Core\Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -60,6 +62,8 @@
     <ClInclude Include="src\Content\GameObjects\Player.h" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.h" />
     <ClInclude Include="src\Content\Core\Input.h" />
+    <ClInclude Include="src\mge\MGEDemo.hpp" />
+    <ClInclude Include="src\mge\util\DebugHud.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -138,12 +142,6 @@
       <Filter>MGE Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\Content\GameObjects\Player.cpp">
-      <Filter>MGE Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp">
-      <Filter>MGE Source files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Content\Core\Input.cpp">
       <Filter>MGE Source files</Filter>
     </ClCompile>
   </ItemGroup>

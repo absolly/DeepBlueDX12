@@ -29,6 +29,7 @@ using namespace std;
 #include "mge/config.hpp"
 #include "Content/TestScene.hpp"
 #include <time.h>       /* time */
+#include "Content\GameObjects\Player.h"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene():AbstractGame (),_hud(0) {
@@ -49,7 +50,7 @@ void TestScene::_initializeScene() {
     _renderer->setClearColor(0,0,0);
 
     //add camera first (it will be updated last)
-    Camera* camera = new Camera ("camera", glm::vec3(0,3,3.5));
+    Camera* camera = new Camera ("camera", glm::vec3(0,0,0));
     camera->rotate(glm::radians(180.0f), glm::vec3(0,1,0));
     _world->add(camera);
     _world->setMainCamera(camera);
@@ -128,7 +129,10 @@ void TestScene::_initializeScene() {
             _world->add(monkey);
         }
     }
-    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
+	Player* player = new Player();
+	_world->add(player);
+	player->add(camera);
+    //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
 //    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
