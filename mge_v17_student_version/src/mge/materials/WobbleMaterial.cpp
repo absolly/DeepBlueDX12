@@ -31,7 +31,7 @@ void WobbleMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
 }
 
 void WobbleMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
-    _time = difftime(clock(), start);
+    _time = (float)difftime(clock(), start);
     if (!_diffuseTexture) return;
 
     _shader->use();
