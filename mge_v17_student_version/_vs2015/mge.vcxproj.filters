@@ -90,6 +90,8 @@
     <ClInclude Include="src\mge\materials\TerrainMaterial.hpp" />
     <ClInclude Include="src\mge\materials\WobbleMaterial.hpp" />
     <ClInclude Include="src\Content\GameObjects\Player.h" />
+    <ClInclude Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.h" />
+    <ClInclude Include="src\Content\Core\Input.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -168,6 +170,12 @@
       <Filter>MGE Source files</Filter>
     </ClCompile>
     <ClCompile Include="src\Content\GameObjects\Player.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp">
+      <Filter>MGE Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Content\Core\Input.cpp">
       <Filter>MGE Source files</Filter>
     </ClCompile>
   </ItemGroup>

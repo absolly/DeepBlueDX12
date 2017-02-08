@@ -1,12 +1,14 @@
 #pragma once
 
-#include "mge\core\PhysicsObject.hpp"
+#include "mge\core\GameObject.hpp"
+#include "Content\Behaviours\Player\PlayerMovementBehaviour.h"
 
-//class PhysicsObject;
-
-class Player : public PhysicsObject
+class Player : public GameObject
 {
 public:
 	Player();
 	~Player();
+
+private:
+	PlayerMovementBehaviour* _playerMovementBehaviour;
 };
