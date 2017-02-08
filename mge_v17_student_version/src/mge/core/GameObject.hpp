@@ -52,6 +52,9 @@ class GameObject
 		void addBehaviour(AbstractBehaviour* pBehaviour);
 		std::vector<AbstractBehaviour*> getBehaviours();
 
+		template <class BehaviourType>
+		BehaviourType* getBehaviour();
+
 		virtual void update(float pStep);
 
         //child management
@@ -86,5 +89,17 @@ class GameObject
         GameObject(const GameObject&);
         GameObject& operator=(const GameObject&);
 };
+
+template<class BehaviourType>
+inline BehaviourType * GameObject::getBehaviour()
+{
+	BehaviourType* castedBehaviour;
+	for each (AbstractBehaviour* behaviour in _behaviours)
+	{
+		castedBehaviour = static_cast<BehaviourType*>(behaviour);
+		if (castedBehaviour) return castedBehaviour;
+	}
+	return NULL;
+}
 
 #endif // GAMEOBJECT_H

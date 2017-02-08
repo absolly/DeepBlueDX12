@@ -110,6 +110,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Content\GameObjects\Player.h" />
     <ClInclude Include="src\Content\TestScene.hpp" />
     <ClInclude Include="src\glm.hpp" />
     <ClInclude Include="src\mge\behaviours\AbstractBehaviour.hpp" />
@@ -139,6 +140,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\util\DebugHud.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Content\GameObjects\Player.cpp" />
     <ClCompile Include="src\Content\TestScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mge\behaviours\AbstractBehaviour.cpp" />
