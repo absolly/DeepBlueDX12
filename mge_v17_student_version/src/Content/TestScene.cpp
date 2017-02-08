@@ -89,12 +89,11 @@ void TestScene::_initializeScene() {
     _world->add(plane);
     World::addRigidBody(plane->rigidBody);
 
-
-
     GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
     teapot->setMesh (teapotMeshS);
     teapot->setMaterial(textureMaterial2);
     teapot->addBehaviour (new KeysBehaviour());
+
     _world->add(teapot);
 
 //    for(int i = 0; i < 1000; i++){
