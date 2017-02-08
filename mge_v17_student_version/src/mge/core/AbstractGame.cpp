@@ -6,6 +6,9 @@ using namespace std;
 #include "mge/core/Renderer.hpp"
 #include "mge/core/World.hpp"
 #include <btBulletDynamicsCommon.h>
+#include "Content\Core\Input.h"
+#include "SFML\Window.hpp"
+#include <Windows.h>
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
@@ -33,8 +36,13 @@ void AbstractGame::initialize() {
 
 void AbstractGame::_initializeWindow() {
     cout << "Initializing window..." << endl;
-    _window = new sf::RenderWindow( sf::VideoMode(800,600), "My Game!", sf::Style::Default, sf::ContextSettings(24,8,0,3,3));
-    //_window->setVerticalSyncEnabled(true);
+    _window = new sf::RenderWindow( sf::VideoMode(1440, 810), "My Game!", sf::Style::Fullscreen, sf::ContextSettings(24,8,0,3,3));    
+	
+	//_window->setMouseCursorGrabbed(true);
+	_window->setMouseCursorVisible(false);
+    //_window->setVerticalSyncEnabled(true); 
+	SetCursorPos(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2);
+	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2));
     cout << "Window initialized." << endl << endl;
 }
 
@@ -181,7 +189,7 @@ void AbstractGame::_render () {
 void AbstractGame::_processEvents() {
     sf::Event event;
     bool exit = false;
-
+	Input::mouseMotion = sf::Vector2i();
     //we must empty the event queue
     while( _window->pollEvent( event ) ) {
         //give all system event listeners a chance to handle events
@@ -202,12 +210,18 @@ void AbstractGame::_processEvents() {
             //this version implements nonconstrained match viewport scaling
             glViewport(0, 0, event.size.width, event.size.height);
             break;
+		case sf::Event::MouseMoved:
+			//Input::mouseMotion += sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+			//std::cout << "Mouse moved: " << event.mouseMove .x << ", " << event.mouseMove.y << std::endl;
+			break;
 
         default:
             break;
         }
     }
-
+	//SetCursorPos(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2);
+	//sf::Mouse::setPosition(sf::Vector2i(1920 / 2, 1080 / 2,));
+	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x/2, _window->getPosition().y + _window->getSize().y/2));
     if (exit) {
         _window->close();
     }
