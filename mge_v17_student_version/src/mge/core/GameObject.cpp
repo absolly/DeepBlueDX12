@@ -8,7 +8,7 @@ using namespace std;
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 :	_name( pName ), _transform( glm::translate( pPosition ) ),
-    _parent(NULL), _children(), _mesh( NULL ),_behaviour( NULL ), _material(NULL)
+    _parent(NULL), _children(), _mesh( NULL ), _behaviours(vector<AbstractBehaviour*>()), _material(NULL)
 {
 }
 
@@ -76,15 +76,15 @@ Mesh * GameObject::getMesh() const
     return _mesh;
 }
 
-void GameObject::setBehaviour(AbstractBehaviour* pBehaviour)
+void GameObject::addBehaviour(AbstractBehaviour* pBehaviour)
 {
-	_behaviour = pBehaviour;
-	_behaviour->setOwner(this);
+	_behaviours.push_back(pBehaviour);
+	pBehaviour->setOwner(this);
 }
 
-AbstractBehaviour * GameObject::getBehaviour() const
+std::vector<AbstractBehaviour*> GameObject::getBehaviours()
 {
-    return _behaviour;
+	return _behaviours;
 }
 
 void GameObject::setParent (GameObject* pParent) {
@@ -165,7 +165,10 @@ void GameObject::rotate(float pAngle, glm::vec3 pAxis)
 //all game objects are updated in a backward loop, first the behaviour is updated, then all children are updated
 void GameObject::update(float pStep)
 {
-	if (_behaviour) _behaviour->update(pStep);
+	for each (AbstractBehaviour* behaviour in _behaviours)
+	{
+		behaviour->update(pStep);
+	}
     for (int i = _children.size()-1; i >= 0; --i ) {
         _children[i]->update(pStep);
     }

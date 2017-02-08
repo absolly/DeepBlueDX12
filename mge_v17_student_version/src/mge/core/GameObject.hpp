@@ -49,8 +49,8 @@ class GameObject
 		void setMaterial (AbstractMaterial* pMaterial);
 		AbstractMaterial* getMaterial() const;
 
-		void setBehaviour(AbstractBehaviour* pBehaviour);
-		AbstractBehaviour* getBehaviour() const;
+		void addBehaviour(AbstractBehaviour* pBehaviour);
+		std::vector<AbstractBehaviour*> getBehaviours();
 
 		virtual void update(float pStep);
 
@@ -75,7 +75,7 @@ class GameObject
 		std::vector<GameObject*> _children;
 
         Mesh* _mesh;
-		AbstractBehaviour* _behaviour;
+		std::vector<AbstractBehaviour*> _behaviours;
 		AbstractMaterial* _material;
 
         //update children list administration

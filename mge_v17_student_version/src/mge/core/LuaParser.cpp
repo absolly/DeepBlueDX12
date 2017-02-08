@@ -133,13 +133,13 @@ int LuaParser::setMainCharacter(lua_State * lua) {
 
     //get the gameobject and set the behaviour
     GameObject * mainCharacter = (GameObject*)lua_touserdata(lua, -1);
-    mainCharacter->setBehaviour(new KeysBehaviour());
+    mainCharacter->addBehaviour(new KeysBehaviour());
 
     //create a camera and set its behaviour to oribit the main character
     Camera* camera = new Camera ("camera", glm::vec3(0,0,0));
     _world->add(camera);
     _world->setMainCamera(camera);
-    camera->setBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, mainCharacter));
+    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, mainCharacter));
 
     //returns nothing to lua
     return 0;
