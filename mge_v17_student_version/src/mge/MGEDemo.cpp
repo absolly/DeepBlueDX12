@@ -78,7 +78,7 @@ void MGEDemo::_initializeScene() {
     GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
     teapot->setMesh (teapotMeshS);
     teapot->setMaterial(textureMaterial2);
-  teapot->setBehaviour (new KeysBehaviour());
+  teapot->addBehaviour (new KeysBehaviour());
     _world->add(teapot);
 
 //    for(int i = 0; i < 1000; i++){
@@ -97,10 +97,10 @@ void MGEDemo::_initializeScene() {
     GameObject* monkey = new GameObject ("monkey", glm::vec3(3,1,0));
     monkey->setMesh (suzannaMeshF);
     monkey->setMaterial(textureMaterial2);
-    monkey->setBehaviour (new RotatingBehaviour());
+    monkey->addBehaviour (new RotatingBehaviour());
     _world->add(monkey);
 
-    camera->setBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
+    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 
     glm::vec3* lightColor = new glm::vec3(0.5f,0.5f,.5f);
     //Light* light;
