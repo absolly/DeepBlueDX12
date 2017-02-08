@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <glm.hpp>
+#include <btBulletDynamicsCommon.h>
 
 class AbstractBehaviour;
 class AbstractMaterial;
@@ -49,8 +50,11 @@ class GameObject
 		void setMaterial (AbstractMaterial* pMaterial);
 		AbstractMaterial* getMaterial() const;
 
-		void setBehaviour(AbstractBehaviour* pBehaviour);
-		AbstractBehaviour* getBehaviour() const;
+		void addBehaviour(AbstractBehaviour* pBehaviour);
+		std::vector<AbstractBehaviour*> getBehaviours();
+
+		template <class BehaviourType>
+		BehaviourType* getBehaviour();
 
 		virtual void update(float pStep);
 
@@ -66,7 +70,6 @@ class GameObject
 
         int getChildCount();
         GameObject* getChildAt (int pIndex);
-
 	protected:
 		std::string _name;
 		glm::mat4 _transform;
@@ -75,7 +78,7 @@ class GameObject
 		std::vector<GameObject*> _children;
 
         Mesh* _mesh;
-		AbstractBehaviour* _behaviour;
+		std::vector<AbstractBehaviour*> _behaviours;
 		AbstractMaterial* _material;
 
         //update children list administration
@@ -86,5 +89,17 @@ class GameObject
         GameObject(const GameObject&);
         GameObject& operator=(const GameObject&);
 };
+
+template<class BehaviourType>
+inline BehaviourType * GameObject::getBehaviour()
+{
+	BehaviourType* castedBehaviour;
+	for each (AbstractBehaviour* behaviour in _behaviours)
+	{
+		castedBehaviour = dynamic_cast<BehaviourType*>(behaviour);
+		if (castedBehaviour) return castedBehaviour;
+	}
+	return nullptr;
+}
 
 #endif // GAMEOBJECT_H
