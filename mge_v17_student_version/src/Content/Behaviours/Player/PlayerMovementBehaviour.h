@@ -50,4 +50,5 @@ private:
 	sf::Vector2i _previousMousePosition;
 
 	float moveTowards(float current, float target, float speed);
+	bool _lockMouse;
 };

@@ -24,6 +24,8 @@ void PlayerMovementBehaviour::coolEventToExecuteWhenPlayerDoesSomething(float de
 }
 void PlayerMovementBehaviour::update(float deltaTime)
 {
+	if (Input::getKeyDown(sf::Keyboard::F1))
+		_lockMouse = !_lockMouse;
 	/*
 	float moveSpeed = 0.0f; //default if no keys
 	float turnSpeed = 0.0f;
@@ -60,7 +62,8 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	int deltaX = mousePosition.x - width / 2;
 	int deltaY = mousePosition.y - height / 2;
 
-	//sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2)); /* could also use SetCursorPos() if you're only going to use Windows */
+	if (_lockMouse)
+		sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2)); /* could also use SetCursorPos() if you're only going to use Windows */
 
 	//YourRotationFunctionThatTakesDelta(deltaX, deltaY);
 

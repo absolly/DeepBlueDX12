@@ -66,6 +66,8 @@ class AbstractGame
 
 		void onCloseWindowEvent(sf::Event& event);
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
+		bool _mouseCursorVisible = false;
+		void onToggleMouseLock(sf::Event::KeyEvent& event);
 };
 
 #endif // ABSTRACTGAME_H

@@ -13,6 +13,10 @@ using namespace std;
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
+
+	EventHandler::bindEvent(sf::Event::Closed, this, &AbstractGame::onCloseWindowEvent);
+	EventHandler::bindKeyDownEvent(sf::Keyboard::Escape, this, &AbstractGame::onEscapePressedEvent);
+	EventHandler::bindKeyDownEvent(sf::Keyboard::F1, this, &AbstractGame::onToggleMouseLock);
 }
 
 AbstractGame::~AbstractGame() {
@@ -146,7 +150,9 @@ void AbstractGame::run() {
                 timeSinceLastUpdate -= timePerFrame;
                 _update(timePerFrame.asSeconds());
                 _world->updatePhysics(timePerFrame.asSeconds());
+				Input::updateInput();
             }
+			
 
             _render();
             _window->display();
@@ -188,19 +194,14 @@ void AbstractGame::_render () {
 }
 
 void AbstractGame::_processEvents() {
-    sf::Event event;
+	EventHandler::handleEvents(*_window); 
+
+	/*sf::Event event;
     bool exit = false;
-	Input::setMouseDown(sf::Mouse::Button::Left, sf::Mouse::isButtonPressed(sf::Mouse::Button::Left));
-	Input::setMouseDown(sf::Mouse::Button::Middle, sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle));
-	Input::setMouseDown(sf::Mouse::Button::Right, sf::Mouse::isButtonPressed(sf::Mouse::Button::Right));
-	Input::setMouseDown(sf::Mouse::Button::XButton1, sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton1));
-	Input::setMouseDown(sf::Mouse::Button::XButton2, sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton2));
-	Input::resetMouseButtonsPressed();
-	Input::resetMouseButtonsReleased();
 
-	EventHandler::bindEvent(sf::Event::Closed, this, &AbstractGame::onCloseWindowEvent);
-	EventHandler::bindKeyDownEvent(sf::Keyboard::Escape, this, &AbstractGame::onEscapePressedEvent);
-
+	Input::updateInput();
+	EventHandler::handleEvents(*_window);
+	
     //we must empty the event queue
     while( _window->pollEvent( event ) ) {
         //give all system event listeners a chance to handle events
@@ -208,14 +209,6 @@ void AbstractGame::_processEvents() {
         //SystemEventDispatcher::dispatchEvent(event);
 		EventHandler::handleEvent(event);
         switch (event.type) {
-        /*case sf::Event::Closed:
-            exit = true;
-            break;
-        case sf::Event::KeyPressed:
-            if (event.key.code == sf::Keyboard::Escape) {
-                exit = true;
-            }
-            break;*/
         case sf::Event::Resized:
             //would be better to move this to the renderer
             //this version implements nonconstrained match viewport scaling
@@ -231,7 +224,7 @@ void AbstractGame::_processEvents() {
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x/2, _window->getPosition().y + _window->getSize().y/2));
     if (exit) {
         _window->close();
-    }
+    }*/
 }
 
 void AbstractGame::onCloseWindowEvent(sf::Event & event)
@@ -244,3 +237,8 @@ void AbstractGame::onEscapePressedEvent(sf::Event::KeyEvent & event)
 	_window->close();
 }
 
+void AbstractGame::onToggleMouseLock(sf::Event::KeyEvent & event)
+{
+	_mouseCursorVisible = !_mouseCursorVisible;
+	_window->setMouseCursorVisible(_mouseCursorVisible);
+}
