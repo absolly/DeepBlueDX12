@@ -19,10 +19,14 @@ public:
 	virtual ~FishTank();
 	int getTankSize();
 	int getFishCount();
+	void SetNewGoal();
 
 private:
+	std::vector<glm::vec3> * _waypoints;
 	int _tankSize = 0;
+	int _goalIndex = 0;
 	int _fishCount = 0;
+	void update(float pStep);
 };
 
 #endif // GAMEOBJECT_H

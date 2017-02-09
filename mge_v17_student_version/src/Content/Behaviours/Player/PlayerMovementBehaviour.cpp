@@ -69,7 +69,6 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	_previousMousePosition = mousePosition;
 	_aimPointPosition.x = glm::clamp(_aimPointPosition.x - mouseInputRaw.x * 1	 * deltaTime, -1.0f, 1.0f);
 	_aimPointPosition.y = glm::clamp(_aimPointPosition.y - mouseInputRaw.y * 1 * deltaTime, -1.0f, 1.0f);
-	std::cout << "_aimPointPosition: " << _aimPointPosition.x << ", " << _aimPointPosition.y << std::endl;
 	//_aimPoint.transform.localPosition = new Vector3(aimPointPosition.x, aimPointPosition.y, _aimPoint.transform.localPosition.z);
 
 	//Rotations
@@ -119,7 +118,6 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//transform = glm::translate(transform, _owner->getLocalPosition());
 	//Apply rotation
 	//std::cout << "_currentPitch: " << _currentPitch << std::endl;
-	std::cout << "_currentRoll: " << _currentRoll << std::endl;
 	//std::cout << "_currentRoll: " << _currentRoll << std::endl;
 	//_owner->rotate(_currentPitch * deltaTime, glm::vec3(1, 0, 0));
 	//_owner->setTransform(transform);

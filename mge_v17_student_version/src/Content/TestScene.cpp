@@ -26,6 +26,8 @@ using namespace std;
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
 #include "mge/util/DebugHud.hpp"
 
+#include "Content/GameObjects/FishTank.hpp"
+
 #include "mge/config.hpp"
 #include "Content/TestScene.hpp"
 #include <time.h>       /* time */
@@ -98,6 +100,8 @@ void TestScene::_initializeScene() {
 
     _world->add(teapot);
 
+	FishTank * fishtank = new FishTank(glm::vec3(0, 0, 0), _world, "tankie", 20, 40);
+
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
 //    teapot2->setMesh (teapotMeshS);
@@ -110,25 +114,25 @@ void TestScene::_initializeScene() {
 //    car->setMesh (carMesh);
 //    car->setMaterial(colorMaterial);
 //    _world->add(car);
-    for(int i = 0; i < 10; i++) {
-        for(int j = 0; j < 10; j++) {
+   // for(int i = 0; i < 10; i++) {
+   //     for(int j = 0; j < 10; j++) {
 
-				btCollisionShape* fallShape = new btSphereShape(1);
-				btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0 + i, 50 + i, 0 + i)));
-				btScalar mass = 1;
-				btVector3 fallInertia(0, 0, 0);
-				fallShape->calculateLocalInertia(mass, fallInertia);
-				btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
+			//	btCollisionShape* fallShape = new btSphereShape(1);
+			//	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0 + i, 50 + i, 0 + i)));
+			//	btScalar mass = 1;
+			//	btVector3 fallInertia(0, 0, 0);
+			//	fallShape->calculateLocalInertia(mass, fallInertia);
+			//	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
 
-            GameObject* monkey = new GameObject ("monkey", glm::vec3(3,1,0));
-            monkey->setMesh (suzannaMeshF);
-            monkey->setMaterial(textureMaterial2);
-			monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
-      //    monkey->setBehaviour (new RotatingBehaviour());
+   //         GameObject* monkey = new GameObject ("monkey", glm::vec3(3,1,0));
+   //         monkey->setMesh (suzannaMeshF);
+   //         monkey->setMaterial(textureMaterial2);
+			//monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
+   //   //    monkey->setBehaviour (new RotatingBehaviour());
 
-            _world->add(monkey);
-        }
-    }
+   //         _world->add(monkey);
+   //     }
+   // }
 	Player* player = new Player();
 	_world->add(player);
 	player->add(camera);

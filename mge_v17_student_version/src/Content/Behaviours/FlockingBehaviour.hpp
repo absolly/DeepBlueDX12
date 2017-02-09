@@ -4,6 +4,8 @@
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "glm.hpp"
 #include "Content/GameObjects/FishTank.hpp"
+#include <random>
+using namespace std;
 
 /**
  * KeysBehaviour allows you to move an object using the keyboard in its own local space.
@@ -19,11 +21,14 @@ class FlockingBehaviour : public AbstractBehaviour
 		float rotationSpeed = 4.0f;
 		glm::vec3 averageHeading;
 		glm::vec3 averagePosition;
-		float neighbourDistance = 6.0f;
+		float _speed = 1;
+		float neighbourDistance = 8.0f;
 
     private:
 		bool turning = false;
 		void ApplyRules();
+		void InterPolateDirection(glm::vec3 pDirection);
+		void InverseDirection();
 		FishTank * fishtank;
 };
 
