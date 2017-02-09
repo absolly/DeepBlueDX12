@@ -3,12 +3,15 @@
 #include "mge\behaviours\AbstractBehaviour.hpp"
 #include "SFML\Window.hpp"
 class GameObject;
+class Player;
 
 class PlayerMovementBehaviour : public AbstractBehaviour
 {
 public:
-	PlayerMovementBehaviour();
+	PlayerMovementBehaviour(Player& player);
 	~PlayerMovementBehaviour();
+
+	void coolEventToExecuteWhenPlayerDoesSomething(float deltaTime);
 
 	virtual void update(float pStep);
 private:

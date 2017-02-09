@@ -9,6 +9,7 @@ using namespace std;
 #include "Content\Core\Input.h"
 #include "SFML\Window.hpp"
 #include <Windows.h>
+#include "Content\Core\EventHandler.h"
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
@@ -195,7 +196,7 @@ void AbstractGame::_processEvents() {
         //give all system event listeners a chance to handle events
         //optionally to be implemented by you...
         //SystemEventDispatcher::dispatchEvent(event);
-
+		EventHandler::handleEvent(event);
         switch (event.type) {
         case sf::Event::Closed:
             exit = true;
