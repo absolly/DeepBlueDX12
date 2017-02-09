@@ -190,7 +190,17 @@ void AbstractGame::_render () {
 void AbstractGame::_processEvents() {
     sf::Event event;
     bool exit = false;
-	Input::mouseMotion = sf::Vector2i();
+	Input::setMouseDown(sf::Mouse::Button::Left, sf::Mouse::isButtonPressed(sf::Mouse::Button::Left));
+	Input::setMouseDown(sf::Mouse::Button::Middle, sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle));
+	Input::setMouseDown(sf::Mouse::Button::Right, sf::Mouse::isButtonPressed(sf::Mouse::Button::Right));
+	Input::setMouseDown(sf::Mouse::Button::XButton1, sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton1));
+	Input::setMouseDown(sf::Mouse::Button::XButton2, sf::Mouse::isButtonPressed(sf::Mouse::Button::XButton2));
+	Input::resetMouseButtonsPressed();
+	Input::resetMouseButtonsReleased();
+
+	EventHandler::bindEvent(sf::Event::Closed, this, &AbstractGame::onCloseWindowEvent);
+	EventHandler::bindKeyDownEvent(sf::Keyboard::Escape, this, &AbstractGame::onEscapePressedEvent);
+
     //we must empty the event queue
     while( _window->pollEvent( event ) ) {
         //give all system event listeners a chance to handle events
@@ -198,23 +208,19 @@ void AbstractGame::_processEvents() {
         //SystemEventDispatcher::dispatchEvent(event);
 		EventHandler::handleEvent(event);
         switch (event.type) {
-        case sf::Event::Closed:
+        /*case sf::Event::Closed:
             exit = true;
             break;
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Escape) {
                 exit = true;
             }
-            break;
+            break;*/
         case sf::Event::Resized:
             //would be better to move this to the renderer
             //this version implements nonconstrained match viewport scaling
             glViewport(0, 0, event.size.width, event.size.height);
             break;
-		case sf::Event::MouseMoved:
-			//Input::mouseMotion += sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
-			//std::cout << "Mouse moved: " << event.mouseMove .x << ", " << event.mouseMove.y << std::endl;
-			break;
 
         default:
             break;
@@ -228,5 +234,13 @@ void AbstractGame::_processEvents() {
     }
 }
 
+void AbstractGame::onCloseWindowEvent(sf::Event & event)
+{
+	_window->close();
+}
 
+void AbstractGame::onEscapePressedEvent(sf::Event::KeyEvent & event)
+{
+	_window->close();
+}
 

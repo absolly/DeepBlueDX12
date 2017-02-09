@@ -33,7 +33,7 @@ Texture* Texture::load(std::string pName)
         std::cout << "Caching texture." << std::endl;
         _textures[pName] = texture;
     } else {
-        std::cout << "Returning cached texture " << pName << std::endl;
+        //std::cout << "Returning cached texture " << pName << std::endl;
         texture = textureIterator->second;
     }
 

@@ -64,7 +64,8 @@ class AbstractGame
         AbstractGame(const AbstractGame&);
         AbstractGame& operator=(const AbstractGame&);
 
-
+		void onCloseWindowEvent(sf::Event& event);
+		void onEscapePressedEvent(sf::Event::KeyEvent & event);
 };
 
 #endif // ABSTRACTGAME_H

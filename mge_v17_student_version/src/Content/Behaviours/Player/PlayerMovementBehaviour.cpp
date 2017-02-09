@@ -6,7 +6,7 @@
 
 PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 {
-	_previousMousePosition = Input::mouseMotion; //sf::Mouse::getPosition();
+	_previousMousePosition = sf::Mouse::getPosition();
 	_currentPitch = 0;
 	_currentYaw = 0;
 	_currentRoll = 0;
@@ -60,7 +60,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	int deltaX = mousePosition.x - width / 2;
 	int deltaY = mousePosition.y - height / 2;
 
-	sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2)); /* could also use SetCursorPos() if you're only going to use Windows */
+	//sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2)); /* could also use SetCursorPos() if you're only going to use Windows */
 
 	//YourRotationFunctionThatTakesDelta(deltaX, deltaY);
 

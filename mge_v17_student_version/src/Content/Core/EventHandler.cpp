@@ -5,9 +5,9 @@ std::unordered_map<sf::Event::EventType, Event<sf::Event&>*> EventHandler::_even
 std::unordered_map<sf::Keyboard::Key, Event<sf::Event::KeyEvent&>*> EventHandler::_keyPressedEventMap = std::unordered_map<sf::Keyboard::Key, Event<sf::Event::KeyEvent&>*>();
 std::unordered_map<sf::Keyboard::Key, Event<sf::Event::KeyEvent&>*> EventHandler::_keyReleasedEventMap = std::unordered_map<sf::Keyboard::Key, Event<sf::Event::KeyEvent&>*>();
 
-std::unordered_map<GameObject*, std::vector<EventConnection>> EventHandler::_eventMapConnections = std::unordered_map<GameObject*, std::vector<EventConnection>>();
+std::unordered_map<size_t, std::vector<EventConnection>> EventHandler::_eventMapConnections = std::unordered_map<size_t, std::vector<EventConnection>>();
 
-std::unordered_map<GameObject*, std::vector<KeyEventConnection>> EventHandler::_keyEventMapConnections = std::unordered_map<GameObject*, std::vector<KeyEventConnection>>();
+std::unordered_map<size_t, std::vector<KeyEventConnection>> EventHandler::_keyEventMapConnections = std::unordered_map<size_t, std::vector<KeyEventConnection>>();
 
 void EventHandler::handleEvents(sf::Window& window)
 {

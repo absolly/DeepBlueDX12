@@ -16,7 +16,7 @@ GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 GameObject::~GameObject()
 {
     //detach all children
-    cout << "GC running on:" << _name << endl;
+    //cout << "GC running on:" << _name << endl;
 	if (_parent != NULL)
 		_parent->remove(this);
     while (_children.size() > 0) {
