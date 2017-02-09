@@ -10,16 +10,14 @@ class PlayerMovementBehaviour : public AbstractBehaviour
 public:
 	PlayerMovementBehaviour(Player& player);
 	~PlayerMovementBehaviour();
-
-	void coolEventToExecuteWhenPlayerDoesSomething(float deltaTime);
-
+	
 	virtual void update(float pStep);
 private:
 
 	//[Header("Movement")]
-	float _minMoveSpeed = -5;
-	float _maxMoveSpeed = 5;
-	float _moveAcceleration = 3;
+	float _minMoveSpeed = -2;
+	float _maxMoveSpeed = 7;
+	float _moveAcceleration = 3.5;
 	float _moveDecceleration = 3;
 	float _currentMoveSpeed;
 
@@ -34,14 +32,14 @@ private:
 	float _currentYaw;
 
 	//[Header("Roll rotation")]
-	float _minRollRotationSpeed = 10;
-	float _maxRollRotationSpeed = 50;
+	float _minRollRotationSpeed = 5;
+	float _maxRollRotationSpeed = 15;
 	float _maxRollRotation = 10;
 	float _rollRotationSpeedMultiplier = 20;
 	float _currentRoll;
 
 	//[Header("Gravity")]
-	float _inWaterGravity = 0.5f;
+	float _inWaterGravity = 0;
 	float _outOfWaterGravity = 5;
 
 	//[Header("Other")]
@@ -50,5 +48,5 @@ private:
 	sf::Vector2i _previousMousePosition;
 
 	float moveTowards(float current, float target, float speed);
-	bool _lockMouse;
+	bool _lockMouse = true;
 };

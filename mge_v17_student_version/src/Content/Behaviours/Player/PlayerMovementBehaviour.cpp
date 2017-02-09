@@ -11,17 +11,12 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_currentYaw = 0;
 	_currentRoll = 0;
 	_currentMoveSpeed = 0;
-	player.coolFloatEvent.bind(this, &PlayerMovementBehaviour::coolEventToExecuteWhenPlayerDoesSomething);
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
 {
 }
 
-void PlayerMovementBehaviour::coolEventToExecuteWhenPlayerDoesSomething(float deltaTime)
-{
-	std::cout << "coolEventToExecuteWhenPlayerDoesSomething: " << deltaTime << std::endl;
-}
 void PlayerMovementBehaviour::update(float deltaTime)
 {
 	if (Input::getKeyDown(sf::Keyboard::F1))
@@ -70,10 +65,6 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 
 
-
-
-
-
 	sf::Vector2i mouseInputRaw = sf::Vector2i(glm::sign(deltaX),glm::sign(deltaY));
 	_previousMousePosition = mousePosition;
 	_aimPointPosition.x = glm::clamp(_aimPointPosition.x - mouseInputRaw.x * 1	 * deltaTime, -1.0f, 1.0f);
@@ -91,7 +82,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Yaw rotation
 	float minMaxYawRotationDiff = _maxYawRotationSpeed - _minYawRotationSpeed;
 	_currentYaw += _aimPointPosition.x * (_minYawRotationSpeed + minMaxYawRotationDiff * normalizedSpeed) * deltaTime;
-
+	_currentPitch = glm::clamp(_currentPitch, -25.0f, 25.0f);
 
 	//Roll rotation
 	float rollDirection = (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0);
@@ -145,6 +136,12 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	_owner->setTransform(transformedVector);
 	_owner->translate(glm::vec3(0.0f, 0.0f, _currentMoveSpeed*deltaTime));
+	_owner->translateWorldSpace(glm::vec3());
+	//Result[3][0]
+	glm::vec3 ownerPosition = _owner->getLocalPosition();
+	ownerPosition.y += Input::getKey(sf::Keyboard::Space) * 2 * deltaTime;
+	ownerPosition.y -= Input::getKey(sf::Keyboard::LShift) * 2 * deltaTime;
+	_owner->setLocalPosition(ownerPosition);
 }
 
 float PlayerMovementBehaviour::moveTowards(float current, float target, float speed)

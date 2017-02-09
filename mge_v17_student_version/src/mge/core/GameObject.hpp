@@ -7,6 +7,7 @@
 #include <glm.hpp>
 #include <btBulletDynamicsCommon.h>
 
+class RigidBody;
 class AbstractBehaviour;
 class AbstractMaterial;
 class World;
@@ -19,7 +20,7 @@ class Mesh;
 class GameObject
 {
 	public:
-		GameObject(std::string pName = NULL, glm::vec3 pPosition = glm::vec3( 0.0f, 0.0f, 0.0f ) );
+		GameObject(std::string pName = "", glm::vec3 pPosition = glm::vec3( 0.0f, 0.0f, 0.0f ) );
 		virtual ~GameObject();
 
         void setName (std::string pName);
@@ -27,7 +28,7 @@ class GameObject
 
         //contains local rotation, scale, position
 		void setTransform (const glm::mat4& pTransform);
-        const glm::mat4& getTransform() const;
+        const glm::mat4& getTransform();
 
         //access just the local position
 		void setLocalPosition (glm::vec3 pPosition);
@@ -40,6 +41,7 @@ class GameObject
 
         //change local position, rotation, scaling
 		void translate(glm::vec3 pTranslation);
+		void translateWorldSpace(glm::vec3 pTranslation);
 		void rotate(float pAngle, glm::vec3 pAxis);
 		void scale(glm::vec3 pScale);
 
@@ -50,6 +52,7 @@ class GameObject
 		void setMaterial (AbstractMaterial* pMaterial);
 		AbstractMaterial* getMaterial() const;
 
+		void addBehaviour(RigidBody* pRigidbodyBehaviour);
 		void addBehaviour(AbstractBehaviour* pBehaviour);
 		std::vector<AbstractBehaviour*> getBehaviours();
 
@@ -88,6 +91,8 @@ class GameObject
     private:
         GameObject(const GameObject&);
         GameObject& operator=(const GameObject&);
+
+		RigidBody* _rigidBody;
 };
 
 template<class BehaviourType>

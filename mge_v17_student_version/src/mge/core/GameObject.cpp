@@ -6,10 +6,11 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "Content\Core\EventHandler.h"
+#include "mge\behaviours\RigidBody.hpp"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 :	_name( pName ), _transform( glm::translate( pPosition ) ),
-    _parent(NULL), _children(), _mesh( NULL ), _behaviours(vector<AbstractBehaviour*>()), _material(NULL)
+    _parent(NULL), _children(), _mesh( NULL ), _behaviours(vector<AbstractBehaviour*>()), _material(NULL), _rigidBody(NULL)
 {
 }
 
@@ -43,8 +44,27 @@ void GameObject::setTransform (const glm::mat4& pTransform)
     _transform = pTransform;
 }
 
-const glm::mat4& GameObject::getTransform() const
+const glm::mat4& GameObject::getTransform()
 {
+	if (_rigidBody != NULL)
+	{
+		btTransform trans;
+		_rigidBody->rigidBody->getMotionState()->getWorldTransform(trans);
+
+		glm::mat4 glmTrans;
+		trans.getOpenGLMatrix(glm::value_ptr(glmTrans));
+
+		glm::vec3 childScale;
+		childScale.x = glm::length(_transform[0]);
+		childScale.y = glm::length(_transform[1]);
+		childScale.z = glm::length(_transform[2]);
+
+		//glm::mat4& mat4 = glm::scale(glmTrans, childScale);
+		//const glm::mat4& ref = glm::scale(glmTrans, childScale);
+		//setTransform(ref);
+		//return glm::scale(glmTrans, childScale);
+		this->setTransform(glm::scale(glmTrans, childScale));
+	}
     return _transform;
 }
 
@@ -76,6 +96,17 @@ void GameObject::setMesh(Mesh* pMesh)
 Mesh * GameObject::getMesh() const
 {
     return _mesh;
+}
+
+void GameObject::addBehaviour(RigidBody* pRigidbodyBehaviour)
+{
+	if (_rigidBody != nullptr)
+	{
+		std::cout << "[ERROR] GameObject already has a rigidbody attached!" << std::endl;
+		return;
+	}
+	_rigidBody = pRigidbodyBehaviour;
+	addBehaviour((AbstractBehaviour*)pRigidbodyBehaviour);
 }
 
 void GameObject::addBehaviour(AbstractBehaviour* pBehaviour)
@@ -152,6 +183,11 @@ glm::mat4 GameObject::getWorldTransform() const
 void GameObject::translate(glm::vec3 pTranslation)
 {
 	setTransform(glm::translate(_transform, pTranslation));
+}
+
+void GameObject::translateWorldSpace(glm::vec3 pTranslation)
+{
+	setLocalPosition(getLocalPosition()+pTranslation);
 }
 
 void GameObject::scale(glm::vec3 pScale)

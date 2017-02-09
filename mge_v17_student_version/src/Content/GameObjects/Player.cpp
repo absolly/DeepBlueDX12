@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
+#include "mge\behaviours\RigidBody.hpp"
 
-Player::Player() : GameObject("Player"),
+Player::Player() : GameObject(),
 coolFloatEvent(*new Event<float>())
 {
 	#pragma region FutureImplementation
@@ -24,6 +25,10 @@ coolFloatEvent(*new Event<float>())
 
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
+
+	//RigidBody* rigidBody = new RigidBody();
+	//addBehaviour(rigidBody);
+
 	EventHandler::bindKeyDownEvent(sf::Keyboard::Space, this, &Player::onSpacePressedEvent);
 	coolFloatEvent(10);
 	coolFloatEvent(5);
