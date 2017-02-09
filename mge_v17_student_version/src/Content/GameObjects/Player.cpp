@@ -2,7 +2,8 @@
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
 
-Player::Player() : GameObject("Player")
+Player::Player() : GameObject("Player"),
+coolFloatEvent(*new Event<float>())
 {
 	#pragma region FutureImplementation
 	/*
@@ -21,13 +22,21 @@ Player::Player() : GameObject("Player")
 	AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 	setMaterial(material);
 
-	_playerMovementBehaviour = new PlayerMovementBehaviour();
+	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
-
+	EventHandler::bindKeyDownEvent(sf::Keyboard::Space, this, &Player::onSpacePressedEvent);
+	coolFloatEvent(10);
+	coolFloatEvent(5);
+	coolFloatEvent(3);
 	//setLocalPosition(glm::vec3(10, 10, 10));
 }
 
 Player::~Player()
 {
+	delete &coolFloatEvent;
+}
 
+void Player::onSpacePressedEvent(sf::Event::KeyEvent& keyEvent)
+{
+	std::cout << "Someone pressed space! Player showing a message" << std::endl;
 }

@@ -205,6 +205,9 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
   <ItemGroup>
     <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.h" />
+    <ClInclude Include="src\Content\Core\Event.h" />
+    <ClInclude Include="src\Content\Core\EventHandler.h" />
+    <ClInclude Include="src\Content\Core\FastDelegate.h" />
     <ClInclude Include="src\Content\Core\Input.h" />
     <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -240,6 +243,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
   <ItemGroup>
     <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
+    <ClCompile Include="src\Content\Core\EventHandler.cpp" />
     <ClCompile Include="src\Content\Core\Input.cpp" />
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
     <ClCompile Include="src\Content\GameObjects\Player.cpp" />

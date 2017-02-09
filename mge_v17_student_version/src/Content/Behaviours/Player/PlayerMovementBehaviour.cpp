@@ -2,22 +2,30 @@
 #include <iostream>
 #include "mge\core\GameObject.hpp"
 #include "Content\Core\Input.h"
+#include "Content\GameObjects\Player.h"
 
-PlayerMovementBehaviour::PlayerMovementBehaviour()
+PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 {
-	_previousMousePosition = Input::mouseMotion; //sf::Mouse::getPosition();
+	_previousMousePosition = sf::Mouse::getPosition();
 	_currentPitch = 0;
 	_currentYaw = 0;
 	_currentRoll = 0;
 	_currentMoveSpeed = 0;
+	player.coolFloatEvent.bind(this, &PlayerMovementBehaviour::coolEventToExecuteWhenPlayerDoesSomething);
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
 {
 }
 
+void PlayerMovementBehaviour::coolEventToExecuteWhenPlayerDoesSomething(float deltaTime)
+{
+	std::cout << "coolEventToExecuteWhenPlayerDoesSomething: " << deltaTime << std::endl;
+}
 void PlayerMovementBehaviour::update(float deltaTime)
 {
+	if (Input::getKeyDown(sf::Keyboard::F1))
+		_lockMouse = !_lockMouse;
 	/*
 	float moveSpeed = 0.0f; //default if no keys
 	float turnSpeed = 0.0f;
@@ -54,7 +62,8 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	int deltaX = mousePosition.x - width / 2;
 	int deltaY = mousePosition.y - height / 2;
 
-	sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2)); /* could also use SetCursorPos() if you're only going to use Windows */
+	if (_lockMouse)
+		sf::Mouse::setPosition(sf::Vector2i(width / 2, height / 2)); /* could also use SetCursorPos() if you're only going to use Windows */
 
 	//YourRotationFunctionThatTakesDelta(deltaX, deltaY);
 
@@ -69,7 +78,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	_previousMousePosition = mousePosition;
 	_aimPointPosition.x = glm::clamp(_aimPointPosition.x - mouseInputRaw.x * 1	 * deltaTime, -1.0f, 1.0f);
 	_aimPointPosition.y = glm::clamp(_aimPointPosition.y - mouseInputRaw.y * 1 * deltaTime, -1.0f, 1.0f);
-	std::cout << "_aimPointPosition: " << _aimPointPosition.x << ", " << _aimPointPosition.y << std::endl;
+	//std::cout << "_aimPointPosition: " << _aimPointPosition.x << ", " << _aimPointPosition.y << std::endl;
 	//_aimPoint.transform.localPosition = new Vector3(aimPointPosition.x, aimPointPosition.y, _aimPoint.transform.localPosition.z);
 
 	//Rotations
@@ -119,7 +128,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//transform = glm::translate(transform, _owner->getLocalPosition());
 	//Apply rotation
 	//std::cout << "_currentPitch: " << _currentPitch << std::endl;
-	std::cout << "_currentRoll: " << _currentRoll << std::endl;
+	//std::cout << "_currentRoll: " << _currentRoll << std::endl;
 	//std::cout << "_currentRoll: " << _currentRoll << std::endl;
 	//_owner->rotate(_currentPitch * deltaTime, glm::vec3(1, 0, 0));
 	//_owner->setTransform(transform);
