@@ -104,6 +104,8 @@ void TestScene::_initializeScene() {
 	ship->scale(glm::vec3(0.1, 0.1, 0.1));
     _world->add(ship);
 
+	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 10);
+
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
 //    teapot2->setMesh (teapotMeshS);
@@ -132,9 +134,9 @@ void TestScene::_initializeScene() {
 			//monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
    //   //    monkey->setBehaviour (new RotatingBehaviour());
 
-            _world->add(monkey);
-        }
-    }
+//            _world->add(monkey);
+  //      }
+   // }
 	Player* player = new Player(*camera);
 	_world->add(player);
     //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));

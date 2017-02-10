@@ -29,7 +29,7 @@ vec3 EyeDirection_cameraspace;
 
 void main( void ) {
 	vec3 waveSize = vec3(texture(textureWaveMask, uv));
-	waveSize *= 100;
+	waveSize *= 1;
 
 
 	vec3 newvertex = vertex + vec3(waveSize.r * cos((_time*0.02)  + (vertex.x * 0.001)), waveSize.g * cos((_time*0.02) + (vertex.x * 0.001)),waveSize.b * cos((_time*0.02) + (vertex.z * 0.001)));
