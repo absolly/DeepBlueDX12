@@ -15,10 +15,10 @@ public:
 private:
 
 	//[Header("Forward Movement")]
-	float _minMoveSpeed = -6.5f*3;
-	float _maxMoveSpeed = 24;
-	float _moveAcceleration = 20;
-	float _moveDecceleration = 20;
+	float _minMoveSpeed = -15.0f;
+	float _maxMoveSpeed = 25;
+	float _moveAcceleration = 50;
+	float _moveDecceleration = 50;
 	float _currentMoveSpeed;
 	//[Header("Sideway Movement")]
 	float _minSideMoveSpeed = -15;
