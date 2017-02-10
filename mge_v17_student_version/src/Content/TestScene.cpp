@@ -25,6 +25,7 @@ using namespace std;
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
+#include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "mge/util/DebugHud.hpp"
 
 #include "Content/GameObjects/FishTank.hpp"
@@ -133,13 +134,16 @@ void TestScene::_initializeScene() {
 			//monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
    //   //    monkey->setBehaviour (new RotatingBehaviour());
 
-   //         _world->add(monkey);
-   //     }
-   // }
-	//Player* player = new Player();
-	//_world->add(player);
-	//player->add(camera);
-    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
+            _world->add(monkey);
+        }
+    }
+	GameObject* playerDivingAnimationContainer = new GameObject("");
+	Player* player = new Player();
+	_world->add(playerDivingAnimationContainer);
+	playerDivingAnimationContainer->add(player);
+	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
+	player->add(camera);
+    //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
 //    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));

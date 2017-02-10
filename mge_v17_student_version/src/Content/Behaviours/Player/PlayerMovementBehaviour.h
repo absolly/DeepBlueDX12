@@ -11,17 +11,27 @@ public:
 	PlayerMovementBehaviour(Player& player);
 	~PlayerMovementBehaviour();
 
-	void coolEventToExecuteWhenPlayerDoesSomething(float deltaTime);
-
 	virtual void update(float pStep);
 private:
 
-	//[Header("Movement")]
-	float _minMoveSpeed = -5;
-	float _maxMoveSpeed = 5;
-	float _moveAcceleration = 3;
-	float _moveDecceleration = 3;
+	//[Header("Forward Movement")]
+	float _minMoveSpeed = -7.5f;
+	float _maxMoveSpeed = 10;
+	float _moveAcceleration = 20;
+	float _moveDecceleration = 20;
 	float _currentMoveSpeed;
+	//[Header("Sideway Movement")]
+	float _minSideMoveSpeed = -5;
+	float _maxSideMoveSpeed = 5;
+	float _moveSideAcceleration = 20;
+	float _moveSideDecceleration = 20;
+	float _currentMoveSideSpeed;
+	//[Header("Movement Floating Up")]
+	float _minMoveUpSpeed = -5;
+	float _maxMoveUpSpeed = 5;
+	float _moveUpAcceleration = 20;
+	float _moveUpDecceleration = 20;
+	float _currentMoveUpSpeed;
 
 	//[Header("Pitch rotation")]
 	float _minPitchRotationSpeed = 50;

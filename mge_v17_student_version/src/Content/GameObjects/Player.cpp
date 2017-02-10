@@ -24,6 +24,7 @@ coolFloatEvent(*new Event<float>())
 
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
+
 	EventHandler::bindKeyDownEvent(sf::Keyboard::Space, this, &Player::onSpacePressedEvent);
 	coolFloatEvent(10);
 	coolFloatEvent(5);

@@ -34,6 +34,7 @@
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
     <ClCompile Include="src\mge\materials\LitWaveMaterial.cpp" />
     <ClCompile Include="src\Content\Core\EventHandler.cpp" />
+    <ClCompile Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -74,6 +75,7 @@
     <ClInclude Include="src\Content\Core\Event.h" />
     <ClInclude Include="src\Content\Core\EventHandler.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
+    <ClInclude Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
