@@ -11,17 +11,27 @@ public:
 	PlayerMovementBehaviour(Player& player);
 	~PlayerMovementBehaviour();
 
-	void coolEventToExecuteWhenPlayerDoesSomething(float deltaTime);
-
 	virtual void update(float pStep);
 private:
 
-	//[Header("Movement")]
-	float _minMoveSpeed = -5;
-	float _maxMoveSpeed = 5;
-	float _moveAcceleration = 3;
-	float _moveDecceleration = 3;
+	//[Header("Forward Movement")]
+	float _minMoveSpeed = -15.0f;
+	float _maxMoveSpeed = 25;
+	float _moveAcceleration = 50;
+	float _moveDecceleration = 50;
 	float _currentMoveSpeed;
+	//[Header("Sideway Movement")]
+	float _minSideMoveSpeed = -15;
+	float _maxSideMoveSpeed = 15;
+	float _moveSideAcceleration = 60;
+	float _moveSideDecceleration = 60;
+	float _currentMoveSideSpeed;
+	//[Header("Movement Floating Up")]
+	float _minMoveUpSpeed = -12;
+	float _maxMoveUpSpeed = 15;
+	float _moveUpAcceleration = 60;
+	float _moveUpDecceleration = 60;
+	float _currentMoveUpSpeed;
 
 	//[Header("Pitch rotation")]
 	float _minPitchRotationSpeed = 50;
@@ -50,5 +60,5 @@ private:
 	sf::Vector2i _previousMousePosition;
 
 	float moveTowards(float current, float target, float speed);
-	bool _lockMouse;
+	bool _lockMouse = true;
 };

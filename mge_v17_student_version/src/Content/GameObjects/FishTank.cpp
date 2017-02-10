@@ -9,7 +9,7 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "Content/GameObjects/FishTank.hpp"
 #include "mge/core/GameObject.hpp"
-#include "mge/materials/ColorMaterial.hpp"
+#include "mge/materials/LitWaveMaterial.hpp"
 #include "Content/Behaviours/FlockingBehaviour.hpp"
 
 FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount) : GameObject(pName ,pPosition)
@@ -27,8 +27,8 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 
 	
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "teapot_smooth.obj");
-	AbstractMaterial* colormat = new ColorMaterial(glm::vec3(1,1,0));
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "Creature_OBJ.obj");
+	AbstractMaterial* colormat = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
 	random_device rd;
 
@@ -48,6 +48,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 		fish->setMaterial(colormat);
 		fish->setMesh(cubeMeshF);
 		fish->addBehaviour(flock);
+		fish->scale(glm::vec3(.01,.01,.01));
 		pWorld->add(fish);
 		allFish->push_back(fish);
 	}

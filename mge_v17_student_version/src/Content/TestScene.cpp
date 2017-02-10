@@ -25,6 +25,7 @@ using namespace std;
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
+#include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "mge/util/DebugHud.hpp"
 
 #include "Content/GameObjects/FishTank.hpp"
@@ -66,7 +67,7 @@ void TestScene::_initializeScene() {
     Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"Creature_OBJ.obj");
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
     Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
-    Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapotMeshS.obj");
+    Mesh* shipMesh = Mesh::load (config::MGE_MODEL_PATH+"ShipTest3.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
@@ -96,14 +97,14 @@ void TestScene::_initializeScene() {
     _world->add(plane);
     World::addRigidBody(plane->rigidBody);
 
-    GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
-    teapot->setMesh (teapotMeshS);
-	teapot->scale(glm::vec3(0.1,0.1,0.1));
-    teapot->setMaterial(textureMaterial2);
-    teapot->addBehaviour (new KeysBehaviour());
-    _world->add(teapot);
+    GameObject* ship = new GameObject ("Ship", glm::vec3(-3,1,0));
+    ship->setMesh (shipMesh);
+    ship->setMaterial(textureMaterial2);
+    ship->addBehaviour (new KeysBehaviour());
+	ship->scale(glm::vec3(0.1, 0.1, 0.1));
+    _world->add(ship);
 
-	FishTank * fishtank = new FishTank(glm::vec3(0, 0, 0), _world, "tankie", 20, 5);
+	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 10);
 
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
@@ -133,13 +134,12 @@ void TestScene::_initializeScene() {
 			//monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
    //   //    monkey->setBehaviour (new RotatingBehaviour());
 
-   //         _world->add(monkey);
-   //     }
+//            _world->add(monkey);
+  //      }
    // }
-	//Player* player = new Player();
-	//_world->add(player);
-	//player->add(camera);
-    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
+	Player* player = new Player(*camera);
+	_world->add(player);
+    //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
 //    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
@@ -168,10 +168,10 @@ void TestScene::_initializeScene() {
         _world->add(light);
     }
 	glm::vec3* lightColor = new glm::vec3(1,1,1);
-	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,100,0), *lightColor, 1, glm::vec3(0, 0, 1));
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,100,0), *lightColor, 2, glm::vec3(0, 0, 1));
 	light->setMesh(cubeMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(glm::normalize(*lightColor));
-	light->addBehaviour(new LookAt(teapot));
+	light->addBehaviour(new LookAt(ship));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
 
