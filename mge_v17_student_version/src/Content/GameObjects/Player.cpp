@@ -24,20 +24,10 @@ coolFloatEvent(*new Event<float>())
 
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
-
-	EventHandler::bindKeyDownEvent(sf::Keyboard::Space, this, &Player::onSpacePressedEvent);
-	coolFloatEvent(10);
-	coolFloatEvent(5);
-	coolFloatEvent(3);
 	//setLocalPosition(glm::vec3(10, 10, 10));
 }
 
 Player::~Player()
 {
 	delete &coolFloatEvent;
-}
-
-void Player::onSpacePressedEvent(sf::Event::KeyEvent& keyEvent)
-{
-	std::cout << "Someone pressed space! Player showing a message" << std::endl;
 }

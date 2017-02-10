@@ -17,23 +17,23 @@ void DivingAnimationBehaviour::update(float deltaTime)
 
 	if (_moveUp)
 	{
-		_currentMoveUpSpeed += 1.5f * deltaTime;
+		_currentMoveUpSpeed += 2.5f * deltaTime;
 		_currentOffset += _currentMoveUpSpeed * deltaTime;
 		if (_currentOffset > moveRange / 2)
 		{
 			_moveUp = false;
-			_currentMoveUpSpeed /= 2;
+			_currentMoveUpSpeed*=0.75f;
 			_currentOffset = moveRange / 2;
 		}
 	}
 	else
 	{
-		_currentMoveUpSpeed -= 0.3f  * deltaTime;
+		_currentMoveUpSpeed -= 1.0f  * deltaTime;
 		_currentOffset += _currentMoveUpSpeed * deltaTime;
 		if (_currentOffset < -moveRange / 2)
 		{
 			_moveUp = true;
-			_currentMoveUpSpeed /= 2;
+			_currentMoveUpSpeed *=0.60f;
 			_currentOffset = -moveRange / 2;
 		}
 	}
