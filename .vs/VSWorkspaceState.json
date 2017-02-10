@@ -4,13 +4,13 @@
     "\\mge_v17_student_version",
     "\\mge_v17_student_version\\assets",
     "\\mge_v17_student_version\\assets\\mge",
+    "\\mge_v17_student_version\\assets\\mge\\shaders",
     "\\mge_v17_student_version\\src",
     "\\mge_v17_student_version\\src\\Content",
     "\\mge_v17_student_version\\src\\Content\\Behaviours",
     "\\mge_v17_student_version\\src\\mge",
-    "\\mge_v17_student_version\\src\\mge\\behaviours",
-    "\\mge_v17_student_version\\src\\mge\\core"
+    "\\mge_v17_student_version\\src\\mge\\materials"
   ],
-  "SelectedNode": "\\mge_v17_student_version\\src\\Content\\Behaviours",
+  "SelectedNode": "\\mge_v17_student_version\\src\\Content\\TestScene.cpp",
   "PreviewInSolutionExplorer": false
 }

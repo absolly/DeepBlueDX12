@@ -18,6 +18,7 @@ using namespace std;
 #include "mge/materials/ColorMaterial.hpp"
 #include "mge/materials/TextureMaterial.hpp"
 #include "mge/materials/WobbleMaterial.hpp"
+#include "mge/materials/LitWaveMaterial.hpp"
 
 #include "mge/behaviours/RotatingBehaviour.hpp"
 #include "mge/behaviours/RigidBody.hpp"
@@ -62,10 +63,10 @@ void TestScene::_initializeScene() {
     //load a bunch of meshes we will be using throughout this demo
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
-    Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"plane.obj");
+    Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"Creature_OBJ.obj");
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
     Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
-    Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapot_smooth.obj");
+    Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapotMeshS.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
@@ -76,15 +77,17 @@ void TestScene::_initializeScene() {
 
     //10 specular teapot material
     AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
+	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
     //SCENE SETUP
     PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
-    plane->scale(glm::vec3(50,50,50));
+    //plane->scale(glm::vec3(50,50,50));
     plane->setMesh(planeMeshDefault);
-    plane->setMaterial(textureMaterial);
+    plane->setMaterial(waveMaterial);
+	plane->addBehaviour(new KeysBehaviour());
 
     btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-    groundShape->setLocalScaling(btVector3(50,50,50));
+    //groundShape->setLocalScaling(btVector3(50,50,50));
 
     btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
     btRigidBody::btRigidBodyConstructionInfo
@@ -95,9 +98,9 @@ void TestScene::_initializeScene() {
 
     GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
     teapot->setMesh (teapotMeshS);
+	teapot->scale(glm::vec3(0.1,0.1,0.1));
     teapot->setMaterial(textureMaterial2);
     teapot->addBehaviour (new KeysBehaviour());
-
     _world->add(teapot);
 
 	FishTank * fishtank = new FishTank(glm::vec3(0, 0, 0), _world, "tankie", 20, 5);
@@ -133,10 +136,10 @@ void TestScene::_initializeScene() {
    //         _world->add(monkey);
    //     }
    // }
-	Player* player = new Player();
-	_world->add(player);
-	player->add(camera);
-    //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
+	//Player* player = new Player();
+	//_world->add(player);
+	//player->add(camera);
+    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
 //    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
@@ -155,7 +158,7 @@ void TestScene::_initializeScene() {
     float random = time(NULL);
     std:: cout << "random seed: " << random << std::endl;
     srand (random);
-    for(int i = 0; i < 24; i++) {
+    for(int i = 0; i < 23; i++) {
         glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
         Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 50, glm::vec3(0,0,1));
         light->setMesh (cubeMeshF);
@@ -164,6 +167,13 @@ void TestScene::_initializeScene() {
         light->setMaterial(colorMaterial2);
         _world->add(light);
     }
+	glm::vec3* lightColor = new glm::vec3(1,1,1);
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,100,0), *lightColor, 1, glm::vec3(0, 0, 1));
+	light->setMesh(cubeMeshF);
+	AbstractMaterial* colorMaterial2 = new ColorMaterial(glm::normalize(*lightColor));
+	light->addBehaviour(new LookAt(teapot));
+	light->setMaterial(colorMaterial2);
+	_world->add(light);
 
 //    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 //    light3->setMesh (cubeMeshF);

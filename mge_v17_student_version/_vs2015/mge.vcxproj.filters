@@ -32,6 +32,7 @@
     <ClCompile Include="src\Content\Core\Input.cpp" />
     <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
+    <ClCompile Include="src\mge\materials\LitWaveMaterial.cpp" />
     <ClCompile Include="src\Content\Core\EventHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +70,7 @@
     <ClInclude Include="src\mge\util\DebugHud.hpp" />
     <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
     <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
+    <ClInclude Include="src\mge\materials\LitWaveMaterial.hpp" />
     <ClInclude Include="src\Content\Core\Event.h" />
     <ClInclude Include="src\Content\Core\EventHandler.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
