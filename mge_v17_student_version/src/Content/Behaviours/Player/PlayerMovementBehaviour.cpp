@@ -64,14 +64,13 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed);
 	if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
 
-	if (sidewayInput != 0)
+
+	_currentRoll -= sidewayInput * 5 * deltaTime;
+	_currentRoll = glm::clamp(_currentRoll, -3.0f, 3.0f);
+
+	if (sidewayInput != glm::sign(_currentRoll*-1))
 	{
-		_currentRoll -= sidewayInput * 15 * deltaTime;
-		_currentRoll = glm::clamp(_currentRoll, -4.0f, 4.0f);
-	}
-	else
-	{
-		_currentRoll = moveTowards(_currentRoll, 0, 4.0f*deltaTime);
+		_currentRoll = moveTowards(_currentRoll, 0, 5 *deltaTime);
 	}
 
 	//Moving up and down
@@ -101,7 +100,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	
 	glm::vec3 ownerPosition = _owner->getLocalPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
-	ownerPosition.y = glm::clamp(ownerPosition.y, 3.0f, 20.0f);
+	ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
 	_owner->setLocalPosition(ownerPosition);
 }
 
