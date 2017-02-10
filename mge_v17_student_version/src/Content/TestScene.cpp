@@ -64,7 +64,7 @@ void TestScene::_initializeScene() {
     Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"plane.obj");
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
     Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
-    Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapot_smooth.obj");
+    Mesh* shipMesh = Mesh::load (config::MGE_MODEL_PATH+"ShipTest3.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
@@ -92,12 +92,12 @@ void TestScene::_initializeScene() {
     _world->add(plane);
     World::addRigidBody(plane->rigidBody);
 
-    GameObject* teapot = new GameObject ("teapot", glm::vec3(-3,1,0));
-    teapot->setMesh (teapotMeshS);
-    teapot->setMaterial(textureMaterial2);
-    teapot->addBehaviour (new KeysBehaviour());
-
-    _world->add(teapot);
+    GameObject* ship = new GameObject ("Ship", glm::vec3(-3,1,0));
+    ship->setMesh (shipMesh);
+    ship->setMaterial(textureMaterial2);
+    ship->addBehaviour (new KeysBehaviour());
+	ship->scale(glm::vec3(0.1, 0.1, 0.1));
+    _world->add(ship);
 
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
@@ -130,12 +130,8 @@ void TestScene::_initializeScene() {
             _world->add(monkey);
         }
     }
-	GameObject* playerDivingAnimationContainer = new GameObject("");
-	Player* player = new Player();
-	_world->add(playerDivingAnimationContainer);
-	playerDivingAnimationContainer->add(player);
-	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
-	player->add(camera);
+	Player* player = new Player(*camera);
+	_world->add(player);
     //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
@@ -155,7 +151,7 @@ void TestScene::_initializeScene() {
     float random = time(NULL);
     std:: cout << "random seed: " << random << std::endl;
     srand (random);
-    for(int i = 0; i < 24; i++) {
+    for(int i = 0; i < 23; i++) {
         glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
         Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 50, glm::vec3(0,0,1));
         light->setMesh (cubeMeshF);
@@ -164,6 +160,13 @@ void TestScene::_initializeScene() {
         light->setMaterial(colorMaterial2);
         _world->add(light);
     }
+	glm::vec3* lightColor = new glm::vec3(1,1,1);
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,100,0), *lightColor, 2, glm::vec3(0, 0, 1));
+	light->setMesh(cubeMeshF);
+	AbstractMaterial* colorMaterial2 = new ColorMaterial(glm::normalize(*lightColor));
+	light->addBehaviour(new LookAt(ship));
+	light->setMaterial(colorMaterial2);
+	_world->add(light);
 
 //    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 //    light3->setMesh (cubeMeshF);
