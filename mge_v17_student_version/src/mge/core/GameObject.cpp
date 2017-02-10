@@ -5,6 +5,7 @@ using namespace std;
 #include "mge/core/GameObject.hpp"
 #include "mge/core/Mesh.hpp"
 #include "mge/behaviours/AbstractBehaviour.hpp"
+#include "Content\Core\EventHandler.h"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 :	_name( pName ), _transform( glm::translate( pPosition ) ),
@@ -15,14 +16,15 @@ GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 GameObject::~GameObject()
 {
     //detach all children
-    cout << "GC running on:" << _name << endl;
-
+    //cout << "GC running on:" << _name << endl;
+	if (_parent != NULL)
+		_parent->remove(this);
     while (_children.size() > 0) {
         GameObject* child = _children[0];
         remove (child);
         delete child;
     }
-
+	EventHandler::unbindEvents(this);
     //do not forget to delete behaviour, material, mesh, collider manually if required!
 }
 

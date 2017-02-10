@@ -9,9 +9,14 @@ using namespace std;
 #include "Content\Core\Input.h"
 #include "SFML\Window.hpp"
 #include <Windows.h>
+#include "Content\Core\EventHandler.h"
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
+
+	EventHandler::bindEvent(sf::Event::Closed, this, &AbstractGame::onCloseWindowEvent);
+	EventHandler::bindKeyDownEvent(sf::Keyboard::Escape, this, &AbstractGame::onEscapePressedEvent);
+	EventHandler::bindKeyDownEvent(sf::Keyboard::F1, this, &AbstractGame::onToggleMouseLock);
 }
 
 AbstractGame::~AbstractGame() {
@@ -145,7 +150,9 @@ void AbstractGame::run() {
                 timeSinceLastUpdate -= timePerFrame;
                 _update(timePerFrame.asSeconds());
                 _world->updatePhysics(timePerFrame.asSeconds());
+				Input::updateInput();
             }
+			
 
             _render();
             _window->display();
@@ -187,33 +194,26 @@ void AbstractGame::_render () {
 }
 
 void AbstractGame::_processEvents() {
-    sf::Event event;
+	EventHandler::handleEvents(*_window); 
+
+	/*sf::Event event;
     bool exit = false;
-	Input::mouseMotion = sf::Vector2i();
+
+	Input::updateInput();
+	EventHandler::handleEvents(*_window);
+	
     //we must empty the event queue
     while( _window->pollEvent( event ) ) {
         //give all system event listeners a chance to handle events
         //optionally to be implemented by you...
         //SystemEventDispatcher::dispatchEvent(event);
-
+		EventHandler::handleEvent(event);
         switch (event.type) {
-        case sf::Event::Closed:
-            exit = true;
-            break;
-        case sf::Event::KeyPressed:
-            if (event.key.code == sf::Keyboard::Escape) {
-                exit = true;
-            }
-            break;
         case sf::Event::Resized:
             //would be better to move this to the renderer
             //this version implements nonconstrained match viewport scaling
             glViewport(0, 0, event.size.width, event.size.height);
             break;
-		case sf::Event::MouseMoved:
-			//Input::mouseMotion += sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
-			//std::cout << "Mouse moved: " << event.mouseMove .x << ", " << event.mouseMove.y << std::endl;
-			break;
 
         default:
             break;
@@ -224,8 +224,21 @@ void AbstractGame::_processEvents() {
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x/2, _window->getPosition().y + _window->getSize().y/2));
     if (exit) {
         _window->close();
-    }
+    }*/
 }
 
+void AbstractGame::onCloseWindowEvent(sf::Event & event)
+{
+	_window->close();
+}
 
+void AbstractGame::onEscapePressedEvent(sf::Event::KeyEvent & event)
+{
+	_window->close();
+}
 
+void AbstractGame::onToggleMouseLock(sf::Event::KeyEvent & event)
+{
+	_mouseCursorVisible = !_mouseCursorVisible;
+	_window->setMouseCursorVisible(_mouseCursorVisible);
+}
