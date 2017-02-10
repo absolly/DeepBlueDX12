@@ -2,12 +2,16 @@
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "mge/core/GameObject.hpp"
 #include <SFML/Window/Keyboard.hpp>
+#include <vector>
+#include <random>
+using namespace std;
 #include "Content/GameObjects/FishTank.hpp"
 
 
 FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank) : AbstractBehaviour()
 {
 	fishtank = pFishtank;
+	srand(time(NULL));
 }
 
 FlockingBehaviour::~FlockingBehaviour()
@@ -17,25 +21,37 @@ FlockingBehaviour::~FlockingBehaviour()
 
 void FlockingBehaviour::update(float pStep)
 {
-	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize() * 10))
+	random_device rd;
+
+	// Initialize Mersenne Twister pseudo-random number generator
+	mt19937 gen(rd());
+
+	uniform_int_distribution<> dis(0, 5);
+
+	_speed = (dis(gen) / 2.5) + 3.0f;
+
+	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize() * 1.5))
 	{
 		turning = true;
 	}
 	else
+	{
 		turning = false;
+	}
 
 
 	if (turning)
 	{
-		glm::vec3 direction = glm::vec3(0, 0, 0) - _owner->getLocalPosition();
-
+		InverseDirection();
 	}
 	else
 	{
-		ApplyRules();
-
-		_owner->translate(glm::vec3(0, 0, -0.10f));
+		if(dis(gen) == 1)
+			ApplyRules();
 	}
+
+	_owner->translate(glm::vec3(0, 0, -_speed * 0.02f));
+
 }
 
 void FlockingBehaviour::ApplyRules()
@@ -66,6 +82,18 @@ void FlockingBehaviour::ApplyRules()
 				{
 					vavoid = vavoid + (_owner->getWorldPosition() - curObject->getWorldPosition());
 				}
+
+				if (glm::distance(fishtank->goalPosition, _owner->getWorldPosition()) < 8.0f)
+				{
+					std::cout << "I'm close enough" << std::endl;
+					fishtank->SetNewGoal();
+				}
+
+				std::vector<AbstractBehaviour*> behaviours = curObject->getBehaviours();
+				for (AbstractBehaviour * behaviour : behaviours)
+				{
+					gSpeed += dynamic_cast<FlockingBehaviour*>(behaviour)->_speed;
+				}
 			}
 		}
 	}
@@ -73,28 +101,64 @@ void FlockingBehaviour::ApplyRules()
 	if (groupSize > 0)
 	{
 		vcentre = (vcentre / groupSize) + (fishtank->goalPosition - _owner->getWorldPosition());
-		speed = gSpeed / groupSize;
+		//_speed = gSpeed / groupSize;
+
+	/*	if (_speed > 10.0f)
+			_speed = 10.0f;*/
 
 		glm::vec3 direction = (vcentre + vavoid) - _owner->getWorldPosition();
 
 		if (direction.length() > 0)
 		{
-			glm::vec3 WorldPos = _owner->getWorldPosition();
-
-			//glm::quat currentDir = glm::quat_cast(_owner->getTransform());
-
-			//std::cout << currentDir << std::endl;
-
-			//glm::mat4 newMat = glm::eulerAngleXYZ(direction.x, direction.y, direction.z);
-			glm::mat4 newMat = glm::inverse(glm::lookAt(_owner->getLocalPosition(), _owner->getLocalPosition() + direction, glm::vec3(0, 1, 0)));
-			//glm::quat newDir = glm::quat_cast(newMat);
-
-			//std::cout << _owner->getLocalPosition() << std::endl;
-
-			//glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.10f));
-
-			_owner->setTransform(newMat);
-			//_owner->translate(WorldPos);
+			InterPolateDirection(direction);
 		}
 	}
+}
+
+void FlockingBehaviour::InterPolateDirection(glm::vec3 pDirection)
+{
+	glm::vec3 LocalPos = _owner->getLocalPosition();
+
+	glm::quat currentDir = glm::quat_cast(_owner->getTransform());
+
+	//glm::vec3 OriginDirection = _owner->getLocalPosition() * currentDir;
+
+	//glm::vec3 newDirection = glm::normalize(OriginDirection) + glm::normalize((direction * 0.002f));
+
+	//std::cout << currentDir << std::endl;
+
+	//glm::mat4 newMat = glm::eulerAngleXYZ(direction.x, direction.y, direction.z);
+	glm::mat4 newMat = glm::inverse(glm::lookAt(_owner->getLocalPosition(), _owner->getLocalPosition() + pDirection, glm::vec3(0, 1, 0)));
+	glm::quat newDir = glm::quat_cast(newMat);
+
+	//std::cout << _owner->getLocalPosition() << std::endl;
+
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.02f));
+
+	_owner->setTransform(RotationMatrix);
+	_owner->setLocalPosition(LocalPos);
+}
+
+void FlockingBehaviour::InverseDirection()
+{
+	glm::vec3 LocalPos = _owner->getLocalPosition();
+
+	glm::quat currentDir = glm::quat_cast(_owner->getTransform());
+
+	glm::vec3 OriginDirection = _owner->getLocalPosition() * currentDir;
+
+	//glm::vec3 newDirection = glm::normalize(OriginDirection) + glm::normalize((direction * 0.002f));
+
+	//std::cout << currentDir << std::endl;
+
+	//glm::mat4 newMat = glm::eulerAngleXYZ(direction.x, direction.y, direction.z);
+	glm::mat4 newMat = glm::inverse(glm::lookAt(_owner->getLocalPosition(), fishtank->goalPosition, glm::vec3(0, 1, 0)));
+	glm::quat newDir = glm::quat_cast(newMat);
+
+	//std::cout << _owner->getLocalPosition() << std::endl;
+
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.02f));
+
+	_owner->setTransform(RotationMatrix);
+	_owner->setLocalPosition(LocalPos);
 }

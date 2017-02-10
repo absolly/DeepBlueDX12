@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <time.h>
+#include <random>
 using namespace std;
 
 #include "mge/config.hpp"
@@ -17,23 +18,35 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 	_fishCount = pFishCount;
 
 	allFish = new vector<GameObject*>();
+	_waypoints = new vector<glm::vec3>();
 
-	srand(time(NULL));
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "cube_flat.obj");
-	AbstractMaterial* colormat = new ColorMaterial(glm::vec3(0,1,0));
+	_waypoints->push_back(glm::vec3(pTankSize, pTankSize / 2, -pTankSize));
+	_waypoints->push_back(glm::vec3(pTankSize / 2, pTankSize / 2, pTankSize / 2));
+	_waypoints->push_back(glm::vec3(-pTankSize / 2, -pTankSize / 2, -pTankSize / 2));
+	_waypoints->push_back(glm::vec3(-pTankSize, pTankSize / 2, pTankSize));
+
+
+	
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "teapot_smooth.obj");
+	AbstractMaterial* colormat = new ColorMaterial(glm::vec3(1,1,0));
+
+	random_device rd;
+
+	// Initialize Mersenne Twister pseudo-random number generator
+	mt19937 gen(rd());
+
+	uniform_int_distribution<> dis(1, pTankSize / 4);
 
 	for  (int i = 0; i < _fishCount; i++)
 	{
-		int randomX = rand() % pTankSize + 1;
-		int randomY = rand() % pTankSize + 1;
-		int randomZ = rand() % pTankSize + 1;
+		int randomX = dis(gen);
+		int randomY = dis(gen);
+		int randomZ = dis(gen);
 		AbstractBehaviour* flock = new FlockingBehaviour(this);
 
-		std::cout << "hi" << std::endl;
-		GameObject* fish = new GameObject("fish", glm::vec3(i, i, i));
+		GameObject* fish = new GameObject("fish", glm::vec3(randomX, randomY, randomZ));
 		fish->setMaterial(colormat);
 		fish->setMesh(cubeMeshF);
-		fish->scale(glm::vec3(0.2f, 0.2f, 0.2f));
 		fish->addBehaviour(flock);
 		pWorld->add(fish);
 		allFish->push_back(fish);
@@ -48,6 +61,26 @@ int FishTank::getTankSize()
 int FishTank::getFishCount()
 {
 	return _fishCount;
+}
+
+void FishTank::update(float pStep)
+{
+	std::cout << "update loop is clearly working" << std::endl;
+}
+
+void FishTank::SetNewGoal()
+{
+	if (_goalIndex > 3)
+	{ 
+		_goalIndex = 0;
+	}
+
+	std::cout << "new Goal" << std::endl;
+	std::cout << _goalIndex << std::endl;
+
+	goalPosition = _waypoints->at(_goalIndex);
+
+	_goalIndex++;
 }
 
 
