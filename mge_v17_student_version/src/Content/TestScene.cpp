@@ -24,6 +24,7 @@ using namespace std;
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
+#include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "mge/util/DebugHud.hpp"
 
 #include "mge/config.hpp"
@@ -129,8 +130,11 @@ void TestScene::_initializeScene() {
             _world->add(monkey);
         }
     }
+	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
-	_world->add(player);
+	_world->add(playerDivingAnimationContainer);
+	playerDivingAnimationContainer->add(player);
+	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	player->add(camera);
     //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
