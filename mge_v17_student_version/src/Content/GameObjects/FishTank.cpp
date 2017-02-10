@@ -20,9 +20,9 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 	allFish = new vector<GameObject*>();
 	_waypoints = new vector<glm::vec3>();
 
-	_waypoints->push_back(glm::vec3(pTankSize, pTankSize, pTankSize));
 	_waypoints->push_back(glm::vec3(pTankSize, pTankSize / 2, -pTankSize));
-	_waypoints->push_back(glm::vec3(-pTankSize, -pTankSize, -pTankSize));
+	_waypoints->push_back(glm::vec3(pTankSize / 2, pTankSize / 2, pTankSize / 2));
+	_waypoints->push_back(glm::vec3(-pTankSize / 2, -pTankSize / 2, -pTankSize / 2));
 	_waypoints->push_back(glm::vec3(-pTankSize, pTankSize / 2, pTankSize));
 
 
@@ -74,6 +74,9 @@ void FishTank::SetNewGoal()
 	{ 
 		_goalIndex = 0;
 	}
+
+	std::cout << "new Goal" << std::endl;
+	std::cout << _goalIndex << std::endl;
 
 	goalPosition = _waypoints->at(_goalIndex);
 

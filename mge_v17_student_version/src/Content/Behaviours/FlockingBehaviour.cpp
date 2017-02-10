@@ -30,7 +30,7 @@ void FlockingBehaviour::update(float pStep)
 
 	_speed = (dis(gen) / 2.5) + 3.0f;
 
-	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize()))
+	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize() * 1.5))
 	{
 		turning = true;
 	}
@@ -83,8 +83,9 @@ void FlockingBehaviour::ApplyRules()
 					vavoid = vavoid + (_owner->getWorldPosition() - curObject->getWorldPosition());
 				}
 
-				if (glm::distance(fishtank->goalPosition, _owner->getWorldPosition()) < 2.0f)
+				if (glm::distance(fishtank->goalPosition, _owner->getWorldPosition()) < 8.0f)
 				{
+					std::cout << "I'm close enough" << std::endl;
 					fishtank->SetNewGoal();
 				}
 

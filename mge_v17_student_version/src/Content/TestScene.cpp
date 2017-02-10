@@ -100,7 +100,7 @@ void TestScene::_initializeScene() {
 
     _world->add(teapot);
 
-	FishTank * fishtank = new FishTank(glm::vec3(0, 0, 0), _world, "tankie", 20, 40);
+	FishTank * fishtank = new FishTank(glm::vec3(0, 0, 0), _world, "tankie", 20, 5);
 
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
