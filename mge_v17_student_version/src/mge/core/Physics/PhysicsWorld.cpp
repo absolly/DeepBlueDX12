@@ -3,12 +3,14 @@
 #include "BulletCollision\CollisionDispatch\btGhostObject.h"
 #include <iostream>
 
-PhysicsWorld::PhysicsWorld() : 
+PhysicsWorld::PhysicsWorld(World* pMainCamera) :
 	_overlappingPairCache(&createOverlappingPairCache()),
 	btDiscreteDynamicsWorld(createDiscreteDynamicsWorld())
 {
 	debugDrawer.setDebugMode(btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
 	setDebugDrawer(&debugDrawer);
+	debugDrawer._mainCamera = pMainCamera;
+
 }
 
 PhysicsWorld::~PhysicsWorld()

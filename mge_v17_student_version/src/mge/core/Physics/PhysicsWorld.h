@@ -5,7 +5,7 @@
 class PhysicsWorld : public btDiscreteDynamicsWorld
 {
 public:
-	PhysicsWorld();
+	PhysicsWorld(World* pMainCamera);
 	~PhysicsWorld();
 	class btDiscreteDynamicsWorld& createDiscreteDynamicsWorld();
 	btBroadphaseInterface & createOverlappingPairCache() const;

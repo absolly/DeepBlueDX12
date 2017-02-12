@@ -4,7 +4,9 @@
 #include "GL/glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
-
+#include "glm.hpp"
+#include "mge/core/World.hpp"
+#include "mge/core/Camera.hpp"
 using std::cout;
 using std::endl;
 
@@ -18,25 +20,20 @@ DebugDrawer::DebugDrawer()
 
 void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 {
-	//      if (m_debugMode > 0)
-	{
-		glDisable(GL_LIGHTING);
-		float tmp[6] = { 10,10,10, 20,20,20 };
-		glPushMatrix();
-		{
-			glLineWidth(5.0f);
-			glColor4f(color.getX(), color.getY(), color.getZ(), 1.0f);
-			glVertexPointer(3,
-				GL_FLOAT,
-				0,
-				&tmp);
-
-			glPointSize(5.0f);
-			glDrawArrays(GL_POINTS, 0, 2);
-			glDrawArrays(GL_LINES, 0, 2);
-		}
-		glPopMatrix();
+	if (_mainCamera == nullptr) {
+		return;
 	}
+	glBegin(GL_LINES);
+	glm::vec3 test = glm::vec3(_mainCamera->getMainCamera()->getWorldTransform() * glm::vec4(from.getX(),from.getY(),from.getZ(),0));
+	test *= .1;
+	glColor3f(color.getX(), color.getY(), color.getZ());
+	glVertex3d(test.x,test.y,test.z);
+	glColor3f(color.getX(), color.getY(), color.getZ());
+	glm::vec3 test2 = glm::vec3(_mainCamera->getMainCamera()->getWorldTransform() * glm::vec4(to.getX(), to.getY(), to.getZ(), 0));
+	test2 *= .1;
+	glVertex3d(test2.x, test2.y, test2.z);
+	glEnd();
+	
 }
 
 void    DebugDrawer::setDebugMode(int debugMode)

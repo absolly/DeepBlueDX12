@@ -1,6 +1,7 @@
 #pragma once
 
 #include "btBulletDynamicsCommon.h"
+class World;
 
 class DebugDrawer : public btIDebugDraw
 {
@@ -21,5 +22,7 @@ public:
 	virtual void   setDebugMode(int debugMode);
 
 	virtual int    getDebugMode() const { return m_debugMode; }
-
+	World* _mainCamera = nullptr;
+private:
+	
 };

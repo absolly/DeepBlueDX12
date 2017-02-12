@@ -40,7 +40,7 @@ void myTickCallback(btDynamicsWorld *dynamicsWorld, btScalar timeStep) {
 World::World():GameObject("root"), _mainCamera(NULL) {
     //ctor
 
-	physics = new PhysicsWorld();
+	physics = new PhysicsWorld(this);
 	Trigger* trigger = new Trigger(*physics);
 	add(trigger);
    /* btBroadphaseInterface* broadphase = new btDbvtBroadphase();
