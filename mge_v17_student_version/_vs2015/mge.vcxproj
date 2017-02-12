@@ -210,6 +210,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\Content\Core\EventHandler.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
     <ClInclude Include="src\Content\Core\Input.h" />
+    <ClInclude Include="src\Content\DeferredTestScene.hpp" />
     <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
     <ClInclude Include="src\Content\GameObjects\Player.h" />
     <ClInclude Include="src\Content\TestScene.hpp" />
@@ -248,6 +249,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
     <ClCompile Include="src\Content\Core\EventHandler.cpp" />
     <ClCompile Include="src\Content\Core\Input.cpp" />
+    <ClCompile Include="src\Content\DeferredTestScene.cpp" />
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
     <ClCompile Include="src\Content\GameObjects\Player.cpp" />
     <ClCompile Include="src\Content\TestScene.cpp" />

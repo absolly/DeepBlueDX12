@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
 #include <string>
+#include "mge/core/ShaderProgram.hpp"
+
 using namespace std;
 
 class World;
@@ -68,6 +70,7 @@ class AbstractGame
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
 		bool _mouseCursorVisible = false;
 		void onToggleMouseLock(sf::Event::KeyEvent& event);
+		ShaderProgram* _shader;
 };
 
 #endif // ABSTRACTGAME_H

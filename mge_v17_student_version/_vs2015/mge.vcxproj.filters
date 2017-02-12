@@ -35,6 +35,7 @@
     <ClCompile Include="src\mge\materials\LitWaveMaterial.cpp" />
     <ClCompile Include="src\Content\Core\EventHandler.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.cpp" />
+    <ClCompile Include="src\Content\DeferredTestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -76,6 +77,7 @@
     <ClInclude Include="src\Content\Core\EventHandler.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
     <ClInclude Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.h" />
+    <ClInclude Include="src\Content\DeferredTestScene.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
