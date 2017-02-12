@@ -34,6 +34,9 @@
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
     <ClCompile Include="src\Content\Core\EventHandler.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.cpp" />
+    <ClCompile Include="src\mge\core\Physics\PhysicsWorld.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Trigger.cpp" />
+    <ClCompile Include="src\mge\core\Physics\DebugDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -74,6 +77,9 @@
     <ClInclude Include="src\Content\Core\EventHandler.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
     <ClInclude Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.h" />
+    <ClInclude Include="src\mge\core\Physics\PhysicsWorld.h" />
+    <ClInclude Include="src\mge\core\Physics\Trigger.h" />
+    <ClInclude Include="src\mge\core\Physics\DebugDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

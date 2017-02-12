@@ -20,9 +20,10 @@ class World : public GameObject
         static void addRigidBody(btRigidBody* pBody);
         static void removeRigidBody(btRigidBody* pBody);
         void updatePhysics(float pDelta);
+		void debugDraw();
 	private:
 	    Camera* _mainCamera;
-        static btDiscreteDynamicsWorld* dynamicsWorld;
+        static class PhysicsWorld* physics;
 
         World(const World&);
         World& operator=(const World&);

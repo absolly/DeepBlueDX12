@@ -229,6 +229,9 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\LuaParser.hpp" />
     <ClInclude Include="src\mge\core\Mesh.hpp" />
     <ClInclude Include="src\mge\core\PhysicsObject.hpp" />
+    <ClInclude Include="src\mge\core\Physics\DebugDrawer.h" />
+    <ClInclude Include="src\mge\core\Physics\PhysicsWorld.h" />
+    <ClInclude Include="src\mge\core\Physics\Trigger.h" />
     <ClInclude Include="src\mge\core\Renderer.hpp" />
     <ClInclude Include="src\mge\core\ShaderProgram.hpp" />
     <ClInclude Include="src\mge\core\Texture.hpp" />
@@ -264,6 +267,9 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\LuaParser.cpp" />
     <ClCompile Include="src\mge\core\Mesh.cpp" />
     <ClCompile Include="src\mge\core\PhysicsObject.cpp" />
+    <ClCompile Include="src\mge\core\Physics\DebugDrawer.cpp" />
+    <ClCompile Include="src\mge\core\Physics\PhysicsWorld.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Trigger.cpp" />
     <ClCompile Include="src\mge\core\Renderer.cpp" />
     <ClCompile Include="src\mge\core\ShaderProgram.cpp" />
     <ClCompile Include="src\mge\core\Texture.cpp" />

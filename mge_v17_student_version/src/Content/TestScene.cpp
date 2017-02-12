@@ -136,6 +136,16 @@ void TestScene::_initializeScene() {
 	playerDivingAnimationContainer->add(player);
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	player->add(camera);
+
+
+
+
+	glm::mat4 mat4 = glm::mat4(1);
+	std::cout << mat4 << std::endl;
+	glm::mat4 rotatedMatrix = glm::rotate(mat4, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	std::cout << rotatedMatrix << std::endl;
+
+	
     //camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
@@ -172,6 +182,7 @@ void TestScene::_initializeScene() {
 }
 
 void TestScene::_render() {
+	_world->debugDraw();
     AbstractGame::_render();
     _updateHud();
 }
