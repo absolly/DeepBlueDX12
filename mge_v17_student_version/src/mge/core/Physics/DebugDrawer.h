@@ -22,7 +22,7 @@ public:
 	virtual void   setDebugMode(int debugMode);
 
 	virtual int    getDebugMode() const { return m_debugMode; }
-	World* _mainCamera = nullptr;
+	World* _world = nullptr;
 private:
 	
 };

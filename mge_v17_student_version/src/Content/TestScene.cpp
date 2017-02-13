@@ -51,12 +51,12 @@ void TestScene::initialize() {
 
 //build the game _world
 void TestScene::_initializeScene() {
-    _renderer->setClearColor(0,0,0);
+    _renderer->setClearColor(1,0,0);
 
     //add camera first (it will be updated last)
     Camera* camera = new Camera ("camera", glm::vec3(0,0,0));
     camera->rotate(glm::radians(180.0f), glm::vec3(0,1,0));
-    _world->add(camera);
+    //_world->add(camera);
     _world->setMainCamera(camera);
 
     //MESHES
@@ -105,15 +105,16 @@ void TestScene::_initializeScene() {
     _world->add(teapot);
 
 
-	GameObject* randomTriggerGO = new GameObject("randomTrigger", glm::vec3(3, 1, 0));
+	GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
 	
-	randomTriggerGO->setMesh(ship);
-	randomTriggerGO->setMaterial(textureMaterial2);
-	randomTriggerGO->scale(glm::vec3(4,4,4));
-	randomTriggerGO->addBehaviour(&randomTrigger);
+	shipGO->setMesh(ship);
+	shipGO->setMaterial(textureMaterial2);
+	shipGO->scale(glm::vec3(4,4,4));
+	shipGO->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
+	shipGO->addBehaviour(&randomTrigger);
 	//teapotTrigger.collisionEvents[&randomTrigger].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
-	_world->add(randomTriggerGO);
+	_world->add(shipGO);
 
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
@@ -148,9 +149,11 @@ void TestScene::_initializeScene() {
             _world->add(monkey);
        }
     }
+	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
-	_world->add(playerDivingAnimationContainer);
+	test->add(playerDivingAnimationContainer);
+	_world->add(test);
 	playerDivingAnimationContainer->add(player);
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	player->add(camera);
@@ -199,8 +202,8 @@ void TestScene::_initializeScene() {
 }
 
 void TestScene::_render() {
-	_world->debugDraw();
     AbstractGame::_render();
+	_world->debugDraw();
     _updateHud();
 }
 

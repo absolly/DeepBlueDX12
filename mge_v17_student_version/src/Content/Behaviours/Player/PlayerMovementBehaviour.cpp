@@ -55,7 +55,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed, _maxMoveSpeed);
+	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
 	//Moving sideways

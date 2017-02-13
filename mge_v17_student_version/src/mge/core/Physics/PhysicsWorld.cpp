@@ -9,7 +9,7 @@ PhysicsWorld::PhysicsWorld(World* pMainCamera) :
 {
 	debugDrawer.setDebugMode(btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
 	setDebugDrawer(&debugDrawer);
-	debugDrawer._mainCamera = pMainCamera;
+	debugDrawer._world = pMainCamera;
 
 }
 
