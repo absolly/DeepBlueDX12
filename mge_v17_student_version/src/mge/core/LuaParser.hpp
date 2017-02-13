@@ -39,10 +39,17 @@ class LuaParser {
         };
         lua_State * lua;
         //export to lua
+		GameObject* _currentGameObject;
+		Light* _currentLight;
         int write(lua_State * lua);
         int createObject(lua_State * lua);
         int setMainCharacter(lua_State * lua);
         int addlistener(lua_State * lua);
+		int addMaterial(lua_State * lua);
+		int addCollider(lua_State * lua);
+		int createTrigger(lua_State * lua);
+		int createLight(lua_State * lua);
+		int addLightAttributes(lua_State * lua);
         int destoryLuaObject(lua_State * lua);
         vector<collisionListener> collisionListeners;
         World* _world;

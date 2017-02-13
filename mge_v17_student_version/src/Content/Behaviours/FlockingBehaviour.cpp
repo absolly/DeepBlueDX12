@@ -8,10 +8,11 @@ using namespace std;
 #include "Content/GameObjects/FishTank.hpp"
 
 
-FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank) : AbstractBehaviour()
+FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank, glm::vec3 pScale) : AbstractBehaviour()
 {
 	fishtank = pFishtank;
 	srand(time(NULL));
+	_scale = pScale;
 }
 
 FlockingBehaviour::~FlockingBehaviour()
@@ -30,7 +31,7 @@ void FlockingBehaviour::update(float pStep)
 
 	_speed = (dis(gen) / 2.5) + 3.0f;
 
-	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize() * 1.5))
+	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize() * 2))
 	{
 		turning = true;
 	}
@@ -85,7 +86,6 @@ void FlockingBehaviour::ApplyRules()
 
 				if (glm::distance(fishtank->goalPosition, _owner->getWorldPosition()) < 8.0f)
 				{
-					std::cout << "I'm close enough" << std::endl;
 					fishtank->SetNewGoal();
 				}
 
@@ -137,6 +137,7 @@ void FlockingBehaviour::InterPolateDirection(glm::vec3 pDirection)
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);
+	_owner->scale(_scale);
 }
 
 void FlockingBehaviour::InverseDirection()
@@ -161,4 +162,6 @@ void FlockingBehaviour::InverseDirection()
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);
+	_owner->scale(_scale);
+
 }

@@ -24,6 +24,7 @@ class Light : public GameObject {
         float intensity;
         float angle;
         void setParent (GameObject* pGameObject);
+		void setLightIntensity(float pIntensity);
 
     protected:
     private:

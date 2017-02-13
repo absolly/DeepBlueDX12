@@ -36,6 +36,11 @@ glm::vec3 Light::getColor() {
     return _color;
 }
 
+void Light::setLightIntensity(float pIntensity)
+{
+	intensity = pIntensity;
+}
+
 void Light::setParent (GameObject* pGameObject) {
 
    // std::cout << "set parent of light called" << std::endl;

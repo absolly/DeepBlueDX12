@@ -14,7 +14,7 @@ using namespace std;
 class FlockingBehaviour : public AbstractBehaviour
 {
 	public:
-		FlockingBehaviour(FishTank * pFishtank);
+		FlockingBehaviour(FishTank * pFishtank, glm::vec3 pScale = glm::vec3(1,1,1));
 		virtual ~FlockingBehaviour();
 		virtual void update( float pStep );
 		float speed = 0.4f;
@@ -30,6 +30,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		void InterPolateDirection(glm::vec3 pDirection);
 		void InverseDirection();
 		FishTank * fishtank;
+		glm::vec3 _scale;
 };
 
 #endif // KEYSBEHAVIOUR_H

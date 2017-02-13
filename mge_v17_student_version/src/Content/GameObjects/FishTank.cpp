@@ -27,7 +27,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 
 	
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "Creature_OBJ.obj");
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "teapot_smooth.obj");
 	AbstractMaterial* colormat = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
 	random_device rd;
@@ -42,13 +42,12 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 		int randomX = dis(gen);
 		int randomY = dis(gen);
 		int randomZ = dis(gen);
-		AbstractBehaviour* flock = new FlockingBehaviour(this);
+		AbstractBehaviour* flock = new FlockingBehaviour(this, glm::vec3(1.0f, 1.0f, 1.0f));
 
 		GameObject* fish = new GameObject("fish", glm::vec3(randomX, randomY, randomZ));
 		fish->setMaterial(colormat);
 		fish->setMesh(cubeMeshF);
 		fish->addBehaviour(flock);
-		fish->scale(glm::vec3(.01,.01,.01));
 		pWorld->add(fish);
 		allFish->push_back(fish);
 	}
@@ -75,9 +74,6 @@ void FishTank::SetNewGoal()
 	{ 
 		_goalIndex = 0;
 	}
-
-	std::cout << "new Goal" << std::endl;
-	std::cout << _goalIndex << std::endl;
 
 	goalPosition = _waypoints->at(_goalIndex);
 
