@@ -6,6 +6,7 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "Content\Core\EventHandler.h"
+#include "Bullet3Common\b3Vector3.h"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 :	_name( pName ), _transform( glm::translate( pPosition ) ),
@@ -46,6 +47,17 @@ void GameObject::setTransform (const glm::mat4& pTransform)
 const glm::mat4& GameObject::getTransform() const
 {
     return _transform;
+}
+
+const btTransform& GameObject::getBulletPhysicsTransform() const
+{
+	btTransform btTransform;
+	//startTransform.setIdentity();
+	glm::mat4 transform = getTransform();
+	glm::quat rotation = glm::quat_cast(transform);
+	glm::vec3 position = transform[3];
+	btTransform.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
+	return btTransform;
 }
 
 void GameObject::setLocalPosition (glm::vec3 pPosition)

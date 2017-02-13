@@ -34,6 +34,11 @@ class Mesh
          */
         void drawDebugInfo(const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
 
+		class btCollisionShape* getMeshCollisionShape();
+
+		std::vector<glm::vec3>* getVerticies();
+		std::vector<unsigned>* getVertextIndices();
+
 	protected:
 
 	    std::string _id;

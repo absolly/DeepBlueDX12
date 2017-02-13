@@ -25,12 +25,12 @@ void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btV
 	}
 	glBegin(GL_LINES);
 	glm::vec3 test = glm::vec3(_mainCamera->getMainCamera()->getWorldTransform() * glm::vec4(from.getX(),from.getY(),from.getZ(),0));
-	test *= .1;
+	test *= 0.01;
 	glColor3f(color.getX(), color.getY(), color.getZ());
 	glVertex3d(test.x,test.y,test.z);
 	glColor3f(color.getX(), color.getY(), color.getZ());
 	glm::vec3 test2 = glm::vec3(_mainCamera->getMainCamera()->getWorldTransform() * glm::vec4(to.getX(), to.getY(), to.getZ(), 0));
-	test2 *= .1;
+	test2 *= 0.01;
 	glVertex3d(test2.x, test2.y, test2.z);
 	glEnd();
 	

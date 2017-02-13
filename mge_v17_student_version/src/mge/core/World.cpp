@@ -41,8 +41,8 @@ World::World():GameObject("root"), _mainCamera(NULL) {
     //ctor
 
 	physics = new PhysicsWorld(this);
-	Trigger* trigger = new Trigger(*physics);
-	add(trigger);
+	//Trigger* trigger = new Trigger(*physics);
+	//addBehaviour(trigger);
    /* btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 
     btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();

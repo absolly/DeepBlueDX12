@@ -100,7 +100,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	
 	glm::vec3 ownerPosition = _owner->getLocalPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
-	ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
+	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
 	_owner->setLocalPosition(ownerPosition);
 }
 

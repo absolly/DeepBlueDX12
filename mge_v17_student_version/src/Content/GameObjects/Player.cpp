@@ -1,6 +1,9 @@
 #include "Player.h"
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
+#include "mge\core\Physics\Trigger.h"
+#include "mge\core\World.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
 Player::Player() : GameObject("Player"),
 coolFloatEvent(*new Event<float>())
@@ -24,6 +27,10 @@ coolFloatEvent(*new Event<float>())
 
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
+
+
+	
+	
 	//setLocalPosition(glm::vec3(10, 10, 10));
 }
 

@@ -21,9 +21,9 @@ class World : public GameObject
         static void removeRigidBody(btRigidBody* pBody);
         void updatePhysics(float pDelta);
 		void debugDraw();
+		static class PhysicsWorld* physics;
 	private:
 	    Camera* _mainCamera;
-        static class PhysicsWorld* physics;
 
         World(const World&);
         World& operator=(const World&);

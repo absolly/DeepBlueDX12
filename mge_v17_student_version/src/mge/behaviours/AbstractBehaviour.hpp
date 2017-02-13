@@ -22,7 +22,7 @@ class AbstractBehaviour
         //as friends, tying this class to one of its subclasses, so design decision:
         //this is kept public but should not be used directly.
         virtual void setOwner (GameObject* pGameObject);
-
+		virtual GameObject* getOwner();
         //behaviour should be able to update itself every step and MUST be implemented
 		virtual void update(float pStep) = 0;
 

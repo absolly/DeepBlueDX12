@@ -1,6 +1,8 @@
 #include "Trigger.h"
-#include "BulletCollision\CollisionDispatch\btGhostObject.h"
 #include "PhysicsWorld.h"
+#include "glm.hpp"
+#include "mge\core\GameObject.hpp"
+#include "mge\core\World.hpp"
 
 /*Trigger::Trigger() : 
 	_ghostObject(*new btPairCachingGhostObject()),
@@ -8,8 +10,7 @@
 {
 }*/
 
-Trigger::Trigger(PhysicsWorld& physicsWorld) :
-	_ghostObject(*new btPairCachingGhostObject()),
+Trigger::Trigger(PhysicsWorld& physicsWorld, btCollisionShape* shape) : AbstractBehaviour(), btPairCachingGhostObject(),
 	_physicsWorld(&physicsWorld)
 {
 	btTransform startTransform;
@@ -19,13 +20,16 @@ Trigger::Trigger(PhysicsWorld& physicsWorld) :
 	glm::vec3 position = transform[3];
 	glm::vec3 scale = glm::vec3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
 	startTransform.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
+	
 	//startTransform.setOrigin(btVector3(position.x, position.y, position.z));
-	scale.x = 100;
-	scale.y = 100;
-	scale.z = 100;
-	btConvexShape* box = new btBoxShape(btVector3(scale.x, scale.y, scale.z));
-	_ghostObject.setCollisionShape(box);
-	_ghostObject.setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+	scale.x = 1;
+	scale.y = 1;
+	scale.z = 1;
+	//btCollisionShape* shape2 = shape;
+	setCollisionShape(shape);
+	shape->setLocalScaling(btVector3(4, 4, 4));
+	//setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	_physicsWorld->addCollisionObject(this, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter);
 }
 
 Trigger::~Trigger()
@@ -35,19 +39,20 @@ Trigger::~Trigger()
 void Trigger::update(float pStep)
 {
 	checkForCollisions();
+	setWorldTransform(_owner->getBulletPhysicsTransform());
 	debugDrawContacts();
 }
 
 void Trigger::checkForCollisions()
 {
 	btManifoldArray manifoldArray;
-	btBroadphasePairArray& pairArray = _ghostObject.getOverlappingPairCache()->getOverlappingPairArray();
+	btBroadphasePairArray& pairArray = getOverlappingPairCache()->getOverlappingPairArray();
 	int numPairs = pairArray.size();
 
 	for (int i = 0; i < numPairs; ++i)
 	{
 		manifoldArray.clear();
-
+		
 		const btBroadphasePair& pair = pairArray[i];
 
 		btBroadphasePair* collisionPair = _physicsWorld->getPairCache()->findPair(pair.m_pProxy0, pair.m_pProxy1);
@@ -60,8 +65,8 @@ void Trigger::checkForCollisions()
 		for (int j = 0; j < manifoldArray.size(); j++)
 		{
 			btPersistentManifold* manifold = manifoldArray[j];
-
-			bool isFirstBody = manifold->getBody0() == &_ghostObject;
+			
+			bool isFirstBody = manifold->getBody0() == this;
 
 			btScalar direction = isFirstBody ? btScalar(-1.0) : btScalar(1.0);
 
@@ -74,8 +79,11 @@ void Trigger::checkForCollisions()
 					const btVector3& ptA = pt.getPositionWorldOnA();
 					const btVector3& ptB = pt.getPositionWorldOnB();
 					const btVector3& normalOnB = pt.m_normalWorldOnB;
-
-					std::cout << "COLLISION!!!!" << std::endl;
+					
+					//std::cout << "COLLISION!!!!" << rand() << std::endl;
+					btCollisionObject* obA = const_cast<btCollisionObject*>(manifold->getBody0());
+					btCollisionObject* obB = const_cast<btCollisionObject*>(manifold->getBody1());
+					collisionEvents[obB](obB);
 					// handle collisions here
 				}
 			}
@@ -89,7 +97,7 @@ void Trigger::debugDrawContacts()
 	//	printf("numPairs = %d\n",m_customPairCallback->getOverlappingPairArray().size());
 	{
 		btManifoldArray	manifoldArray;
-		btBroadphasePairArray& pairArray = _ghostObject.getOverlappingPairCache()->getOverlappingPairArray();
+		btBroadphasePairArray& pairArray = getOverlappingPairCache()->getOverlappingPairArray();
 		int numPairs = pairArray.size();
 
 		for (int i = 0; i<numPairs; i++)

@@ -32,6 +32,9 @@ using namespace std;
 #include <time.h>       /* time */
 #include "Content\GameObjects\Player.h"
 
+#include "mge\core\Physics\Trigger.h"
+#include "mge\core\Physics\PhysicsWorld.h"
+
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene():AbstractGame (),_hud(0) {
 }
@@ -65,6 +68,7 @@ void TestScene::_initializeScene() {
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
     Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
     Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapot_smooth.obj");
+	Mesh* ship = Mesh::load(config::MGE_MODEL_PATH + "MeshScale.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
@@ -74,7 +78,7 @@ void TestScene::_initializeScene() {
     AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"grass_texture.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //10 specular teapot material
-    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
+    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 0.01, 10);
 
     //SCENE SETUP
     PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
@@ -96,8 +100,20 @@ void TestScene::_initializeScene() {
     teapot->setMesh (teapotMeshS);
     teapot->setMaterial(textureMaterial2);
     teapot->addBehaviour (new KeysBehaviour());
-
+	Trigger& teapotTrigger = *new Trigger(*World::physics, new btBoxShape(btVector3(1,1,1)));
+	teapot->addBehaviour(&teapotTrigger);
     _world->add(teapot);
+
+
+	GameObject* randomTriggerGO = new GameObject("randomTrigger", glm::vec3(3, 1, 0));
+	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
+	
+	randomTriggerGO->setMesh(ship);
+	randomTriggerGO->setMaterial(textureMaterial2);
+	randomTriggerGO->scale(glm::vec3(4,4,4));
+	randomTriggerGO->addBehaviour(&randomTrigger);
+	//teapotTrigger.collisionEvents[&randomTrigger].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
+	_world->add(randomTriggerGO);
 
 //    for(int i = 0; i < 1000; i++){
 //    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
@@ -111,24 +127,26 @@ void TestScene::_initializeScene() {
 //    car->setMesh (carMesh);
 //    car->setMaterial(colorMaterial);
 //    _world->add(car);
-    for(int i = 0; i < 10; i++) {
-        for(int j = 0; j < 10; j++) {
+    for(int i = 0; i < 25; i++) {
+        for(int j = 0; j < 2; j++) {
 
 				btCollisionShape* fallShape = new btSphereShape(1);
-				btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0 + i, 50 + i, 0 + i)));
+				btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0 + i, 150 + i, 0 + i)));
 				btScalar mass = 1;
 				btVector3 fallInertia(0, 0, 0);
 				fallShape->calculateLocalInertia(mass, fallInertia);
 				btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
 
-            GameObject* monkey = new GameObject ("monkey", glm::vec3(3,1,0));
+            GameObject* monkey = new GameObject ("monkey", glm::vec3(3,100,0));
             monkey->setMesh (suzannaMeshF);
             monkey->setMaterial(textureMaterial2);
-			monkey->addBehaviour(new RigidBody(fallRigidBodyCI));
+			RigidBody* rigidBody = new RigidBody(fallRigidBodyCI);
+			monkey->addBehaviour(rigidBody);
+			//teapotTrigger.collisionEvents[rigidBody].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
       //    monkey->setBehaviour (new RotatingBehaviour());
 
             _world->add(monkey);
-        }
+       }
     }
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
@@ -137,8 +155,7 @@ void TestScene::_initializeScene() {
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	player->add(camera);
 
-
-
+	
 
 	glm::mat4 mat4 = glm::mat4(1);
 	std::cout << mat4 << std::endl;
@@ -165,7 +182,7 @@ void TestScene::_initializeScene() {
     float random = time(NULL);
     std:: cout << "random seed: " << random << std::endl;
     srand (random);
-    for(int i = 0; i < 24; i++) {
+    for(int i = 0; i < 1; i++) {
         glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
         Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 50, glm::vec3(0,0,1));
         light->setMesh (cubeMeshF);
@@ -175,10 +192,10 @@ void TestScene::_initializeScene() {
         _world->add(light);
     }
 
-//    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
-//    light3->setMesh (cubeMeshF);
-//    light3->setMaterial(colorMaterial2);
-//    _world->add(light3);
+    Light* light3 = new Light (Light::lightType::DIRECTIONAL, "light3", glm::vec3(0,0,0), glm::vec3(0.1,0.1,0.1), 0.8f, glm::vec3(), 70);
+    //light3->setMesh (cubeMeshF);
+	//light3->setMaterial(new ColorMaterial(glm::normalize(glm::vec3(1, 1, 1))));
+    _world->add(light3);
 }
 
 void TestScene::_render() {
@@ -193,6 +210,14 @@ void TestScene::_updateHud() {
 
     _hud->setDebugInfo(debugInfo);
     _hud->draw();
+}
+
+void TestScene::onTeapotCollisionWithPhysicsObject(btCollisionObject * collisionObject)
+{
+	_world->physics->removeCollisionObject(collisionObject);
+	_world->remove(dynamic_cast<AbstractBehaviour*>(collisionObject)->getOwner());
+	delete collisionObject;
+	std::cout << "TEAPOT COLLIDING WITH COLLISION OBJECT" << std::endl;
 }
 
 TestScene::~TestScene() {

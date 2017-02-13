@@ -29,6 +29,8 @@ class TestScene: public AbstractGame
 
         TestScene(const TestScene&);
         TestScene& operator=(const TestScene&);
+
+		void onTeapotCollisionWithPhysicsObject(btCollisionObject* collisionObject);
 };
 
 #endif // TestScene_H

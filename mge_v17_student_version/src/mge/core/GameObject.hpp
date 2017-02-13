@@ -29,6 +29,8 @@ class GameObject
 		void setTransform (const glm::mat4& pTransform);
         const glm::mat4& getTransform() const;
 
+		const btTransform & getBulletPhysicsTransform() const;
+
         //access just the local position
 		void setLocalPosition (glm::vec3 pPosition);
 		glm::vec3 getLocalPosition() const;
