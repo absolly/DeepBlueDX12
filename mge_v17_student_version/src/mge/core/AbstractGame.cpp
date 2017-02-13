@@ -43,7 +43,7 @@ void AbstractGame::initialize() {
 
 void AbstractGame::_initializeWindow() {
     cout << "Initializing window..." << endl;
-    _window = new sf::RenderWindow(sf::VideoMode(800, 600), "My Game!", sf::Style::Default, sf::ContextSettings(24,8,0,3,3));    
+    _window = new sf::RenderWindow(sf::VideoMode(1600, 900), "My Game!", sf::Style::Default, sf::ContextSettings(24,8,0,3,3));    
 	
 	//_window->setMouseCursorGrabbed(true);
 	_window->setMouseCursorVisible(false);
@@ -92,6 +92,20 @@ void AbstractGame::_initializeRenderer() {
 	_shader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "Passthrough.vs");
 	_shader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "RenderTexture.fs");
 	_shader->finalize();
+
+	static const GLfloat g_quad_vertex_buffer_data[] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		1.0f,  1.0f, 0.0f,
+	};
+
+
+	glGenBuffers(1, &quad_vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
 }
 
 void AbstractGame::_initializeWorld() {
@@ -138,39 +152,20 @@ void AbstractGame::_update(float pStep) {
 
 void AbstractGame::_render () {
 	// Clear the screen
-	
+	// Render to our framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->FramebufferName);
+	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     _renderer->render(_world);
+}
 
-	// The fullscreen quad's FBO
-	GLuint quad_VertexArrayID;
-	glGenVertexArrays(1, &quad_VertexArrayID);
-	glBindVertexArray(quad_VertexArrayID);
-
-	static const GLfloat g_quad_vertex_buffer_data[] = {
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		1.0f,  1.0f, 0.0f,
-	};
-
-	GLuint quad_vertexbuffer;
-	glGenBuffers(1, &quad_vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
-
-	//// Create and compile our GLSL program from the shaders
-	//GLuint quad_programID = LoadShaders("Passthrough.vertexshader", "SimpleTexture.fragmentshader");
-	//GLuint texID = glGetUniformLocation(quad_programID, "renderedTexture");
-	//GLuint timeID = glGetUniformLocation(quad_programID, "time");
-
+void AbstractGame::_renderToQuad() {
 
 	// Render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 1024, 768); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
-	// Clear the screen
+								 // Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	_shader->use();
@@ -178,6 +173,10 @@ void AbstractGame::_render () {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _renderer->renderedTexture);
 	glUniform1i(_shader->getUniformLocation("textureDiffuse"), 0);
+	//setup texture slot 1
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, _renderer->depthTexture);
+	glUniform1i(_shader->getUniformLocation("depthTexture"), 1);
 
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
@@ -195,7 +194,6 @@ void AbstractGame::_render () {
 	glDrawArrays(GL_TRIANGLES, 0, 6); // 2*3 indices starting at 0 -> 2 triangles
 
 	glDisableVertexAttribArray(0);
-
 
 }
 

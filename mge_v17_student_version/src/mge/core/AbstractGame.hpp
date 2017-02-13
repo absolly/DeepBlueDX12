@@ -54,6 +54,7 @@ class AbstractGame
         virtual void _update(float pStep);
         //render all game objects in the display root
         virtual void _render();
+		virtual void _renderToQuad();
         //process any sfml window events (see SystemEventDispatcher/Listener)
         virtual void _processEvents();
 
@@ -71,6 +72,7 @@ class AbstractGame
 		bool _mouseCursorVisible = false;
 		void onToggleMouseLock(sf::Event::KeyEvent& event);
 		ShaderProgram* _shader;
+		GLuint quad_vertexbuffer;
 };
 
 #endif // ABSTRACTGAME_H

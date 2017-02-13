@@ -35,10 +35,11 @@ class Renderer
         //helper method to render all the children of a gameobject
         void renderMeshDebugInfo (Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
 		GLuint renderedTexture;
+		GLuint FramebufferName = 0;
+		GLuint depthTexture;
     private:
         //helper method to render a single gameobject
         void renderSelf (GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
-		GLuint FramebufferName = 0;
 
 
 };

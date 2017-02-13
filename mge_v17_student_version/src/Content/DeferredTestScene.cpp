@@ -118,7 +118,8 @@ void DeferredTestScene::_initializeScene() {
 
 void DeferredTestScene::_render() {
     AbstractGame::_render();
-    _updateHud();
+	_updateHud();
+	AbstractGame::_renderToQuad();
 }
 
 void DeferredTestScene::_updateHud() {
