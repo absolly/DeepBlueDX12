@@ -9,7 +9,7 @@ class Camera;
 class Player : public GameObject
 {
 public:
-	Player(Camera& camera);
+	Player();
 	~Player();
 
 	void onSpacePressedEvent(sf::Event::KeyEvent & keyEvent);

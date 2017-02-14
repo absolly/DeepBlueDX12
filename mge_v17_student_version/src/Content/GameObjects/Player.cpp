@@ -5,7 +5,7 @@
 #include "mge/core/Camera.hpp" 
 #include "Content\Behaviours\Player\DivingAnimationBehaviour.h" 
 
-Player::Player(Camera& camera) : GameObject("Player"),
+Player::Player() : GameObject("Player"),
 coolFloatEvent(*new Event<float>())
 {
 	#pragma region FutureImplementation
@@ -25,13 +25,14 @@ coolFloatEvent(*new Event<float>())
 	//AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 	//setMaterial(material);
 	
-	addBehaviour(new DivingAnimationBehaviour());
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "cube_flat.obj");
+	setMesh(cubeMeshF);
+	AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
+	setMaterial(material);
 
-	GameObject* container = new GameObject("");
-	add(container);
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
-	container->addBehaviour(_playerMovementBehaviour);
-	container->add(&camera);
+	addBehaviour(_playerMovementBehaviour);
+
 
 
 	

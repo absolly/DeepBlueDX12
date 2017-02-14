@@ -140,7 +140,7 @@ void TestScene::_initializeScene() {
 			GameObject* monkey = new GameObject("monkey", glm::vec3(3, 100, 0));
 			float mass = 1;
 			btVector3 fallInertia(0, 0, 0);
-			btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-13 + i*1.5f, 150 + i, 0 + j*3)));
+			btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-13 + i*1.5f, 150 + i, 0 + j * 3)));
 			monkey->addCollider(SphereColliderArgs(1));
 			monkey->addRigidBody(mass, fallInertia, *fallMotionState);
 			//monkey->addCollider<BoxCollider>(glm::vec4(10, 10, 10, 10));
@@ -151,13 +151,21 @@ void TestScene::_initializeScene() {
 			//RigidBody* rigidBody = new RigidBody(fallRigidBodyCI);
 			//monkey->addBehaviour(rigidBody);
 			//teapotTrigger.collisionEvents[rigidBody].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
-	  //    monkey->setBehaviour (new RotatingBehaviour());
+			//    monkey->setBehaviour (new RotatingBehaviour());
 
 			_world->add(monkey);
 		}
 	}
-	Player* player = new Player(*camera);
-	_world->add(player);
+	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
+	GameObject* playerDivingAnimationContainer = new GameObject("");
+	Player* player = new Player();
+	test->add(playerDivingAnimationContainer);
+	_world->add(test);
+	playerDivingAnimationContainer->add(player);
+	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
+	player->addCollider(SphereColliderArgs(1));
+	//player->addRigidBody(1);
+	player->add(camera);
 	/*
 	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
