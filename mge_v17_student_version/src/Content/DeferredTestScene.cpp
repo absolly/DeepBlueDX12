@@ -17,10 +17,13 @@ using namespace std;
 #include "mge/materials/ColorMaterial.hpp"
 #include "mge/materials/TextureMaterial.hpp"
 
+#include "mge/materials/LitWaveMaterial.hpp"
+
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
 #include "mge/util/DebugHud.hpp"
+#include "Content/GameObjects/FishTank.hpp"
 
 #include "mge/config.hpp"
 #include "Content/DeferredTestScene.hpp"
@@ -57,13 +60,13 @@ void DeferredTestScene::_initializeScene() {
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
     Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"plane.obj");
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
-	Mesh* teapotMeshS = Mesh::load(config::MGE_MODEL_PATH + "teapot_smooth.obj");
+	Mesh* teapotMeshS = Mesh::load(config::MGE_MODEL_PATH + "Creature3_OBJ.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
 
     //10 specular teapot material
-    AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
+    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 10);
 
     //SCENE SETUP
  //   GameObject* plane = new GameObject("plane", glm::vec3(0,0,0));
@@ -75,20 +78,22 @@ void DeferredTestScene::_initializeScene() {
 
 	GameObject* teapot = new GameObject("teapot", glm::vec3(4, 1, 4));
 	teapot->addBehaviour(new KeysBehaviour());
+	teapot->setMesh(teapotMeshS);
+	teapot->setMaterial(textureMaterial2);
 	_world->add(teapot);
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			GameObject* teapot = new GameObject("teapot", glm::vec3(i*2, 1, j*2));
-			teapot->setMesh(teapotMeshS);
-			teapot->setMaterial(textureMaterial2);
-			teapot->addBehaviour(new KeysBehaviour());
-			_world->add(teapot);
-		}
-	}
+	//for (int i = 0; i < 5; i++) {
+	//	for (int j = 0; j < 5; j++) {
+	//		GameObject* teapot = new GameObject("teapot", glm::vec3(i*2, 1, j*2));
+	//		teapot->setMesh(teapotMeshS);
+	//		teapot->setMaterial(textureMaterial2);
+	//		teapot->addBehaviour(new KeysBehaviour());
+	//		_world->add(teapot);
+	//	}
+	//}
+	FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
 
 
-
-    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
+    camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, teapot));
 
     float random = 9;
     std:: cout << "random seed: " << random << std::endl;

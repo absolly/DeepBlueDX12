@@ -9,7 +9,7 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "Content/GameObjects/FishTank.hpp"
 #include "mge/core/GameObject.hpp"
-#include "mge/materials/LitWaveMaterial.hpp"
+#include "mge/materials/TextureMaterial.hpp"
 #include "Content/Behaviours/FlockingBehaviour.hpp"
 
 FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount) : GameObject(pName ,pPosition)
@@ -27,8 +27,8 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 
 	
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "Creature_OBJ.obj");
-	AbstractMaterial* colormat = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "Fish1_OBJ.OBJ");
+	AbstractMaterial* colormat = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 
 	random_device rd;
 

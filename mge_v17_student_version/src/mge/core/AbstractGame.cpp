@@ -33,7 +33,7 @@ void AbstractGame::initialize() {
     _initializeWindow();
     _printVersionInfo();
     _initializeGlew();
-    _initializeRenderer();
+     _initializeRenderer();
     _initializeWorld();
     _initializeScene();
     cout << endl << "Engine initialized." << endl << endl;
@@ -151,6 +151,28 @@ void AbstractGame::_update(float pStep) {
 }
 
 void AbstractGame::_render () {
+
+	//glm::vec3 lightInvDir = glm::vec3(0.5f, 2, 2);
+
+	//// Compute the MVP matrix from the light's point of view
+	//glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 20);
+	//glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	//glm::mat4 depthModelMatrix = glm::mat4(1.0);
+	//glBindBuffer(GL_FRAMEBUFFER, _renderer->ShadowBuffer);
+	//glViewport(0, 0, 1024, 1024); 
+	//// Render on the whole framebuffer, complete from the lower left corner to the upper right
+
+	//// We don't use bias in the shader, but instead we draw back faces, 
+	//// which are already separated from the front faces by a small distance 
+	//// (if your geometry is made this way)
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+
+	//					 // Clear the screen
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//_renderer->render(_world, depthModelMatrix, depthViewMatrix, depthProjectionMatrix, true);
+
 	// Clear the screen
 	// Render to our framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->FramebufferName);
