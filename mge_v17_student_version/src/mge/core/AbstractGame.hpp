@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
 #include <string>
+#include "mge/core/ShaderProgram.hpp"
+
 using namespace std;
 
 class World;
@@ -52,6 +54,7 @@ class AbstractGame
         virtual void _update(float pStep);
         //render all game objects in the display root
         virtual void _render();
+		virtual void _renderToQuad();
         //process any sfml window events (see SystemEventDispatcher/Listener)
         virtual void _processEvents();
 
@@ -68,6 +71,8 @@ class AbstractGame
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
 		bool _mouseCursorVisible = false;
 		void onToggleMouseLock(sf::Event::KeyEvent& event);
+		ShaderProgram* _shader;
+		GLuint quad_vertexbuffer;
 };
 
 #endif // ABSTRACTGAME_H

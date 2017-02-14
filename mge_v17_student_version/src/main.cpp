@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "mge/core/AbstractGame.hpp"
-#include "Content/TestScene.hpp"
+#include "Content/DeferredTestScene.hpp"
 #include <Windows.h>
 
 extern "C" {
@@ -26,7 +26,7 @@ int main()
 {
     std::cout << "Starting Game" << std::endl;
 
-    AbstractGame* game = new TestScene();
+    AbstractGame* game = new DeferredTestScene();
     game->initialize();
     game->run();
 

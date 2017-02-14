@@ -1,0 +1,34 @@
+#ifndef TestScene_H
+#define TestScene_H
+
+#include <mge/core/AbstractGame.hpp>
+#include "mge/core/LuaParser.hpp"
+
+class DebugHud;
+
+class DeferredTestScene: public AbstractGame
+{
+    //PUBLIC FUNCTIONS
+
+	public:
+		DeferredTestScene();
+		virtual ~DeferredTestScene();
+
+        virtual void initialize();
+
+	protected:
+        virtual void _initializeScene();
+
+	    //override render to render the hud as well.
+	    virtual void _render();
+
+	private:
+		DebugHud* _hud;                   //hud display
+        LuaParser* _parser;
+        void _updateHud();
+
+		DeferredTestScene(const DeferredTestScene&);
+		DeferredTestScene& operator=(const DeferredTestScene&);
+};
+
+#endif // TestScene_H
