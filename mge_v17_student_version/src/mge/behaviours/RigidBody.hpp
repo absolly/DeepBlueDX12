@@ -5,7 +5,7 @@
 
 class RigidBody : public AbstractBehaviour, public btRigidBody {
 public: 
-	RigidBody(float pMass = 1, btDefaultMotionState* pMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0))), btCollisionShape* pShape = new btSphereShape(1), glm::vec3 pInertia = glm::vec3(0, 0, 0));
+	RigidBody(float pMass = 1, btDefaultMotionState* pMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0))), btCollisionShape* pShape = new btSphereShape(1), btVector3& pInertia = btVector3(0, 0, 0));
 	RigidBody(btRigidBody::btRigidBodyConstructionInfo& pConstructionInfo);
 	~RigidBody();
 
@@ -13,5 +13,5 @@ public:
 protected:
 	GameObject* _owner;
 private:
-	btVector3 calculateIntertia(const float pMass, const btCollisionShape * pShape, const glm::vec3 pInertia) const;
+	btVector3 calculateIntertia(const float pMass, const btCollisionShape * pShape, btVector3& pInertia) const;
 };

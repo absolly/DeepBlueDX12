@@ -16,20 +16,18 @@ Trigger::Trigger(PhysicsWorld& physicsWorld, btCollisionShape* shape) : Abstract
 	btTransform startTransform;
 	//startTransform.setIdentity();
 	glm::mat4 transform = glm::mat4(1);//getTransform();
-	glm::quat rotation = glm::quat_cast(transform);
+	//glm::quat rotation = glm::quat_cast(transform);
 	glm::vec3 position = transform[3];
-	glm::vec3 scale = glm::vec3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
-	startTransform.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
-	
-	//startTransform.setOrigin(btVector3(position.x, position.y, position.z));
-	scale.x = 1;
-	scale.y = 1;
-	scale.z = 1;
+	btVector3 scale = btVector3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
+	//startTransform.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
+
+	_collisionShape = shape;
+	setCollisionShape(_collisionShape);
 	//btCollisionShape* shape2 = shape;
-	setCollisionShape(shape);
-	shape->setLocalScaling(btVector3(4, 4, 4));
 	//setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	_physicsWorld->addCollisionObject(this, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter);
+	_collisionShape->setLocalScaling(scale);
+	physicsWorld.updateSingleAabb(this);
 }
 
 Trigger::~Trigger()
@@ -40,6 +38,7 @@ void Trigger::update(float pStep)
 {
 	checkForCollisions();
 	setWorldTransform(_owner->getBulletPhysicsTransform());
+	_collisionShape->setLocalScaling(_owner->getBulletPhysicsLocalScale());
 	debugDrawContacts();
 }
 

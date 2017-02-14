@@ -6,6 +6,8 @@
 #include <iostream>
 #include <glm.hpp>
 #include <btBulletDynamicsCommon.h>
+#include "mge\core\Physics\Colliders\BoxCollider.h"
+#include "mge\core\Physics\Colliders\SphereCollider.h"
 
 class AbstractBehaviour;
 class AbstractMaterial;
@@ -31,6 +33,9 @@ class GameObject
 
 		const btTransform & getBulletPhysicsTransform() const;
 
+		glm::vec3 getLocalScale();
+		btVector3 getBulletPhysicsLocalScale();
+
         //access just the local position
 		void setLocalPosition (glm::vec3 pPosition);
 		glm::vec3 getLocalPosition() const;
@@ -54,6 +59,12 @@ class GameObject
 
 		void addBehaviour(AbstractBehaviour* pBehaviour);
 		std::vector<AbstractBehaviour*> getBehaviours();
+
+		std::vector<Collider*> colliders;
+		void addCollider(BoxColliderArgs& colliderArgs);
+		void addCollider(SphereColliderArgs& colliderArgs);
+
+		void addRigidBody(float mass = 1, btVector3& inertia = btVector3(0, 0, 0), btDefaultMotionState& defaultMotionState = *new btDefaultMotionState(btTransform()));
 
 		template <class BehaviourType>
 		BehaviourType* getBehaviour();

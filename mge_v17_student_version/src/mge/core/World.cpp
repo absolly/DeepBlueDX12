@@ -77,5 +77,6 @@ void World::updatePhysics(float pDelta) {
 
 void World::debugDraw()
 {
+	DebugDrawer::useShader();
 	physics->debugDrawWorld();
 }

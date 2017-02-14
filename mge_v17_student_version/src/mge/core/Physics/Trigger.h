@@ -19,4 +19,5 @@ public:
 	std::unordered_map<btCollisionObject*, Event<btCollisionObject*>> collisionEvents;
 private:
 	class PhysicsWorld* _physicsWorld;
+	btCollisionShape* _collisionShape;
 };
