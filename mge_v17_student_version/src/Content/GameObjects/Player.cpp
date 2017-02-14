@@ -2,8 +2,8 @@
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
 #include "mge\core\Physics\Trigger.h"
-#include "mge/core/Camera.hpp" 
-#include "Content\Behaviours\Player\DivingAnimationBehaviour.h" 
+#include "mge\core\World.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
 Player::Player() : GameObject("Player"),
 coolFloatEvent(*new Event<float>())
@@ -20,11 +20,6 @@ coolFloatEvent(*new Event<float>())
 	*/
 	#pragma endregion
 
-	//Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "cube_flat.obj");
-	//setMesh(cubeMeshF);
-	//AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
-	//setMaterial(material);
-	
 	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "cube_flat.obj");
 	setMesh(cubeMeshF);
 	AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
@@ -32,7 +27,6 @@ coolFloatEvent(*new Event<float>())
 
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
-
 
 
 	

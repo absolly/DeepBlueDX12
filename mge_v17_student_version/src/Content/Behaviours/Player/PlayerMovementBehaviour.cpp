@@ -19,7 +19,7 @@ PlayerMovementBehaviour::~PlayerMovementBehaviour()
 
 void PlayerMovementBehaviour::update(float deltaTime)
 {
-	float sensitivity = 0.12f;
+	float sensitivity = 0.15f;
 	float invertYAxis = false;
 
 	//TODO Get the screen position and screensize from the actual window.

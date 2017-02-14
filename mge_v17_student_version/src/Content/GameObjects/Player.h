@@ -4,8 +4,6 @@
 #include "Content\Behaviours\Player\PlayerMovementBehaviour.h"
 #include "Content\Core\EventHandler.h"
 
-class Camera;
-
 class Player : public GameObject
 {
 public:
