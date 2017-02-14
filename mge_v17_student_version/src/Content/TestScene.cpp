@@ -85,14 +85,14 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
     //SCENE SETUP
- ////   PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
- ////   plane->scale(glm::vec3(50,50,50));
- ////   plane->setMesh(planeMeshDefault);
- ////   plane->setMaterial(waveMaterial);
-	////plane->addBehaviour(new KeysBehaviour());
+    PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
+    plane->scale(glm::vec3(50,50,50));
+    plane->setMesh(planeMeshDefault);
+    plane->setMaterial(waveMaterial);
+	plane->addBehaviour(new KeysBehaviour());
 
- //   btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
- //   //groundShape->setLocalScaling(btVector3(50,50,50));
+    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+    //groundShape->setLocalScaling(btVector3(50,50,50));
 
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btRigidBody::btRigidBodyConstructionInfo

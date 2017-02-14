@@ -24,7 +24,7 @@ coolFloatEvent(*new Event<float>())
 	setMesh(cubeMeshF);
 	AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 	setMaterial(material);
-
+		
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
 
