@@ -109,7 +109,7 @@ void TestScene::_initializeScene() {
 	teapot->addBehaviour(&teapotTrigger);
 	_world->add(teapot);
 
-	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 10);
+	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 0);
 
 	GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
@@ -156,6 +156,9 @@ void TestScene::_initializeScene() {
 			_world->add(monkey);
 		}
 	}
+	Player* player = new Player(*camera);
+	_world->add(player);
+	/*
 	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
@@ -165,14 +168,7 @@ void TestScene::_initializeScene() {
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	player->addCollider(SphereColliderArgs(1));
 	//player->addRigidBody(1);
-	player->add(camera);
-
-
-
-	glm::mat4 mat4 = glm::mat4(1);
-	std::cout << mat4 << std::endl;
-	glm::mat4 rotatedMatrix = glm::rotate(mat4, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	std::cout << rotatedMatrix << std::endl;
+	player->add(camera);*/
 
 
 	//camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));

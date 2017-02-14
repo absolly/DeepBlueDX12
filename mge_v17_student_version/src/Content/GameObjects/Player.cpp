@@ -2,8 +2,8 @@
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
 #include "mge\core\Physics\Trigger.h"
-#include "mge\core\World.hpp"
-#include "mge\core\Physics\PhysicsWorld.h"
+#include "mge/core/Camera.hpp" 
+#include "Content\Behaviours\Player\DivingAnimationBehaviour.h" 
 
 Player::Player(Camera& camera) : GameObject("Player"),
 coolFloatEvent(*new Event<float>())
@@ -30,7 +30,8 @@ coolFloatEvent(*new Event<float>())
 	GameObject* container = new GameObject("");
 	add(container);
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
-	addBehaviour(_playerMovementBehaviour);
+	container->addBehaviour(_playerMovementBehaviour);
+	container->add(&camera);
 
 
 	
