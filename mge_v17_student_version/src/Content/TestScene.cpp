@@ -220,6 +220,7 @@ void TestScene::_render() {
 	AbstractGame::_render();
 	_world->debugDraw();
 	_updateHud();
+	AbstractGame::_renderToQuad();
 }
 
 void TestScene::_updateHud() {
