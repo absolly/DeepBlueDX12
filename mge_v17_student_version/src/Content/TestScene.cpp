@@ -85,14 +85,14 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
     //SCENE SETUP
-    PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
-    //plane->scale(glm::vec3(50,50,50));
-    plane->setMesh(planeMeshDefault);
-    plane->setMaterial(waveMaterial);
-	plane->addBehaviour(new KeysBehaviour());
+ ////   PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
+ ////   plane->scale(glm::vec3(50,50,50));
+ ////   plane->setMesh(planeMeshDefault);
+ ////   plane->setMaterial(waveMaterial);
+	////plane->addBehaviour(new KeysBehaviour());
 
-    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-    //groundShape->setLocalScaling(btVector3(50,50,50));
+ //   btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+ //   //groundShape->setLocalScaling(btVector3(50,50,50));
 
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btRigidBody::btRigidBodyConstructionInfo
@@ -110,6 +110,8 @@ void TestScene::_initializeScene() {
 	_world->add(teapot);
 
 	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 0);
+	LuaParser * luaparser = new LuaParser(_world);
+	luaparser->loadFile((config::MGE_LEVEL_PATH + "exported_scene.lua").c_str());
 
 	GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());

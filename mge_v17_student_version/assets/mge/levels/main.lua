@@ -1,38 +1,65 @@
-------------------------------------------------------------------------------------------------------------------------
---														start()
-------------------------------------------------------------------------------------------------------------------------
-function start()
-	print ("Welcome to this adventure. Find a coin!")
-
-	player = createObject("player", 0, 0, 0, "red")
-	coin = createObject("coin", 0, 0, 3, "yellow")
-	key = createObject("key", 3, 0, 0, "grey")
-
-	setmaincharacter(player);
-
-	addlistener(player, key, "onPlayerKeyCollide")
-	addlistener(player, coin, "onPlayerCoinCollide")
-
-	hasKey = false
-end
-
-------------------------------------------------------------------------------------------------------------------------
---														onPlayerCoinCollide()
-------------------------------------------------------------------------------------------------------------------------
-function onPlayerKeyCollide(player, key)
-	print("you found a key! Good job!")
-	destroy(key)
-	hasKey = true
-end
-
-------------------------------------------------------------------------------------------------------------------------
---														onPlayerCoinCollide()
-------------------------------------------------------------------------------------------------------------------------
-function onPlayerCoinCollide(player, coin)
-	if hasKey == true then
-		print("you found the coin! Game complete!")
-		destroy(coin);
-	else
-		print("nice try, but you need to find the key first..")
-	end
-end
+createObject("Stone", 15,0,0,105,0,15,0,7.5,0,0,15,-65,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("TreeStem", 20,0,0,145,0,40,0,20,0,0,20,-100,0,0,0,1);
+addMaterial("brown");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("TreeLeaves", 60,0,0,146.9,0,60,0,70,0,0,60,-98.6,0,0,0,1);
+addMaterial("ltgreen");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createTrigger("TreeLeavesMove");
+createObject("HouseWallNorth", 120,0,0,-126.6,0,60,0,26.5,0,0,10,130.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallSouthEast", 50,0,0,-94.4,0,60,0,26.5,0,0,10,50.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallEast", 10,0,0,-71.6,0,60,0,26.5,0,0,90,90.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallWest", 10,0,0,-181.6,0,60,0,26.5,0,0,90,90.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallSouthWest", 30,0,0,-164.4,0,60,0,26.5,0,0,10,50.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseDoor", 30,0,0,-134.4,0,60,0,26.5,0,0,10,50.69812,0,0,0,1);
+addMaterial("brown");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("TownSquare", 400,0,0,0,0,0.01,0,0,0,0,300,0,0,0,0,1);
+addMaterial("green");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallNorth", 120,0,0,123.4,0,60,0,26.5,0,0,10,130.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallSouthEast", 40,0,0,160.6,0,60,0,26.5,0,0,10,50.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallEast", 10,0,0,178.4,0,60,0,26.5,0,0,90,90.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallWest", 10,0,0,68.39999,0,60,0,26.5,0,0,90,90.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("HouseWallSouthWest", 40,0,0,90.60001,0,60,0,26.5,0,0,10,50.7,0,0,0,1);
+addMaterial("gray");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("Lever", 20,0,0,-45,0,30,0,15,0,0,30,-130,0,0,0,1);
+addMaterial("yellow");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("Gate", 50,0,0,0,0,80,0,40,0,0,15,-150,0,0,0,1);
+addMaterial("brown");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("Gold", 15,0,0,-165,0,15,0,7.5,0,0,15,115,0,0,0,1);
+addMaterial("yellow");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("Key", 15,0,0,-185,0,15,0,7.5,0,0,15,-135,0,0,0,1);
+addMaterial("yellow");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createObject("NPC", 20,0,0,90,0,40,0,18.25,0,0,20,110,0,0,0,1);
+addMaterial("brown");
+addCollider("boxCollider", 1,1,1,0,0,0);
+createLight("Directional", 0.8660254,-0.3830223,-0.3213938,0,0,0.6427875,-0.7660446,3,0.5,0.6634141,0.5566703,0,0,0,0,1");
+addLightAttributes(10,1, 1,0.9568627,0.8392157,1);
+createLight("Point", 1,0,0,0,0,1,0,3,0,0,1,0,0,0,0,1");
+addLightAttributes(150,3.41, 0.9558824,0,0,1);
