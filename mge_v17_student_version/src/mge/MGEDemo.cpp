@@ -122,7 +122,8 @@ void MGEDemo::_initializeScene() {
 }
 
 void MGEDemo::_render() {
-    AbstractGame::_render();
+	_world->debugDraw();
+    //AbstractGame::_render();
     _updateHud();
 }
 

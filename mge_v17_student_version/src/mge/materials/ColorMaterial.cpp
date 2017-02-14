@@ -63,5 +63,5 @@ void ColorMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm
 
     //now inform mesh of where to stream its data
     pMesh->streamToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
-
+	
 }

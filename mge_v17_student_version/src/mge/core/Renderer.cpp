@@ -68,7 +68,7 @@ void Renderer::renderChildren (GameObject* pGameObject, const glm::mat4& pModelM
             childScale.y = glm::length( child->getTransform()[1]);
             childScale.z = glm::length( child->getTransform()[2]);
             btTransform trans;
-			rigidBody->rigidBody->getMotionState()->getWorldTransform(trans);
+			rigidBody->getMotionState()->getWorldTransform(trans);
 
             glm::mat4 glmTrans;
             trans.getOpenGLMatrix(glm::value_ptr(glmTrans));

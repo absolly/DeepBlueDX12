@@ -55,13 +55,13 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed, _maxMoveSpeed);
+	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
 	//Moving sideways
 	float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
 	_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
-	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed);
+	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
 	if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
 
 
@@ -100,7 +100,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	
 	glm::vec3 ownerPosition = _owner->getLocalPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
-	ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 3000.0f);
+	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
 	_owner->setLocalPosition(ownerPosition);
 }
 

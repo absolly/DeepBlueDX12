@@ -165,8 +165,6 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>C:\Users\Rick Rosendaal\ProjectOwnEngine\mge_v17_student_version\_vs2015\Bullet3\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalOptions>/SUBSYSTEM:windows
-/ENTRY:mainCRTStartup %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(ProjectDir)External\*.dll" "$(ProjectDir)$(OutDir)"
@@ -229,12 +227,19 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\LuaParser.hpp" />
     <ClInclude Include="src\mge\core\Mesh.hpp" />
     <ClInclude Include="src\mge\core\PhysicsObject.hpp" />
+    <ClInclude Include="src\mge\core\Physics\Colliders\BoxCollider.h" />
+    <ClInclude Include="src\mge\core\Physics\Colliders\Collider.h" />
+    <ClInclude Include="src\mge\core\Physics\Colliders\SphereCollider.h" />
+    <ClInclude Include="src\mge\core\Physics\DebugDrawer.h" />
+    <ClInclude Include="src\mge\core\Physics\PhysicsWorld.h" />
+    <ClInclude Include="src\mge\core\Physics\Trigger.h" />
     <ClInclude Include="src\mge\core\Renderer.hpp" />
     <ClInclude Include="src\mge\core\ShaderProgram.hpp" />
     <ClInclude Include="src\mge\core\Texture.hpp" />
     <ClInclude Include="src\mge\core\World.hpp" />
     <ClInclude Include="src\mge\materials\AbstractMaterial.hpp" />
     <ClInclude Include="src\mge\materials\ColorMaterial.hpp" />
+    <ClInclude Include="src\mge\materials\DebugRenderMaterial.hpp" />
     <ClInclude Include="src\mge\materials\LitWaveMaterial.hpp" />
     <ClInclude Include="src\mge\materials\TerrainMaterial.hpp" />
     <ClInclude Include="src\mge\materials\TextureMaterial.hpp" />
@@ -265,12 +270,19 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\LuaParser.cpp" />
     <ClCompile Include="src\mge\core\Mesh.cpp" />
     <ClCompile Include="src\mge\core\PhysicsObject.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Colliders\BoxCollider.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Colliders\Collider.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Colliders\SphereCollider.cpp" />
+    <ClCompile Include="src\mge\core\Physics\DebugDrawer.cpp" />
+    <ClCompile Include="src\mge\core\Physics\PhysicsWorld.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Trigger.cpp" />
     <ClCompile Include="src\mge\core\Renderer.cpp" />
     <ClCompile Include="src\mge\core\ShaderProgram.cpp" />
     <ClCompile Include="src\mge\core\Texture.cpp" />
     <ClCompile Include="src\mge\core\World.cpp" />
     <ClCompile Include="src\mge\materials\AbstractMaterial.cpp" />
     <ClCompile Include="src\mge\materials\ColorMaterial.cpp" />
+    <ClCompile Include="src\mge\materials\DebugRenderMaterial.cpp" />
     <ClCompile Include="src\mge\materials\LitWaveMaterial.cpp" />
     <ClCompile Include="src\mge\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\mge\materials\TextureMaterial.cpp" />
