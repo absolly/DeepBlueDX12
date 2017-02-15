@@ -66,13 +66,15 @@ class AbstractGame
     private:
         AbstractGame(const AbstractGame&);
         AbstractGame& operator=(const AbstractGame&);
-
+		void DrawQuad();
 		void onCloseWindowEvent(sf::Event& event);
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
 		bool _mouseCursorVisible = false;
 		void onToggleMouseLock(sf::Event::KeyEvent& event);
 		ShaderProgram* _shader;
+		ShaderProgram* _blurShader;
 		GLuint quad_vertexbuffer;
+
 };
 
 #endif // ABSTRACTGAME_H
