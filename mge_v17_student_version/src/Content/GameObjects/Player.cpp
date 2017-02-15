@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
-#include "mge\core\Physics\Trigger.h"
+#include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\World.hpp"
 #include "mge\core\Physics\PhysicsWorld.h"
 
@@ -27,10 +27,8 @@ coolFloatEvent(*new Event<float>())
 		
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
 	addBehaviour(_playerMovementBehaviour);
-
-
-	
-	
+	//addCollider(BoxColliderArgs(btVector3(1, 1, 1)), false, true);
+	//addRigidBody(1);
 	//setLocalPosition(glm::vec3(10, 10, 10));
 }
 

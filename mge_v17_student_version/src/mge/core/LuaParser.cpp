@@ -1,6 +1,9 @@
 #include "LuaParser.hpp"
 #include "mge/config.hpp"
 #include "mge/core/Light.hpp"
+#include "mge\core\Physics\CollisionBehaviour.h"
+#include "mge\core\Physics\PhysicsWorld.h"
+#include "World.hpp"
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -361,7 +364,14 @@ int LuaParser::createObject(lua_State * lua) {
 	_currentGameObject = go;
 	_world->add(go);
 
-	std::cout << "Create Object" << std::endl;
+	std::cout << "Create Object: " << meshName << std::endl;
+
+	if (meshName != "LuchtTankHouder" && meshName != "Tank1")
+	{
+		//Trigger& randomTrigger = *new Trigger(gameObjectMesh->getMeshCollisionShape());
+		//go->addBehaviour(&randomTrigger);
+		go->addCollider(MeshColliderArgs(*gameObjectMesh), false, false);
+	}
 
     return 1;
 }

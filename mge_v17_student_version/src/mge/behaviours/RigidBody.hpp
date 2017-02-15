@@ -11,7 +11,6 @@ public:
 
 	virtual void update(float pStep);
 protected:
-	GameObject* _owner;
 private:
 	btVector3 calculateIntertia(const float pMass, const btCollisionShape * pShape, btVector3& pInertia) const;
 };

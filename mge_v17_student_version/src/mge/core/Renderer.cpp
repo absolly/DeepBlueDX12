@@ -128,8 +128,8 @@ void Renderer::renderChildren (GameObject* pGameObject, const glm::mat4& pModelM
     for (int i = 0; i < childCount; i++) {
         child = pGameObject->getChildAt(i);
 
-		RigidBody* rigidBody = child->getBehaviour<RigidBody>();
-
+		/*RigidBody* rigidBody = child->getBehaviour<RigidBody>();
+		
         if(rigidBody != nullptr) {
             glm::vec3 childScale;
             childScale.x = glm::length( child->getTransform()[0]);
@@ -142,7 +142,7 @@ void Renderer::renderChildren (GameObject* pGameObject, const glm::mat4& pModelM
             trans.getOpenGLMatrix(glm::value_ptr(glmTrans));
             child->setTransform(glmTrans);
             child->scale(childScale);
-        }
+        }*/
         render (child, pModelMatrix * child->getTransform(), pViewMatrix, pProjectionMatrix, pRecursive);
     }
 }
