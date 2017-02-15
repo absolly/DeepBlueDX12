@@ -6,7 +6,7 @@ out vec4 color;
 
 uniform sampler2D renderedTexture;
 uniform sampler2D depthTexture;
-float FogDensity = 3;
+float FogDensity = 1;
 vec3 fogColor = vec3(.3,.6,1);
 
 
