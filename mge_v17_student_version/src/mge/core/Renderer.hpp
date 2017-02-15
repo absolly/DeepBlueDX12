@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include <glm.hpp>
+#include <GL/glew.h>
 
 class World;
 class GameObject;
@@ -33,10 +34,15 @@ class Renderer
 
         //helper method to render all the children of a gameobject
         void renderMeshDebugInfo (Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
-
+		GLuint renderedTexture;
+		GLuint FramebufferName = 0;
+		GLuint ShadowBuffer = 0;
+		GLuint shadowDepthTexture;
+		GLuint depthTexture;
     private:
         //helper method to render a single gameobject
         void renderSelf (GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
+
 
 };
 

@@ -1,17 +1,16 @@
 #include "RigidBody.hpp"
 
-RigidBody::RigidBody(float pMass, btDefaultMotionState * pMotionState, btCollisionShape * pShape, glm::vec3 pInertia)
+RigidBody::RigidBody(float pMass, btDefaultMotionState * pMotionState, btCollisionShape * pShape, btVector3& pInertia) :
+	btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, pShape, calculateIntertia(pMass, pShape, pInertia)))
 {
-	btVector3 intertia(pInertia.x, pInertia.y, pInertia.z);
-	pShape->calculateLocalInertia(pMass, intertia);
-	rigidBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, pShape, intertia));
-	World::addRigidBody(rigidBody);
+	//rigidBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, pShape, intertia));
+	World::addRigidBody(this);
 }
 
-RigidBody::RigidBody(btRigidBody::btRigidBodyConstructionInfo& pConstructionInfo)
+RigidBody::RigidBody(btRigidBody::btRigidBodyConstructionInfo& pConstructionInfo) : 
+	btRigidBody(pConstructionInfo)
 {
-	rigidBody = new btRigidBody(pConstructionInfo);
-	World::addRigidBody(rigidBody);
+	World::addRigidBody(this);
 }
 
 RigidBody::~RigidBody()
@@ -20,5 +19,11 @@ RigidBody::~RigidBody()
 
 void RigidBody::update(float pStep)
 {
+}
+
+btVector3 RigidBody::calculateIntertia(const float pMass, const btCollisionShape * pShape, btVector3& pInertia) const
+{
+	pShape->calculateLocalInertia(pMass, pInertia);
+	return pInertia;
 }
 

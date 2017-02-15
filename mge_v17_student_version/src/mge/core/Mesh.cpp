@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include "btBulletDynamicsCommon.h"
 
 using namespace std;
 
@@ -405,6 +406,40 @@ void Mesh::drawDebugInfo(const glm::mat4& pModelMatrix, const glm::mat4& pViewMa
 
 	}
 	glEnd();
+}
+
+btCollisionShape* Mesh::getMeshCollisionShape()
+{
+	std::vector<unsigned>& indices2 = *getVertextIndices();
+	std::vector<glm::vec3>& verticies = *getVerticies();
+
+	unsigned int index_count = indices2.size();
+	unsigned int vertex_count = verticies.size();
+	unsigned *indices = &indices2[0];
+	glm::vec3 *vertices = &verticies[0];
+
+	unsigned int numFaces = index_count / 3;
+	int vertStride = sizeof(glm::vec3);
+	int indexStride = 3 * sizeof(unsigned);
+
+	btTriangleIndexVertexArray* va = new btTriangleIndexVertexArray(
+		numFaces,
+		(int*)indices,
+		indexStride,
+		vertex_count,
+		(btScalar*)vertices,
+		vertStride);
+	return new btBvhTriangleMeshShape(va, true);
+}
+
+std::vector<glm::vec3>* Mesh::getVerticies()
+{
+	return &_vertices;
+}
+
+std::vector<unsigned>* Mesh::getVertextIndices()
+{
+	return &_indices;
 }
 
 

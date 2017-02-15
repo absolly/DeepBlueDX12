@@ -15,22 +15,22 @@ public:
 private:
 
 	//[Header("Forward Movement")]
-	float _minMoveSpeed = -15.0f;
-	float _maxMoveSpeed = 25;
-	float _moveAcceleration = 50;
-	float _moveDecceleration = 50;
+	float _minMoveSpeed = -6.5f;
+	float _maxMoveSpeed = 8;
+	float _moveAcceleration = 20;
+	float _moveDecceleration = 20;
 	float _currentMoveSpeed;
 	//[Header("Sideway Movement")]
-	float _minSideMoveSpeed = -15;
-	float _maxSideMoveSpeed = 15;
-	float _moveSideAcceleration = 60;
-	float _moveSideDecceleration = 60;
+	float _minSideMoveSpeed = -5;
+	float _maxSideMoveSpeed = 5;
+	float _moveSideAcceleration = 20;
+	float _moveSideDecceleration = 20;
 	float _currentMoveSideSpeed;
 	//[Header("Movement Floating Up")]
-	float _minMoveUpSpeed = -12;
-	float _maxMoveUpSpeed = 15;
-	float _moveUpAcceleration = 60;
-	float _moveUpDecceleration = 60;
+	float _minMoveUpSpeed = -2;
+	float _maxMoveUpSpeed = 5;
+	float _moveUpAcceleration = 20;
+	float _moveUpDecceleration = 20;
 	float _currentMoveUpSpeed;
 
 	//[Header("Pitch rotation")]

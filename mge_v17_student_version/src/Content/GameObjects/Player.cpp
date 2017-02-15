@@ -1,10 +1,11 @@
 #include "Player.h"
 #include "mge\materials\TextureMaterial.hpp"
 #include "mge\core\Mesh.hpp"
-#include "mge/core/Camera.hpp"
-#include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
+#include "mge\core\Physics\Trigger.h"
+#include "mge\core\World.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
-Player::Player(Camera& camera) : GameObject("Player"),
+Player::Player() : GameObject("Player"),
 coolFloatEvent(*new Event<float>())
 {
 	#pragma region FutureImplementation
@@ -19,21 +20,17 @@ coolFloatEvent(*new Event<float>())
 	*/
 	#pragma endregion
 
-	//Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "cube_flat.obj");
-	//setMesh(cubeMeshF);
-	//AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
-	//setMaterial(material);
-	
-	addBehaviour(new DivingAnimationBehaviour());
-
-	GameObject* container = new GameObject("");
-	add(container);
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "cube_flat.obj");
+	setMesh(cubeMeshF);
+	AbstractMaterial* material = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
+	setMaterial(material);
+		
 	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
-	container->addBehaviour(_playerMovementBehaviour);
-	container->add(&camera);
+	addBehaviour(_playerMovementBehaviour);
 
 
-	//addBehaviour(_playerMovementBehaviour);
+	
+	
 	//setLocalPosition(glm::vec3(10, 10, 10));
 }
 

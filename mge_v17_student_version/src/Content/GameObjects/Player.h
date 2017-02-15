@@ -4,12 +4,10 @@
 #include "Content\Behaviours\Player\PlayerMovementBehaviour.h"
 #include "Content\Core\EventHandler.h"
 
-class Camera;
-
 class Player : public GameObject
 {
 public:
-	Player(Camera& camera);
+	Player();
 	~Player();
 
 	void onSpacePressedEvent(sf::Event::KeyEvent & keyEvent);
