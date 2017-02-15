@@ -2,7 +2,7 @@
 
 in vec2 UV;
 
-out vec3 color;
+out vec4 color;
 
 uniform sampler2D renderedTexture;
 uniform sampler2D depthTexture;
@@ -23,5 +23,5 @@ void main(){
 	//fogFactor = clamp( fogFactor, 0.0, 1.0);
 
 	float fogFactor = fogFactorExp((texture( depthTexture, UV).x-.997)*1000 , FogDensity);
-	color = mix(texture( renderedTexture, UV).xyz, fogColor, fogFactor);
+	color = vec4(mix(texture( renderedTexture, UV).xyz, fogColor, fogFactor),1);
 }
