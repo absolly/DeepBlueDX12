@@ -8,6 +8,7 @@
 #include <btBulletDynamicsCommon.h>
 #include "mge\core\Physics\Colliders\BoxCollider.h"
 #include "mge\core\Physics\Colliders\SphereCollider.h"
+#include "mge\core\Physics\Colliders\MeshCollider.h"
 
 class AbstractBehaviour;
 class AbstractMaterial;
@@ -29,6 +30,7 @@ class GameObject
 
         //contains local rotation, scale, position
 		void setTransform (const glm::mat4& pTransform);
+		void setWorldTransform_TEST(const glm::mat4 & pTransform);
         const glm::mat4& getTransform() const;
 
 		const btTransform & getBulletPhysicsTransform() const;
@@ -61,8 +63,9 @@ class GameObject
 		std::vector<AbstractBehaviour*> getBehaviours();
 
 		std::vector<Collider*> colliders;
-		void addCollider(BoxColliderArgs& colliderArgs);
-		void addCollider(SphereColliderArgs& colliderArgs);
+		void addCollider(BoxColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition);
+		void addCollider(MeshColliderArgs & colliderArgs, bool isTrigger, bool usePhysicsPosition);
+		void addCollider(SphereColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition);
 
 		void addRigidBody(float mass = 1, btVector3& inertia = btVector3(0, 0, 0), btDefaultMotionState& defaultMotionState = *new btDefaultMotionState(btTransform()));
 

@@ -88,20 +88,40 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	glm::mat4x4 scaleMatrix = glm::mat4x4(1);
 	glm::mat4x4 transformedVector = translationMatrix * rotationMatrix * scaleMatrix;;// *originalVector;
-	_owner->setTransform(transformedVector);
+	//_owner->setTransform(transformedVector);
 
 	float totalMoveSpeed = glm::sqrt(glm::pow2(glm::sign(_currentMoveSpeed)) + glm::pow2(glm::sign(_currentMoveSideSpeed)));
 	float multiplier = totalMoveSpeed > 0 ? (1 / totalMoveSpeed) : 0;
+	btRigidBody* rigidBody = _owner->getParent()->getBehaviour<btRigidBody>();
 	if (totalMoveSpeed != 0)
 	{
-		_owner->translate(glm::vec3(0.0f, 0.0f, _currentMoveSpeed * multiplier * deltaTime));
-		_owner->translate(glm::vec3(_currentMoveSideSpeed * multiplier * deltaTime, 0.0f, 0.0f));
+		//_owner->translate(glm::vec3(0.0f, 0.0f, _currentMoveSpeed * multiplier * deltaTime));
+		//_owner->translate(glm::vec3(_currentMoveSideSpeed * multiplier * deltaTime, 0.0f, 0.0f));
+		//btRigidBody* rigidBody = _owner->getParent()->getBehaviour<btRigidBody>();
+		//rigidBody->translate(btVector3(0, 0.0f, _currentMoveSpeed * multiplier * deltaTime));
+		//rigidBody->translate(btVector3(_currentMoveSideSpeed * multiplier * deltaTime, 0.0f, 0.0f));
+		//rigidBody->setLinearVelocity(btVector3(_currentMoveSideSpeed * multiplier, 0.0f, _currentMoveSpeed * multiplier * 1));
+		
+		//std::cout << "totalMoveSpeed: " << rigidBody->getWorldTransform().getOrigin()[0] << " active: " << rigidBody->isActive() << std::endl;
 	}
-	
+	glm::quat glmQuaternion = glm::quat_cast(rotationMatrix);
+	btQuaternion quaternion = btQuaternion(glmQuaternion.x, glmQuaternion.y, glmQuaternion.z, glmQuaternion.w);
+	rigidBody->getWorldTransform().setRotation(quaternion);
+
+	btVector3 velocity = btVector3(_currentMoveSideSpeed * multiplier, _currentMoveUpSpeed, _currentMoveSpeed * multiplier * 1);
+	velocity = quatRotate(quaternion, velocity);
+	rigidBody->setLinearVelocity(velocity);
+
+
+
+	rigidBody->setAngularFactor(btVector3(0, 0, 0));
+	rigidBody->setActivationState(ACTIVE_TAG);
 	glm::vec3 ownerPosition = _owner->getLocalPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
 	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
-	_owner->setLocalPosition(ownerPosition);
+	//_owner->setLocalPosition(ownerPosition);
+
+
 }
 
 float PlayerMovementBehaviour::moveTowards(float current, float target, float speed)

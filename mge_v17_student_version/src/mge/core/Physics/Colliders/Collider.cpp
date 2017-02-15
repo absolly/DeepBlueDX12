@@ -15,3 +15,8 @@ btCollisionShape & Collider::getColliderShape()
 {
 	return _colliderShape;
 }
+
+void Collider::setIsTrigger(const bool trigger)
+{
+	_isTrigger = trigger;
+}

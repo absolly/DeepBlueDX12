@@ -37,12 +37,13 @@
     <ClCompile Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.cpp" />
     <ClCompile Include="src\Content\DeferredTestScene.cpp" />
     <ClCompile Include="src\mge\core\Physics\PhysicsWorld.cpp" />
-    <ClCompile Include="src\mge\core\Physics\Trigger.cpp" />
     <ClCompile Include="src\mge\core\Physics\DebugDrawer.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\SphereCollider.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\Collider.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\BoxCollider.cpp" />
     <ClCompile Include="src\mge\materials\DebugRenderMaterial.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Colliders\MeshCollider.cpp" />
+    <ClCompile Include="src\mge\core\Physics\CollisionBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -86,12 +87,13 @@
     <ClInclude Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.h" />
     <ClInclude Include="src\Content\DeferredTestScene.hpp" />
     <ClInclude Include="src\mge\core\Physics\PhysicsWorld.h" />
-    <ClInclude Include="src\mge\core\Physics\Trigger.h" />
     <ClInclude Include="src\mge\core\Physics\DebugDrawer.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\BoxCollider.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\SphereCollider.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\Collider.h" />
     <ClInclude Include="src\mge\materials\DebugRenderMaterial.hpp" />
+    <ClInclude Include="src\mge\core\Physics\Colliders\MeshCollider.h" />
+    <ClInclude Include="src\mge\core\Physics\CollisionBehaviour.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

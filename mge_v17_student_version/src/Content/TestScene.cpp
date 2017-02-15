@@ -36,7 +36,7 @@ using namespace std;
 #include <time.h>       /* time */
 #include "Content\GameObjects\Player.h"
 
-#include "mge\core\Physics\Trigger.h"
+#include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
@@ -107,15 +107,13 @@ void TestScene::_initializeScene() {
 	teapot->setMesh(teapotMeshS);
 	teapot->setMaterial(textureMaterial2);
 	teapot->addBehaviour(new KeysBehaviour());
-	Trigger& teapotTrigger = *new Trigger(*World::physics, new btBoxShape(btVector3(1, 1, 1)));
-	teapot->addBehaviour(&teapotTrigger);
 	_world->add(teapot);
 
 	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 0);
 	LuaParser * luaparser = new LuaParser(_world);
 	luaparser->loadFile((config::MGE_LEVEL_PATH + "exported_scene.lua").c_str());
 
-	GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
+	/*GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
 
 	shipGO->setMesh(ship);
@@ -125,7 +123,7 @@ void TestScene::_initializeScene() {
 	shipGO->rotate(glm::radians(90.0), glm::vec3(0, 1, 0));
 	shipGO->addBehaviour(&randomTrigger);
 	//teapotTrigger.collisionEvents[&randomTrigger].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
-	_world->add(shipGO);
+	_world->add(shipGO);*/
 
 	//    for(int i = 0; i < 1000; i++){
 	//    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
@@ -145,7 +143,7 @@ void TestScene::_initializeScene() {
 			float mass = 1;
 			btVector3 fallInertia(0, 0, 0);
 			btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-13 + i*1.5f, 150 + i, 0 + j * 3)));
-			monkey->addCollider(SphereColliderArgs(1));
+			monkey->addCollider(SphereColliderArgs(1), false, true);
 			monkey->addRigidBody(mass, fallInertia, *fallMotionState);
 			//monkey->addCollider<BoxCollider>(glm::vec4(10, 10, 10, 10));
 			monkey->setMesh(suzannaMeshF);
@@ -165,10 +163,13 @@ void TestScene::_initializeScene() {
 	Player* player = new Player();
 	test->add(playerDivingAnimationContainer);
 	_world->add(test);
+	//_world->add(camera);
 	playerDivingAnimationContainer->add(player);
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
-	player->addCollider(SphereColliderArgs(1));
-	//player->addRigidBody(1);
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
+
+	playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, true);
+	playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
 	/*
 	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));

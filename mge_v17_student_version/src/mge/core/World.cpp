@@ -1,6 +1,6 @@
 #include "mge/core/World.hpp"
 #include "mge\core\Physics\PhysicsWorld.h"
-#include "mge\core\Physics\Trigger.h"
+#include "mge\core\Physics\CollisionBehaviour.h"
 
 using namespace std;
 

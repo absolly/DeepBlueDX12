@@ -7,12 +7,12 @@ using namespace std;
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "Content\Core\EventHandler.h"
 #include "Bullet3Common\b3Vector3.h"
-#include "mge\core\Physics\Colliders\BoxCollider.h"
 #include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\CollisionBehaviour.h"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition )
 :	_name( pName ), _transform( glm::translate( pPosition ) ),
-    _parent(NULL), _children(), _mesh( NULL ), _behaviours(vector<AbstractBehaviour*>()), _material(NULL)
+    _parent(NULL), _children(), _mesh( NULL ), _behaviours(vector<AbstractBehaviour*>()), _material(NULL), colliders(std::vector<Collider*>())
 {
 }
 
@@ -51,6 +51,11 @@ void GameObject::setTransform (const glm::mat4& pTransform)
     _transform = pTransform;
 }
 
+void GameObject::setWorldTransform_TEST(const glm::mat4& pTransform)
+{
+	_transform = glm::inverse(getParent()->getWorldTransform()) *pTransform;
+}
+
 const glm::mat4& GameObject::getTransform() const
 {
     return _transform;
@@ -59,7 +64,7 @@ const glm::mat4& GameObject::getTransform() const
 const btTransform& GameObject::getBulletPhysicsTransform() const
 {
 	btTransform btTransform;
-	glm::mat4 transform = getTransform();
+	glm::mat4 transform = getWorldTransform();
 	glm::vec3 scale = glm::vec3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
 	transform = glm::scale(transform, glm::vec3(1/ scale.x, 1/ scale.y, 1/ scale.z));
 	glm::quat rotation = glm::quat_cast(transform);
@@ -120,14 +125,37 @@ std::vector<AbstractBehaviour*> GameObject::getBehaviours()
 	return _behaviours;
 }
 
-void GameObject::addCollider(BoxColliderArgs& colliderArgs)
+void GameObject::addCollider(BoxColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition)
 {
-	colliders.push_back(new BoxCollider(colliderArgs));
+	Collider& collider = *new BoxCollider(colliderArgs);
+	colliders.push_back(&collider);
+	//if (isTrigger)
+	{
+		CollisionBehaviour& collisionBehaviour = *new CollisionBehaviour(*this, &collider.getColliderShape(), isTrigger, usePhysicsPosition);
+		addBehaviour(&collisionBehaviour);
+	}
 }
 
-void GameObject::addCollider(SphereColliderArgs& colliderArgs)
+void GameObject::addCollider(MeshColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition)
 {
-	colliders.push_back(new SphereCollider(colliderArgs));
+	Collider& collider = *new MeshCollider(colliderArgs);
+	colliders.push_back(&collider);
+	//if (isTrigger)
+	{
+		CollisionBehaviour& collisionBehaviour = *new CollisionBehaviour(*this, &collider.getColliderShape(), isTrigger, usePhysicsPosition);
+		addBehaviour(&collisionBehaviour);
+	}
+}
+
+void GameObject::addCollider(SphereColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition)
+{
+	Collider& collider = *new SphereCollider(colliderArgs);
+	colliders.push_back(&collider);
+	//if (isTrigger)
+	{
+		CollisionBehaviour& collisionBehaviour = *new CollisionBehaviour(*this, &collider.getColliderShape(), isTrigger, usePhysicsPosition);
+		addBehaviour(&collisionBehaviour);
+	}
 }
 
 void GameObject::addRigidBody(float mass, btVector3& inertia, btDefaultMotionState& defaultMotionState)
@@ -135,9 +163,9 @@ void GameObject::addRigidBody(float mass, btVector3& inertia, btDefaultMotionSta
 	if (colliders.size() == 0)
 	{
 		throw exception("Attempting to add a rigidbody to a GameObect that doesn't have a collider yet!");
-	}
+	}	
 	colliders[0]->getColliderShape().calculateLocalInertia(mass, inertia);
-	addBehaviour(new RigidBody(1.0f, &defaultMotionState, &colliders[0]->getColliderShape(), inertia));
+	addBehaviour(new RigidBody(mass, &defaultMotionState, &colliders[0]->getColliderShape(), inertia));
 }
 
 void GameObject::setParent (GameObject* pParent) {
