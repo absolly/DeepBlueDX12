@@ -29,6 +29,12 @@ class Mesh
          */
         void streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib);
 
+		void instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib);
+
+		void drawInstancedmesh();
+
+		void DisableVertexAttribArrays();
+
         /**
          * Draws debug info (normals) for the mesh using the given matrices)
          */
@@ -45,6 +51,10 @@ class Mesh
 		GLuint _tangentBufferId;
 		GLuint _bitangentBufferId;
 		GLuint _uvBufferId;
+
+		GLuint _uvattr;
+		GLuint _normalattr;
+		GLuint _verticesattrb;
 
 	    //the actual data
 		std::vector<glm::vec3> _vertices;       //vec3 with 3d coords for all vertices

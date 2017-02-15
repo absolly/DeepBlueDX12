@@ -22,7 +22,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		glm::vec3 averageHeading;
 		glm::vec3 averagePosition;
 		float _speed = 1;
-		float neighbourDistance = 8.0f;
+		float neighbourDistance = 4.0f;
 
     private:
 		bool turning = false;

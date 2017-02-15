@@ -1,14 +1,11 @@
-#version 330 core
-layout (location = 0) in vec2 position;
-layout (location = 1) in vec3 color;
+#version 330 // for glsl version (12 is for older versions , say opengl 2.1
 
-out vec3 fColor;
+in vec3 vertex;
+in vec3 normal;
+in vec2 uv;
 
-uniform vec2 offsets[100];
+uniform	mat4 	mvpMatrix;
 
-void main()
-{
-    vec2 offset = offsets[gl_InstanceID];
-    gl_Position = vec4(position + offset, 0.0f, 1.0f);
-    fColor = color;
-} 
+void main( void ){
+	gl_Position = mvpMatrix * (vec4(vertex, 1.f));
+}

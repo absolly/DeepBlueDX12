@@ -19,6 +19,7 @@ using namespace std;
 #include "mge/materials/TextureMaterial.hpp"
 #include "mge/materials/WobbleMaterial.hpp"
 #include "mge/materials/LitWaveMaterial.hpp"
+#include "mge/materials/GPUinstancingMaterial.hpp"
 
 #include "mge/behaviours/RotatingBehaviour.hpp"
 #include "mge/behaviours/RigidBody.hpp"
@@ -67,6 +68,7 @@ void TestScene::_initializeScene() {
     Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"Creature_OBJ.obj");
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
     Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
+	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "small_fish.obj");
     //Mesh* shipMesh = Mesh::load (config::MGE_MODEL_PATH+"ShipTest4.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
@@ -104,10 +106,9 @@ void TestScene::_initializeScene() {
 	//ship->scale(glm::vec3(0.1, 0.1, 0.1));
  //   _world->add(ship);
 
-	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((config::MGE_LEVEL_PATH + "exported_scene.lua").c_str());
+	//LuaParser * luaparser = new LuaParser(_world);
+	//luaparser->loadFile((config::MGE_LEVEL_PATH + "exported_scene.lua").c_str());
 
-	FishTank* fishTank = new FishTank(glm::vec3(0,50,0), _world, "", 10, 10);
 
 
 
@@ -144,9 +145,28 @@ void TestScene::_initializeScene() {
    // }
 	//Player* player = new Player(*camera);
 	//_world->add(player);
-	GameObject * go = new GameObject("name", glm::vec3(0, 0, 0));
-	std::cout << go->getTransform() << std::endl;
-    camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 1500, 1, go));
+
+	AbstractMaterial * colorMaterial5 = new ColorMaterial(glm::vec3(1,0,0));
+	////
+	//for (size_t i = 0; i < 50000; i++)
+	//{
+	//	GameObject * go = new GameObject("name", glm::vec3(i, 0, 0));
+	//	go->setMesh(cubeMeshF);
+	//	go->setMaterial(colorMaterial5);
+	//	_world->add(go);
+	//}
+	//
+
+	FishTank* fishTank = new FishTank(glm::vec3(0,0,0), _world, "", 50, 100);
+
+	AbstractMaterial* gpuInstancing = new GPUinstancingMaterial(*fishTank->allFish);
+
+	//GameObject * go = new GameObject("name", glm::vec3(0, 0, 0));
+	fishTank->setMesh(smallFish);
+	fishTank->setMaterial(gpuInstancing);
+	_world->add(fishTank);
+
+	camera->addBehaviour(new CameraOrbitBehaviour(1000.0f, 100, 10, 10, fishTank));
 //
 //    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
 //    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));

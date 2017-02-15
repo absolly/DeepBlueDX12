@@ -11,6 +11,7 @@ using namespace std;
 #include "mge/core/GameObject.hpp"
 #include "mge/materials/LitWaveMaterial.hpp"
 #include "Content/Behaviours/FlockingBehaviour.hpp"
+#include "mge/materials//GPUinstancingMaterial.hpp"
 
 FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount) : GameObject(pName ,pPosition)
 {
@@ -19,7 +20,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 	allFish = new vector<GameObject*>();
 	_waypoints = new vector<glm::vec3>();
-
+	
 	_waypoints->push_back(glm::vec3(pTankSize, pTankSize / 2, -pTankSize));
 	_waypoints->push_back(glm::vec3(pTankSize / 2, pTankSize / 2, pTankSize / 2));
 	_waypoints->push_back(glm::vec3(-pTankSize / 2, -pTankSize / 2, -pTankSize / 2));
@@ -28,7 +29,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 	
 	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "teapot_smooth.obj");
-	AbstractMaterial* colormat = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
+	//AbstractMaterial* colormat = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
 	random_device rd;
 
@@ -45,8 +46,6 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 		AbstractBehaviour* flock = new FlockingBehaviour(this, glm::vec3(1.0f, 1.0f, 1.0f));
 
 		GameObject* fish = new GameObject("fish", glm::vec3(randomX, randomY, randomZ));
-		fish->setMaterial(colormat);
-		fish->setMesh(cubeMeshF);
 		fish->addBehaviour(flock);
 		pWorld->add(fish);
 		allFish->push_back(fish);
