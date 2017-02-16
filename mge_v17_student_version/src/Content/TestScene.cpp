@@ -10,6 +10,7 @@ using namespace std;
 
 #include "mge/core/Camera.hpp"
 
+#include <vector>
 #include "mge/core/GameObject.hpp"
 #include "mge/core/PhysicsObject.hpp"
 #include "mge/core/Light.hpp"
@@ -87,10 +88,11 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
     //SCENE SETUP
-    PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
+    /*PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
     plane->scale(glm::vec3(50,50,50));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(waveMaterial);
+<<<<<<< Updated upstream
 	plane->addBehaviour(new KeysBehaviour());
 
     btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
@@ -110,9 +112,33 @@ void TestScene::_initializeScene() {
 	_world->add(teapot);
 
 	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 0);
-	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((config::MGE_LEVEL_PATH + "exported_scene.lua").c_str());
+=======
+	plane->addBehaviour(new KeysBehaviour());*/
 
+ //   btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+ //   //groundShape->setLocalScaling(btVector3(50,50,50));
+
+	//btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+	//btRigidBody::btRigidBodyConstructionInfo
+	//	groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+	//plane->rigidBody = new btRigidBody(groundRigidBodyCI);
+	//_world->add(plane);
+	//World::addRigidBody(plane->rigidBody);
+
+	//GameObject* teapot = new GameObject("teapot", glm::vec3(-3, 1, 0));
+	//teapot->setMesh(teapotMeshS);
+	//teapot->setMaterial(textureMaterial2);
+	//teapot->addBehaviour(new KeysBehaviour());
+	//Trigger& teapotTrigger = *new Trigger(*World::physics, new btBoxShape(btVector3(1, 1, 1)));
+	//teapot->addBehaviour(&teapotTrigger);
+	//_world->add(teapot);
+
+
+>>>>>>> Stashed changes
+	LuaParser * luaparser = new LuaParser(_world);
+	luaparser->loadFile((config::MGE_LEVEL_PATH + "poging21.lua").c_str());
+
+<<<<<<< Updated upstream
 	/*GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
 
@@ -124,6 +150,29 @@ void TestScene::_initializeScene() {
 	shipGO->addBehaviour(&randomTrigger);
 	//teapotTrigger.collisionEvents[&randomTrigger].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
 	_world->add(shipGO);*/
+=======
+	Mesh* fishieMeshieMesh = Mesh::load(config::MGE_MODEL_PATH + "small_fish.OBJ");
+
+	FishTank* fishTank = new FishTank(glm::vec3(0, 0, 0), _world, "", 200, 500);
+	fishTank->setMesh(fishieMeshieMesh);
+
+	//GPUinstancingMaterial* gpuMat = new GPUinstancingMaterial(*fishTank->allFish);
+
+	//fishTank->setMaterial(instancing);
+	//_world->add(fishTank);
+
+	//GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
+	//Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
+
+	//shipGO->setMesh(ship);
+	//shipGO->setMaterial(textureMaterial2);
+	//float scale = 4;
+	//shipGO->scale(glm::vec3(scale, scale, scale));
+	//shipGO->rotate(glm::radians(90.0), glm::vec3(0, 1, 0));
+	//shipGO->addBehaviour(&randomTrigger);
+	////teapotTrigger.collisionEvents[&randomTrigger].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
+	//_world->add(shipGO);
+>>>>>>> Stashed changes
 
 	//    for(int i = 0; i < 1000; i++){
 	//    GameObject* teapot2 = new GameObject ("teapot", glm::vec3(-3,1,0));
@@ -137,6 +186,7 @@ void TestScene::_initializeScene() {
 	//    car->setMesh (carMesh);
 	//    car->setMaterial(colorMaterial);
 	//    _world->add(car);
+<<<<<<< Updated upstream
 	for (int i = 0; i < 25; i++) {
 		for (int j = 0; j < 2; j++) {
 			GameObject* monkey = new GameObject("monkey", glm::vec3(3, 100, 0));
@@ -158,6 +208,29 @@ void TestScene::_initializeScene() {
 			_world->add(monkey);
 		}
 	}
+=======
+	//for (int i = 0; i < 25; i++) {
+	//	for (int j = 0; j < 2; j++) {
+	//		GameObject* monkey = new GameObject("monkey", glm::vec3(3, 100, 0));
+	//		float mass = 1;
+	//		btVector3 fallInertia(0, 0, 0);
+	//		btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-13 + i*1.5f, 150 + i, 0 + j * 3)));
+	//		monkey->addCollider(SphereColliderArgs(1));
+	//		monkey->addRigidBody(mass, fallInertia, *fallMotionState);
+	//		//monkey->addCollider<BoxCollider>(glm::vec4(10, 10, 10, 10));
+	//		monkey->setMesh(suzannaMeshF);
+	//		float scale = 1;
+	//		monkey->scale(glm::vec3(scale, scale, scale));
+	//		monkey->setMaterial(textureMaterial2);
+	//		//RigidBody* rigidBody = new RigidBody(fallRigidBodyCI);
+	//		//monkey->addBehaviour(rigidBody);
+	//		//teapotTrigger.collisionEvents[rigidBody].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
+	//		//    monkey->setBehaviour (new RotatingBehaviour());
+
+	//		_world->add(monkey);
+	//	}
+	//}
+>>>>>>> Stashed changes
 	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();

@@ -22,6 +22,7 @@ FlockingBehaviour::~FlockingBehaviour()
 
 void FlockingBehaviour::update(float pStep)
 {
+	std::cout << "update .." << std::endl;
 	random_device rd;
 
 	// Initialize Mersenne Twister pseudo-random number generator

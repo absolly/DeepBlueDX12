@@ -28,7 +28,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 
 	
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "Fish1_OBJ.OBJ");
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "small_fish.OBJ");
 	AbstractMaterial* colormat = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 
 	random_device rd;

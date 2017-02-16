@@ -5,6 +5,7 @@
 #include "mge/core/GameObject.hpp"
 #include "mge/core/Mesh.hpp"
 
+
 ShaderProgram* GPUinstancingMaterial::_shader = NULL;
 
 GLint _uMVPMatrix = 0;
