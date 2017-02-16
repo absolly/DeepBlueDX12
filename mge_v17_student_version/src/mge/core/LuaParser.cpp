@@ -390,7 +390,7 @@ int LuaParser::addMaterial(lua_State * lua){
 int LuaParser::addMeshCollider(lua_State * lua){
 	string collider = lua_tostring(lua, -1);
 		
-	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false, false);
+	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false);
 
 	return 1;
 }
@@ -400,7 +400,7 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 	float y = lua_tonumber(lua, -5);
 	float z = lua_tonumber(lua, -4);
 
-	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false,false);
+	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false);
 
 	return 1;
 }
@@ -409,7 +409,7 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 int LuaParser::addSphereCollider(lua_State * lua) {
 	float radius = lua_tonumber(lua, -4);
 
-	_currentGameObject->addCollider(SphereColliderArgs(radius), false, false);
+	_currentGameObject->addCollider(SphereColliderArgs(radius), false);
 
 	return 1;
 }
