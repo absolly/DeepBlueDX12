@@ -134,11 +134,9 @@ void TestScene::_initializeScene() {
 	//_world->add(teapot);
 
 
->>>>>>> Stashed changes
 	LuaParser * luaparser = new LuaParser(_world);
 	luaparser->loadFile((config::MGE_LEVEL_PATH + "poging21.lua").c_str());
 
-<<<<<<< Updated upstream
 	/*GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
 
@@ -149,12 +147,6 @@ void TestScene::_initializeScene() {
 	shipGO->rotate(glm::radians(90.0), glm::vec3(0, 1, 0));
 	shipGO->addBehaviour(&randomTrigger);
 	//teapotTrigger.collisionEvents[&randomTrigger].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
-	_world->add(shipGO);*/
-=======
-	Mesh* fishieMeshieMesh = Mesh::load(config::MGE_MODEL_PATH + "small_fish.OBJ");
-
-	FishTank* fishTank = new FishTank(glm::vec3(0, 0, 0), _world, "", 200, 500);
-	fishTank->setMesh(fishieMeshieMesh);
 
 	//GPUinstancingMaterial* gpuMat = new GPUinstancingMaterial(*fishTank->allFish);
 
