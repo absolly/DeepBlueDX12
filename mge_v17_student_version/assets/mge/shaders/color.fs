@@ -1,6 +1,6 @@
 //DIFFUSE COLOR FRAGMENT SHADER
 
-#version 330 // for glsl version (12 is for older versions , say opengl 2.1
+#version 330 core// for glsl version (12 is for older versions , say opengl 2.1
 
 uniform vec3 diffuseColor;
 layout (location = 0) out vec4 fragment_color;

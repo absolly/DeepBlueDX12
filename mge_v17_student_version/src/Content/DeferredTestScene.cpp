@@ -18,6 +18,7 @@ using namespace std;
 #include "mge/materials/TextureMaterial.hpp"
 
 #include "mge/materials/LitWaveMaterial.hpp"
+#include "mge/materials/GPUinstancingMaterial.hpp"
 
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
@@ -60,13 +61,15 @@ void DeferredTestScene::_initializeScene() {
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
     Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"plane.obj");
     Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
-	Mesh* teapotMeshS = Mesh::load(config::MGE_MODEL_PATH + "Creature3_OBJ.obj");
+	Mesh* teapotMeshS = Mesh::load(config::MGE_MODEL_PATH + "TubeCoral.OBJ");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
 
     //10 specular teapot material
     AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 10);
+	AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
+	AbstractMaterial* textureMaterial3 = new ColorMaterial(glm::vec3(1, 1, 1));
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //SCENE SETUP
@@ -74,13 +77,14 @@ void DeferredTestScene::_initializeScene() {
     plane->scale(glm::vec3(50,50,50));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(textureMaterial);
-	plane->addBehaviour(new KeysBehaviour());
+	//plane->addBehaviour(new KeysBehaviour());
     _world->add(plane);
 
 	GameObject* teapot = new GameObject("teapot", glm::vec3(0, 1, 0));
 	teapot->addBehaviour(new KeysBehaviour());
-	teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(textureMaterial2);
+	//teapot->scale(glm::vec3(.01, .01, .01));
+	//teapot->setMesh(teapotMeshS);
+	//teapot->setMaterial(coralMaterial);
 	_world->add(teapot);
 	//for (int i = 0; i < 5; i++) {
 	//	for (int j = 0; j < 5; j++) {
@@ -117,10 +121,10 @@ void DeferredTestScene::_initializeScene() {
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
 
-//    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
-//    light3->setMesh (cubeMeshF);
-//    light3->setMaterial(colorMaterial2);
-//    _world->add(light3);
+////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
+////    light3->setMesh (cubeMeshF);
+////    light3->setMaterial(colorMaterial2);
+////    _world->add(light3);
 }
 
 void DeferredTestScene::_render() {

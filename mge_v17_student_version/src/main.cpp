@@ -2,7 +2,6 @@
 
 #include "mge/core/AbstractGame.hpp"
 #include "Content/TestScene.hpp"
-#include "Content/DeferredTestScene.hpp"
 #include <Windows.h>
 
 extern "C" {

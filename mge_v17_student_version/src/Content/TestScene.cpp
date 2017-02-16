@@ -247,7 +247,30 @@ void TestScene::_initializeScene() {
 	player->addCollider(SphereColliderArgs(1));
 	//player->addRigidBody(1);
 	player->add(camera);*/
+GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
+GameObject* playerDivingAnimationContainer = new GameObject("");
+Player* player = new Player();
+test->add(playerDivingAnimationContainer);
+_world->add(test);
+//_world->add(camera);
+playerDivingAnimationContainer->add(player);
+playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
+btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
 
+playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, true);
+playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
+player->add(camera);
+/*
+GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
+GameObject* playerDivingAnimationContainer = new GameObject("");
+Player* player = new Player();
+test->add(playerDivingAnimationContainer);
+_world->add(test);
+playerDivingAnimationContainer->add(player);
+playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
+player->addCollider(SphereColliderArgs(1));
+//player->addRigidBody(1);
+player->add(camera);*/
 
 	//camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 //
