@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <string>
 #include "mge/core/ShaderProgram.hpp"
+#include "mge/core/Texture.hpp"
 
 using namespace std;
 
@@ -57,6 +58,7 @@ class AbstractGame
 		virtual void _renderToQuad();
         //process any sfml window events (see SystemEventDispatcher/Listener)
         virtual void _processEvents();
+		virtual void _setFogGradient(Texture* pGradientTexture);
 
 		sf::RenderWindow* _window;  //sfml window to render into
 		Renderer* _renderer;        //the renderer class to render the world
@@ -74,6 +76,7 @@ class AbstractGame
 		ShaderProgram* _shader;
 		ShaderProgram* _blurShader;
 		GLuint quad_vertexbuffer;
+		Texture* _fogTexure = nullptr;
 
 };
 

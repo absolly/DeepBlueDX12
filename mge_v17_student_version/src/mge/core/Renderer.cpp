@@ -118,7 +118,7 @@ Renderer::Renderer() {
 			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0
 		);
 	}
-	
+
     glEnable( GL_DEPTH_TEST );
     glEnable( GL_CULL_FACE ); // default GL_BACK
     glEnable (GL_BLEND);
