@@ -142,7 +142,7 @@ void main( void ) {
     }
     fragment_color = vec4(combinedColor,1);
 	float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 1.0)
+    if(brightness > 100)
         brightness_color = vec4(fragment_color.rgb, 1.0);
 	else
 		brightness_color = vec4(0,0,0,1);

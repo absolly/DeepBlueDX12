@@ -67,7 +67,7 @@ void DeferredTestScene::_initializeScene() {
 
     //10 specular teapot material
     AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 10);
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //SCENE SETUP
     GameObject* plane = new GameObject("plane", glm::vec3(0,0,0));
@@ -91,27 +91,28 @@ void DeferredTestScene::_initializeScene() {
 	//		_world->add(teapot);
 	//	}
 	//}
-	FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
+	//FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
 
 
     camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, teapot));
 
-    float random = 9;
-    std:: cout << "random seed: " << random << std::endl;
-    srand (random);
-    for(int i = 0; i < 23; i++) {
-        glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
-        Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 20, glm::vec3(0,0,1));
-        light->setMesh (cubeMeshF);
-        AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
-        //light->setBehaviour(new LookAt(teapot));
-        light->setMaterial(colorMaterial2);
-        _world->add(light);
-    }
-	glm::vec3* lightColor = new glm::vec3(100,80,20);
-	Light* light = new Light(Light::lightType::POINT, "light1", glm::vec3(0,5,0), *lightColor, 500, glm::vec3(0, 0, 1));
+    //float random = 9;
+    //std:: cout << "random seed: " << random << std::endl;
+    //srand (random);
+    //for(int i = 0; i < 23; i++) {
+    //    glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
+    //    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50,5,rand() % 100 - 50), *lightColor, 20, glm::vec3(0,0,1));
+    //    light->setMesh (cubeMeshF);
+    //    AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
+    //    //light->setBehaviour(new LookAt(teapot));
+    //    light->setMaterial(colorMaterial2);
+    //    _world->add(light);
+    //}
+	glm::vec3* lightColor = new glm::vec3(127,239,217);
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,5,0), *lightColor, 2, glm::vec3(0, 0, 1));
 	light->setMesh(cubeMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
+	light->rotate(-90, glm::vec3(1, 0, 0));
 	//light->addBehaviour(new LookAt(glm::vec3(0,0,0)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);

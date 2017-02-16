@@ -189,7 +189,7 @@ void AbstractGame::_render () {
 void AbstractGame::_renderToQuad() {
 
 	GLboolean horizontal = true, first_iteration = true;
-	GLuint amount = 5;
+	GLuint amount = 20;
 	_blurShader->use();
 	for (GLuint i = 0; i < amount; i++)
 	{

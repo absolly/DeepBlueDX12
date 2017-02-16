@@ -7,8 +7,8 @@ out vec4 color;
 uniform sampler2D renderedTexture;
 uniform sampler2D bloomTexture;
 uniform sampler2D depthTexture;
-float FogDensity = 0;
-vec3 fogColor = vec3(.3,.6,1);
+float FogDensity = 0.3;
+vec3 fogColor = vec3(77/255.0f,190/255.0f,1);
 
 
 float fogFactorExp(
@@ -20,7 +20,7 @@ float fogFactorExp(
 
 void main(){
 	 const float gamma = 2.2;
-	 const float exposure = .1;
+	 const float exposure = 1;
     vec3 hdrColor = texture(renderedTexture, UV).rgb;
 	vec3 bloomColor = texture(bloomTexture, UV).rgb;
     hdrColor += bloomColor; // additive blending
