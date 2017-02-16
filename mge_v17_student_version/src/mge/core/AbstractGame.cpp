@@ -111,6 +111,9 @@ void AbstractGame::_initializeRenderer() {
 	glGenBuffers(1, &quad_vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
+
+	if (_fogTexure == nullptr)
+		_fogTexure = Texture::load(config::MGE_TEXTURE_PATH + "fog.png");
 }
 
 void AbstractGame::_initializeWorld() {
@@ -224,6 +227,10 @@ void AbstractGame::_renderToQuad() {
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, _renderer->pingpongBuffer[!horizontal]);
 	glUniform1i(_shader->getUniformLocation("bloomTexture"), 2);
+	//setup texture slot 3
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, _fogTexure->getId());
+	glUniform1i(_shader->getUniformLocation("fogTexture"), 3);
 
 	DrawQuad();
 
@@ -280,6 +287,11 @@ void AbstractGame::_processEvents() {
     if (exit) {
         _window->close();
     }*/
+}
+
+void AbstractGame::_setFogGradient(Texture * pGradientFogTexture)
+{
+	_fogTexure = pGradientFogTexture;
 }
 
 void AbstractGame::onCloseWindowEvent(sf::Event & event)

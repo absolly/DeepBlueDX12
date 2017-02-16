@@ -56,7 +56,9 @@ void TestScene::initialize() {
 
 //build the game _world
 void TestScene::_initializeScene() {
-	_renderer->setClearColor(1, 0, 0);
+	//_renderer->setClearColor(1, 0, 0);
+	Texture* fog = Texture::load(config::MGE_TEXTURE_PATH + "fog.png");
+	AbstractGame::_setFogGradient(fog);
 
 	//add camera first (it will be updated last)
 	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0));
@@ -81,11 +83,11 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* colorMaterial = new WobbleMaterial(Texture::load(config::MGE_TEXTURE_PATH + "color.jpg"));
 
 	//0 specular ground material
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 10, 1, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
 	//10 specular teapot material
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
-	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 1);
+	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 1);
 
 
 	LuaParser * luaparser = new LuaParser(_world);
@@ -146,7 +148,7 @@ void TestScene::_initializeScene() {
 		_world->add(light);
 	}
 
-	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1), 2, glm::vec3(), 45);
+	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3(), 45);
 	//light3->setMesh (cubeMeshF);
 	//light3->setMaterial(new ColorMaterial(glm::normalize(glm::vec3(1, 1, 1))));
 	_world->add(light3);
