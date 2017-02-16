@@ -20,7 +20,8 @@ in vec3 Position_worldspace;
 in vec3 LightDirection_tangentspace[24];//
 in vec3 EyeDirection_tangentspace;
 in mat3 TBN;
-out vec4 fragment_color;
+layout (location = 0) out vec4 fragment_color;
+layout (location = 1) out vec4 brightness_color;
 
 vec3 FragNormal_tangentspace;
 
@@ -140,4 +141,7 @@ void main( void ) {
         }
     }
     fragment_color = vec4(combinedColor,1);
+	float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        brightness_color = vec4(fragment_color.rgb, 1.0);
 }

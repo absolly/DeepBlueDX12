@@ -93,6 +93,11 @@ void AbstractGame::_initializeRenderer() {
 	_shader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "RenderTexture.fs");
 	_shader->finalize();
 
+	_blurShader = new ShaderProgram();
+	_blurShader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "Passthrough.vs");
+	_blurShader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "GaussianBlur.fs");
+	_blurShader->finalize();
+
 	static const GLfloat g_quad_vertex_buffer_data[] = {
 		-1.0f, -1.0f, 0.0f,
 		1.0f, -1.0f, 0.0f,
@@ -183,23 +188,48 @@ void AbstractGame::_render () {
 
 void AbstractGame::_renderToQuad() {
 
+	GLboolean horizontal = true, first_iteration = true;
+	GLuint amount = 5;
+	_blurShader->use();
+	for (GLuint i = 0; i < amount; i++)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, _renderer->pingpongFBO[horizontal]);
+		glUniform1i(_blurShader->getUniformLocation("horizontal"), horizontal);
+		glBindTexture(
+			GL_TEXTURE_2D, first_iteration ? _renderer->brightnessTexture : _renderer->pingpongBuffer[!horizontal]
+		);
+		DrawQuad();
+		horizontal = !horizontal;
+		if (first_iteration)
+			first_iteration = false;
+	}
+
 	// Render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
 								 // Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	_shader->use();
 	//setup texture slot 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _renderer->renderedTexture);
-	glUniform1i(_shader->getUniformLocation("textureDiffuse"), 0);
+	glUniform1i(_shader->getUniformLocation("renderedTexture"), 0);
 	//setup texture slot 1
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, _renderer->depthTexture);
 	glUniform1i(_shader->getUniformLocation("depthTexture"), 1);
+	//setup texture slot 2
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _renderer->pingpongBuffer[!horizontal]);
+	glUniform1i(_shader->getUniformLocation("bloomTexture"), 2);
 
+	DrawQuad();
+
+}
+
+void AbstractGame::DrawQuad() {
 	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
@@ -216,7 +246,6 @@ void AbstractGame::_renderToQuad() {
 	glDrawArrays(GL_TRIANGLES, 0, 6); // 2*3 indices starting at 0 -> 2 triangles
 
 	glDisableVertexAttribArray(0);
-
 }
 
 void AbstractGame::_processEvents() {

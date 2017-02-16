@@ -35,10 +35,13 @@ class Renderer
         //helper method to render all the children of a gameobject
         void renderMeshDebugInfo (Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
 		GLuint renderedTexture;
+		GLuint brightnessTexture;
 		GLuint FramebufferName = 0;
 		GLuint ShadowBuffer = 0;
 		GLuint shadowDepthTexture;
 		GLuint depthTexture;
+		GLuint pingpongFBO[2];
+		GLuint pingpongBuffer[2];
     private:
         //helper method to render a single gameobject
         void renderSelf (GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
