@@ -50,7 +50,6 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 
 
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
-    glUniform1i(_shader->getUniformLocation("activeLight"), 0);
 
     glm::vec3 lightPosition[24] {};
     glm::vec3 lightDirection[24] {};

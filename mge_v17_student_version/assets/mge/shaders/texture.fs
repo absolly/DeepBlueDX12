@@ -1,5 +1,5 @@
 //DIFFUSE TEXTURE FRAGMENT SHADER
-#version 330 // for glsl version (12 is for older versions , say opengl 2.1
+#version 330 core// for glsl version (12 is for older versions , say opengl 2.1
 
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
@@ -9,40 +9,43 @@ uniform vec3        lightColor[24];
 uniform float       lightIntensity[24];
 uniform int         lightType[24];
 uniform vec3        lightFalloff[24];
-uniform int         lightAttenuation[24];
-uniform vec3        lightDirection[24];
 uniform int         lightCount;
 uniform int         tiling;
 uniform int         specularMultiplier;
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
-in vec3 LightDirection_tangentspace[24];//
+in vec3 LightDirection_tangentspace[24];
 in vec3 EyeDirection_tangentspace;
-in mat3 TBN;
+
 layout (location = 0) out vec4 fragment_color;
 layout (location = 1) out vec4 brightness_color;
 
 vec3 FragNormal_tangentspace;
-
+vec3 n;
+vec3 l;
+vec3 E;
+vec3 R;
+float cosTheta;
+float cosAlpha;
 vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
-    vec3 n = normalize( FragNormal_tangentspace );
+    n = normalize( FragNormal_tangentspace );
     // Direction of the light (from the fragment to the light)
-    vec3 l = normalize( pLightDirection_tangentspace );
+    l = normalize( pLightDirection_tangentspace );
 
-    float cosTheta = clamp( dot( n,l ), 0,1 );
+    cosTheta = clamp( dot( n,l ), 0,1 );
 
     // Eye vector (towards the camera)
-    vec3 E = normalize(EyeDirection_tangentspace);
+    E = normalize(EyeDirection_tangentspace);
     // Direction in which the triangle reflects the light
-    vec3 R = reflect(-l,n);
+    R = reflect(-l,n);
     // Cosine of the angle between the Eye vector and the Reflect vector,
     // clamped to 0
     //  - Looking into the reflection -> 1
     //  - Looking elsewhere -> < 1
-    float cosAlpha = clamp( dot( E,R ), 0,1 );
+    cosAlpha = clamp( dot( E,R ), 0,1 );
 
     return pFalloff *(pMaterialAmbientColor +
             // Diffuse : "color" of the object
@@ -54,21 +57,21 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
 vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
-    vec3 n = normalize( FragNormal_tangentspace );
+    n = normalize( FragNormal_tangentspace );
     // Direction of the light (from the fragment to the light)
-    vec3 l = normalize( pLightDirection_tangentspace );
+    l = normalize( pLightDirection_tangentspace );
 
-    float cosTheta = clamp( dot( n,l ), 0,1 );
+    cosTheta = clamp( dot( n,l ), 0,1 );
 
     // Eye vector (towards the camera)
-    vec3 E = normalize(EyeDirection_tangentspace);
+    E = normalize(EyeDirection_tangentspace);
     // Direction in which the triangle reflects the light
-    vec3 R = reflect(-l,n);
+    R = reflect(-l,n);
     // Cosine of the angle between the Eye vector and the Reflect vector,
     // clamped to 0
     //  - Looking into the reflection -> 1
     //  - Looking elsewhere -> < 1
-    float cosAlpha = clamp( dot( E,R ), 0,1 );
+    cosAlpha = clamp( dot( E,R ), 0,1 );
 
     return pMaterialAmbientColor +
            // Diffuse : "color" of the object
@@ -84,13 +87,17 @@ void main( void ) {
     vec3 MaterialSpecularColor = vec3(texture(textureSpecular,texCoord * tiling));
 
     vec3 combinedColor;
+	vec3 MaterialAmbientColor;
+	float distance;
+	float falloff;
+
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
-        vec3 MaterialAmbientColor = vec3(0.3,0.3,0.3) *lightColor[activeLight] * MaterialDiffuseColor;
-        vec3 MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
+        MaterialAmbientColor = vec3(0.3,0.3,0.3) *lightColor[activeLight] * MaterialDiffuseColor;
+        MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
-        float distance = length(Position_worldspace - lightPosition[activeLight]);
+        distance = length(Position_worldspace - lightPosition[activeLight]);
 
-        float falloff = lightIntensity[activeLight]/(lightFalloff[activeLight].x + lightFalloff[activeLight].y * distance + lightFalloff[activeLight].z * distance * distance);
+        falloff = lightIntensity[activeLight]/(lightFalloff[activeLight].x + lightFalloff[activeLight].y * distance + lightFalloff[activeLight].z * distance * distance);
         switch(lightType[activeLight]) {
         case 0:
             combinedColor += calcPointLight(falloff, lightColor[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
@@ -142,7 +149,7 @@ void main( void ) {
     }
     fragment_color = vec4(combinedColor,1);
 	float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 1.0)
+    if(brightness > 100)
         brightness_color = vec4(fragment_color.rgb, 1.0);
 	else
 		brightness_color = vec4(0,0,0,1);

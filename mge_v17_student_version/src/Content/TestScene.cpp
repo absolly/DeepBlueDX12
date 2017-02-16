@@ -171,7 +171,6 @@ void TestScene::_initializeScene() {
 	//player->addRigidBody(1);
 	player->add(camera);*/
 
-
 	//camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
 	//
 	//    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
