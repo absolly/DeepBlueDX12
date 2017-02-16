@@ -105,10 +105,10 @@ void PlayerMovementBehaviour::update(float deltaTime)
 		//std::cout << "totalMoveSpeed: " << rigidBody->getWorldTransform().getOrigin()[0] << " active: " << rigidBody->isActive() << std::endl;
 	}
 	glm::quat glmQuaternion = glm::quat_cast(rotationMatrix);
-	btQuaternion quaternion = btQuaternion(glmQuaternion.x, glmQuaternion.y, glmQuaternion.z, glmQuaternion.w);
+	btQuaternion& quaternion = btQuaternion(glmQuaternion.x, glmQuaternion.y, glmQuaternion.z, glmQuaternion.w);
 	rigidBody->getWorldTransform().setRotation(quaternion);
 
-	btVector3 velocity = btVector3(_currentMoveSideSpeed * multiplier, _currentMoveUpSpeed, _currentMoveSpeed * multiplier * 1);
+	btVector3& velocity = btVector3(_currentMoveSideSpeed * multiplier, _currentMoveUpSpeed, _currentMoveSpeed * multiplier * 1);
 	velocity = quatRotate(quaternion, velocity);
 	rigidBody->setLinearVelocity(velocity);
 

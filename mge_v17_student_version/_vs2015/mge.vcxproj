@@ -229,6 +229,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\Mesh.hpp" />
     <ClInclude Include="src\mge\core\PhysicsObject.hpp" />
     <ClInclude Include="src\mge\core\Physics\Colliders\BoxCollider.h" />
+    <ClInclude Include="src\mge\core\Physics\Colliders\CapsuleCollider.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\Collider.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\MeshCollider.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\SphereCollider.h" />
@@ -274,6 +275,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\Mesh.cpp" />
     <ClCompile Include="src\mge\core\PhysicsObject.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\BoxCollider.cpp" />
+    <ClCompile Include="src\mge\core\Physics\Colliders\CapsuleCollider.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\Collider.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\MeshCollider.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\SphereCollider.cpp" />

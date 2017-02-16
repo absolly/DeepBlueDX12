@@ -30,7 +30,8 @@ class TestScene: public AbstractGame
         TestScene(const TestScene&);
         TestScene& operator=(const TestScene&);
 
-		void onTeapotCollisionWithPhysicsObject(btCollisionObject* collisionObject);
+		void onCollisionRemoveSelf(struct OnCollisionArgs onCollisionArgs);
+		void onCollisionRemoveOther(struct OnCollisionArgs onCollisionArgs);
 };
 
 #endif // TestScene_H

@@ -38,6 +38,7 @@ using namespace std;
 
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
+#include "mge\behaviours\RigidBody.hpp"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene() :AbstractGame(), _hud(0) {
@@ -103,10 +104,12 @@ void TestScene::_initializeScene() {
 	_world->add(plane);
 	World::addRigidBody(plane->rigidBody);
 
-	GameObject* teapot = new GameObject("teapot", glm::vec3(-3, 1, 0));
+	GameObject* teapot = new GameObject("teapot", glm::vec3(-3, 100, 0));
 	teapot->setMesh(teapotMeshS);
 	teapot->setMaterial(textureMaterial2);
 	teapot->addBehaviour(new KeysBehaviour());
+	Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+	teapot->scale(glm::vec3(10.0f, 10.0f, 10.0f));
 	_world->add(teapot);
 
 	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 0);
@@ -137,27 +140,7 @@ void TestScene::_initializeScene() {
 	//    car->setMesh (carMesh);
 	//    car->setMaterial(colorMaterial);
 	//    _world->add(car);
-	for (int i = 0; i < 25; i++) {
-		for (int j = 0; j < 2; j++) {
-			GameObject* monkey = new GameObject("monkey", glm::vec3(3, 100, 0));
-			float mass = 1;
-			btVector3 fallInertia(0, 0, 0);
-			btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-13 + i*1.5f, 150 + i, 0 + j * 3)));
-			monkey->addCollider(SphereColliderArgs(1), false, true);
-			monkey->addRigidBody(mass, fallInertia, *fallMotionState);
-			//monkey->addCollider<BoxCollider>(glm::vec4(10, 10, 10, 10));
-			monkey->setMesh(suzannaMeshF);
-			float scale = 1;
-			monkey->scale(glm::vec3(scale, scale, scale));
-			monkey->setMaterial(textureMaterial2);
-			//RigidBody* rigidBody = new RigidBody(fallRigidBodyCI);
-			//monkey->addBehaviour(rigidBody);
-			//teapotTrigger.collisionEvents[rigidBody].bind(this, &TestScene::onTeapotCollisionWithPhysicsObject);
-			//    monkey->setBehaviour (new RotatingBehaviour());
-
-			_world->add(monkey);
-		}
-	}
+	
 	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
@@ -168,9 +151,52 @@ void TestScene::_initializeScene() {
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
 
-	playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, true);
-	playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
+	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false).makeRigidBody(1, btVector3(), *fallMotionState);
+	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
+
+	Collider& playerTriggerCollider = player->addCollider(SphereColliderArgs(5), true);
+	
+	for (int i = 0; i < 25; i++) {
+		for (int j = 0; j < 2; j++) {
+			GameObject* monkey = new GameObject("monkey", glm::vec3(3, 100, 0));
+			float mass = 1;
+			btVector3 fallInertia(0, 0, 0);
+			btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-13 + i*1.5f, 150 + i, 0 + j * 3)));
+			Collider& monkeyCollider = monkey->addCollider(SphereColliderArgs(1), false);
+			RigidBody& monkeyRigidbody = monkeyCollider.makeRigidBody(mass, fallInertia, *fallMotionState);
+			//RigidBody& rigidBody = monkey->addRigidBody(mass, fallInertia, *fallMotionState);
+			//monkey->addCollider<BoxCollider>(glm::vec4(10, 10, 10, 10));
+			monkey->setMesh(suzannaMeshF);
+			float scale = 1;
+			monkey->scale(glm::vec3(scale, scale, scale));
+			monkey->setMaterial(textureMaterial2);
+			_world->add(monkey);
+
+			//---playerTriggerCollider has been created by using:---\\
+			//Collider& playerTriggerCollider = player->addCollider(SphereColliderArgs(5), true);	(where true states that it a trigger)
+
+			//---monkeyRigidbody has been created by using:---\\
+			//Collider& monkeyCollider = monkey->addCollider(SphereColliderArgs(1), false);		(where false states that it's not a trigger)
+			//RigidBody& monkeyRigidbody = monkeyCollider.makeRigidBody(mass, fallInertia, *fallMotionState);
+
+			playerTriggerCollider.collisionEnterEvents[&monkeyRigidbody].bind(this, &TestScene::onCollisionRemoveOther);
+		}
+	}
+	teapotTriggerCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+	
+	//bool isTrigger = true;
+	//Collider& collider = player->addCollider(CapsuleColliderArgs(1,2), isTrigger);
+	//collider->makeRigidbody(1);
+
+	//if collider is trigger, shouldn't be updated by physics.
+	//if collider is trigger, can't be a rigidbody
+	//if collider is solid. Can be a rigidbody, doesn't have to be.
+	
+	
+	
+	
+	
 	/*
 	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
@@ -234,12 +260,21 @@ void TestScene::_updateHud() {
 	_hud->draw();
 }
 
-void TestScene::onTeapotCollisionWithPhysicsObject(btCollisionObject * collisionObject)
+void TestScene::onCollisionRemoveSelf(OnCollisionArgs onCollisionArgs)
 {
-	_world->physics->removeCollisionObject(collisionObject);
-	_world->remove(dynamic_cast<AbstractBehaviour*>(collisionObject)->getOwner());
-	delete collisionObject;
+	std::cout << "SHIT HAPPENED" << std::endl;
+	_world->physics->removeCollisionObject(onCollisionArgs.sender);
+	_world->remove(dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner());
+	delete onCollisionArgs.sender;
 	std::cout << "TEAPOT COLLIDING WITH COLLISION OBJECT" << std::endl;
+}
+
+void TestScene::onCollisionRemoveOther(OnCollisionArgs onCollisionArgs)
+{
+	std::cout << "SHIT HAPPENED" << std::endl;
+	_world->physics->removeCollisionObject(onCollisionArgs.collidingWith);
+	_world->remove(dynamic_cast<AbstractBehaviour*>(onCollisionArgs.collidingWith)->getOwner());
+	delete onCollisionArgs.collidingWith;
 }
 
 TestScene::~TestScene() {

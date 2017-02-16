@@ -13,5 +13,5 @@ struct BoxColliderArgs : ColliderArgs
 class BoxCollider : public Collider
 {
 public:
-	BoxCollider(BoxColliderArgs& boxColliderArgs);
+	BoxCollider(BoxColliderArgs& boxColliderArgs, class GameObject& owner, bool isTrigger);
 };

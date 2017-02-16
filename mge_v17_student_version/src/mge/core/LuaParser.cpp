@@ -370,7 +370,7 @@ int LuaParser::createObject(lua_State * lua) {
 	{
 		//Trigger& randomTrigger = *new Trigger(gameObjectMesh->getMeshCollisionShape());
 		//go->addBehaviour(&randomTrigger);
-		go->addCollider(MeshColliderArgs(*gameObjectMesh), false, false);
+		go->addCollider(MeshColliderArgs(*gameObjectMesh), false);
 	}
 
     return 1;

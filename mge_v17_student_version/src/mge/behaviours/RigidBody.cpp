@@ -1,17 +1,18 @@
 #include "RigidBody.hpp"
 #include "btBulletCollisionCommon.h"
 #include <glm\gtc\type_ptr.hpp>
+#include "mge\core\Physics\Colliders\Collider.h"
 
-
-RigidBody::RigidBody(float pMass, btDefaultMotionState * pMotionState, btCollisionShape * pShape, btVector3& pInertia) :
-	btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, pShape, calculateIntertia(pMass, pShape, pInertia)))
+RigidBody::RigidBody(Collider& collider, float pMass, btDefaultMotionState * pMotionState, btVector3& pInertia) :
+	btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, collider.getCollisionShape(), calculateIntertia(pMass, collider.getCollisionShape(), pInertia))),
+	_collider (collider)
 {
-	//rigidBody = new btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, pShape, intertia));
 	World::addRigidBody(this);
 }
 
-RigidBody::RigidBody(btRigidBody::btRigidBodyConstructionInfo& pConstructionInfo) : 
-	btRigidBody(pConstructionInfo)
+RigidBody::RigidBody(Collider& collider, btRigidBody::btRigidBodyConstructionInfo& pConstructionInfo) : 
+	btRigidBody(pConstructionInfo),
+	_collider(collider)
 {
 	World::addRigidBody(this);
 }
@@ -49,6 +50,11 @@ void RigidBody::update(float pStep)
 	glm::mat4 mat = glm::mat4_cast(quat);
 
 	_owner->setWorldTransform_TEST(transform * mat);
+}
+
+Collider & RigidBody::getCollider()
+{
+	return _collider;
 }
 
 btVector3 RigidBody::calculateIntertia(const float pMass, const btCollisionShape * pShape, btVector3& pInertia) const
