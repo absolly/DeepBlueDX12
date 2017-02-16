@@ -202,6 +202,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
     <ClInclude Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.h" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.h" />
+    <ClInclude Include="src\Content\Behaviours\PredatorBehaviour.h" />
     <ClInclude Include="src\Content\Core\Event.h" />
     <ClInclude Include="src\Content\Core\EventHandler.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
@@ -252,6 +253,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
+    <ClCompile Include="src\Content\Behaviours\PredatorBehaviour.cpp" />
     <ClCompile Include="src\Content\Core\EventHandler.cpp" />
     <ClCompile Include="src\Content\Core\Input.cpp" />
     <ClCompile Include="src\Content\DeferredTestScene.cpp" />
