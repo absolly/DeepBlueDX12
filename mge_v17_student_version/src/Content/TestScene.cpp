@@ -173,11 +173,13 @@ void TestScene::_initializeScene() {
 			monkey->setMaterial(textureMaterial2);
 			_world->add(monkey);
 
-			//playerTriggerCollider has been created by using:
-			//Collider& playerTriggerCollider = player->addCollider(SphereColliderArgs(5), true);
-			//monkeyRigidbody has been created by using: 
-			//Collider& monkeyCollider = monkey->addCollider(SphereColliderArgs(1), false);
+			//---playerTriggerCollider has been created by using:---\\
+			//Collider& playerTriggerCollider = player->addCollider(SphereColliderArgs(5), true);	(where true states that it a trigger)
+
+			//---monkeyRigidbody has been created by using:---\\
+			//Collider& monkeyCollider = monkey->addCollider(SphereColliderArgs(1), false);		(where false states that it's not a trigger)
 			//RigidBody& monkeyRigidbody = monkeyCollider.makeRigidBody(mass, fallInertia, *fallMotionState);
+
 			playerTriggerCollider.collisionEnterEvents[&monkeyRigidbody].bind(this, &TestScene::onCollisionRemoveOther);
 		}
 	}
