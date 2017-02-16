@@ -23,6 +23,9 @@ public:
 
 private:
 	std::vector<glm::vec3> * _waypoints;
+	glm::vec3 _parentPos;
+
+	std::vector<glm::vec3> * waypointsValidator(std::vector<glm::vec3> * pWaypoints);
 	int _tankSize = 0;
 	int _goalIndex = 0;
 	int _fishCount = 0;

@@ -91,6 +91,7 @@ void DeferredTestScene::_initializeScene() {
 	//		_world->add(teapot);
 	//	}
 	//}
+
 	FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
 
 

@@ -22,7 +22,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		glm::vec3 averageHeading;
 		glm::vec3 averagePosition;
 		float _speed = 1;
-		float neighbourDistance = 4.0f;
+		float neighbourDistance = 6.0f;
 
     private:
 		bool turning = false;
@@ -30,6 +30,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		void InterPolateDirection(glm::vec3 pDirection);
 		void InverseDirection();
 		FishTank * fishtank;
+		glm::vec3 _parentPosition;
 		glm::vec3 _scale;
 };
 

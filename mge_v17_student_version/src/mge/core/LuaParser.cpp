@@ -25,8 +25,12 @@ LuaParser::LuaParser(World* pWorld) {
     lua_setglobal(lua, "destroy");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addMaterial>);
 	lua_setglobal(lua, "addMaterial");
-	lua_pushcfunction(lua, &dispatch<&LuaParser::addCollider>);
-	lua_setglobal(lua, "addCollider");
+	lua_pushcfunction(lua, &dispatch<&LuaParser::addMeshCollider>);
+	lua_setglobal(lua, "addMeshCollider");
+	lua_pushcfunction(lua, &dispatch<&LuaParser::addBoxCollider>);
+	lua_setglobal(lua, "addBoxCollider");
+	lua_pushcfunction(lua, &dispatch<&LuaParser::addSphereCollider>);
+	lua_setglobal(lua, "addSphereCollider");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::createTrigger>);
 	lua_setglobal(lua, "createTrigger");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::createLight>);
@@ -359,14 +363,7 @@ int LuaParser::createObject(lua_State * lua) {
 	go->setTransform(glm::transpose(glm::mat4(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, -m34, m41, m42, m43, m44)));
 	std::cout << meshName << std::endl;
 
-	//if (meshName == "ShipSide1")
-	//{
-	//	go->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
-	//}
-	//else
-	//{
-		go->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
-	/*}*/
+	go->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
 
 	Mesh * gameObjectMesh = Mesh::load(config::MGE_MODEL_PATH + meshName + ".obj");
 	go->setMesh(gameObjectMesh);
@@ -377,13 +374,6 @@ int LuaParser::createObject(lua_State * lua) {
 	_world->add(go);
 
 	std::cout << "Create Object: " << meshName << std::endl;
-
-	if (meshName != "LuchtTankHouder" && meshName != "Tank1")
-	{
-		//Trigger& randomTrigger = *new Trigger(gameObjectMesh->getMeshCollisionShape());
-		//go->addBehaviour(&randomTrigger);
-		go->addCollider(MeshColliderArgs(*gameObjectMesh), false, false);
-	}
 
     return 1;
 }
@@ -397,11 +387,33 @@ int LuaParser::addMaterial(lua_State * lua){
 
 	return 1; 
 }
-int LuaParser::addCollider(lua_State * lua){ 
-	std::cout << "Add Collider" << std::endl;
+int LuaParser::addMeshCollider(lua_State * lua){
+	string collider = lua_tostring(lua, -1);
+		
+	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false, false);
 
 	return 1;
 }
+
+int LuaParser::addBoxCollider(lua_State * lua) {
+	float x = lua_tonumber(lua, -6);
+	float y = lua_tonumber(lua, -5);
+	float z = lua_tonumber(lua, -4);
+
+	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false,false);
+
+	return 1;
+}
+
+
+int LuaParser::addSphereCollider(lua_State * lua) {
+	float radius = lua_tonumber(lua, -4);
+
+	_currentGameObject->addCollider(SphereColliderArgs(radius), false, false);
+
+	return 1;
+}
+
 
 int LuaParser::createTrigger(lua_State * lua)
 {
