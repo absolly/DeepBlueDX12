@@ -9,6 +9,7 @@
 #include "mge\core\Physics\Colliders\BoxCollider.h"
 #include "mge\core\Physics\Colliders\SphereCollider.h"
 #include "mge\core\Physics\Colliders\MeshCollider.h"
+#include "mge\core\Physics\Colliders\CapsuleCollider.h"
 
 class AbstractBehaviour;
 class AbstractMaterial;
@@ -63,11 +64,10 @@ class GameObject
 		std::vector<AbstractBehaviour*> getBehaviours();
 
 		std::vector<Collider*> colliders;
-		void addCollider(BoxColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition);
-		void addCollider(MeshColliderArgs & colliderArgs, bool isTrigger, bool usePhysicsPosition);
-		void addCollider(SphereColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition);
-
-		void addRigidBody(float mass = 1, btVector3& inertia = btVector3(0, 0, 0), btDefaultMotionState& defaultMotionState = *new btDefaultMotionState(btTransform()));
+		Collider& addCollider(BoxColliderArgs& colliderArgs, bool isTrigger);
+		Collider& addCollider(MeshColliderArgs & colliderArgs, bool isTrigger);
+		Collider& addCollider(SphereColliderArgs& colliderArgs, bool isTrigger);
+		Collider& addCollider(CapsuleColliderArgs & colliderArgs, bool isTrigger);
 
 		template <class BehaviourType>
 		BehaviourType* getBehaviour();

@@ -3,6 +3,7 @@
 #include "glm.hpp"
 #include "mge\core\GameObject.hpp"
 #include "mge\core\World.hpp"
+#include "mge\behaviours\RigidBody.hpp"
 
 /*Trigger::Trigger() : 
 	_ghostObject(*new btPairCachingGhostObject()),
@@ -57,13 +58,16 @@ void CollisionBehaviour::checkForCollisions()
 	btManifoldArray manifoldArray;
 	btBroadphasePairArray& pairArray = getOverlappingPairCache()->getOverlappingPairArray();
 	int numPairs = pairArray.size();
+	std::unordered_set<btCollisionObject*> thisCheckCollidingObjects;
+	std::vector<OnCollisionArgs> collisionEnterEventsToExecute;
+	std::vector<OnCollisionArgs> collisionEventsToExecute;
+	std::vector<OnCollisionArgs> collisionExitEventsToExecute;
 
 	for (int i = 0; i < numPairs; ++i)
 	{
 		manifoldArray.clear();
 		
 		const btBroadphasePair& pair = pairArray[i];
-
 		btBroadphasePair* collisionPair = _physicsWorld->getPairCache()->findPair(pair.m_pProxy0, pair.m_pProxy1);
 
 		if (!collisionPair) continue;
@@ -91,11 +95,46 @@ void CollisionBehaviour::checkForCollisions()
 					
 					btCollisionObject* obA = const_cast<btCollisionObject*>(manifold->getBody0());
 					btCollisionObject* obB = const_cast<btCollisionObject*>(manifold->getBody1());
-					collisionEvents[obB](obB);
+					//Collision Enter
+					if (_collidingObjects.find(obB) == _collidingObjects.end())
+					{
+						_collidingObjects.insert(obB);
+						if (collisionEnterEvents.find(obB) != collisionEnterEvents.end())
+							collisionEnterEventsToExecute.push_back(OnCollisionArgs(obA, obB));
+					}
+					//Collision Continuous
+					thisCheckCollidingObjects.insert(obB);
+					if (collisionEvents.find(obB) != collisionEvents.end())
+						collisionEnterEventsToExecute.push_back(OnCollisionArgs(obA, obB));
+					//std::cout << "COLLISION" << std::endl;
 					// handle collisions here
 				}
 			}
 		}
+	}
+	//Collision Exit
+	for (std::unordered_set<btCollisionObject*>::iterator obj = _collidingObjects.begin(); obj != _collidingObjects.end(); ++obj)
+	{
+		if (thisCheckCollidingObjects.find(*obj) == thisCheckCollidingObjects.end())
+		{
+			collisionExitEventsToExecute.push_back(OnCollisionArgs(this, *obj));
+			obj = _collidingObjects.erase(obj);
+		}
+	}
+
+	for each (OnCollisionArgs onCollisionArgs in collisionEnterEventsToExecute)
+	{
+		std::cout << "COLLISION ENTER" << onCollisionArgs.collidingWith << std::endl;
+		collisionEnterEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
+	}
+	for each (OnCollisionArgs onCollisionArgs in collisionEventsToExecute)
+	{
+		collisionEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
+	}
+	for each (OnCollisionArgs onCollisionArgs in collisionExitEventsToExecute)
+	{
+		std::cout << "COLLISION EXIT" << onCollisionArgs.collidingWith << std::endl;
+		collisionExitEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
 	}
 }
 

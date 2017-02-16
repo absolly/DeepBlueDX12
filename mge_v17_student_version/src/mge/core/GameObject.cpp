@@ -7,38 +7,38 @@ using namespace std;
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "Content\Core\EventHandler.h"
 #include "Bullet3Common\b3Vector3.h"
-#include "mge\behaviours\RigidBody.hpp"
 #include "mge\core\Physics\CollisionBehaviour.h"
+#include "mge\behaviours\RigidBody.hpp"
 
-GameObject::GameObject(std::string pName, glm::vec3 pPosition )
-:	_name( pName ), _transform( glm::translate( pPosition ) ),
-    _parent(NULL), _children(), _mesh( NULL ), _behaviours(vector<AbstractBehaviour*>()), _material(NULL), colliders(std::vector<Collider*>())
+GameObject::GameObject(std::string pName, glm::vec3 pPosition)
+	: _name(pName), _transform(glm::translate(pPosition)),
+	_parent(NULL), _children(), _mesh(NULL), _behaviours(vector<AbstractBehaviour*>()), _material(NULL), colliders(std::vector<Collider*>())
 {
 }
 
 GameObject::~GameObject()
 {
-    //detach all children
-    //cout << "GC running on:" << _name << endl;
+	//detach all children
+	//cout << "GC running on:" << _name << endl;
 	if (_parent != NULL)
 		_parent->remove(this);
-    while (_children.size() > 0) {
-        GameObject* child = _children[0];
-        remove (child);
-        delete child;
-    }
+	while (_children.size() > 0) {
+		GameObject* child = _children[0];
+		remove(child);
+		delete child;
+	}
 	for each (Collider* collider in colliders)
 	{
 		delete collider;
 	}
 	colliders.clear();
 	EventHandler::unbindEvents(this);
-    //do not forget to delete behaviour, material, mesh, collider manually if required!
+	//do not forget to delete behaviour, material, mesh, collider manually if required!
 }
 
-void GameObject::setName (std::string pName)
+void GameObject::setName(std::string pName)
 {
-    _name = pName;
+	_name = pName;
 }
 
 std::string GameObject::getName() const
@@ -46,9 +46,9 @@ std::string GameObject::getName() const
 	return _name;
 }
 
-void GameObject::setTransform (const glm::mat4& pTransform)
+void GameObject::setTransform(const glm::mat4& pTransform)
 {
-    _transform = pTransform;
+	_transform = pTransform;
 }
 
 void GameObject::setWorldTransform_TEST(const glm::mat4& pTransform)
@@ -58,7 +58,7 @@ void GameObject::setWorldTransform_TEST(const glm::mat4& pTransform)
 
 const glm::mat4& GameObject::getTransform() const
 {
-    return _transform;
+	return _transform;
 }
 
 const btTransform& GameObject::getBulletPhysicsTransform() const
@@ -66,7 +66,7 @@ const btTransform& GameObject::getBulletPhysicsTransform() const
 	btTransform btTransform;
 	glm::mat4 transform = getWorldTransform();
 	glm::vec3 scale = glm::vec3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
-	transform = glm::scale(transform, glm::vec3(1/ scale.x, 1/ scale.y, 1/ scale.z));
+	transform = glm::scale(transform, glm::vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
 	glm::quat rotation = glm::quat_cast(transform);
 	glm::vec3 position = transform[3];
 	btTransform.setIdentity();
@@ -84,9 +84,9 @@ btVector3 GameObject::getBulletPhysicsLocalScale()
 	return btVector3(glm::length(_transform[0]), glm::length(_transform[1]), glm::length(_transform[2]));
 }
 
-void GameObject::setLocalPosition (glm::vec3 pPosition)
+void GameObject::setLocalPosition(glm::vec3 pPosition)
 {
-    _transform[3] = glm::vec4 (pPosition,1);
+	_transform[3] = glm::vec4(pPosition, 1);
 }
 
 glm::vec3 GameObject::getLocalPosition() const
@@ -96,12 +96,12 @@ glm::vec3 GameObject::getLocalPosition() const
 
 void GameObject::setMaterial(AbstractMaterial* pMaterial)
 {
-    _material = pMaterial;
+	_material = pMaterial;
 }
 
 AbstractMaterial * GameObject::getMaterial() const
 {
-    return _material;
+	return _material;
 }
 
 void GameObject::setMesh(Mesh* pMesh)
@@ -111,7 +111,7 @@ void GameObject::setMesh(Mesh* pMesh)
 
 Mesh * GameObject::getMesh() const
 {
-    return _mesh;
+	return _mesh;
 }
 
 void GameObject::addBehaviour(AbstractBehaviour* pBehaviour)
@@ -125,90 +125,92 @@ std::vector<AbstractBehaviour*> GameObject::getBehaviours()
 	return _behaviours;
 }
 
-void GameObject::addCollider(BoxColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition)
+Collider& GameObject::addCollider(BoxColliderArgs& colliderArgs, bool isTrigger)
 {
-	Collider& collider = *new BoxCollider(colliderArgs);
-	colliders.push_back(&collider);
-	//if (isTrigger)
-	{
-		CollisionBehaviour& collisionBehaviour = *new CollisionBehaviour(*this, &collider.getColliderShape(), isTrigger, usePhysicsPosition);
-		addBehaviour(&collisionBehaviour);
-	}
+	Collider& collider = *new BoxCollider(colliderArgs, *this, isTrigger);
+	//colliders.push_back(&collider);
+	addBehaviour(&collider);
+	return collider;
 }
 
-void GameObject::addCollider(MeshColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition)
+Collider& GameObject::addCollider(MeshColliderArgs& colliderArgs, bool isTrigger)
 {
-	Collider& collider = *new MeshCollider(colliderArgs);
-	colliders.push_back(&collider);
-	//if (isTrigger)
-	{
-		CollisionBehaviour& collisionBehaviour = *new CollisionBehaviour(*this, &collider.getColliderShape(), isTrigger, usePhysicsPosition);
-		addBehaviour(&collisionBehaviour);
-	}
+	Collider& collider = *new MeshCollider(colliderArgs, *this, isTrigger);
+	//colliders.push_back(&collider);
+	addBehaviour(&collider);
+	return collider;
 }
 
-void GameObject::addCollider(SphereColliderArgs& colliderArgs, bool isTrigger, bool usePhysicsPosition)
+Collider& GameObject::addCollider(SphereColliderArgs& colliderArgs, bool isTrigger)
 {
-	Collider& collider = *new SphereCollider(colliderArgs);
-	colliders.push_back(&collider);
-	//if (isTrigger)
-	{
-		CollisionBehaviour& collisionBehaviour = *new CollisionBehaviour(*this, &collider.getColliderShape(), isTrigger, usePhysicsPosition);
-		addBehaviour(&collisionBehaviour);
-	}
+	Collider& collider = *new SphereCollider(colliderArgs, *this, isTrigger);
+	//colliders.push_back(&collider);
+	addBehaviour(&collider);
+	return collider;
 }
 
-void GameObject::addRigidBody(float mass, btVector3& inertia, btDefaultMotionState& defaultMotionState)
+Collider& GameObject::addCollider(CapsuleColliderArgs& colliderArgs, bool isTrigger)
+{
+	Collider& collider = *new CapsuleCollider(colliderArgs, *this, isTrigger);
+	//colliders.push_back(&collider);
+	addBehaviour(&collider);
+	return collider;
+}
+
+/*
+RigidBody& GameObject::addRigidBody(float mass, btVector3& inertia, btDefaultMotionState& defaultMotionState)
 {
 	if (colliders.size() == 0)
 	{
 		throw exception("Attempting to add a rigidbody to a GameObect that doesn't have a collider yet!");
-	}	
+	}
 	colliders[0]->getColliderShape().calculateLocalInertia(mass, inertia);
-	addBehaviour(new RigidBody(mass, &defaultMotionState, &colliders[0]->getColliderShape(), inertia));
-}
+	RigidBody& rigidBody = *new RigidBody(mass, &defaultMotionState, &colliders[0]->getColliderShape(), inertia);
+	addBehaviour(&rigidBody);
+	return rigidBody;
+}*/
 
-void GameObject::setParent (GameObject* pParent) {
-    //remove from previous parent
-    if (_parent != NULL) {
-        _parent->_innerRemove(this);
-        _parent = NULL;
-    }
+void GameObject::setParent(GameObject* pParent) {
+	//remove from previous parent
+	if (_parent != NULL) {
+		_parent->_innerRemove(this);
+		_parent = NULL;
+	}
 
-    //set new parent
-    if (pParent != NULL) {
-        _parent = pParent;
-        _parent->_innerAdd(this);
-    }
+	//set new parent
+	if (pParent != NULL) {
+		_parent = pParent;
+		_parent->_innerAdd(this);
+	}
 }
 
 GameObject* GameObject::getParent() {
-    return _parent;
+	return _parent;
 }
 
 void GameObject::_innerAdd(GameObject* pChild)
 {
-    //set new parent
-    pChild->_parent = this;
+	//set new parent
+	pChild->_parent = this;
 	_children.push_back(pChild);
 }
 
-void GameObject::_innerRemove (GameObject* pChild) {
-    for (auto i = _children.begin(); i != _children.end(); ++i) {
-        if (*i == pChild) {
-            (*i)->_parent = NULL;
-            _children.erase(i);
-            return;
-        }
-    }
+void GameObject::_innerRemove(GameObject* pChild) {
+	for (auto i = _children.begin(); i != _children.end(); ++i) {
+		if (*i == pChild) {
+			(*i)->_parent = NULL;
+			_children.erase(i);
+			return;
+		}
+	}
 }
 
-void GameObject::add (GameObject* pChild) {
-    pChild->setParent(this);
+void GameObject::add(GameObject* pChild) {
+	pChild->setParent(this);
 }
 
-void GameObject::remove (GameObject* pChild) {
-    pChild->setParent(NULL);
+void GameObject::remove(GameObject* pChild) {
+	pChild->setParent(NULL);
 }
 
 ////////////
@@ -222,8 +224,8 @@ glm::vec3 GameObject::getWorldPosition() const
 //costly operation, use with care
 glm::mat4 GameObject::getWorldTransform() const
 {
-    if (_parent == NULL) return _transform;
-    else return _parent->getWorldTransform() * _transform;
+	if (_parent == NULL) return _transform;
+	else return _parent->getWorldTransform() * _transform;
 }
 
 ////////////
@@ -254,16 +256,16 @@ void GameObject::update(float pStep)
 	{
 		behaviour->update(pStep);
 	}
-    for (int i = _children.size()-1; i >= 0; --i ) {
-        _children[i]->update(pStep);
-    }
+	for (int i = _children.size() - 1; i >= 0; --i) {
+		_children[i]->update(pStep);
+	}
 }
 
 int GameObject::getChildCount() {
-    return _children.size();
+	return _children.size();
 }
 
 GameObject* GameObject::getChildAt(int pIndex) {
-    return _children[pIndex];
+	return _children[pIndex];
 }
 

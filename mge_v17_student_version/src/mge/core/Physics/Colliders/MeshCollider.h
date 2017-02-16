@@ -14,5 +14,5 @@ struct MeshColliderArgs
 class MeshCollider : public Collider
 {
 public:
-	MeshCollider(MeshColliderArgs& colliderArgs);
+	MeshCollider(MeshColliderArgs& colliderArgs, class GameObject& owner, bool isTrigger);
 };

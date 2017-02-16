@@ -1,10 +1,11 @@
 #pragma once
+#include "mge\core\Physics\CollisionBehaviour.h"
 
-
-class Collider
+class Collider : public CollisionBehaviour
 {
 public:
-	Collider(class btCollisionShape& colliderShape);
+	Collider(class btCollisionShape& colliderShape, class GameObject& owner, bool isTrigger);
+	class RigidBody& makeRigidBody(float mass, btVector3 & inertia, btDefaultMotionState & defaultMotionState);
 	~Collider();
 	class btCollisionShape& getColliderShape();
 
