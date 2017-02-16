@@ -19,16 +19,17 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 	_fishCount = pFishCount;
 
 	allFish = new vector<GameObject*>();
-	_waypoints = new vector<glm::vec3>();
 	
-	_waypoints->push_back(glm::vec3(pTankSize, pTankSize / 2, -pTankSize));
-	_waypoints->push_back(glm::vec3(pTankSize / 2, pTankSize / 2, pTankSize / 2));
-	_waypoints->push_back(glm::vec3(-pTankSize / 2, -pTankSize / 2, -pTankSize / 2));
-	_waypoints->push_back(glm::vec3(-pTankSize, pTankSize / 2, pTankSize));
+	_parentPos = getLocalPosition();
+
+	//_waypoints->push_back(glm::vec3(pTankSize , pTankSize / 2, -pTankSize));
+	//_waypoints->push_back(glm::vec3(pTankSize / 2, pTankSize / 2, pTankSize / 2));
+	//_waypoints->push_back(glm::vec3(-pTankSize / 2, -pTankSize / 2, -pTankSize / 2));
+	//_waypoints->push_back(glm::vec3(-pTankSize, pTankSize / 2, pTankSize));
 
 
 	
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "Fish1_OBJ.OBJ");
+	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "small_fish.OBJ");
 	AbstractMaterial* colormat = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 
 	random_device rd;
@@ -38,18 +39,22 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 	uniform_int_distribution<> dis(1, pTankSize / 4);
 
-	for  (int i = 0; i < _fishCount; i++)
+	for (int i = 0; i < _fishCount; i++)
 	{
 		int randomX = dis(gen);
 		int randomY = dis(gen);
 		int randomZ = dis(gen);
 		AbstractBehaviour* flock = new FlockingBehaviour(this, glm::vec3(1.0f, 1.0f, 1.0f));
 
-		GameObject* fish = new GameObject("fish", glm::vec3(randomX, randomY, randomZ));
+		GameObject* fish = new GameObject("fish", glm::vec3(_parentPos.x + randomX, _parentPos.y + randomY, _parentPos.z + randomZ));
 		fish->addBehaviour(flock);
 		pWorld->add(fish);
 		allFish->push_back(fish);
 	}
+
+	goalPosition = glm::vec3(dis(gen), dis(gen), dis(gen)) + getLocalPosition();
+	
+
 };
 
 int FishTank::getTankSize()
@@ -64,19 +69,37 @@ int FishTank::getFishCount()
 
 void FishTank::update(float pStep)
 {
-	std::cout << "update loop is clearly working" << std::endl;
+	
+}
+
+std::vector<glm::vec3> * waypointsValidator(std::vector<glm::vec3> * pWaypoints)
+{
+	if(pWaypoints->size() < 1)
+		std::cout << "this waypoint list is empty so the fish will go only go to their starting position";
+
+	//for (size_t i = 0; i < pWaypoints->size(); i++)
+	//{
+	//	if (glm::distance(pWaypoints->at(i), ))
+	//}
 }
 
 void FishTank::SetNewGoal()
 {
-	if (_goalIndex > 3)
-	{ 
-		_goalIndex = 0;
-	}
+	std::cout << "set new goal" << std::endl;
 
-	goalPosition = _waypoints->at(_goalIndex);
+	random_device rd;
 
-	_goalIndex++;
+	// Initialize Mersenne Twister pseudo-random number generator
+	mt19937 gen(rd());
+
+	uniform_int_distribution<> dis(1, _tankSize * 1.5);
+
+	int randomX = dis(gen);
+	int randomY = dis(gen);
+	int randomZ = dis(gen);
+
+	goalPosition = glm::vec3(randomX, randomY, randomZ) + getLocalPosition();
+
 }
 
 

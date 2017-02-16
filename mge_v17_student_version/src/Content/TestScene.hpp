@@ -3,6 +3,7 @@
 
 #include <mge/core/AbstractGame.hpp>
 #include "mge/core/LuaParser.hpp"
+#include <vector>
 
 class DebugHud;
 

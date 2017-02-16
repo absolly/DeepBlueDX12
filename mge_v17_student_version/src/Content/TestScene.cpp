@@ -66,7 +66,7 @@ void TestScene::_initializeScene() {
 
 	//MESHES
 
-	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "small_fish.obj");
+	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
 	//load a bunch of meshes we will be using throughout this demo
 	//each mesh only has to be loaded once, but can be used multiple times:
 	//F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
@@ -83,26 +83,26 @@ void TestScene::_initializeScene() {
 	//0 specular ground material
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
-    //10 specular teapot material
-    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), 1, 10);
+	//10 specular teapot material
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "CreatureUV_GRN.png"), 1, 10);
 
-    //SCENE SETUP
-    PhysicsObject* plane = new PhysicsObject ("plane", glm::vec3(0,0,0));
-    plane->scale(glm::vec3(50,50,50));
-    plane->setMesh(planeMeshDefault);
-    plane->setMaterial(waveMaterial);
-	plane->addBehaviour(new KeysBehaviour());
+	//SCENE SETUP
+	//PhysicsObject* plane = new PhysicsObject("plane", glm::vec3(0, 0, 0));
+	//plane->scale(glm::vec3(50, 50, 50));
+	//plane->setMesh(planeMeshDefault);
+	//plane->setMaterial(waveMaterial);
+	//plane->addBehaviour(new KeysBehaviour());
 
-    btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-    //groundShape->setLocalScaling(btVector3(50,50,50));
+	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	////groundShape->setLocalScaling(btVector3(50,50,50));
 
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btRigidBody::btRigidBodyConstructionInfo
-		groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	plane->rigidBody = new btRigidBody(groundRigidBodyCI);
-	_world->add(plane);
-	World::addRigidBody(plane->rigidBody);
+	//btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+	//btRigidBody::btRigidBodyConstructionInfo
+	//	groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+	//plane->rigidBody = new btRigidBody(groundRigidBodyCI);
+	//_world->add(plane);
+	//World::addRigidBody(plane->rigidBody);
 
 	GameObject* teapot = new GameObject("teapot", glm::vec3(-3, 100, 0));
 	teapot->setMesh(teapotMeshS);
@@ -112,9 +112,18 @@ void TestScene::_initializeScene() {
 	teapot->scale(glm::vec3(10.0f, 10.0f, 10.0f));
 	_world->add(teapot);
 
-	FishTank* fishTank = new FishTank(glm::vec3(), _world, "", 10, 0);
+
+	FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
+	fishTank->setMesh(smallFish);
+	AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+	fishTank->setMaterial(gpuinstancing);
+	_world->add(fishTank);
+	
+
 	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((config::MGE_LEVEL_PATH + "exported_scene.lua").c_str());
+	luaparser->loadFile((config::MGE_LEVEL_PATH + "FullSizedScene.lua").c_str());
+
+	
 
 	/*GameObject* shipGO = new GameObject("ship", glm::vec3(3, 1, 0));
 	Trigger& randomTrigger = *new Trigger(*World::physics, ship->getMeshCollisionShape());
@@ -209,23 +218,22 @@ void TestScene::_initializeScene() {
 	//player->addRigidBody(1);
 	player->add(camera);*/
 
-
 	//camera->addBehaviour(new CameraOrbitBehaviour (10, 30, 150, 1, teapot));
-//
-//    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
-//    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
-//    light->setMesh (cubeMeshF);
-//    AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
-//    light->setBehaviour(new LookAt(teapot));
-//    light->setMaterial(colorMaterial2);
-//    _world->add(light);
-//
-//    glm::vec3* lightColor2 = new glm::vec3(0.0f,0.0f,.5f);
-//    Light* light2 = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,5), *lightColor2, 50, glm::vec3(0,0,1));
-//    light2->setMesh (cubeMeshF);
-//    light->setBehaviour(new LookAt(teapot));
-//    light2->setMaterial(colorMaterial2);
-//    _world->add(light2);
+	//
+	//    glm::vec3* lightColor = new glm::vec3(0.5f,0.0f,.5f);
+	//    Light* light = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,-5), *lightColor, 50, glm::vec3(0,0,1));
+	//    light->setMesh (cubeMeshF);
+	//    AbstractMaterial* colorMaterial2 = new ColorMaterial (*lightColor);
+	//    light->setBehaviour(new LookAt(teapot));
+	//    light->setMaterial(colorMaterial2);
+	//    _world->add(light);
+	//
+	//    glm::vec3* lightColor2 = new glm::vec3(0.0f,0.0f,.5f);
+	//    Light* light2 = new Light (Light::lightType::POINT, "light1", glm::vec3(0,2,5), *lightColor2, 50, glm::vec3(0,0,1));
+	//    light2->setMesh (cubeMeshF);
+	//    light->setBehaviour(new LookAt(teapot));
+	//    light2->setMaterial(colorMaterial2);
+	//    _world->add(light2);
 	float random = time(NULL);
 	std::cout << "random seed: " << random << std::endl;
 	srand(random);
@@ -247,7 +255,7 @@ void TestScene::_initializeScene() {
 
 void TestScene::_render() {
 	AbstractGame::_render();
-	_world->debugDraw();
+	//_world->debugDraw();
 	_updateHud();
 	AbstractGame::_renderToQuad();
 }

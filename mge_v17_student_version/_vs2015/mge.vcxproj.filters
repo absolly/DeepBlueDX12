@@ -44,6 +44,8 @@
     <ClCompile Include="src\mge\materials\DebugRenderMaterial.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\MeshCollider.cpp" />
     <ClCompile Include="src\mge\core\Physics\CollisionBehaviour.cpp" />
+    <ClCompile Include="src\mge\materials\GPUinstancingMaterial.cpp" />
+    <ClCompile Include="src\Content\Behaviours\PredatorBehaviour.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\CapsuleCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +97,8 @@
     <ClInclude Include="src\mge\materials\DebugRenderMaterial.hpp" />
     <ClInclude Include="src\mge\core\Physics\Colliders\MeshCollider.h" />
     <ClInclude Include="src\mge\core\Physics\CollisionBehaviour.h" />
+    <ClInclude Include="src\mge\materials\GPUinstancingMaterial.hpp" />
+    <ClInclude Include="src\Content\Behaviours\PredatorBehaviour.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\CapsuleCollider.h" />
   </ItemGroup>
   <ItemGroup>

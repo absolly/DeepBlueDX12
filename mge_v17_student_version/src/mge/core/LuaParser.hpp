@@ -46,7 +46,9 @@ class LuaParser {
         int setMainCharacter(lua_State * lua);
         int addlistener(lua_State * lua);
 		int addMaterial(lua_State * lua);
-		int addCollider(lua_State * lua);
+		int addSphereCollider(lua_State * lua);
+		int addBoxCollider(lua_State * lua);
+		int addMeshCollider(lua_State * lua);
 		int createTrigger(lua_State * lua);
 		int createLight(lua_State * lua);
 		int addLightAttributes(lua_State * lua);

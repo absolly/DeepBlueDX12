@@ -5,6 +5,7 @@
 #include "mge/core/GameObject.hpp"
 #include "mge/core/Mesh.hpp"
 
+
 ShaderProgram* GPUinstancingMaterial::_shader = NULL;
 
 GLint _uMVPMatrix = 0;
@@ -65,8 +66,6 @@ void GPUinstancingMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, c
 	_shader->use();
 
 	pMesh->instanceToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
-
-	std::cout << pModelMatrix << std::endl;
 
 
 	for (int i = 0; i < _listSize; i++)

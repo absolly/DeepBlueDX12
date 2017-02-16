@@ -13,6 +13,7 @@ FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank, glm::vec3 pScale) : A
 	fishtank = pFishtank;
 	srand(time(NULL));
 	_scale = pScale;
+	_parentPosition = fishtank->getLocalPosition();
 }
 
 FlockingBehaviour::~FlockingBehaviour()
@@ -27,11 +28,11 @@ void FlockingBehaviour::update(float pStep)
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
-	uniform_int_distribution<> dis(0, 15);
+	uniform_int_distribution<> dis(0, 10);
 
-	_speed = (dis(gen) / 2.5) + 3.0f;
+	_speed = (dis(gen) / 2) + 3.0f;
 
-	if (glm::distance(_owner->getWorldPosition(), glm::vec3(0, 0, 0)) >= (fishtank->getTankSize() * 2))
+	if (glm::distance(_owner->getWorldPosition(), fishtank->getLocalPosition()) >= (fishtank->getTankSize() * 2))
 	{
 		turning = true;
 	}
@@ -47,7 +48,7 @@ void FlockingBehaviour::update(float pStep)
 	}
 	else
 	{
-		if(dis(gen) == 1)
+		if(dis(gen) < 2)
 			ApplyRules();
 	}
 
@@ -61,6 +62,11 @@ void FlockingBehaviour::ApplyRules()
 	glm::vec3 vavoid = glm::vec3(0, 0, 0);
 	glm::vec3 ownerPosition = _owner->getWorldPosition();
 	float gSpeed = 0.1f;
+
+	if (glm::distance(fishtank->goalPosition, ownerPosition) < 30.0f)
+	{
+		fishtank->SetNewGoal();
+	}
 
 	glm::vec3 goal = fishtank->goalPosition;
 
@@ -80,14 +86,9 @@ void FlockingBehaviour::ApplyRules()
 				vcentre += curObject->getWorldPosition();
 				groupSize++;
 
-				if (dist < 3.0f)
+				if (dist < 4.0f)
 				{
 					vavoid = vavoid + (ownerPosition - curObject->getWorldPosition());
-				}
-
-				if (glm::distance(fishtank->goalPosition, ownerPosition) < 8.0f)
-				{
-					fishtank->SetNewGoal();
 				}
 
 				std::vector<AbstractBehaviour*> behaviours = curObject->getBehaviours();
