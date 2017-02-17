@@ -70,7 +70,7 @@ void TestScene::_initializeScene() {
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(config::MGE_TEXTURE_PATH + "white.png"), Texture::load(config::MGE_TEXTURE_PATH + "white.png"));
 
-	GameObject* plane = new GameObject("plane", glm::vec3(0, 1000, 0));
+	GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(100000, 100000, 100000 ));
 	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0)); 
 	plane->setMesh(planeMeshDefault);

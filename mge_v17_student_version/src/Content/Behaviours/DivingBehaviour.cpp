@@ -16,7 +16,7 @@ void DivingBehaviour::update(float pStep)
 	_airLeft -= _drainRate * pStep;
 	_timer--;
 
-	if (_owner->getWorldPosition().y > 1000)
+	if (_owner->getWorldPosition().y >  727.386)
 		_airLeft = _tankSize;
 	if (_timer <= 0) {
 		std::cout << "air left: " << _airLeft << std::endl;
