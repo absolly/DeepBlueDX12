@@ -6,6 +6,7 @@ std::unordered_set<int> Input::_mouseButtonsPressed;
 std::unordered_set<int> Input::_mouseButtonsReleased;
 std::unordered_set<int> Input::_keysPressed;
 std::unordered_set<int> Input::_keysReleased;
+bool Input::mouseLocked = true;
 
 void Input::updateInput()
 {

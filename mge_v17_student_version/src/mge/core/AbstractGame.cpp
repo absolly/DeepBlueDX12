@@ -19,6 +19,8 @@ AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0)
 	EventHandler::bindEvent(sf::Event::Closed, this, &AbstractGame::onCloseWindowEvent);
 	EventHandler::bindKeyDownEvent(sf::Keyboard::Escape, this, &AbstractGame::onEscapePressedEvent);
 	EventHandler::bindKeyDownEvent(sf::Keyboard::F1, this, &AbstractGame::onToggleMouseLock);
+	EventHandler::bindEvent(sf::Event::LostFocus, this, &AbstractGame::disableMouseLock);
+	EventHandler::bindEvent(sf::Event::GainedFocus, this, &AbstractGame::enableMousLock);
 }
 
 AbstractGame::~AbstractGame() {
@@ -306,6 +308,31 @@ void AbstractGame::onEscapePressedEvent(sf::Event::KeyEvent & event)
 
 void AbstractGame::onToggleMouseLock(sf::Event::KeyEvent & event)
 {
-	_mouseCursorVisible = !_mouseCursorVisible;
-	_window->setMouseCursorVisible(_mouseCursorVisible);
+	setMouseLockEnabled(!Input::mouseLocked);
+}
+
+void AbstractGame::disableMouseLock(sf::Event & event)
+{
+	setMouseLockEnabled(false);
+}
+
+void AbstractGame::enableMousLock(sf::Event & event)
+{
+	setMouseLockEnabled(true);
+}
+
+void AbstractGame::setMouseLockEnabled(bool enabled)
+{
+	Input::mouseLocked = enabled;
+	_window->setMouseCursorVisible(!Input::mouseLocked);
+
+	sf::Vector2i screenResolution = sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
+	sf::Vector2i windowSize = sf::Vector2i(_window->getSize().x, _window->getSize().y);
+	sf::Vector2i windowPosition = screenResolution / 2 - windowSize / 2;
+	sf::Vector2i windowCenter = windowPosition + windowSize / 2;
+
+	if (Input::mouseLocked)
+	{
+		sf::Mouse::setPosition(windowCenter);
+	}
 }

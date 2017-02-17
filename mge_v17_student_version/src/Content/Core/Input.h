@@ -31,6 +31,8 @@ public:
 	static bool getKey(const int keyIndex);
 	static bool getKey(const sf::Keyboard::Key keyIndex);
 
+	static bool mouseLocked;
+
 	static class _init
 	{
 	public:

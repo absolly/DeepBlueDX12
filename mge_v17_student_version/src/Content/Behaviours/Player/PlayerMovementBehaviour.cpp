@@ -28,19 +28,10 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	sf::Vector2i windowPosition = screenResolution / 2 - windowSize / 2;
 	sf::Vector2i windowCenter = windowPosition + windowSize / 2;
 
-	if (Input::getKeyDown(sf::Keyboard::F1))
-	{
-		_lockMouse = !_lockMouse;
-		if (_lockMouse)
-		{
-			sf::Mouse::setPosition(windowCenter);
-		}
-	}
-
 	sf::Vector2i mousePosition = sf::Mouse::getPosition();
 	sf::Vector2i mouseMovement = windowCenter - mousePosition;
 
-	if (_lockMouse)
+	if (Input::mouseLocked)
 	{
 		sf::Mouse::setPosition(windowCenter);
 		_currentYaw += mouseMovement.x * sensitivity;

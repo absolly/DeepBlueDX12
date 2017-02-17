@@ -71,8 +71,10 @@ class AbstractGame
 		void DrawQuad();
 		void onCloseWindowEvent(sf::Event& event);
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
-		bool _mouseCursorVisible = false;
 		void onToggleMouseLock(sf::Event::KeyEvent& event);
+		void disableMouseLock(sf::Event& event);
+		void enableMousLock(sf::Event& event);
+		void setMouseLockEnabled(bool enabled);
 		ShaderProgram* _shader;
 		ShaderProgram* _blurShader;
 		GLuint quad_vertexbuffer;
