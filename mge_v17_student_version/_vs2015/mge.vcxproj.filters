@@ -47,6 +47,7 @@
     <ClCompile Include="src\mge\materials\GPUinstancingMaterial.cpp" />
     <ClCompile Include="src\Content\Behaviours\PredatorBehaviour.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\CapsuleCollider.cpp" />
+    <ClCompile Include="src\Content\Behaviours\DivingBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -100,6 +101,7 @@
     <ClInclude Include="src\mge\materials\GPUinstancingMaterial.hpp" />
     <ClInclude Include="src\Content\Behaviours\PredatorBehaviour.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\CapsuleCollider.h" />
+    <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
