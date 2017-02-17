@@ -373,7 +373,7 @@ int LuaParser::createObject(lua_State * lua) {
 	go->setMesh(gameObjectMesh);
 	go->setMaterial(colorMat);
 	_currentGameObject = go;
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks" + ".jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks" + ".jpg"), 1, 1, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 	_currentGameObject->setMaterial(textureMaterial);
 	_world->add(go);
 
@@ -385,7 +385,7 @@ int LuaParser::createObject(lua_State * lua) {
 int LuaParser::addMaterial(lua_State * lua){ 
 	string image = lua_tostring(lua, -1);
 
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + image + ".jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + image + ".jpg"), 1, 1, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
 	_currentGameObject->setMaterial(textureMaterial);
 
