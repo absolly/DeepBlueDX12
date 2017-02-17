@@ -51,6 +51,7 @@ class LuaParser {
 		int addMeshCollider(lua_State * lua);
 		int createTrigger(lua_State * lua);
 		int createLight(lua_State * lua);
+		int createFish(lua_State * lua);
 		int addLightAttributes(lua_State * lua);
         int destoryLuaObject(lua_State * lua);
         vector<collisionListener> collisionListeners;

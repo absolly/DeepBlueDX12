@@ -115,15 +115,15 @@ void TestScene::_initializeScene() {
 	_world->add(teapot);
 
 
-	FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
-	fishTank->setMesh(smallFish);
-	AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
-	fishTank->setMaterial(gpuinstancing);
-	_world->add(fishTank);
+	//FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
+	//fishTank->setMesh(smallFish);
+	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+	//fishTank->setMaterial(gpuinstancing);
+	//_world->add(fishTank);
 	
 
 	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((config::MGE_LEVEL_PATH + "FullSizedScene.lua").c_str());
+	luaparser->loadFile((config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
 	
 

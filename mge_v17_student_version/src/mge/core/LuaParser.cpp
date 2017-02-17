@@ -3,6 +3,8 @@
 #include "mge/core/Light.hpp"
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
+#include "mge\materials\GPUinstancingMaterial.hpp"
+#include "Content/GameObjects/FishTank.hpp"
 #include "World.hpp"
 
 //------------------------------------------------------------------------------------------------------------
@@ -33,6 +35,8 @@ LuaParser::LuaParser(World* pWorld) {
 	lua_setglobal(lua, "addSphereCollider");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::createTrigger>);
 	lua_setglobal(lua, "createTrigger");
+	lua_pushcfunction(lua, &dispatch<&LuaParser::createFish>);
+	lua_setglobal(lua, "createFish");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::createLight>);
 	lua_setglobal(lua, "createLight");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addLightAttributes>);
@@ -388,7 +392,7 @@ int LuaParser::addMaterial(lua_State * lua){
 	return 1; 
 }
 int LuaParser::addMeshCollider(lua_State * lua){
-	string collider = lua_tostring(lua, -1);
+	string collider = lua_tostring(lua, -2);
 		
 	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false);
 
@@ -396,9 +400,9 @@ int LuaParser::addMeshCollider(lua_State * lua){
 }
 
 int LuaParser::addBoxCollider(lua_State * lua) {
-	float x = lua_tonumber(lua, -6);
-	float y = lua_tonumber(lua, -5);
-	float z = lua_tonumber(lua, -4);
+	float x = lua_tonumber(lua, -7);
+	float y = lua_tonumber(lua, -6);
+	float z = lua_tonumber(lua, -5);
 
 	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false);
 
@@ -407,9 +411,27 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 
 
 int LuaParser::addSphereCollider(lua_State * lua) {
-	float radius = lua_tonumber(lua, -4);
+	float radius = lua_tonumber(lua, -5);
 
 	_currentGameObject->addCollider(SphereColliderArgs(radius), false);
+
+	return 1;
+}
+
+
+int LuaParser::createFish(lua_State * lua)
+{
+	float x = lua_tonumber(lua, -3);
+	float y = lua_tonumber(lua, -2);
+	float z = lua_tonumber(lua, -1);
+
+	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
+
+	FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
+	fishTank->setMesh(smallFish);
+	AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+	fishTank->setMaterial(gpuinstancing);
+	_world->add(fishTank);
 
 	return 1;
 }
@@ -421,6 +443,8 @@ int LuaParser::createTrigger(lua_State * lua)
 
 	return 1;
 }
+
+
 int LuaParser::createLight(lua_State * lua)
 { 
 	float m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34, m41, m42, m43, m44;
