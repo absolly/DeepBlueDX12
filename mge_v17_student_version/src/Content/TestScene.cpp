@@ -35,6 +35,7 @@ using namespace std;
 #include "Content/TestScene.hpp"
 #include <time.h>       /* time */
 #include "Content\GameObjects\Player.h"
+#include "Content/Behaviours/DivingBehaviour.h"
 
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
@@ -61,12 +62,21 @@ void TestScene::_initializeScene() {
 	AbstractGame::_setFogGradient(fog);
 
 	//add camera first (it will be updated last)
-	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0));
+	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),0.1f,100000.0f));
 	camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
 	//_world->add(camera);
 	_world->setMainCamera(camera);
 
+	Mesh* planeMeshDefault = Mesh::load(config::MGE_MODEL_PATH + "plane.obj");
 
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(config::MGE_TEXTURE_PATH + "white.png"), Texture::load(config::MGE_TEXTURE_PATH + "white.png"));
+
+	GameObject* plane = new GameObject("plane", glm::vec3(0, 1000, 0));
+	plane->scale(glm::vec3(100000, 100000, 100000 ));
+	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0)); 
+	plane->setMesh(planeMeshDefault);
+	plane->setMaterial(textureMaterial);
+	_world->add(plane);
 
 	//FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
 	//fishTank->setMesh(smallFish);
@@ -87,6 +97,7 @@ void TestScene::_initializeScene() {
 	//_world->add(camera);
 	playerDivingAnimationContainer->add(player);
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
+	player->addBehaviour(new DivingBehaviour());
 	btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
 
 	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false).makeRigidBody(1, btVector3(), *fallMotionState);
