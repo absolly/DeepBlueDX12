@@ -46,13 +46,13 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
+	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
 	//Moving sideways
 	float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
 	_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
-	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
+	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
 	if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
 
 
@@ -104,14 +104,32 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	rigidBody->setLinearVelocity(velocity);
 
 
-
 	rigidBody->setAngularFactor(btVector3(0, 0, 0));
 	rigidBody->setActivationState(ACTIVE_TAG);
-	glm::vec3 ownerPosition = _owner->getLocalPosition();
+	glm::vec3 ownerPosition = _owner->getWorldPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
 	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
 	//_owner->setLocalPosition(ownerPosition);
 
+	if (Input::getKeyDown(sf::Keyboard::I))
+	{
+		std::cout << "Player information: " << std::endl << "{" << std::endl;
+		std::cout << "_minMoveUpSpeed: " << _minMoveSpeed << std::endl;
+		std::cout << "_maxMoveUpSpeed: " << _maxMoveSpeed << std::endl;
+		//std::cout << "_moveAcceleration: " << _moveAcceleration << std::endl;
+		//std::cout << "_moveDecceleration: " << _moveDecceleration << std::endl;
+		std::cout << "_minSideMoveSpeed: " << _minSideMoveSpeed << std::endl;
+		std::cout << "_maxSideMoveSpeed: " << _maxSideMoveSpeed << std::endl;
+		//std::cout << "_moveSideAcceleration: " << _moveSideAcceleration << std::endl;
+		//std::cout << "_moveSideDecceleration: " << _moveSideDecceleration << std::endl;
+		std::cout << "Position: " << ownerPosition.x << ", " << ownerPosition.y << ", " << ownerPosition.z << std::endl;
+		std::cout << "}" << std::endl;
+	}
+
+	if (Input::getKeyDown(sf::Keyboard::Left))	_maxSideMoveSpeed -= 4;
+	if (Input::getKeyDown(sf::Keyboard::Right))	_maxSideMoveSpeed += 4;
+	if (Input::getKeyDown(sf::Keyboard::Down))	_maxMoveSpeed -= 4;
+	if (Input::getKeyDown(sf::Keyboard::Up))	_maxMoveSpeed += 4;
 
 }
 

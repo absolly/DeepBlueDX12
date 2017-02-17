@@ -378,6 +378,10 @@ int LuaParser::createObject(lua_State * lua) {
 	_world->add(go);
 
 	std::cout << "Create Object: " << meshName << std::endl;
+	if (meshName == "ShipSide1")
+	{
+		go->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
+	}
 
     return 1;
 }

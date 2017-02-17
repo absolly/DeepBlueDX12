@@ -1,7 +1,6 @@
 #include <glm.hpp>
 #include <iostream>
 #include <string>
-using namespace std;
 
 #include "mge/core/Renderer.hpp"
 
@@ -106,13 +105,7 @@ void TestScene::_initializeScene() {
 	//_world->add(plane);
 	//World::addRigidBody(plane->rigidBody);
 
-	GameObject* teapot = new GameObject("teapot", glm::vec3(-3, 100, 0));
-	teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(textureMaterial2);
-	teapot->addBehaviour(new KeysBehaviour());
-	Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
-	teapot->scale(glm::vec3(10.0f, 10.0f, 10.0f));
-	_world->add(teapot);
+
 
 
 	//FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
@@ -152,7 +145,7 @@ void TestScene::_initializeScene() {
 	//    car->setMaterial(colorMaterial);
 	//    _world->add(car);
 	
-	GameObject* test = new GameObject("", glm::vec3(0, 100, -70));
+	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
 	test->add(playerDivingAnimationContainer);
@@ -194,8 +187,46 @@ void TestScene::_initializeScene() {
 			playerTriggerCollider.collisionEnterEvents[&monkeyRigidbody].bind(this, &TestScene::onCollisionRemoveOther);
 		}
 	}
-	teapotTriggerCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
-	
+
+	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
+
+	std::vector<glm::vec3> relicLocations
+	{
+		glm::vec3(1313.73, 318.135, -104.237),
+		glm::vec3(1331.22, 332.901, 5.06077),
+		glm::vec3(1208.6, 269.945, 60.0267)
+	};
+	Mesh* relicMesh = Mesh::load(config::MGE_MODEL_PATH + "relic_alienTablet.obj");
+	Mesh* relicMesh2 = Mesh::load(config::MGE_MODEL_PATH + "relic_disc.obj");
+	for (int i=0;i<relicLocations.size();i++)
+	{
+		glm::vec3 relicLocation = relicLocations[i];
+		GameObject* teapot = new GameObject("Relic", relicLocation);
+		teapot->setMesh(i%2==0?relicMesh:relicMesh2);
+		teapot->setMaterial(relicAndTreasureMaterial);
+		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
+		teapot->addBehaviour(new RotatingBehaviour());
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+		_world->add(teapot);
+		teapotTriggerCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+	}
+	std::vector<glm::vec3> treasureLocations
+	{
+		glm::vec3(1260.71, 504.485, 43.6736)
+	};
+	Mesh* treasureMesh = Mesh::load(config::MGE_MODEL_PATH + "TreasureChest.obj");
+	for each (glm::vec3 treasureLocation in treasureLocations)
+	{
+		GameObject* teapot = new GameObject("Treasure", treasureLocation);
+		teapot->setMesh(treasureMesh);
+		teapot->setMaterial(relicAndTreasureMaterial);
+		teapot->addBehaviour(new RotatingBehaviour());
+		teapot->scale(glm::vec3(1.5,1.5,1.5));
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+		_world->add(teapot);
+		teapotTriggerCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+	}
+
 	//bool isTrigger = true;
 	//Collider& collider = player->addCollider(CapsuleColliderArgs(1,2), isTrigger);
 	//collider->makeRigidbody(1);
@@ -238,7 +269,7 @@ void TestScene::_initializeScene() {
 	//    _world->add(light2);
 	float random = time(NULL);
 	std::cout << "random seed: " << random << std::endl;
-	srand(random);
+	std::srand(random);
 	for (int i = 0; i < 3; i++) {
 		glm::vec3* lightColor = new glm::vec3(rand() % 100, rand() % 100, rand() % 100);
 		Light* light = new Light(Light::lightType::POINT, "light1", glm::vec3(rand() % 100 - 50, 5, rand() % 100 - 50), *lightColor, 50, glm::vec3(0, 0, 1));
