@@ -101,6 +101,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	btVector3& velocity = btVector3(_currentMoveSideSpeed * multiplier, _currentMoveUpSpeed, _currentMoveSpeed * multiplier * 1);
 	velocity = quatRotate(quaternion, velocity);
+	velocity += btVector3(0, -1, 0);
 	rigidBody->setLinearVelocity(velocity);
 
 

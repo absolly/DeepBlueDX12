@@ -16,7 +16,7 @@ private:
 
 	//[Header("Forward Movement")]
 	float _minMoveSpeed = -13.0f;
-	float _maxMoveSpeed = 16;
+	float _maxMoveSpeed = 25;
 	float _moveAcceleration = 40;
 	float _moveDecceleration = 40;
 	float _currentMoveSpeed;

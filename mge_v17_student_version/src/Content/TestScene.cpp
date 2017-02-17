@@ -103,6 +103,44 @@ void TestScene::_initializeScene() {
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
 
+
+	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
+	std::vector<glm::vec3> relicLocations
+	{
+		glm::vec3(1313.73, 318.135, -104.237),
+		glm::vec3(1331.22, 332.901, 5.06077),
+		glm::vec3(1208.6, 269.945, 60.0267)
+	};
+	Mesh* relicMesh = Mesh::load(config::MGE_MODEL_PATH + "relic_alienTablet.obj");
+	Mesh* relicMesh2 = Mesh::load(config::MGE_MODEL_PATH + "relic_disc.obj");
+	for (int i = 0; i<relicLocations.size(); i++)
+	{
+		glm::vec3 relicLocation = relicLocations[i];
+		GameObject* teapot = new GameObject("Relic", relicLocation);
+		teapot->setMesh(i % 2 == 0 ? relicMesh : relicMesh2);
+		teapot->setMaterial(relicAndTreasureMaterial);
+		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+		_world->add(teapot);
+		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+	}
+	std::vector<glm::vec3> treasureLocations
+	{
+		glm::vec3(1260.71, 504.485, 43.6736)
+	};
+	Mesh* treasureMesh = Mesh::load(config::MGE_MODEL_PATH + "TreasureChest.obj");
+	for each (glm::vec3 treasureLocation in treasureLocations)
+	{
+		GameObject* teapot = new GameObject("Treasure", treasureLocation);
+		teapot->setMesh(treasureMesh);
+		teapot->setMaterial(relicAndTreasureMaterial);
+		teapot->scale(glm::vec3(1.5, 1.5, 1.5));
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+		_world->add(teapot);
+		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+	}
+
+
 	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3(), 45);
 	_world->add(light3);
 }
