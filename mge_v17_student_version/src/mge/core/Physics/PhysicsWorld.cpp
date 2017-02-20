@@ -7,14 +7,21 @@ PhysicsWorld::PhysicsWorld(World* pMainCamera) :
 	_overlappingPairCache(&createOverlappingPairCache()),
 	btDiscreteDynamicsWorld(createDiscreteDynamicsWorld())
 {
-	debugDrawer.setDebugMode(btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE);
+	debugDrawer.setDebugMode(btIDebugDraw::DBG_NoDebug);
 	setDebugDrawer(&debugDrawer);
 	debugDrawer._world = pMainCamera;
-
+	EventHandler::bindKeyDownEvent(sf::Keyboard::F2, this, &PhysicsWorld::TogglePhysicsDebug);
 }
 
 PhysicsWorld::~PhysicsWorld()
 {
+}
+
+void PhysicsWorld::TogglePhysicsDebug(sf::Event::KeyEvent& event)
+{
+	int debugMode = debugDrawer.getDebugMode();
+	debugMode = debugMode == btIDebugDraw::DBG_NoDebug ? btIDebugDraw::DBG_MAX_DEBUG_DRAW_MODE : btIDebugDraw::DBG_NoDebug;
+	debugDrawer.setDebugMode(debugMode);
 }
 
 btDiscreteDynamicsWorld& PhysicsWorld::createDiscreteDynamicsWorld()

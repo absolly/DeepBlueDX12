@@ -21,7 +21,6 @@
 #include "mge/materials/GPUinstancingMaterial.hpp"
 
 #include "mge/behaviours/RotatingBehaviour.hpp"
-#include "mge/behaviours/RigidBody.hpp"
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
@@ -38,7 +37,7 @@
 
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene() :AbstractGame(), _hud(0) {
@@ -147,6 +146,7 @@ void TestScene::_initializeScene() {
 
 void TestScene::_render() {
 	AbstractGame::_render();
+	_world->debugDraw();
 	//_world->debugDraw();
 
 	AbstractGame::_renderToQuad();

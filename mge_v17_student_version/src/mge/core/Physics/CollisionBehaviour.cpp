@@ -3,7 +3,7 @@
 #include "glm.hpp"
 #include "mge\core\GameObject.hpp"
 #include "mge\core\World.hpp"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 /*Trigger::Trigger() : 
 	_ghostObject(*new btPairCachingGhostObject()),

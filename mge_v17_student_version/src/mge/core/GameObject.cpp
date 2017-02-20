@@ -8,7 +8,7 @@ using namespace std;
 #include "Content\Core\EventHandler.h"
 #include "Bullet3Common\b3Vector3.h"
 #include "mge\core\Physics\CollisionBehaviour.h"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition)
 	: _name(pName), _transform(glm::translate(pPosition)),
