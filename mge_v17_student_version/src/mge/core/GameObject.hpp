@@ -64,10 +64,10 @@ class GameObject
 		std::vector<AbstractBehaviour*> getBehaviours();
 
 		std::vector<Collider*> colliders;
-		Collider& addCollider(BoxColliderArgs& colliderArgs, bool isTrigger);
-		Collider& addCollider(MeshColliderArgs & colliderArgs, bool isTrigger);
-		Collider& addCollider(SphereColliderArgs& colliderArgs, bool isTrigger);
-		Collider& addCollider(CapsuleColliderArgs & colliderArgs, bool isTrigger);
+		Collider& addCollider(BoxColliderArgs& colliderArgs, bool isTrigger, bool isStatic);
+		Collider& addCollider(MeshColliderArgs & colliderArgs, bool isTrigger, bool isStatic);
+		Collider& addCollider(SphereColliderArgs& colliderArgs, bool isTrigger, bool isStatic);
+		Collider& addCollider(CapsuleColliderArgs & colliderArgs, bool isTrigger, bool isStatic);
 
 		template <class BehaviourType>
 		BehaviourType* getBehaviour();
