@@ -8,7 +8,7 @@ using namespace std;
 #include "Content\Core\EventHandler.h"
 #include "Bullet3Common\b3Vector3.h"
 #include "mge\core\Physics\CollisionBehaviour.h"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition)
 	: _name(pName), _transform(glm::translate(pPosition)),
@@ -125,33 +125,33 @@ std::vector<AbstractBehaviour*> GameObject::getBehaviours()
 	return _behaviours;
 }
 
-Collider& GameObject::addCollider(BoxColliderArgs& colliderArgs, bool isTrigger)
+Collider& GameObject::addCollider(BoxColliderArgs& colliderArgs, bool isTrigger, bool isStatic)
 {
-	Collider& collider = *new BoxCollider(colliderArgs, *this, isTrigger);
+	Collider& collider = *new BoxCollider(colliderArgs, *this, isTrigger, isStatic);
 	//colliders.push_back(&collider);
 	addBehaviour(&collider);
 	return collider;
 }
 
-Collider& GameObject::addCollider(MeshColliderArgs& colliderArgs, bool isTrigger)
+Collider& GameObject::addCollider(MeshColliderArgs& colliderArgs, bool isTrigger, bool isStatic)
 {
-	Collider& collider = *new MeshCollider(colliderArgs, *this, isTrigger);
+	Collider& collider = *new MeshCollider(colliderArgs, *this, isTrigger, isStatic);
 	//colliders.push_back(&collider);
 	addBehaviour(&collider);
 	return collider;
 }
 
-Collider& GameObject::addCollider(SphereColliderArgs& colliderArgs, bool isTrigger)
+Collider& GameObject::addCollider(SphereColliderArgs& colliderArgs, bool isTrigger, bool isStatic)
 {
-	Collider& collider = *new SphereCollider(colliderArgs, *this, isTrigger);
+	Collider& collider = *new SphereCollider(colliderArgs, *this, isTrigger, isStatic);
 	//colliders.push_back(&collider);
 	addBehaviour(&collider);
 	return collider;
 }
 
-Collider& GameObject::addCollider(CapsuleColliderArgs& colliderArgs, bool isTrigger)
+Collider& GameObject::addCollider(CapsuleColliderArgs& colliderArgs, bool isTrigger, bool isStatic)
 {
-	Collider& collider = *new CapsuleCollider(colliderArgs, *this, isTrigger);
+	Collider& collider = *new CapsuleCollider(colliderArgs, *this, isTrigger, isStatic);
 	//colliders.push_back(&collider);
 	addBehaviour(&collider);
 	return collider;
