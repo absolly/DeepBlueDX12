@@ -4,9 +4,10 @@
 uniform	mat4 	projectionMatrix;
 uniform	mat4 	viewMatrix;
 uniform	mat4 	modelMatrix;
-uniform vec3    lightPosition[24];
-uniform vec3    lightDirection[24];
-uniform int     lightType[24];
+uniform	mat3 	MVMatrix;
+uniform vec3    lightPosition[5];
+uniform vec3    lightDirection[5];
+uniform int     lightType[5];
 in vec3 vertex;
 in vec3 normal;
 in vec2 uv;
@@ -18,18 +19,18 @@ uniform int         lightCount;
 out vec2 texCoord; //make sure the texture coord is interpolated
 out vec3 Position_worldspace;
 mat3 TBN;
-out vec3 LightDirection_tangentspace[24];
+out vec3 LightDirection_tangentspace[5];
 out vec3 EyeDirection_tangentspace;
 vec3 EyeDirection_cameraspace;
 
 
 void main( void ) {
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertex, 1.f);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix  * vec4(vertex, 1.f);
     texCoord = uv;
 
-    vec3 vertexNormal_cameraspace = (viewMatrix * modelMatrix * vec4(normalize(normal),0)).xyz;
-    vec3 vertexTangent_cameraspace = (viewMatrix * modelMatrix * vec4(normalize(tangent),0)).xyz;
-    vec3 vertexBitangent_cameraspace = (viewMatrix * modelMatrix * vec4(normalize(bitangent),0)).xyz;
+    vec3 vertexNormal_cameraspace = MVMatrix * normal;
+    vec3 vertexTangent_cameraspace = MVMatrix * tangent;
+    vec3 vertexBitangent_cameraspace = MVMatrix * bitangent;
 
     TBN = transpose(mat3(
                         vertexTangent_cameraspace,

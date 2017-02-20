@@ -31,6 +31,10 @@ void TextureMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
 void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     if (!_diffuseTexture) return;
 
+	glm::mat3 MVMatrix;
+
+	MVMatrix = glm::mat3(pViewMatrix * pModelMatrix);
+
     _shader->use();
 
     //setup texture slot 0
@@ -51,12 +55,12 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
 
-    glm::vec3 lightPosition[24] {};
-    glm::vec3 lightDirection[24] {};
-    glm::vec3 lightColor[24] {};
-    GLint lightType[24] {};
-    glm::vec3 lightFalloff[24]{};
-    GLfloat lightIntensity[24] {};
+    glm::vec3 lightPosition[5] {};
+    glm::vec3 lightDirection[5] {};
+    glm::vec3 lightColor[5] {};
+    GLint lightType[5] {};
+    glm::vec3 lightFalloff[5]{};
+    GLfloat lightIntensity[5] {};
 
     int i = 0;
     for(Light* light : World::activeLights) {
@@ -69,19 +73,20 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         i++;
     }
 
-    glUniform3fv(_shader->getUniformLocation("lightPosition"), 24, glm::value_ptr(lightPosition[0]));
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 24, glm::value_ptr(lightDirection[0]));
-    glUniform3fv(_shader->getUniformLocation("lightColor"), 24, glm::value_ptr(lightColor[0]));
-    glUniform1iv(_shader->getUniformLocation("lightType"), 24, lightType);
-    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 24, glm::value_ptr(lightFalloff[0]));
-    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 24, lightIntensity);
+    glUniform3fv(_shader->getUniformLocation("lightPosition"), 5, glm::value_ptr(lightPosition[0]));
+    glUniform3fv(_shader->getUniformLocation("lightDirection"), 5, glm::value_ptr(lightDirection[0]));
+    glUniform3fv(_shader->getUniformLocation("lightColor"), 5, glm::value_ptr(lightColor[0]));
+    glUniform1iv(_shader->getUniformLocation("lightType"), 5, lightType);
+    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 5, glm::value_ptr(lightFalloff[0]));
+    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 5, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
     //pass in all MVP matrices separately
-    glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
+	glUniformMatrix3fv(_shader->getUniformLocation("MVMatrix"), 1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),         1, GL_FALSE, glm::value_ptr(pViewMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("modelMatrix"),        1, GL_FALSE, glm::value_ptr(pModelMatrix));
+	glUniformMatrix4fv(_shader->getUniformLocation("projectionMatrix"),		1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
 
     //now inform mesh of where to stream its data
     pMesh->streamToOpenGL(

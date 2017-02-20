@@ -42,6 +42,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		float dist;
 		int groupSize;
 		GameObject* curObject;
+		random_device rd;
 		//
 };
 

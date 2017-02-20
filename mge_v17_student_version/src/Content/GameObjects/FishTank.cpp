@@ -81,6 +81,7 @@ std::vector<glm::vec3> * waypointsValidator(std::vector<glm::vec3> * pWaypoints)
 	//{
 	//	if (glm::distance(pWaypoints->at(i), ))
 	//}
+	return nullptr;
 }
 
 void FishTank::SetNewGoal()

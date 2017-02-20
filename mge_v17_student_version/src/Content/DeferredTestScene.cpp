@@ -68,9 +68,9 @@ void DeferredTestScene::_initializeScene() {
 
 
     //10 specular teapot material
-    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
-	AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
-	AbstractMaterial* textureMaterial3 = new ColorMaterial(glm::vec3(1, 1, 1));
+    //AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
+	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
+	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //SCENE SETUP
@@ -87,19 +87,28 @@ void DeferredTestScene::_initializeScene() {
 	player->addBehaviour(new KeysBehaviour(10,90));
 	_world->add(player);
 
+	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
+
+	//FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, "", 50, 150);
+	//fishTank->setMesh(smallFish);
+	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+	//fishTank->setMaterial(gpuinstancing);
+	//_world->add(fishTank);
+
 	GameObject* teapot = new GameObject("teapot", glm::vec3(11, 1, 11));
 	glm::vec3 _waypoints[10]{};
+
 
 	float random = 9;
 	std:: cout << "random seed: " << random << std::endl;
 	srand (random);
-	for(int i = 0; i < 10; i++) {
+	for(int i = 0; i < 4; i++) {
 	    glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
 		glm::vec3 pos = glm::vec3(rand() % 100 - 50, 5, rand() % 100 - 50);
 	    Light* light = new Light (Light::lightType::POINT, "light1", pos, *lightColor, 20, glm::vec3(0,0,1));
 		_waypoints[i] = pos;
 	    light->setMesh (cubeMeshF);
-	    AbstractMaterial* colorMaterial2 = new ColorMaterial (glm::normalize(*lightColor));
+	    AbstractMaterial* colorMaterial2 = new ColorMaterial ((*lightColor));
 	    //light->setBehaviour(new LookAt(teapot));
 	    light->setMaterial(colorMaterial2);
 	    _world->add(light);
@@ -107,7 +116,7 @@ void DeferredTestScene::_initializeScene() {
 
 	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints));
 	teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(textureMaterial2);
+	teapot->setMaterial(textureMaterial);
 	_world->add(teapot);
 	//for (int i = 0; i < 5; i++) {
 	//	for (int j = 0; j < 5; j++) {
@@ -121,7 +130,7 @@ void DeferredTestScene::_initializeScene() {
 	//FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
 
 
-    camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, teapot));
+    camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, player));
 
 
 	glm::vec3* lightColor = new glm::vec3(127,239,217);

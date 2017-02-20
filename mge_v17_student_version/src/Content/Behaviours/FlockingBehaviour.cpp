@@ -23,7 +23,7 @@ FlockingBehaviour::~FlockingBehaviour()
 
 void FlockingBehaviour::update(float pStep)
 {
-	random_device rd;
+	
 
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
@@ -52,7 +52,7 @@ void FlockingBehaviour::update(float pStep)
 			ApplyRules();
 	}
 
-	_owner->translate(glm::vec3(0, 0, -_speed * 0.02f));
+	_owner->translate(glm::vec3(0, 0, -_speed  * pStep));
 
 }
 

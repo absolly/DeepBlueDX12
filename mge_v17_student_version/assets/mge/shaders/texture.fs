@@ -4,18 +4,18 @@
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
-uniform vec3        lightPosition[24];
-uniform vec3        lightColor[24];
-uniform float       lightIntensity[24];
-uniform int         lightType[24];
-uniform vec3        lightFalloff[24];
+uniform vec3        lightPosition[5];
+uniform vec3        lightColor[5];
+uniform float       lightIntensity[5];
+uniform int         lightType[5];
+uniform vec3        lightFalloff[5];
 uniform int         lightCount;
 uniform int         tiling;
 uniform int         specularMultiplier;
 
 in vec2 texCoord;
 in vec3 Position_worldspace;
-in vec3 LightDirection_tangentspace[24];
+in vec3 LightDirection_tangentspace[5];
 in vec3 EyeDirection_tangentspace;
 
 layout (location = 0) out vec4 fragment_color;
@@ -149,7 +149,7 @@ void main( void ) {
     }
     fragment_color = vec4(combinedColor,1);
 	float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 100)
+    if(brightness > 1)
         brightness_color = vec4(fragment_color.rgb, 1.0);
 	else
 		brightness_color = vec4(0,0,0,1);

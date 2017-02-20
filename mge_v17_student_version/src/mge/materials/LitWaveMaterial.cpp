@@ -61,12 +61,12 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
     glUniform1i(_shader->getUniformLocation("activeLight"), 0);
 
-    glm::vec3 lightPosition[24] {};
-    glm::vec3 lightDirection[24] {};
-    glm::vec3 lightColor[24] {};
-    GLint lightType[24] {};
-    glm::vec3 lightFalloff[24]{};
-    GLfloat lightIntensity[24] {};
+    glm::vec3 lightPosition[5] {};
+    glm::vec3 lightDirection[5] {};
+    glm::vec3 lightColor[5] {};
+    GLint lightType[5] {};
+    glm::vec3 lightFalloff[5]{};
+    GLfloat lightIntensity[5] {};
 
     int i = 0;
     for(Light* light : World::activeLights) {
@@ -79,12 +79,12 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         i++;
     }
 
-    glUniform3fv(_shader->getUniformLocation("lightPosition"), 24, glm::value_ptr(lightPosition[0]));
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 24, glm::value_ptr(lightDirection[0]));
-    glUniform3fv(_shader->getUniformLocation("lightColor"), 24, glm::value_ptr(lightColor[0]));
-    glUniform1iv(_shader->getUniformLocation("lightType"), 24, lightType);
-    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 24, glm::value_ptr(lightFalloff[0]));
-    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 24, lightIntensity);
+    glUniform3fv(_shader->getUniformLocation("lightPosition"), 5, glm::value_ptr(lightPosition[0]));
+    glUniform3fv(_shader->getUniformLocation("lightDirection"), 5, glm::value_ptr(lightDirection[0]));
+    glUniform3fv(_shader->getUniformLocation("lightColor"), 5, glm::value_ptr(lightColor[0]));
+    glUniform1iv(_shader->getUniformLocation("lightType"), 5, lightType);
+    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 5, glm::value_ptr(lightFalloff[0]));
+    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 5, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
