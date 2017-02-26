@@ -4,6 +4,7 @@
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
+uniform sampler2D	shadowMap;
 uniform vec3        lightPosition[5];
 uniform vec3        lightColor[5];
 uniform float       lightIntensity[5];
@@ -14,6 +15,7 @@ uniform int         tiling;
 uniform int         specularMultiplier;
 
 in vec2 texCoord;
+in vec4 ShadowCoord;
 in vec3 Position_worldspace;
 in vec3 LightDirection_tangentspace[5];
 in vec3 EyeDirection_tangentspace;
@@ -28,6 +30,7 @@ vec3 E;
 vec3 R;
 float cosTheta;
 float cosAlpha;
+float visibility = 1.0;
 vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
@@ -49,9 +52,9 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
 
     return pFalloff *(pMaterialAmbientColor +
             // Diffuse : "color" of the object
-             pMaterialDiffuseColor * pLightColor * cosTheta
+             visibility * pMaterialDiffuseColor * pLightColor * cosTheta
             // Specular : reflective highlight, like a mirror
-            + pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
+            +  visibility * pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
 }
 
 vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
@@ -75,9 +78,9 @@ vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMateria
 
     return pMaterialAmbientColor +
            // Diffuse : "color" of the object
-           pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
+           visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
            // Specular : reflective highlight, like a mirror
-           + pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50) ;
+           +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50) ;
 }
 
 void main( void ) {
@@ -91,8 +94,21 @@ void main( void ) {
 	float distance;
 	float falloff;
 
+	if(isnan(ShadowCoord.z)){
+		fragment_color = vec4(1,0,0,1);
+		return;
+	}
+
+	if ( texture( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z){
+		visibility = 0.5f;
+		if(texture( shadowMap, ShadowCoord.xy ).z == 0){
+			fragment_color = vec4(1,1,0,1);
+			return;
+		}
+	}
+
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
-        MaterialAmbientColor = vec3(0.3,0.3,0.3) *lightColor[activeLight] * MaterialDiffuseColor;
+        MaterialAmbientColor = vec3(0.1,0.1,0.1) *lightColor[activeLight] * MaterialDiffuseColor;
         MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
         distance = length(Position_worldspace - lightPosition[activeLight]);

@@ -12,28 +12,30 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "mge/materials/AbstractMaterial.hpp"
 #include "mge\core\Physics\RigidBody.hpp"
+#include "mge/config.hpp"
+GLuint Renderer::shadowDepthTexture = 0;
 
 Renderer::Renderer() {
-	//// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
-	//glGenFramebuffers(1, &ShadowBuffer);
-	//glBindFramebuffer(GL_FRAMEBUFFER, ShadowBuffer);
+	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+	glGenFramebuffers(1, &ShadowBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, ShadowBuffer);
 
-	//// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
-	//glGenTextures(1, &shadowDepthTexture);
-	//glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
-	//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+	glGenTextures(1, &shadowDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	//glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepthTexture, 0);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepthTexture, 0);
 
-	//glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+	glDrawBuffer(GL_NONE); // No color buffer is drawn to.
 
-	//// Always check that our framebuffer is ok
-	//if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	//	std::cout << "framebuffer status error" << std::endl;
+	// Always check that our framebuffer is ok
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "framebuffer status error" << std::endl;
 
 
 	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
@@ -124,6 +126,11 @@ Renderer::Renderer() {
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor((float)0x2d/0xff, (float)0x6b/0xff, (float)0xce/0xff, 1.0f );
+
+	_shadowShader = new ShaderProgram();
+	_shadowShader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "ShadowPassthrough.vs");
+	_shadowShader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "FragmentDepth.fs");
+	_shadowShader->finalize();
 }
 
 Renderer::~Renderer() {
@@ -134,6 +141,7 @@ void Renderer::setClearColor(int pR, int pG, int pB) {
 }
 
 void Renderer::render (World* pWorld) {
+	renderShadow = false;
     Camera* camera = pWorld->getMainCamera();
     render (pWorld, pWorld->getTransform(), glm::inverse(camera->getWorldTransform()), camera->getProjection(), true);
 }
@@ -143,13 +151,40 @@ void Renderer::render(GameObject* pGameObject, const glm::mat4& pModelMatrix, co
     if (pRecursive) renderChildren(pGameObject, pModelMatrix, pViewMatrix, pProjectionMatrix, pRecursive);
 }
 
+void Renderer::renderShadowMap(GameObject * pGameObject, const glm::mat4 & pModelMatrix, const glm::mat4 & pViewMatrix, const glm::mat4 & pProjectionMatrix, bool pRecursive)
+{
+	renderShadow = true;
+	renderSelf(pGameObject, pModelMatrix, pViewMatrix, pProjectionMatrix);
+	if (pRecursive) renderChildren(pGameObject, pModelMatrix, pViewMatrix, pProjectionMatrix, pRecursive);
+}
+
 void Renderer::renderSelf (GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     renderMesh(pGameObject->getMesh(), pGameObject->getMaterial(), pModelMatrix, pViewMatrix, pProjectionMatrix);
     //renderMeshDebugInfo(pGameObject->getMesh(), pModelMatrix, pViewMatrix, pProjectionMatrix);
 }
 
+void Renderer::renderToShadowMap(Mesh * pMesh, const glm::mat4 & pModelMatrix, const glm::mat4 & pViewMatrix, const glm::mat4 & pProjectionMatrix)
+{
+	_shadowShader->use();
+
+	glm::mat4 depthMVP = pProjectionMatrix * pViewMatrix * pModelMatrix;
+
+	//pass in all MVP matrices separately
+	glUniformMatrix4fv(_shadowShader->getUniformLocation("depthMVP"), 1, GL_FALSE, glm::value_ptr(depthMVP));
+
+	//now inform mesh of where to stream its data
+	pMesh->streamToOpenGL(
+		_shadowShader->getAttribLocation("vertex"),
+		_shadowShader->getAttribLocation("normal"),
+		_shadowShader->getAttribLocation("uv"),
+		_shadowShader->getAttribLocation("tangent"),
+		_shadowShader->getAttribLocation("bitangent")
+	);
+}
+
 void Renderer::renderMesh (Mesh* pMesh, AbstractMaterial* pMaterial, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
-    if (pMesh != NULL && pMaterial!= NULL) pMaterial->render(pMesh, pModelMatrix, pViewMatrix, pProjectionMatrix);
+    if (!renderShadow && pMesh != NULL && pMaterial!= NULL) pMaterial->render(pMesh, pModelMatrix, pViewMatrix, pProjectionMatrix);
+	else if (renderShadow && pMesh != NULL && pMaterial != NULL) renderToShadowMap(pMesh, pModelMatrix, pViewMatrix, pProjectionMatrix);
 }
 
 void Renderer::renderMeshDebugInfo (Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {

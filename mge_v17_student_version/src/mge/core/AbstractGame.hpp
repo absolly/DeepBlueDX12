@@ -77,6 +77,7 @@ class AbstractGame
 		void setMouseLockEnabled(bool enabled);
 		ShaderProgram* _shader;
 		ShaderProgram* _blurShader;
+		ShaderProgram* _shadowShader;
 		GLuint quad_vertexbuffer;
 		Texture* _fogTexure = nullptr;
 		GLuint quadVAO = 0;

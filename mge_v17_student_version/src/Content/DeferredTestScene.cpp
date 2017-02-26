@@ -75,7 +75,7 @@ void DeferredTestScene::_initializeScene() {
 
     //SCENE SETUP
     GameObject* plane = new GameObject("plane", glm::vec3(0,0,0));
-    plane->scale(glm::vec3(50,50,50));
+    plane->scale(glm::vec3(10,10,10));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(textureMaterial);
 	//plane->addBehaviour(new KeysBehaviour());
