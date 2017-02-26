@@ -68,7 +68,7 @@ void DeferredTestScene::_initializeScene() {
 
 
     //10 specular teapot material
-    //AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
+    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
@@ -116,7 +116,7 @@ void DeferredTestScene::_initializeScene() {
 
 	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints));
 	teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(textureMaterial);
+	teapot->setMaterial(textureMaterial2);
 	_world->add(teapot);
 	//for (int i = 0; i < 5; i++) {
 	//	for (int j = 0; j < 5; j++) {
