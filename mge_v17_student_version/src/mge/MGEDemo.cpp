@@ -57,16 +57,16 @@ void MGEDemo::_initializeScene() {
     //load a bunch of meshes we will be using throughout this demo
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
-    Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"plane.obj");
-    Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
-    Mesh* suzannaMeshF = Mesh::load (config::MGE_MODEL_PATH+"suzanna_smooth.obj");
-    Mesh* teapotMeshS = Mesh::load (config::MGE_MODEL_PATH+"teapot_smooth.obj");
+    Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+"plane.obj");
+    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+"cube_flat.obj");
+    Mesh* suzannaMeshF = Mesh::load (Config::MGE_MODEL_PATH+"suzanna_smooth.obj");
+    Mesh* teapotMeshS = Mesh::load (Config::MGE_MODEL_PATH+"teapot_smooth.obj");
    // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
-    AbstractMaterial* colorMaterial = new WobbleMaterial (Texture::load (config::MGE_TEXTURE_PATH+"color.jpg"));
-    AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"land.jpg"));
-    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"));
+    AbstractMaterial* colorMaterial = new WobbleMaterial (Texture::load (Config::MGE_TEXTURE_PATH+"color.jpg"));
+    AbstractMaterial* textureMaterial = new TextureMaterial (Texture::load (Config::MGE_TEXTURE_PATH+"land.jpg"));
+    AbstractMaterial* textureMaterial2 = new TextureMaterial (Texture::load (Config::MGE_TEXTURE_PATH+"bricks.jpg"));
 
     //SCENE SETUP
     GameObject* plane = new GameObject ("plane", glm::vec3(0,0,0));

@@ -30,6 +30,7 @@ using namespace std;
 #include "mge/config.hpp"
 #include "Content/DeferredTestScene.hpp"
 #include <time.h>       /* time */
+#include "mge\Config.hpp"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 DeferredTestScene::DeferredTestScene():AbstractGame (),_hud(0) {
@@ -60,9 +61,9 @@ void DeferredTestScene::_initializeScene() {
     //load a bunch of meshes we will be using throughout this demo
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
-    Mesh* planeMeshDefault = Mesh::load (config::MGE_MODEL_PATH+"plane.obj");
-    Mesh* cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_flat.obj");
-	Mesh* teapotMeshS = Mesh::load(config::MGE_MODEL_PATH + "Creature3_OBJ.obj");
+    Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+"plane.obj");
+    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+"cube_flat.obj");
+	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "Creature3_OBJ.obj");
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
@@ -71,7 +72,7 @@ void DeferredTestScene::_initializeScene() {
     //AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //SCENE SETUP
     GameObject* plane = new GameObject("plane", glm::vec3(0,0,0));
@@ -87,7 +88,7 @@ void DeferredTestScene::_initializeScene() {
 	player->addBehaviour(new KeysBehaviour(10,90));
 	_world->add(player);
 
-	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
+	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
 	//FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, "", 50, 150);
 	//fishTank->setMesh(smallFish);

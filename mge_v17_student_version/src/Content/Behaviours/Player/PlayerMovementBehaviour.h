@@ -9,6 +9,8 @@ class PlayerMovementBehaviour : public AbstractBehaviour
 {
 public:
 	PlayerMovementBehaviour(Player& player);
+	void updateFromConfig();
+	void onConfigUpdatedEvent(bool update);
 	~PlayerMovementBehaviour();
 
 	virtual void update(float pStep);

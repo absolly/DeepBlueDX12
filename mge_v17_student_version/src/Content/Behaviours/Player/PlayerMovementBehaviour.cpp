@@ -3,6 +3,7 @@
 #include "mge\core\GameObject.hpp"
 #include "Content\Core\Input.h"
 #include "Content\GameObjects\Player.h"
+#include "mge\Config.hpp"
 
 PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 {
@@ -11,6 +12,43 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_currentYaw = 0;
 	_currentRoll = 0;
 	_currentMoveSpeed = 0;
+
+	updateFromConfig();
+	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::onConfigUpdatedEvent);
+}
+
+void PlayerMovementBehaviour::updateFromConfig()
+{
+	Config::updateValue("_minMoveSpeed", _minMoveSpeed);
+	Config::updateValue("_maxMoveSpeed", _maxMoveSpeed);
+	Config::updateValue("_moveAcceleration", _moveAcceleration);
+	Config::updateValue("_moveDecceleration", _moveDecceleration);
+
+	Config::updateValue("_minSideMoveSpeed", _minSideMoveSpeed);
+	Config::updateValue("_maxSideMoveSpeed", _maxSideMoveSpeed);
+	Config::updateValue("_moveSideAcceleration", _moveSideAcceleration);
+	Config::updateValue("_moveSideDecceleration", _moveSideDecceleration);
+
+	Config::updateValue("_minMoveUpSpeed", _minMoveUpSpeed);
+	Config::updateValue("_maxMoveUpSpeed", _maxMoveUpSpeed);
+	Config::updateValue("_moveUpAcceleration", _moveUpAcceleration);
+	Config::updateValue("_moveUpDecceleration", _moveUpDecceleration);
+
+	Config::updateValue("_minPitchRotationSpeed", _minPitchRotationSpeed);
+	Config::updateValue("_maxPitchRotationSpeed", _maxPitchRotationSpeed);
+
+	Config::updateValue("_minYawRotationSpeed", _minYawRotationSpeed);
+	Config::updateValue("_maxYawRotationSpeed", _maxYawRotationSpeed);
+
+	Config::updateValue("_minRollRotationSpeed", _minRollRotationSpeed);
+	Config::updateValue("_maxRollRotationSpeed", _maxRollRotationSpeed);
+	Config::updateValue("_maxRollRotation", _maxRollRotation);
+	Config::updateValue("_rollRotationSpeedMultiplier", _rollRotationSpeedMultiplier);
+}
+
+void PlayerMovementBehaviour::onConfigUpdatedEvent(bool update)
+{
+	updateFromConfig();
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
