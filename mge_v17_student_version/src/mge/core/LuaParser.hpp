@@ -54,6 +54,8 @@ class LuaParser {
 		int createFish(lua_State * lua);
 		int addLightAttributes(lua_State * lua);
         int destoryLuaObject(lua_State * lua);
+		Mesh* smallFish;
+		AbstractMaterial * gpuinstancing;
         vector<collisionListener> collisionListeners;
         World* _world;
         Mesh* cubeMeshF;

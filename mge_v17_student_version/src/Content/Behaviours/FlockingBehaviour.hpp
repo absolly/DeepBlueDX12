@@ -14,7 +14,7 @@ using namespace std;
 class FlockingBehaviour : public AbstractBehaviour
 {
 	public:
-		FlockingBehaviour(FishTank * pFishtank, glm::vec3 pScale = glm::vec3(1,1,1));
+		FlockingBehaviour(FishTank * pFishtank, int pUpdateRate, glm::vec3 pScale = glm::vec3(1,1,1));
 		virtual ~FlockingBehaviour();
 		virtual void update( float pStep );
 		float speed = 0.4f;
@@ -25,6 +25,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		float neighbourDistance = 6.0f;
 
     private:
+		int _updateRate = 0;
 		bool turning = false;
 		void ApplyRules();
 		void InterPolateDirection(glm::vec3 pDirection);

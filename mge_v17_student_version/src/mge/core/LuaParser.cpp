@@ -15,6 +15,10 @@ LuaParser::LuaParser(World* pWorld) {
     lua = luaL_newstate();
     luaL_openlibs(lua);
 
+	smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
+	//gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+
+
     *static_cast<LuaParser**>(lua_getextraspace(lua)) = &(*this); //store 'this' in lua extra space
 
     lua_pushcfunction(lua, &dispatch<&LuaParser::createObject>); //binding to c++ member via 'dispatch' wrapper
@@ -425,11 +429,8 @@ int LuaParser::createFish(lua_State * lua)
 	float y = lua_tonumber(lua, -2);
 	float z = lua_tonumber(lua, -1);
 
-	Mesh* smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
-
-	FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
+	FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 75);
 	fishTank->setMesh(smallFish);
-	AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
 	fishTank->setMaterial(gpuinstancing);
 	_world->add(fishTank);
 

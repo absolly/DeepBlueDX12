@@ -13,7 +13,7 @@ using namespace std;
 #include "Content/Behaviours/FlockingBehaviour.hpp"
 #include "mge/materials//GPUinstancingMaterial.hpp"
 
-FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount) : GameObject(pName ,pPosition)
+FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount, int updateRate) : GameObject(pName ,pPosition)
 {
 	_tankSize = pTankSize;
 	_fishCount = pFishCount;
@@ -44,7 +44,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 		int randomX = dis(gen);
 		int randomY = dis(gen);
 		int randomZ = dis(gen);
-		AbstractBehaviour* flock = new FlockingBehaviour(this, glm::vec3(1.0f, 1.0f, 1.0f));
+		AbstractBehaviour* flock = new FlockingBehaviour(this, updateRate, glm::vec3(1.0f, 1.0f, 1.0f));
 
 		GameObject* fish = new GameObject("fish", glm::vec3(_parentPos.x + randomX, _parentPos.y + randomY, _parentPos.z + randomZ));
 		fish->addBehaviour(flock);

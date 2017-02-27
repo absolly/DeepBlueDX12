@@ -8,10 +8,11 @@ using namespace std;
 #include "Content/GameObjects/FishTank.hpp"
 
 
-FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank, glm::vec3 pScale) : AbstractBehaviour()
+FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank, int pUpdaterate, glm::vec3 pScale) : AbstractBehaviour()
 {
 	fishtank = pFishtank;
 	srand(time(NULL));
+	_updateRate = pUpdaterate;
 	_scale = pScale;
 	_parentPosition = fishtank->getLocalPosition();
 }
@@ -28,7 +29,7 @@ void FlockingBehaviour::update(float pStep)
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
-	uniform_int_distribution<> dis(0, 10);
+	uniform_int_distribution<> dis(0, _updateRate);
 
 	_speed = (dis(gen) / 2) + 3.0f;
 

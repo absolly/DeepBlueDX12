@@ -13,7 +13,7 @@
 class FishTank : public GameObject
 {
 public:
-	FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount);
+	FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount, int updateRate = 15);
 	glm::vec3 goalPosition = glm::vec3(15, 10, 0);
 	std::vector<GameObject*> * allFish;
 	virtual ~FishTank();

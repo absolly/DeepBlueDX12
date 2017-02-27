@@ -118,5 +118,4 @@ createObject("Treasure6","Cube", 4.5351,0,0,1059.993,0,4.5351,0,134.889,0,0,4.53
 addMeshCollider("meshCollider",False);
 createObject("Sphere","Sphere", 1,0,0,1161.67,0,1,0,252.61,0,0,1,-47,0,0,0,1);
 addSphereCollider("sphereCollider", 5,0,0,0,True);
-createFish(831.8,171,117);
-createFish(0,300,0);
+
