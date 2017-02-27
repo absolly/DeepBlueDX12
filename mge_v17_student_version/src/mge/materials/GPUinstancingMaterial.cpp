@@ -37,8 +37,8 @@ void GPUinstancingMaterial::_lazyInitializeShader() {
     //this shader contains everything the material can do (it can render something in 3d using a single color)
     if (!_shader) {
         _shader = new ShaderProgram();
-        _shader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH+"GPUinstancing.vs");
-        _shader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH+"GPUinstancing.fs");
+        _shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH+"GPUinstancing.vs");
+        _shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH+"GPUinstancing.fs");
         _shader->finalize();
 
         //cache all the uniform and attribute indexes

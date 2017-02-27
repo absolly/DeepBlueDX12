@@ -91,13 +91,13 @@ void AbstractGame::_initializeRenderer() {
     cout << "Renderer done." << endl << endl;
 
 	_shader = new ShaderProgram();
-	_shader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "Passthrough.vs");
-	_shader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "RenderTexture.fs");
+	_shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "Passthrough.vs");
+	_shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "RenderTexture.fs");
 	_shader->finalize();
 
 	_blurShader = new ShaderProgram();
-	_blurShader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "Passthrough.vs");
-	_blurShader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "GaussianBlur.fs");
+	_blurShader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "Passthrough.vs");
+	_blurShader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "GaussianBlur.fs");
 	_blurShader->finalize();
 
 	static const GLfloat g_quad_vertex_buffer_data[] = {
@@ -115,7 +115,7 @@ void AbstractGame::_initializeRenderer() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
 
 	if (_fogTexure == nullptr)
-		_fogTexure = Texture::load(config::MGE_TEXTURE_PATH + "fog.png");
+		_fogTexure = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 }
 
 void AbstractGame::_initializeWorld() {
@@ -131,7 +131,7 @@ void AbstractGame::run() {
     sf::Clock updateClock;
     sf::Clock renderClock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+    sf::Time timePerFrame = sf::seconds(1.0f / 120.0f);
 
     while (_window->isOpen()) {
         timeSinceLastUpdate += updateClock.restart();

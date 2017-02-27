@@ -57,7 +57,7 @@ void TestScene::initialize() {
 //build the game _world
 void TestScene::_initializeScene() {
 	//_renderer->setClearColor(1, 0, 0);
-	Texture* fog = Texture::load(config::MGE_TEXTURE_PATH + "fog.png");
+	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
 	//add camera first (it will be updated last)
@@ -66,9 +66,9 @@ void TestScene::_initializeScene() {
 	//_world->add(camera);
 	_world->setMainCamera(camera);
 
-	Mesh* planeMeshDefault = Mesh::load(config::MGE_MODEL_PATH + "plane.obj");
+	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane.obj");
 
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(config::MGE_TEXTURE_PATH + "white.png"), Texture::load(config::MGE_TEXTURE_PATH + "white.png"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
 
 	GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
@@ -85,7 +85,7 @@ void TestScene::_initializeScene() {
 	
 
 	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
+	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
 	
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
@@ -111,8 +111,8 @@ void TestScene::_initializeScene() {
 		glm::vec3(1331.22, 332.901, 5.06077),
 		glm::vec3(1208.6, 269.945, 60.0267)
 	};
-	Mesh* relicMesh = Mesh::load(config::MGE_MODEL_PATH + "relic_alienTablet.obj");
-	Mesh* relicMesh2 = Mesh::load(config::MGE_MODEL_PATH + "relic_disc.obj");
+	Mesh* relicMesh = Mesh::load(Config::MGE_MODEL_PATH + "relic_alienTablet.obj");
+	Mesh* relicMesh2 = Mesh::load(Config::MGE_MODEL_PATH + "relic_disc.obj");
 	for (int i = 0; i<relicLocations.size(); i++)
 	{
 		glm::vec3 relicLocation = relicLocations[i];
@@ -128,7 +128,7 @@ void TestScene::_initializeScene() {
 	{
 		glm::vec3(1260.71, 504.485, 43.6736)
 	};
-	Mesh* treasureMesh = Mesh::load(config::MGE_MODEL_PATH + "TreasureChest.obj");
+	Mesh* treasureMesh = Mesh::load(Config::MGE_MODEL_PATH + "TreasureChest.obj");
 	for each (glm::vec3 treasureLocation in treasureLocations)
 	{
 		GameObject* teapot = new GameObject("Treasure", treasureLocation);

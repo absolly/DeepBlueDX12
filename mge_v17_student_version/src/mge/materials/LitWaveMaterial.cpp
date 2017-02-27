@@ -19,8 +19,8 @@ LitWaveMaterial::~LitWaveMaterial() {}
 void LitWaveMaterial::_lazyInitializeShader() {
     if (!_shader) {
         _shader = new ShaderProgram();
-        _shader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH+"litwave.vs");
-        _shader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH+"texture.fs");
+        _shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH+"litwave.vs");
+        _shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH+"texture.fs");
         _shader->finalize();
     }
 }

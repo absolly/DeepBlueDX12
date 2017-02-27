@@ -220,7 +220,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\behaviours\LookAt.hpp" />
     <ClInclude Include="src\mge\behaviours\RigidBody.hpp" />
     <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp" />
-    <ClInclude Include="src\mge\config.hpp" />
+    <ClInclude Include="src\mge\Config.hpp" />
     <ClInclude Include="src\mge\core\AbstractGame.hpp" />
     <ClInclude Include="src\mge\core\Camera.hpp" />
     <ClInclude Include="src\mge\core\GameObject.hpp" />
@@ -270,6 +270,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\behaviours\LookAt.cpp" />
     <ClCompile Include="src\mge\behaviours\RigidBody.cpp" />
     <ClCompile Include="src\mge\behaviours\RotatingBehaviour.cpp" />
+    <ClCompile Include="src\mge\Config.cpp" />
     <ClCompile Include="src\mge\core\AbstractGame.cpp" />
     <ClCompile Include="src\mge\core\Camera.cpp" />
     <ClCompile Include="src\mge\core\GameObject.cpp" />
