@@ -74,7 +74,7 @@ void DeferredTestScene::_initializeScene() {
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //SCENE SETUP
-    GameObject* plane = new GameObject("plane", glm::vec3(0,0,0));
+    GameObject* plane = new GameObject("plane", glm::vec3(0,-2,0));
     plane->scale(glm::vec3(10,10,10));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(textureMaterial);
@@ -133,11 +133,11 @@ void DeferredTestScene::_initializeScene() {
     camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, player));
 
 	glm::vec3* lightColor = new glm::vec3(127,239,217);
-	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,5,0), *lightColor, 1, glm::vec3(0, 0, 1));
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,10,0), *lightColor, 1, glm::vec3(0, 0, 1));
 	light->setMesh(cubeMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
 	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
-	//light->addBehaviour(new LookAt(glm::vec3(0,0,0)));
+	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,-1.00001f,0.0001f)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
 

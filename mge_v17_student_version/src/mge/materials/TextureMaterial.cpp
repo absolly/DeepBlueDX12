@@ -67,18 +67,21 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glm::vec3 lightFalloff[5]{};
     GLfloat lightIntensity[5] {};
 
-	glm::vec3 lightInvDir = glm::vec3(0.1f, 1, 0.1f);
-
-
+	glm::mat4 biasMatrix(
+		0.5, 0.0, 0.0, 0.0,
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+		0.5, 0.5, 0.5, 1.0
+	);
 	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -10, 20);
-	glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	glm::mat4 depthModelMatrix = glm::mat4(1.0);
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
+	glm::mat4 depthViewMatrix;
+
     int i = 0;
     for(Light* light : World::activeLights) {
-	/*	if (light->type = Light::DIRECTIONAL) {
+		if (light->type == Light::DIRECTIONAL) {
 			depthViewMatrix = glm::inverse(light->getWorldTransform());
-		}*/
+		}
         lightPosition[i] = light->getWorldPosition();
         lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
         lightColor[i] = light->getColor();
@@ -88,14 +91,9 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         i++;
     }
 
-	glm::mat4 biasMatrix(
-		0.5, 0.0, 0.0, 0.0,
-		0.0, 0.5, 0.0, 0.0,
-		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
-	);
-
 	glm::mat4 depthBiasMVP = biasMatrix * depthProjectionMatrix * depthViewMatrix * pModelMatrix;
+
+
 
 
     glUniform3fv(_shader->getUniformLocation("lightPosition"), 5, glm::value_ptr(lightPosition[0]));

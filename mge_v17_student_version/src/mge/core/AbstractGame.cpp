@@ -175,20 +175,17 @@ void AbstractGame::_update(float pStep) {
 
 void AbstractGame::_render () {
 
-	glm::vec3 lightInvDir = glm::vec3(0.1f, 1, 0.1f);
-
 	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -10, 20);
-	glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	glm::mat4 depthModelMatrix = glm::mat4(1.0);
-	//for (Light* light : World::activeLights) {
-	//	if (light->type = Light::DIRECTIONAL) {
-	//		depthViewMatrix = glm::inverse(light->getWorldTransform());
-	//	}
-	//}
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
+	glm::mat4 depthViewMatrix;
+	for (Light* light : World::activeLights) { 
+	  if (light->type == Light::DIRECTIONAL) { 
+	    depthViewMatrix = glm::inverse(light->getWorldTransform());
+	  } 
+	} 
 
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->ShadowBuffer);
-	glViewport(0, 0, 1024, 1024); 
+	glViewport(0, 0, 4096, 4096);
 	// Render on the whole framebuffer, complete from the lower left corner to the upper right
 
 	// We don't use bias in the shader, but instead we draw back faces, 

@@ -33,7 +33,7 @@ void main( void ) {
 
 	vec3 newvertex = vertex + vec3(waveSize.r * cos((_time*0.02)  + (vertex.z * 0.3) + (vertex.y * 0.5)), waveSize.g * cos((_time*0.02) + (vertex.z * 0.0001)),waveSize.b * cos((_time*0.02) + (vertex.z * 0.001)));
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(newvertex, 1.f);
-	ShadowCoord = depthBiasMVP * vec4(vertex,1);
+	ShadowCoord = depthBiasMVP * vec4(newvertex,1);
     texCoord = uv;
 
     vec3 vertexNormal_cameraspace = (viewMatrix * modelMatrix * vec4(normalize(normal),0)).xyz;

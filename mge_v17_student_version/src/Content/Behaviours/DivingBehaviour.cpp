@@ -19,7 +19,8 @@ void DivingBehaviour::update(float pStep)
 	if (_owner->getWorldPosition().y >  727.386)
 		_airLeft = _tankSize;
 	if (_timer <= 0) {
-		std::cout << "air left: " << _airLeft << std::endl;
+		//std::cout << "air left: " << _airLeft << std::endl;
+		//std::cout << "pos: " << _owner->getWorldPosition() << std::endl;
 		_timer = 10;
 	}
 
