@@ -3,7 +3,7 @@
 #include "glm.hpp"
 #include "mge\core\GameObject.hpp"
 #include "mge\core\World.hpp"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 /*Trigger::Trigger() : 
 	_ghostObject(*new btPairCachingGhostObject()),
@@ -11,7 +11,15 @@
 {
 }*/
 
-CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shape, bool isTrigger, bool usePhysicsPosition) : AbstractBehaviour(), btPairCachingGhostObject(),
+#define BIT(x) (1<<(x))
+enum collisiontypes {
+	COL_NOTHING = 0, //<Collide with nothing
+	COL_DYNAMIC = BIT(0), //<Collide with ships
+	COL_STATIC = BIT(1), //<Collide with walls
+};
+
+
+CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shape, bool isTrigger, bool usePhysicsPosition, bool isStatic) : AbstractBehaviour(), btPairCachingGhostObject(),
 	_physicsWorld(World::physics)
 {
 	_collisionShape = shape;
@@ -22,7 +30,7 @@ CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shap
 	{
 		setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	}
-	_physicsWorld->addCollisionObject(this, btBroadphaseProxy::SensorTrigger, btBroadphaseProxy::AllFilter);
+	_physicsWorld->addCollisionObject(this, isStatic ? COL_STATIC : COL_DYNAMIC, isStatic ? COL_DYNAMIC : COL_STATIC);
 	_owner = &owner;
 	updatePositon();
 	updateScale();
@@ -42,10 +50,10 @@ void CollisionBehaviour::updatePositon()
 }
 void CollisionBehaviour::update(float pStep)
 {
-	if (!_usePhysicsPosition)
+	if (_usePhysicsPosition)
 	{
-		updateScale();
-		updatePositon();
+		//updateScale();
+		//updatePositon();
 	}
 	if (_isTrigger)
 	{

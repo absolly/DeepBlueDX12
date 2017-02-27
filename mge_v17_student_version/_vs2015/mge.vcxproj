@@ -199,6 +199,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
     <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
     <ClInclude Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.h" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.h" />
@@ -215,11 +216,12 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\behaviours\AbstractBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.h" />
     <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.hpp" />
+    <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\KeysBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\LookAt.hpp" />
     <ClInclude Include="src\mge\behaviours\RigidBody.hpp" />
     <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp" />
-    <ClInclude Include="src\mge\config.hpp" />
+    <ClInclude Include="src\mge\Config.hpp" />
     <ClInclude Include="src\mge\core\AbstractGame.hpp" />
     <ClInclude Include="src\mge\core\Camera.hpp" />
     <ClInclude Include="src\mge\core\GameObject.hpp" />
@@ -251,6 +253,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\util\DebugHud.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Content\Behaviours\DivingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\DivingAnimationBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerMovementBehaviour.cpp" />
@@ -264,10 +267,12 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mge\behaviours\AbstractBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\CameraOrbitBehaviour.cpp" />
+    <ClCompile Include="src\mge\behaviours\CopyTargetPositionBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\KeysBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\LookAt.cpp" />
     <ClCompile Include="src\mge\behaviours\RigidBody.cpp" />
     <ClCompile Include="src\mge\behaviours\RotatingBehaviour.cpp" />
+    <ClCompile Include="src\mge\Config.cpp" />
     <ClCompile Include="src\mge\core\AbstractGame.cpp" />
     <ClCompile Include="src\mge\core\Camera.cpp" />
     <ClCompile Include="src\mge\core\GameObject.cpp" />

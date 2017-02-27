@@ -1,10 +1,10 @@
 #include "Collider.h"
 #include "btBulletCollisionCommon.h"
 #include "mge\core\GameObject.hpp"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
-Collider::Collider(btCollisionShape& colliderShape, GameObject& owner, bool isTrigger) : 
-	CollisionBehaviour(owner, &colliderShape, isTrigger, false),
+Collider::Collider(btCollisionShape& colliderShape, GameObject& owner, bool isTrigger, bool isStatic) : 
+	CollisionBehaviour(owner, &colliderShape, isTrigger, false, isStatic),
 	_colliderShape(colliderShape)
 {
 }

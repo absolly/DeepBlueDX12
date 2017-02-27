@@ -64,19 +64,24 @@ class AbstractGame
 		Renderer* _renderer;        //the renderer class to render the world
 		World* _world;              //the root game object that represents our scene
 		float _fps;                 //stores the real fps
-
+		void DrawQuad();
     private:
         AbstractGame(const AbstractGame&);
         AbstractGame& operator=(const AbstractGame&);
-		void DrawQuad();
+		
 		void onCloseWindowEvent(sf::Event& event);
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
-		bool _mouseCursorVisible = false;
 		void onToggleMouseLock(sf::Event::KeyEvent& event);
+		void disableMouseLock(sf::Event& event);
+		void enableMousLock(sf::Event& event);
+		void setMouseLockEnabled(bool enabled);
 		ShaderProgram* _shader;
 		ShaderProgram* _blurShader;
+		ShaderProgram* _shadowShader;
 		GLuint quad_vertexbuffer;
 		Texture* _fogTexure = nullptr;
+		GLuint quadVAO = 0;
+		GLuint quadVBO;
 
 };
 

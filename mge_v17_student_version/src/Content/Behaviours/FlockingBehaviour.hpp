@@ -33,6 +33,18 @@ class FlockingBehaviour : public AbstractBehaviour
 		FishTank * fishtank;
 		glm::vec3 _parentPosition;
 		glm::vec3 _scale;
+
+		//moved some variable creation out of the update loop
+		glm::vec3 vcentre;
+		glm::vec3 vavoid;
+		glm::vec3 ownerPosition;
+		float gSpeed;
+		glm::vec3 goal;
+		float dist;
+		int groupSize;
+		GameObject* curObject;
+		random_device rd;
+		//
 };
 
 #endif // KEYSBEHAVIOUR_H

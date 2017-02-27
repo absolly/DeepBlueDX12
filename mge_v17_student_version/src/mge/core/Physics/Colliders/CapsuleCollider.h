@@ -12,5 +12,5 @@ struct CapsuleColliderArgs
 class CapsuleCollider : public Collider
 {
 public:
-	CapsuleCollider(CapsuleColliderArgs& capsuleColliderArgs, class GameObject& owner, bool isTrigger);
+	CapsuleCollider(CapsuleColliderArgs& capsuleColliderArgs, class GameObject& owner, bool isTrigger, bool isStatic);
 };

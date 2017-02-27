@@ -3,6 +3,7 @@
 #include "mge\core\GameObject.hpp"
 #include "Content\Core\Input.h"
 #include "Content\GameObjects\Player.h"
+#include "mge\Config.hpp"
 
 PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 {
@@ -11,6 +12,43 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_currentYaw = 0;
 	_currentRoll = 0;
 	_currentMoveSpeed = 0;
+
+	updateFromConfig();
+	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::onConfigUpdatedEvent);
+}
+
+void PlayerMovementBehaviour::updateFromConfig()
+{
+	Config::updateValue("_minMoveSpeed", _minMoveSpeed);
+	Config::updateValue("_maxMoveSpeed", _maxMoveSpeed);
+	Config::updateValue("_moveAcceleration", _moveAcceleration);
+	Config::updateValue("_moveDecceleration", _moveDecceleration);
+
+	Config::updateValue("_minSideMoveSpeed", _minSideMoveSpeed);
+	Config::updateValue("_maxSideMoveSpeed", _maxSideMoveSpeed);
+	Config::updateValue("_moveSideAcceleration", _moveSideAcceleration);
+	Config::updateValue("_moveSideDecceleration", _moveSideDecceleration);
+
+	Config::updateValue("_minMoveUpSpeed", _minMoveUpSpeed);
+	Config::updateValue("_maxMoveUpSpeed", _maxMoveUpSpeed);
+	Config::updateValue("_moveUpAcceleration", _moveUpAcceleration);
+	Config::updateValue("_moveUpDecceleration", _moveUpDecceleration);
+
+	Config::updateValue("_minPitchRotationSpeed", _minPitchRotationSpeed);
+	Config::updateValue("_maxPitchRotationSpeed", _maxPitchRotationSpeed);
+
+	Config::updateValue("_minYawRotationSpeed", _minYawRotationSpeed);
+	Config::updateValue("_maxYawRotationSpeed", _maxYawRotationSpeed);
+
+	Config::updateValue("_minRollRotationSpeed", _minRollRotationSpeed);
+	Config::updateValue("_maxRollRotationSpeed", _maxRollRotationSpeed);
+	Config::updateValue("_maxRollRotation", _maxRollRotation);
+	Config::updateValue("_rollRotationSpeedMultiplier", _rollRotationSpeedMultiplier);
+}
+
+void PlayerMovementBehaviour::onConfigUpdatedEvent(bool update)
+{
+	updateFromConfig();
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
@@ -28,19 +66,10 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	sf::Vector2i windowPosition = screenResolution / 2 - windowSize / 2;
 	sf::Vector2i windowCenter = windowPosition + windowSize / 2;
 
-	if (Input::getKeyDown(sf::Keyboard::F1))
-	{
-		_lockMouse = !_lockMouse;
-		if (_lockMouse)
-		{
-			sf::Mouse::setPosition(windowCenter);
-		}
-	}
-
 	sf::Vector2i mousePosition = sf::Mouse::getPosition();
 	sf::Vector2i mouseMovement = windowCenter - mousePosition;
 
-	if (_lockMouse)
+	if (Input::mouseLocked)
 	{
 		sf::Mouse::setPosition(windowCenter);
 		_currentYaw += mouseMovement.x * sensitivity;
@@ -55,13 +84,13 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
+	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
 	//Moving sideways
 	float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
 	_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
-	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1), _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
+	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
 	if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
 
 
@@ -110,17 +139,36 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	btVector3& velocity = btVector3(_currentMoveSideSpeed * multiplier, _currentMoveUpSpeed, _currentMoveSpeed * multiplier * 1);
 	velocity = quatRotate(quaternion, velocity);
+	velocity += btVector3(0, -1, 0);
 	rigidBody->setLinearVelocity(velocity);
-
 
 
 	rigidBody->setAngularFactor(btVector3(0, 0, 0));
 	rigidBody->setActivationState(ACTIVE_TAG);
-	glm::vec3 ownerPosition = _owner->getLocalPosition();
+	glm::vec3 ownerPosition = _owner->getWorldPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
 	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
 	//_owner->setLocalPosition(ownerPosition);
 
+	if (Input::getKeyDown(sf::Keyboard::I))
+	{
+		std::cout << "Player information: " << std::endl << "{" << std::endl;
+		std::cout << "_minMoveUpSpeed: " << _minMoveSpeed << std::endl;
+		std::cout << "_maxMoveUpSpeed: " << _maxMoveSpeed << std::endl;
+		//std::cout << "_moveAcceleration: " << _moveAcceleration << std::endl;
+		//std::cout << "_moveDecceleration: " << _moveDecceleration << std::endl;
+		std::cout << "_minSideMoveSpeed: " << _minSideMoveSpeed << std::endl;
+		std::cout << "_maxSideMoveSpeed: " << _maxSideMoveSpeed << std::endl;
+		//std::cout << "_moveSideAcceleration: " << _moveSideAcceleration << std::endl;
+		//std::cout << "_moveSideDecceleration: " << _moveSideDecceleration << std::endl;
+		std::cout << "Position: " << ownerPosition.x << ", " << ownerPosition.y << ", " << ownerPosition.z << std::endl;
+		std::cout << "}" << std::endl;
+	}
+
+	if (Input::getKeyDown(sf::Keyboard::Left))	_maxSideMoveSpeed -= 4;
+	if (Input::getKeyDown(sf::Keyboard::Right))	_maxSideMoveSpeed += 4;
+	if (Input::getKeyDown(sf::Keyboard::Down))	_maxMoveSpeed -= 4;
+	if (Input::getKeyDown(sf::Keyboard::Up))	_maxMoveSpeed += 4;
 
 }
 

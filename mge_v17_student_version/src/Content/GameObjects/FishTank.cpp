@@ -29,8 +29,8 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 
 	
-	Mesh* cubeMeshF = Mesh::load(config::MGE_MODEL_PATH + "small_fish.OBJ");
-	AbstractMaterial* colormat = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
+	Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "small_fish.OBJ");
+	AbstractMaterial* colormat = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
 
 	random_device rd;
 
@@ -81,6 +81,7 @@ std::vector<glm::vec3> * waypointsValidator(std::vector<glm::vec3> * pWaypoints)
 	//{
 	//	if (glm::distance(pWaypoints->at(i), ))
 	//}
+	return nullptr;
 }
 
 void FishTank::SetNewGoal()

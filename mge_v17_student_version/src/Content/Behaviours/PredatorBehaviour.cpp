@@ -17,14 +17,14 @@ PredatorBehaviour::~PredatorBehaviour()
 void PredatorBehaviour::update(float pStep)
 {
 	if (glm::distance(_owner->getWorldPosition(), _target->getWorldPosition()) < 30) {
-		std::cout << "following player" << std::endl;
+		//std::cout << "following player" << std::endl;
 		_targetPos = _target->getWorldPosition();
 	} else if(glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) > 1){
-		std::cout << "navigating to waypoint " << _currentWaypoint << " current distance: " << glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) << std::endl;
+		//std::cout << "navigating to waypoint " << _currentWaypoint << " current distance: " << glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) << std::endl;
 		_targetPos = _waypoints[_currentWaypoint];
 	}
 	else {
-		std::cout << "navigating to next waypoint " << _currentWaypoint << std::endl;
+		//std::cout << "navigating to next waypoint " << _currentWaypoint << std::endl;
 		_currentWaypoint++;
 		_currentWaypoint = _currentWaypoint % 10;
 		_targetPos = _waypoints[_currentWaypoint];

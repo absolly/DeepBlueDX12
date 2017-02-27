@@ -47,8 +47,8 @@ LuaParser::LuaParser(World* pWorld) {
 	lua_setglobal(lua, "addLightAttributes");
 
     //load the cube mesh and texture for later use.
-    cubeMeshF = Mesh::load (config::MGE_MODEL_PATH+"cube_unity.obj");
-    textureMaterial2 = new TextureMaterial (Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"));
+    cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+"cube_unity.obj");
+    textureMaterial2 = new TextureMaterial (Texture::load (Config::MGE_TEXTURE_PATH+"bricks.jpg"));
 
     //bind colors to names
     colors["brown"] = glm::vec3(81,21,21);
@@ -373,15 +373,19 @@ int LuaParser::createObject(lua_State * lua) {
 
 	go->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
 
-	Mesh * gameObjectMesh = Mesh::load(config::MGE_MODEL_PATH + meshName + ".obj");
+	Mesh * gameObjectMesh = Mesh::load(Config::MGE_MODEL_PATH + meshName + ".obj");
 	go->setMesh(gameObjectMesh);
 	go->setMaterial(colorMat);
 	_currentGameObject = go;
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "bricks" + ".jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks" + ".jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
 	_currentGameObject->setMaterial(textureMaterial);
 	_world->add(go);
 
 	std::cout << "Create Object: " << meshName << std::endl;
+	if (meshName == "ShipSide1")
+	{
+		go->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
+	}
 
     return 1;
 }
@@ -389,7 +393,7 @@ int LuaParser::createObject(lua_State * lua) {
 int LuaParser::addMaterial(lua_State * lua){ 
 	string image = lua_tostring(lua, -1);
 
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + image + ".jpg"), 10, 10, Texture::load(config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
 	_currentGameObject->setMaterial(textureMaterial);
 
@@ -398,7 +402,8 @@ int LuaParser::addMaterial(lua_State * lua){
 int LuaParser::addMeshCollider(lua_State * lua){
 	string collider = lua_tostring(lua, -2);
 		
-	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false);
+	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false, true);
+	
 
 	return 1;
 }
@@ -408,7 +413,7 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 	float y = lua_tonumber(lua, -6);
 	float z = lua_tonumber(lua, -5);
 
-	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false);
+	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false, true);
 
 	return 1;
 }
@@ -417,7 +422,7 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 int LuaParser::addSphereCollider(lua_State * lua) {
 	float radius = lua_tonumber(lua, -5);
 
-	_currentGameObject->addCollider(SphereColliderArgs(radius), false);
+	_currentGameObject->addCollider(SphereColliderArgs(radius), false, true);
 
 	return 1;
 }
@@ -429,7 +434,9 @@ int LuaParser::createFish(lua_State * lua)
 	float y = lua_tonumber(lua, -2);
 	float z = lua_tonumber(lua, -1);
 
-	FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 75);
+	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+
+	FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
 	fishTank->setMesh(smallFish);
 	fishTank->setMaterial(gpuinstancing);
 	_world->add(fishTank);

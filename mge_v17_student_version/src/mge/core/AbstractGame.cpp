@@ -11,6 +11,8 @@ using namespace std;
 #include <Windows.h>
 #include "Content\Core\EventHandler.h"
 #include "mge/config.hpp"
+#include "mge/core/Camera.hpp"
+#include "mge/core/Light.hpp"
 
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
@@ -19,6 +21,8 @@ AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0)
 	EventHandler::bindEvent(sf::Event::Closed, this, &AbstractGame::onCloseWindowEvent);
 	EventHandler::bindKeyDownEvent(sf::Keyboard::Escape, this, &AbstractGame::onEscapePressedEvent);
 	EventHandler::bindKeyDownEvent(sf::Keyboard::F1, this, &AbstractGame::onToggleMouseLock);
+	EventHandler::bindEvent(sf::Event::LostFocus, this, &AbstractGame::disableMouseLock);
+	EventHandler::bindEvent(sf::Event::GainedFocus, this, &AbstractGame::enableMousLock);
 }
 
 AbstractGame::~AbstractGame() {
@@ -89,13 +93,13 @@ void AbstractGame::_initializeRenderer() {
     cout << "Renderer done." << endl << endl;
 
 	_shader = new ShaderProgram();
-	_shader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "Passthrough.vs");
-	_shader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "RenderTexture.fs");
+	_shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "Passthrough.vs");
+	_shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "RenderTexture.fs");
 	_shader->finalize();
 
 	_blurShader = new ShaderProgram();
-	_blurShader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "Passthrough.vs");
-	_blurShader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "GaussianBlur.fs");
+	_blurShader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "Passthrough.vs");
+	_blurShader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "GaussianBlur.fs");
 	_blurShader->finalize();
 
 	static const GLfloat g_quad_vertex_buffer_data[] = {
@@ -113,7 +117,7 @@ void AbstractGame::_initializeRenderer() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
 
 	if (_fogTexure == nullptr)
-		_fogTexure = Texture::load(config::MGE_TEXTURE_PATH + "fog.png");
+		_fogTexure = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 }
 
 void AbstractGame::_initializeWorld() {
@@ -129,24 +133,23 @@ void AbstractGame::run() {
     sf::Clock updateClock;
     sf::Clock renderClock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+    sf::Time timePerFrame = sf::seconds(1.0f / 120.0f);
 
     while (_window->isOpen()) {
         timeSinceLastUpdate += updateClock.restart();
 
-        if (timeSinceLastUpdate > timePerFrame) {
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		if (timeSinceLastUpdate > timePerFrame) {
 
-            while (timeSinceLastUpdate > timePerFrame) {
-                timeSinceLastUpdate -= timePerFrame;
-                _update(timePerFrame.asSeconds());
-                _world->updatePhysics(timePerFrame.asSeconds());
+			while (timeSinceLastUpdate > timePerFrame) {
+				timeSinceLastUpdate -= timePerFrame;
+				_update(timePerFrame.asSeconds());
+				_world->updatePhysics(timePerFrame.asSeconds());
 				Input::updateInput();
-            }
-			
-            _render();
-            _window->display();
+			}
 
+			_render();
+			_window->display();
+			
             float timeSinceLastRender = renderClock.restart().asSeconds();
             if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
         }
@@ -160,44 +163,54 @@ void AbstractGame::_update(float pStep) {
 
 void AbstractGame::_render () {
 
-	//glm::vec3 lightInvDir = glm::vec3(0.5f, 2, 2);
+	// Compute the MVP matrix from the light's point of view
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
+	glm::mat4 depthViewMatrix;
+	for (Light* light : World::activeLights) { 
+	  if (light->type == Light::DIRECTIONAL) { 
+	    depthViewMatrix = glm::inverse(light->getWorldTransform());
+	  } 
+	} 
 
-	//// Compute the MVP matrix from the light's point of view
-	//glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 20);
-	//glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	//glm::mat4 depthModelMatrix = glm::mat4(1.0);
-	//glBindBuffer(GL_FRAMEBUFFER, _renderer->ShadowBuffer);
-	//glViewport(0, 0, 1024, 1024); 
-	//// Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->ShadowBuffer);
+	glViewport(0, 0, 4096, 4096);
+	// Render on the whole framebuffer, complete from the lower left corner to the upper right
 
-	//// We don't use bias in the shader, but instead we draw back faces, 
-	//// which are already separated from the front faces by a small distance 
-	//// (if your geometry is made this way)
+	// We don't use bias in the shader, but instead we draw back faces, 
+	// which are already separated from the front faces by a small distance 
+	// (if your geometry is made this way)
 	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+	glCullFace(GL_FRONT); // Cull front-facing triangles -> draw only back-facing triangles
 
-	//					 // Clear the screen
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+						 // Clear the screen
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//_renderer->render(_world, depthModelMatrix, depthViewMatrix, depthProjectionMatrix, true);
+	_renderer->renderShadowMap(_world, _world->getTransform(), depthViewMatrix, depthProjectionMatrix, true);
+
+	//_shadowShader->use();
+
+	//DrawQuad();
 
 	// Clear the screen
 	// Render to our framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->FramebufferName);
 	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glCullFace(GL_BACK);
     _renderer->render(_world);
 }
 
 void AbstractGame::_renderToQuad() {
+	glActiveTexture(GL_TEXTURE0);
 
 	GLboolean horizontal = true, first_iteration = true;
-	GLuint amount = 20;
+	GLuint amount = 10;
 	_blurShader->use();
+	GLuint iterationID = _blurShader->getUniformLocation("iteration");
 	for (GLuint i = 0; i < amount; i++)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _renderer->pingpongFBO[horizontal]);
-		glUniform1i(_blurShader->getUniformLocation("horizontal"), horizontal);
+		glUniform1i(iterationID, i);
 		glBindTexture(
 			GL_TEXTURE_2D, first_iteration ? _renderer->brightnessTexture : _renderer->pingpongBuffer[!horizontal]
 		);
@@ -209,7 +222,7 @@ void AbstractGame::_renderToQuad() {
 
 	// Render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	//glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
 								 // Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -237,22 +250,29 @@ void AbstractGame::_renderToQuad() {
 }
 
 void AbstractGame::DrawQuad() {
-	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_vertexbuffer);
-	glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-
-	// Draw the triangles !
-	glDrawArrays(GL_TRIANGLES, 0, 6); // 2*3 indices starting at 0 -> 2 triangles
-
-	glDisableVertexAttribArray(0);
+	if (quadVAO == 0)
+	{
+		GLfloat quadVertices[] = {
+			// Positions        // Texture Coords
+			-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// Setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	}
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
 }
 
 void AbstractGame::_processEvents() {
@@ -306,6 +326,31 @@ void AbstractGame::onEscapePressedEvent(sf::Event::KeyEvent & event)
 
 void AbstractGame::onToggleMouseLock(sf::Event::KeyEvent & event)
 {
-	_mouseCursorVisible = !_mouseCursorVisible;
-	_window->setMouseCursorVisible(_mouseCursorVisible);
+	setMouseLockEnabled(!Input::mouseLocked);
+}
+
+void AbstractGame::disableMouseLock(sf::Event & event)
+{
+	setMouseLockEnabled(false);
+}
+
+void AbstractGame::enableMousLock(sf::Event & event)
+{
+	setMouseLockEnabled(true);
+}
+
+void AbstractGame::setMouseLockEnabled(bool enabled)
+{
+	Input::mouseLocked = enabled;
+	_window->setMouseCursorVisible(!Input::mouseLocked);
+
+	sf::Vector2i screenResolution = sf::Vector2i(sf::VideoMode::getDesktopMode().width, sf::VideoMode::getDesktopMode().height);
+	sf::Vector2i windowSize = sf::Vector2i(_window->getSize().x, _window->getSize().y);
+	sf::Vector2i windowPosition = screenResolution / 2 - windowSize / 2;
+	sf::Vector2i windowCenter = windowPosition + windowSize / 2;
+
+	if (Input::mouseLocked)
+	{
+		sf::Mouse::setPosition(windowCenter);
+	}
 }

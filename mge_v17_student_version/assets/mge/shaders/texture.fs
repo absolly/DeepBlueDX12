@@ -4,18 +4,20 @@
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
-uniform vec3        lightPosition[24];
-uniform vec3        lightColor[24];
-uniform float       lightIntensity[24];
-uniform int         lightType[24];
-uniform vec3        lightFalloff[24];
+uniform sampler2DShadow shadowMap;
+uniform vec3        lightPosition[5];
+uniform vec3        lightColor[5];
+uniform float       lightIntensity[5];
+uniform int         lightType[5];
+uniform vec3        lightFalloff[5];
 uniform int         lightCount;
 uniform int         tiling;
 uniform int         specularMultiplier;
 
 in vec2 texCoord;
+in vec4 ShadowCoord;
 in vec3 Position_worldspace;
-in vec3 LightDirection_tangentspace[24];
+in vec3 LightDirection_tangentspace[5];
 in vec3 EyeDirection_tangentspace;
 
 layout (location = 0) out vec4 fragment_color;
@@ -28,6 +30,35 @@ vec3 E;
 vec3 R;
 float cosTheta;
 float cosAlpha;
+float visibility = 1.0;
+float bias = 0.005;//use if shadow acne is a problem
+
+vec2 poissonDisk[16] = vec2[]( 
+   vec2( -0.94201624, -0.39906216 ), 
+   vec2( 0.94558609, -0.76890725 ), 
+   vec2( -0.094184101, -0.92938870 ), 
+   vec2( 0.34495938, 0.29387760 ), 
+   vec2( -0.91588581, 0.45771432 ), 
+   vec2( -0.81544232, -0.87912464 ), 
+   vec2( -0.38277543, 0.27676845 ), 
+   vec2( 0.97484398, 0.75648379 ), 
+   vec2( 0.44323325, -0.97511554 ), 
+   vec2( 0.53742981, -0.47373420 ), 
+   vec2( -0.26496911, -0.41893023 ), 
+   vec2( 0.79197514, 0.19090188 ), 
+   vec2( -0.24188840, 0.99706507 ), 
+   vec2( -0.81409955, 0.91437590 ), 
+   vec2( 0.19984126, 0.78641367 ), 
+   vec2( 0.14383161, -0.14100790 ) 
+); 
+
+// Returns a random number based on a vec3 and an int.
+float random(vec3 seed, int i){
+	vec4 seed4 = vec4(seed,i);
+	float dot_product = dot(seed4, vec4(12.9898,78.233,45.164,94.673));
+	return fract(sin(dot_product) * 43758.5453);
+}
+
 vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
@@ -49,9 +80,9 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
 
     return pFalloff *(pMaterialAmbientColor +
             // Diffuse : "color" of the object
-             pMaterialDiffuseColor * pLightColor * cosTheta
+             visibility * pMaterialDiffuseColor * pLightColor * cosTheta
             // Specular : reflective highlight, like a mirror
-            + pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
+            +  visibility * pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
 }
 
 vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
@@ -75,9 +106,9 @@ vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMateria
 
     return pMaterialAmbientColor +
            // Diffuse : "color" of the object
-           pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
+           visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
            // Specular : reflective highlight, like a mirror
-           + pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50) ;
+           +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50) ;
 }
 
 void main( void ) {
@@ -91,8 +122,28 @@ void main( void ) {
 	float distance;
 	float falloff;
 
+	vec3 coord;
+	for (int i=0;i<4;i++){
+		// use either :
+		//  - Always the same samples.
+		//    Gives a fixed pattern in the shadow, but no noise
+		int index = i;
+		//  - A random sample, based on the pixel's screen location. 
+		//    No banding, but the shadow moves with the camera, which looks weird.
+		// int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
+		//  - A random sample, based on the pixel's position in world space.
+		//    The position is rounded to the millimeter to avoid too much aliasing
+		 //int index = int(16.0*random(floor(Position_worldspace.xyz*80.0), i))%16;
+		
+		// being fully in the shadow will eat up 4*0.2 = 0.8
+		// 0.2 potentially remain, which is quite dark.
+		coord = vec3( ShadowCoord.xy + poissonDisk[index]/1200.0,  (ShadowCoord.z)/ShadowCoord.w );
+		if(coord.x > 0 && coord.x < 1 && coord.y > 0 && coord.y < 1 && coord.z > 0 && coord.z < 1)
+			visibility -= 0.2*(1.0-texture( shadowMap, coord));
+	}
+
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
-        MaterialAmbientColor = vec3(0.3,0.3,0.3) *lightColor[activeLight] * MaterialDiffuseColor;
+        MaterialAmbientColor = vec3(0.01,0.01,0.01) *lightColor[activeLight] * MaterialDiffuseColor;
         MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
         distance = length(Position_worldspace - lightPosition[activeLight]);
@@ -149,7 +200,7 @@ void main( void ) {
     }
     fragment_color = vec4(combinedColor,1);
 	float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 100)
+    if(brightness > 1)
         brightness_color = vec4(fragment_color.rgb, 1.0);
 	else
 		brightness_color = vec4(0,0,0,1);

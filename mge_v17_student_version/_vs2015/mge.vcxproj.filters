@@ -47,6 +47,9 @@
     <ClCompile Include="src\mge\materials\GPUinstancingMaterial.cpp" />
     <ClCompile Include="src\Content\Behaviours\PredatorBehaviour.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\CapsuleCollider.cpp" />
+    <ClCompile Include="src\Content\Behaviours\DivingBehaviour.cpp" />
+    <ClCompile Include="src\mge\behaviours\CopyTargetPositionBehaviour.cpp" />
+    <ClCompile Include="src\mge\Config.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -59,7 +62,7 @@
     <ClInclude Include="src\mge\behaviours\LookAt.hpp" />
     <ClInclude Include="src\mge\behaviours\RigidBody.hpp" />
     <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp" />
-    <ClInclude Include="src\mge\config.hpp" />
+    <ClInclude Include="src\mge\Config.hpp" />
     <ClInclude Include="src\mge\core\AbstractGame.hpp" />
     <ClInclude Include="src\mge\core\Camera.hpp" />
     <ClInclude Include="src\mge\core\GameObject.hpp" />
@@ -100,6 +103,8 @@
     <ClInclude Include="src\mge\materials\GPUinstancingMaterial.hpp" />
     <ClInclude Include="src\Content\Behaviours\PredatorBehaviour.h" />
     <ClInclude Include="src\mge\core\Physics\Colliders\CapsuleCollider.h" />
+    <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
+    <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

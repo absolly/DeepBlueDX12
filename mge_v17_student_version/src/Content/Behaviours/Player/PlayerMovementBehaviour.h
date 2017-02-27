@@ -9,6 +9,8 @@ class PlayerMovementBehaviour : public AbstractBehaviour
 {
 public:
 	PlayerMovementBehaviour(Player& player);
+	void updateFromConfig();
+	void onConfigUpdatedEvent(bool update);
 	~PlayerMovementBehaviour();
 
 	virtual void update(float pStep);
@@ -16,7 +18,7 @@ private:
 
 	//[Header("Forward Movement")]
 	float _minMoveSpeed = -13.0f;
-	float _maxMoveSpeed = 16;
+	float _maxMoveSpeed = 25;
 	float _moveAcceleration = 40;
 	float _moveDecceleration = 40;
 	float _currentMoveSpeed;
@@ -60,5 +62,4 @@ private:
 	sf::Vector2i _previousMousePosition;
 
 	float moveTowards(float current, float target, float speed);
-	bool _lockMouse = true;
 };

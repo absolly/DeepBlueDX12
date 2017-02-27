@@ -24,7 +24,7 @@ FlockingBehaviour::~FlockingBehaviour()
 
 void FlockingBehaviour::update(float pStep)
 {
-	random_device rd;
+	
 
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
@@ -53,31 +53,33 @@ void FlockingBehaviour::update(float pStep)
 			ApplyRules();
 	}
 
-	_owner->translate(glm::vec3(0, 0, -_speed * 0.02f));
+	_owner->translate(glm::vec3(0, 0, -_speed  * pStep));
 
 }
 
 void FlockingBehaviour::ApplyRules()
 {
-	glm::vec3 vcentre = glm::vec3(0, 0, 0);
-	glm::vec3 vavoid = glm::vec3(0, 0, 0);
-	glm::vec3 ownerPosition = _owner->getWorldPosition();
-	float gSpeed = 0.1f;
+	vcentre = glm::vec3(0, 0, 0);
+	vavoid = glm::vec3(0, 0, 0);
+	ownerPosition = _owner->getWorldPosition();
+
+	gSpeed = 0.1f;
 
 	if (glm::distance(fishtank->goalPosition, ownerPosition) < 30.0f)
 	{
 		fishtank->SetNewGoal();
 	}
 
-	glm::vec3 goal = fishtank->goalPosition;
+	goal = fishtank->goalPosition;
 
-	float dist = 0;
+	dist = 0;
 
-	int groupSize = 0;
+	groupSize = 0;
 
+	
 	for (int i = 0; i < fishtank->getFishCount(); i++)
 	{
-		GameObject * curObject = fishtank->allFish->at(i);
+		curObject = fishtank->allFish->at(i);
 		if (curObject != _owner)
 		{
 			dist = glm::distance(curObject->getWorldPosition(), ownerPosition);
@@ -92,11 +94,11 @@ void FlockingBehaviour::ApplyRules()
 					vavoid = vavoid + (ownerPosition - curObject->getWorldPosition());
 				}
 
-				std::vector<AbstractBehaviour*> behaviours = curObject->getBehaviours();
+				/*behaviours = curObject->getBehaviours();
 				for (AbstractBehaviour * behaviour : behaviours)
-				{
-					gSpeed += dynamic_cast<FlockingBehaviour*>(behaviour)->_speed;
-				}
+				{*/
+					gSpeed += curObject->getBehaviour<FlockingBehaviour>()->_speed;
+				//}
 			}
 		}
 	}
