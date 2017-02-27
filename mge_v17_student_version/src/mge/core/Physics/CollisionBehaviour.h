@@ -17,7 +17,7 @@ class CollisionBehaviour : public AbstractBehaviour, public btPairCachingGhostOb
 {
 public:
 	//Trigger();
-	CollisionBehaviour(GameObject& parent, btCollisionShape* shape, bool isTrigger, bool usePhysicsPosition);
+	CollisionBehaviour(GameObject& parent, btCollisionShape* shape, bool isTrigger, bool usePhysicsPosition, bool isStatic);
 	~CollisionBehaviour();
 	void updateScale();
 	void updatePositon();

@@ -11,7 +11,7 @@ struct SphereColliderArgs : ColliderArgs
 class SphereCollider : public Collider
 {
 public:
-	SphereCollider(SphereColliderArgs& sphereColliderArgs, class GameObject& owner, bool isTrigger);
+	SphereCollider(SphereColliderArgs& sphereColliderArgs, class GameObject& owner, bool isTrigger, bool isStatic);
 	~SphereCollider();
 private:
 }; 

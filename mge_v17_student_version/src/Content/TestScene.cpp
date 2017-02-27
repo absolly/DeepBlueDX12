@@ -21,7 +21,6 @@
 #include "mge/materials/GPUinstancingMaterial.hpp"
 
 #include "mge/behaviours/RotatingBehaviour.hpp"
-#include "mge/behaviours/RigidBody.hpp"
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
@@ -38,7 +37,7 @@
 
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
-#include "mge\behaviours\RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene() :AbstractGame(), _hud(0) {
@@ -99,7 +98,7 @@ void TestScene::_initializeScene() {
 	player->addBehaviour(new DivingBehaviour());
 	btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
 
-	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false).makeRigidBody(1, btVector3(), *fallMotionState);
+	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
 
@@ -120,7 +119,7 @@ void TestScene::_initializeScene() {
 		teapot->setMesh(i % 2 == 0 ? relicMesh : relicMesh2);
 		teapot->setMaterial(relicAndTreasureMaterial);
 		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
-		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true, true);
 		_world->add(teapot);
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}
@@ -135,7 +134,7 @@ void TestScene::_initializeScene() {
 		teapot->setMesh(treasureMesh);
 		teapot->setMaterial(relicAndTreasureMaterial);
 		teapot->scale(glm::vec3(1.5, 1.5, 1.5));
-		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true);
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true, true);
 		_world->add(teapot);
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}
@@ -147,6 +146,7 @@ void TestScene::_initializeScene() {
 
 void TestScene::_render() {
 	AbstractGame::_render();
+	_world->debugDraw();
 	//_world->debugDraw();
 
 	AbstractGame::_renderToQuad();

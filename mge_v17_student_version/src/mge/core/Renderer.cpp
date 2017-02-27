@@ -11,7 +11,7 @@ using namespace std;
 #include "mge/core/Camera.hpp"
 #include "mge/core/Mesh.hpp"
 #include "mge/materials/AbstractMaterial.hpp"
-#include "mge/behaviours/RigidBody.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 
 Renderer::Renderer() {
 	//// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
