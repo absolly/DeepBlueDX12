@@ -3,6 +3,7 @@
 
 #include <glm.hpp>
 #include <GL/glew.h>
+#include "mge/core/ShaderProgram.hpp"
 
 class World;
 class GameObject;
@@ -27,7 +28,7 @@ class Renderer
 
         //render specific game object within the world, and optionally all its children
         void render(GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix, bool pRecursive);
-
+		void renderShadowMap(GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix, bool pRecursive);
         //renders a specific mesh at the given positions etc with the given material
         void renderMesh (Mesh* pMesh, AbstractMaterial* pMaterial, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
         void renderChildren (GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix, bool pRecursive);
@@ -38,15 +39,17 @@ class Renderer
 		GLuint brightnessTexture;
 		GLuint FramebufferName = 0;
 		GLuint ShadowBuffer = 0;
-		GLuint shadowDepthTexture;
+		static GLuint shadowDepthTexture;
 		GLuint depthTexture;
 		GLuint pingpongFBO[2];
 		GLuint pingpongBuffer[2];
+		GLuint srenderedTexture;
     private:
         //helper method to render a single gameobject
         void renderSelf (GameObject* pGameObject, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
-
-
+		bool renderShadow = false;
+		void renderToShadowMap(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
+		ShaderProgram* _shadowShader;
 };
 
 #endif // RENDERER_H

@@ -5,6 +5,7 @@ uniform	mat4 	projectionMatrix;
 uniform	mat4 	viewMatrix;
 uniform	mat4 	modelMatrix;
 uniform	mat3 	MVMatrix;
+uniform mat4	depthBiasMVP;
 uniform vec3    lightPosition[5];
 uniform vec3    lightDirection[5];
 uniform int     lightType[5];
@@ -17,6 +18,7 @@ uniform int         lightCount;
 
 
 out vec2 texCoord; //make sure the texture coord is interpolated
+out vec4 ShadowCoord;
 out vec3 Position_worldspace;
 mat3 TBN;
 out vec3 LightDirection_tangentspace[5];
@@ -25,8 +27,9 @@ vec3 EyeDirection_cameraspace;
 
 
 void main( void ) {
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix  * vec4(vertex, 1.f);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix  * vec4(vertex, 1);
     texCoord = uv;
+	ShadowCoord = depthBiasMVP * vec4(vertex,1);
 
     vec3 vertexNormal_cameraspace = MVMatrix * normal;
     vec3 vertexTangent_cameraspace = MVMatrix * tangent;

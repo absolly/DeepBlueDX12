@@ -24,6 +24,7 @@
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
+#include "mge/behaviours/CopyTargetPositionBehaviour.hpp"
 #include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "mge/util/DebugHud.hpp"
 
@@ -69,13 +70,13 @@ void TestScene::_initializeScene() {
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
 
-	GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
+	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
 	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0)); 
 	plane->setMesh(planeMeshDefault);
 	plane->setMaterial(textureMaterial);
 	_world->add(plane);
-
+*/
 	//FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
 	//fishTank->setMesh(smallFish);
 	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
@@ -140,7 +141,9 @@ void TestScene::_initializeScene() {
 	}
 
 
-	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(0, 0, 0), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3(), 45);
+	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3());
+	light3->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
+	light3->addBehaviour(new CopyTargetPositionBehaviour(player));
 	_world->add(light3);
 }
 

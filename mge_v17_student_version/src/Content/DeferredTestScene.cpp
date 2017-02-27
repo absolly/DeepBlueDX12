@@ -69,14 +69,14 @@ void DeferredTestScene::_initializeScene() {
 
 
     //10 specular teapot material
-    //AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
+    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
 
     //SCENE SETUP
-    GameObject* plane = new GameObject("plane", glm::vec3(0,0,0));
-    plane->scale(glm::vec3(50,50,50));
+    GameObject* plane = new GameObject("plane", glm::vec3(0,-2,0));
+    plane->scale(glm::vec3(10,10,10));
     plane->setMesh(planeMeshDefault);
     plane->setMaterial(textureMaterial);
 	//plane->addBehaviour(new KeysBehaviour());
@@ -117,7 +117,7 @@ void DeferredTestScene::_initializeScene() {
 
 	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints));
 	teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(textureMaterial);
+	teapot->setMaterial(textureMaterial2);
 	_world->add(teapot);
 	//for (int i = 0; i < 5; i++) {
 	//	for (int j = 0; j < 5; j++) {
@@ -133,13 +133,12 @@ void DeferredTestScene::_initializeScene() {
 
     camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, player));
 
-
 	glm::vec3* lightColor = new glm::vec3(127,239,217);
-	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,5,0), *lightColor, 1, glm::vec3(0, 0, 1));
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,10,0), *lightColor, 1, glm::vec3(0, 0, 1));
 	light->setMesh(cubeMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
-	light->rotate(-90, glm::vec3(1, 0, 0));
-	//light->addBehaviour(new LookAt(glm::vec3(0,0,0)));
+	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
+	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,-1.00001f,0.0001f)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
 
@@ -151,14 +150,14 @@ void DeferredTestScene::_initializeScene() {
 
 void DeferredTestScene::_render() {
     AbstractGame::_render();
-	_updateHud();
 	AbstractGame::_renderToQuad();
+	_updateHud();
 }
 
 void DeferredTestScene::_updateHud() {
     string debugInfo = "";
     debugInfo += string ("FPS:") + std::to_string((int)_fps)+"\n";
-
+	
     _hud->setDebugInfo(debugInfo);
     _hud->draw();
 }
@@ -166,3 +165,4 @@ void DeferredTestScene::_updateHud() {
 DeferredTestScene::~DeferredTestScene() {
     //dtor
 }
+ 

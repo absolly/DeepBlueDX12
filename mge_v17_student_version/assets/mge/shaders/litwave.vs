@@ -4,6 +4,7 @@ uniform sampler2D textureWaveMask;
 uniform	mat4 	projectionMatrix;
 uniform	mat4 	viewMatrix;
 uniform	mat4 	modelMatrix;
+uniform mat4	depthBiasMVP;
 uniform vec3    lightPosition[5];
 uniform vec3    lightDirection[5];
 uniform int     lightType[5];
@@ -22,6 +23,7 @@ out vec3 Position_worldspace;
 mat3 TBN;
 out vec3 LightDirection_tangentspace[5];
 out vec3 EyeDirection_tangentspace;
+out vec4 ShadowCoord;
 vec3 LightDirection_cameraspace[5];
 vec3 EyeDirection_cameraspace;
 
@@ -29,10 +31,9 @@ vec3 EyeDirection_cameraspace;
 void main( void ) {
 	vec3 waveSize = vec3(texture(textureWaveMask, uv));
 
-
-
 	vec3 newvertex = vertex + vec3(waveSize.r * cos((_time*0.02)  + (vertex.z * 0.3) + (vertex.y * 0.5)), waveSize.g * cos((_time*0.02) + (vertex.z * 0.0001)),waveSize.b * cos((_time*0.02) + (vertex.z * 0.001)));
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(newvertex, 1.f);
+	ShadowCoord = depthBiasMVP * vec4(newvertex,1);
     texCoord = uv;
 
     vec3 vertexNormal_cameraspace = (viewMatrix * modelMatrix * vec4(normalize(normal),0)).xyz;
