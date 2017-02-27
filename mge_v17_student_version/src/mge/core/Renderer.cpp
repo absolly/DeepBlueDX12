@@ -130,8 +130,8 @@ Renderer::Renderer() {
     glClearColor((float)0x2d/0xff, (float)0x6b/0xff, (float)0xce/0xff, 1.0f );
 
 	_shadowShader = new ShaderProgram();
-	_shadowShader->addShader(GL_VERTEX_SHADER, config::MGE_SHADER_PATH + "ShadowPassthrough.vs");
-	_shadowShader->addShader(GL_FRAGMENT_SHADER, config::MGE_SHADER_PATH + "FragmentDepth.fs");
+	_shadowShader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "ShadowPassthrough.vs");
+	_shadowShader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "FragmentDepth.fs");
 	_shadowShader->finalize();
 }
 

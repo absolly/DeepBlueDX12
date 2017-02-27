@@ -69,7 +69,7 @@ void DeferredTestScene::_initializeScene() {
 
 
     //10 specular teapot material
-    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
+    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
