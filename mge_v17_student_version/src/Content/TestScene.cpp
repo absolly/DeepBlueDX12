@@ -69,13 +69,13 @@ void TestScene::_initializeScene() {
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(config::MGE_TEXTURE_PATH + "white.png"), Texture::load(config::MGE_TEXTURE_PATH + "white.png"));
 
-	GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
+	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
 	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0)); 
 	plane->setMesh(planeMeshDefault);
 	plane->setMaterial(textureMaterial);
 	_world->add(plane);
-
+*/
 	//FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
 	//fishTank->setMesh(smallFish);
 	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);

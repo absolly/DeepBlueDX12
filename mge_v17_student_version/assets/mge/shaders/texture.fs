@@ -31,6 +31,15 @@ vec3 R;
 float cosTheta;
 float cosAlpha;
 float visibility = 1.0;
+float bias = 0.005;//use if shadow acne is a problem
+
+vec2 poissonDisk[4] = vec2[](
+  vec2( -0.94201624, -0.39906216 ),
+  vec2( 0.94558609, -0.76890725 ),
+  vec2( -0.094184101, -0.92938870 ),
+  vec2( 0.34495938, 0.29387760 )
+);
+
 vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
@@ -94,16 +103,11 @@ void main( void ) {
 	float distance;
 	float falloff;
 
-	if(isnan(ShadowCoord.z)){
-		fragment_color = vec4(1,0,0,1);
-		return;
-	}
 
-	if ( texture( shadowMap, ShadowCoord.xy ).z  <  ShadowCoord.z){
-		visibility = 0.5f;
-		if(texture( shadowMap, ShadowCoord.xy ).z == 0){
-			fragment_color = vec4(1,1,0,1);
-			return;
+
+	for (int i=0;i<4;i++){
+		if ( texture( shadowMap, ShadowCoord.xy + poissonDisk[i]/700.0 ).z  <  ShadowCoord.z ){
+			visibility-=0.2;
 		}
 	}
 

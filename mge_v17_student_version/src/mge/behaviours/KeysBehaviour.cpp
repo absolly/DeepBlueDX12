@@ -27,7 +27,7 @@ void KeysBehaviour::update( float pStep )
 	if ( sf::Keyboard::isKeyPressed( sf::Keyboard::Left )) {
 		turnSpeed = +_turnSpeed;
 	}
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)){
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt)){
         flySpeed = -_flySpeed;
 	}
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)){

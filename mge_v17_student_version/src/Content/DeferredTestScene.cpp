@@ -132,12 +132,11 @@ void DeferredTestScene::_initializeScene() {
 
     camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, player));
 
-
 	glm::vec3* lightColor = new glm::vec3(127,239,217);
 	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,5,0), *lightColor, 1, glm::vec3(0, 0, 1));
 	light->setMesh(cubeMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
-	light->rotate(-90, glm::vec3(1, 0, 0));
+	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
 	//light->addBehaviour(new LookAt(glm::vec3(0,0,0)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
@@ -150,14 +149,14 @@ void DeferredTestScene::_initializeScene() {
 
 void DeferredTestScene::_render() {
     AbstractGame::_render();
-	_updateHud();
 	AbstractGame::_renderToQuad();
+	_updateHud();
 }
 
 void DeferredTestScene::_updateHud() {
     string debugInfo = "";
     debugInfo += string ("FPS:") + std::to_string((int)_fps)+"\n";
-
+	
     _hud->setDebugInfo(debugInfo);
     _hud->draw();
 }
@@ -165,3 +164,4 @@ void DeferredTestScene::_updateHud() {
 DeferredTestScene::~DeferredTestScene() {
     //dtor
 }
+ 

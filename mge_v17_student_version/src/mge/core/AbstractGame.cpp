@@ -175,17 +175,16 @@ void AbstractGame::_update(float pStep) {
 
 void AbstractGame::_render () {
 
-	glm::vec3 lightInvDir = glm::vec3(0.5f, 2, 2);
+	glm::vec3 lightInvDir = glm::vec3(0.1f, 1, 0.1f);
 
 	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 20);
-	glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 10, 0), glm::vec3(0, 1, 0));
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -10, 20);
+	glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glm::mat4 depthModelMatrix = glm::mat4(1.0);
 	//for (Light* light : World::activeLights) {
 	//	if (light->type = Light::DIRECTIONAL) {
 	//		depthViewMatrix = glm::inverse(light->getWorldTransform());
 	//	}
-
 	//}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->ShadowBuffer);
@@ -196,7 +195,7 @@ void AbstractGame::_render () {
 	// which are already separated from the front faces by a small distance 
 	// (if your geometry is made this way)
 	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK); // Cull back-facing triangles -> draw only front-facing triangles
+	glCullFace(GL_FRONT); // Cull front-facing triangles -> draw only back-facing triangles
 
 						 // Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,6 +211,7 @@ void AbstractGame::_render () {
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->FramebufferName);
 	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glCullFace(GL_BACK);
     _renderer->render(_world);
 }
 
