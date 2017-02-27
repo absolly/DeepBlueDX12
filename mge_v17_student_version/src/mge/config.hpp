@@ -5,6 +5,7 @@
 #include <fstream>
 #include <unordered_map>
 #include "Content\Core\EventHandler.h"
+#include "glm.hpp"
 
 class Config 
 {
@@ -23,6 +24,9 @@ public:
 	static void updateValue(std::string key, bool& defaultValue);
 	static void updateValue(std::string key, double& defaultValue);
 	static void updateValue(std::string key, int& defaultValue);
+	static void updateValue(std::string key, glm::vec3 & defaultValue);
+	static void updateValue(std::string key, glm::vec4 & defaultValue);
+
 
 private:
 	static void updateFromConfig();

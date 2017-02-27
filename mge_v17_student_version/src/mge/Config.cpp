@@ -30,11 +30,13 @@ void Config::updateFromConfig()
 		std::istringstream iss(line);
 		std::string key;
 		std::string value;
-		if (!(iss >> key >> value) || key[0] == '[' || key[0] == '/')
+		if (!(iss >> key) || key[0] == '[' || key[0] == '/')
 		{
 			std::cout << "----- " << key << " -----" << std::endl;
 			continue;
 		}
+		getline(iss, value);
+		value = value.substr(1);
 		std::cout << key << " = " << value << std::endl;
 		_loadedConfigVaraibles[key] = value;
 	}
@@ -77,4 +79,31 @@ void Config::updateValue(std::string key, double& defaultValue)
 void Config::updateValue(std::string key, int& defaultValue)
 {
 	defaultValue = std::stoi(tryGetValue(key, std::to_string(defaultValue)));
+}
+void Config::updateValue(std::string key, glm::vec3& defaultValue)
+{
+	std::string input = tryGetValue(key, glm::to_string(defaultValue));
+	std::istringstream ss(input.substr(5));
+	std::string token;
+	std::getline(ss, token, ',');
+	defaultValue.x = std::stof(token);
+	std::getline(ss, token, ',');
+	defaultValue.y = std::stof(token);
+	std::getline(ss, token, ')');
+	defaultValue.z = std::stof(token);
+}
+void Config::updateValue(std::string key, glm::vec4& defaultValue)
+{
+	std::string input = tryGetValue(key, glm::to_string(defaultValue));
+	std::istringstream ss(input.substr(5));
+	std::string token;
+	std::getline(ss, token, ',');
+	defaultValue.x = std::stof(token);
+	std::getline(ss, token, ',');
+	defaultValue.y = std::stof(token);
+	std::getline(ss, token, ',');
+	defaultValue.z = std::stof(token);
+	std::getline(ss, token, ')');
+	defaultValue.w = std::stof(token);
+	
 }
