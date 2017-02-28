@@ -15,6 +15,7 @@ RigidBody& Collider::makeRigidBody(float mass, btVector3& inertia, btDefaultMoti
 	RigidBody& rigidBody = *new RigidBody(*this, mass, &defaultMotionState, inertia);
 	_owner->addBehaviour(&rigidBody);
 	_usePhysicsPosition = true;
+	_hasRigidbody = true;
 	return rigidBody;
 }
 

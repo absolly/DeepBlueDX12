@@ -25,12 +25,14 @@ CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shap
 	_collisionShape = shape;
 	setCollisionShape(_collisionShape);
 	_isTrigger = isTrigger;
+	_isStatic = isStatic;
 	_usePhysicsPosition = usePhysicsPosition;
 	if (isTrigger)
 	{
 		setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	}
-	_physicsWorld->addCollisionObject(this, isStatic ? COL_STATIC : COL_DYNAMIC, isStatic ? COL_DYNAMIC : COL_STATIC);
+
+	_physicsWorld->addCollisionObject(this, isStatic ? COL_STATIC : COL_DYNAMIC, isStatic ? COL_DYNAMIC : (COL_STATIC | COL_DYNAMIC));
 	_owner = &owner;
 	updatePositon();
 	updateScale();
@@ -50,10 +52,10 @@ void CollisionBehaviour::updatePositon()
 }
 void CollisionBehaviour::update(float pStep)
 {
-	if (_usePhysicsPosition)
+	if (!_isStatic && !_hasRigidbody)
 	{
-		//updateScale();
-		//updatePositon();
+		updateScale();
+		updatePositon();
 	}
 	if (_isTrigger)
 	{
@@ -103,17 +105,20 @@ void CollisionBehaviour::checkForCollisions()
 					
 					btCollisionObject* obA = const_cast<btCollisionObject*>(manifold->getBody0());
 					btCollisionObject* obB = const_cast<btCollisionObject*>(manifold->getBody1());
+
+					btCollisionObject* collidingWith = isFirstBody ? obB : obA;
+					btCollisionObject* self = isFirstBody ? obA : obB;
 					//Collision Enter
-					if (_collidingObjects.find(obB) == _collidingObjects.end())
+					if (_collidingObjects.find(collidingWith) == _collidingObjects.end())
 					{
-						_collidingObjects.insert(obB);
-						if (collisionEnterEvents.find(obB) != collisionEnterEvents.end())
-							collisionEnterEventsToExecute.push_back(OnCollisionArgs(obA, obB));
+						_collidingObjects.insert(collidingWith);
+						if (collisionEnterEvents.find(collidingWith) != collisionEnterEvents.end())
+							collisionEnterEventsToExecute.push_back(OnCollisionArgs(self, collidingWith));
 					}
 					//Collision Continuous
-					thisCheckCollidingObjects.insert(obB);
-					if (collisionEvents.find(obB) != collisionEvents.end())
-						collisionEnterEventsToExecute.push_back(OnCollisionArgs(obA, obB));
+					thisCheckCollidingObjects.insert(collidingWith);
+					if (collisionEvents.find(collidingWith) != collisionEvents.end())
+						collisionEventsToExecute.push_back(OnCollisionArgs(self, collidingWith));
 					//std::cout << "COLLISION" << std::endl;
 					// handle collisions here
 				}
@@ -133,16 +138,19 @@ void CollisionBehaviour::checkForCollisions()
 	for each (OnCollisionArgs onCollisionArgs in collisionEnterEventsToExecute)
 	{
 		std::cout << "COLLISION ENTER" << onCollisionArgs.collidingWith << std::endl;
-		collisionEnterEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
+		if (collisionEnterEvents.find(onCollisionArgs.collidingWith) != collisionEnterEvents.end())
+			collisionEnterEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
 	}
 	for each (OnCollisionArgs onCollisionArgs in collisionEventsToExecute)
 	{
-		collisionEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
+		if (collisionEvents.find(onCollisionArgs.collidingWith) != collisionEvents.end())
+			collisionEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
 	}
 	for each (OnCollisionArgs onCollisionArgs in collisionExitEventsToExecute)
 	{
 		std::cout << "COLLISION EXIT" << onCollisionArgs.collidingWith << std::endl;
-		collisionExitEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
+		if (collisionExitEvents.find(onCollisionArgs.collidingWith) != collisionExitEvents.end())
+			collisionExitEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
 	}
 }
 

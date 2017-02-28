@@ -25,6 +25,7 @@
 #include "mge/behaviours/LookAt.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
 #include "mge/behaviours/CopyTargetPositionBehaviour.hpp"
+#include "mge/behaviours/BoatFollowingBehaviour.hpp"
 #include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "mge/util/DebugHud.hpp"
 
@@ -87,7 +88,8 @@ void TestScene::_initializeScene() {
 	LuaParser * luaparser = new LuaParser(_world);
 	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
-	
+
+
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
@@ -103,6 +105,18 @@ void TestScene::_initializeScene() {
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
 
+	//ADDING BOAT FOLLOWING PLAYER
+	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
+	GameObject* boat = new GameObject("Boat");
+	boat->setMesh(boatMesh);
+	boat->setMaterial(textureMaterial);
+	boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
+	float surfaceHeight = 750;
+	boat->addBehaviour(new BoatFollowingBehaviour(player, surfaceHeight));
+	boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
+	
+	_world->add(boat);
+	//ADDING BOAT FOLLOWING PLAYER
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
@@ -139,7 +153,6 @@ void TestScene::_initializeScene() {
 		_world->add(teapot);
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}
-
 
 	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3());
 	light3->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
