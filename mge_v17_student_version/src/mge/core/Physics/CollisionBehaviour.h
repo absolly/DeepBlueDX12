@@ -39,4 +39,5 @@ protected:
 	bool _hasRigidbody = false;
 	bool _isTrigger = false;
 	bool _usePhysicsPosition = false;
+	bool _isStatic = false;
 };

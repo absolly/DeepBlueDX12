@@ -50,6 +50,7 @@
     <ClCompile Include="src\Content\Behaviours\DivingBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\CopyTargetPositionBehaviour.cpp" />
     <ClCompile Include="src\mge\Config.cpp" />
+    <ClCompile Include="src\mge\behaviours\BoatFollowingBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -105,6 +106,7 @@
     <ClInclude Include="src\mge\core\Physics\Colliders\CapsuleCollider.h" />
     <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
     <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
+    <ClInclude Include="src\mge\behaviours\BoatFollowingBehaviour.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

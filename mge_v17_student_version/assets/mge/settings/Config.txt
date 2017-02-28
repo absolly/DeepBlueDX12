@@ -1,6 +1,6 @@
 _minMoveSpeed -13.000000
-_maxMoveSpeed 205.000000
-_moveAcceleration 400.000000
+_maxMoveSpeed 250.000000
+_moveAcceleration 40.000000
 _moveDecceleration 40.000000
 _minSideMoveSpeed -10.000000
 _maxSideMoveSpeed 10.000000
