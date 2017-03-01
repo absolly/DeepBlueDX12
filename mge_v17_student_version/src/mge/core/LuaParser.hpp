@@ -11,9 +11,11 @@
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/core/Camera.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
+#include "mge/core/LuaScriptParser.hpp"
 
 #include "mge/core/world.hpp"
 #include "mge/core/Mesh.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
 #include <string>
 
 
@@ -28,6 +30,10 @@ class LuaParser {
         void loadFile(const char* pFileName);
         void update(float pStep);
         bool hitTest(GameObject* objectA, GameObject* objectB);
+		LuaScriptParser * scriptParser;
+		void setPlayerRigidBody(RigidBody& pRigidBody);
+
+
     private:
         struct collisionListener {
             //constructor
@@ -54,6 +60,8 @@ class LuaParser {
 		int createFish(lua_State * lua);
 		int addLightAttributes(lua_State * lua);
         int destoryLuaObject(lua_State * lua);
+
+		RigidBody * _playerRigidBody;
 		Mesh* smallFish;
 		AbstractMaterial * gpuinstancing;
         vector<collisionListener> collisionListeners;

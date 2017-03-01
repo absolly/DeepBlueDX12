@@ -9,6 +9,7 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "Content/GameObjects/ParticleSystem.hpp"
 #include "mge/core/GameObject.hpp"
+#include "Content\GameObjects\Particle.hpp"
 #include "mge/materials/TextureMaterial.hpp"
 
 ParticleSystem::ParticleSystem(glm::vec3 pPosition, std::string pName) : GameObject(pName ,pPosition)
@@ -30,7 +31,7 @@ void ParticleSystem::update(float pStep)
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
-	uniform_int_distribution<> dis(1, 10);
+	uniform_int_distribution<> dis(0, 1000);
 
 	if(particles.size() < 2000)
 	{
@@ -42,16 +43,19 @@ void ParticleSystem::update(float pStep)
 			}
 			else
 			{
-				GameObject * particle = new GameObject("particle", glm::vec3(_startPosition.x + (dis(gen) / 5), _startPosition.y + (dis(gen) / 5), _startPosition.z + (dis(gen) / 5)));
+				GameObject * particle = new Particle(glm::vec3(_startPosition.x, _startPosition.y, _startPosition.z),"particle", glm::vec3(dis(gen) / 100000.0f,0.1f, dis(gen) / 100000.0f),duration, this, _currentIndex);
 				particles.push_back(particle);
+				_currentIndex++;
 			}
 		}
 	}
 
-	for (int i = 0; i < particles.size(); i++)
-	{
-		particles[i]->translate(glm::vec3(0, 0.1f, 0));
+	for (GameObject * partic : particles) {
+		if(partic != nullptr)
+			partic->update(0);
 	}
+
+	
 }
 
 std::vector<GameObject *> ParticleSystem::GetParticles()

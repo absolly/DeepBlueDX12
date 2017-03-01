@@ -23,7 +23,6 @@ class BillBoardMaterial : public AbstractMaterial
 
 	virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
 
-
     private:
 
 	int _listSize = 0;

@@ -15,7 +15,7 @@ LuaParser::LuaParser(World* pWorld) {
     lua = luaL_newstate();
     luaL_openlibs(lua);
 
-	smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
+	smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 	//gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
 
 
@@ -367,6 +367,8 @@ int LuaParser::createObject(lua_State * lua) {
 	string meshName = lua_tostring(lua, -17);
 	string name = lua_tostring(lua, -18);
 
+	std::cout << "created " << name << std::endl;
+
 	GameObject* go = new GameObject(name, glm::vec3(0, 0, 0));
 	go->setTransform(glm::transpose(glm::mat4(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, -m34, m41, m42, m43, m44)));
 	std::cout << meshName << std::endl;
@@ -377,8 +379,8 @@ int LuaParser::createObject(lua_State * lua) {
 	go->setMesh(gameObjectMesh);
 	go->setMaterial(colorMat);
 	_currentGameObject = go;
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks" + ".jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
-	_currentGameObject->setMaterial(textureMaterial);
+	AbstractMaterial* purpleColor = new ColorMaterial(glm::vec3(1, 0, 1));
+	_currentGameObject->setMaterial(purpleColor);
 	_world->add(go);
 
 	std::cout << "Create Object: " << meshName << std::endl;
@@ -390,10 +392,38 @@ int LuaParser::createObject(lua_State * lua) {
     return 1;
 }
 
-int LuaParser::addMaterial(lua_State * lua){ 
-	string image = lua_tostring(lua, -1);
+void LuaParser::setPlayerRigidBody(RigidBody &pRigidbody)
+{
+	_playerRigidBody = &pRigidbody;
+}
 
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
+int LuaParser::addMaterial(lua_State * lua){ 
+	string image = lua_tostring(lua, -4);
+	string normalMap = lua_tostring(lua, -3);
+	string SpecularMap = lua_tostring(lua, -2);
+	float SpecularMultiplier = lua_tonumber(lua, -1);
+
+	AbstractMaterial* textureMaterial;
+
+	if (normalMap == "null" && SpecularMap == "null")
+	{
+		textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier);
+	}
+	else
+	{
+		if (normalMap == "null" && SpecularMap != "null")
+		{
+			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + "white" + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".png"));
+		}
+		else if (normalMap != "null" && SpecularMap == "null")
+		{
+			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"));
+		}
+		else
+		{
+			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".png"));
+		}
+	}
 
 	_currentGameObject->setMaterial(textureMaterial);
 
@@ -402,8 +432,8 @@ int LuaParser::addMaterial(lua_State * lua){
 int LuaParser::addMeshCollider(lua_State * lua){
 	string collider = lua_tostring(lua, -2);
 		
-	_currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), false, true);
-	
+	Collider& objectCollider = _currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), true, true);
+	objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
 	return 1;
 }

@@ -18,12 +18,13 @@ public:
 
 private:
 	int _spawnRate = 0;
+	int _currentIndex = 0;
 	std::vector<GameObject*> particles;
 	glm::vec3 direction;
 	glm::vec3 startScaleSize;
 	glm::vec3 endScaleSize;
 	glm::vec3 _startPosition;
-	float duration;
+	float duration = 100;
 	void update(float pStep);
 
 };
