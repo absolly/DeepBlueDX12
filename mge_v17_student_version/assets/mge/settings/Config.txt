@@ -19,3 +19,17 @@ _maxRollRotationSpeed 50.000000
 _maxRollRotation 10.000000
 _rollRotationSpeedMultiplier 20.000000
 Test vec4(1.412000, 12312.000000, 12392.220703, 2102.139893)
+fishModel MantaRay.obj
+fishTexture bricks.jpg
+fishMovementMap RayAnimUV.png
+fishNormal BricksNormal.png
+fishSpecular black.png
+groundModel plane.obj
+groundTexture beachsand.jpg
+groundNormal BricksNormal.png
+groundSpecular black.png
+groundTiling 1.000000
+playerModel cube_flat.obj
+playerTexture bricks.jpg
+playerNormal BricksNormal.png
+playerSpecular black.png

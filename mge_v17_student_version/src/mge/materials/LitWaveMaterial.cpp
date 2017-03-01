@@ -5,6 +5,7 @@
 #include "mge/core/Mesh.hpp"
 #include "mge/core/GameObject.hpp"
 #include "mge/core/Light.hpp"
+#include "mge/core/Renderer.hpp"
 
 
 ShaderProgram* LitWaveMaterial::_shader = NULL;
@@ -56,6 +57,11 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glBindTexture(GL_TEXTURE_2D, _normalTexture->getId());
     glUniform1i (_shader->getUniformLocation("textureNormal"), 3);
 
+	//setup texture slot 4
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, Renderer::shadowDepthTexture);
+	glUniform1i(_shader->getUniformLocation("shadowMap"), 4);
+
 
 
 
@@ -76,23 +82,22 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 		0.5, 0.5, 0.5, 1.0
 	);
 	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-600, 600, -600, 600, -600, 600);
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
 	glm::mat4 depthViewMatrix;
 
-    int i = 0;
-    for(Light* light : World::activeLights) {
+	int i = 0;
+	for (Light* light : World::activeLights) {
 		if (light->type == Light::DIRECTIONAL) {
 			depthViewMatrix = glm::inverse(light->getWorldTransform());
 		}
-        lightPosition[i] = light->getWorldPosition();
-        lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
-        lightColor[i] = light->getColor();
-        lightType[i] = ((int)light->type);
-        lightFalloff[i] = light->falloff;
-        lightIntensity[i] = light->intensity;
-        i++;
-    }
-
+		lightPosition[i] = light->getWorldPosition();
+		lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
+		lightColor[i] = light->getColor();
+		lightType[i] = ((int)light->type);
+		lightFalloff[i] = light->falloff;
+		lightIntensity[i] = light->intensity;
+		i++;
+	}
 
 	glm::mat4 depthBiasMVP = biasMatrix * depthProjectionMatrix * depthViewMatrix * pModelMatrix;
 

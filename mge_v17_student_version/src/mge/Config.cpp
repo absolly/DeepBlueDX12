@@ -59,7 +59,7 @@ std::string Config::tryGetValue(std::string key, std::string defaultValue)
 
 void Config::updateValue(std::string key, std::string& defaultValue)
 {
-	defaultValue = std::stof(tryGetValue(key, defaultValue));
+	defaultValue = (tryGetValue(key, defaultValue));
 }
 void Config::updateValue(std::string key, float& defaultValue)
 {
