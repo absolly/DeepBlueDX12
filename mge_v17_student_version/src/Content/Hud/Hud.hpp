@@ -1,9 +1,10 @@
-#ifndef DEBUGHUD_H
-#define DEBUGHUD_H
+#pragma once
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <unordered_map>
+#include "Content\Inventory\Inventory.h"
+#include "mge\materials\HUDMaterial.hpp"
 
 class HudSprite;
 
@@ -16,7 +17,7 @@ class Hud
 		virtual ~Hud();
 		void draw();
 
-		void drawImage(int x, int y, std::string* image, bool useSpritesPath = true);
+		void drawImage(int x, int y, HudSprite& hudSprite);
 		void drawText(int x, int y, std::string* text);
 
 		void setDebugInfo (std::string pInfo);
@@ -26,7 +27,9 @@ class Hud
 
 		sf::RenderWindow * _window;
 
+		HUDMaterial* _hudMaterial;
         std::string _debugInfo;
+		Inventory& _inventory;
 
         sf::Font _font;
         sf::Text _debugText;
@@ -40,5 +43,3 @@ class Hud
 		std::unordered_map<sf::Sprite*, int> _spriteConnectionCount;
 		std::unordered_map<std::string, sf::Sprite*> _spriteCache;
 };
-
-#endif // DEBUGHUD_H

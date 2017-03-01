@@ -13,7 +13,13 @@ Hud* Hud::getInstance()
 	return _instance;
 }
 
-Hud::Hud( sf::RenderWindow * aWindow ): _window( aWindow ), _debugInfo(), _font(), _debugText()
+Hud::Hud( sf::RenderWindow * aWindow ): 
+	_window( aWindow ), 
+	_debugInfo(), 
+	_font(), 
+	_debugText(),
+	_inventory(*new Inventory(*aWindow)),
+	_hudMaterial(new HUDMaterial())
 {
 	_instance = this;
 	assert ( _window != NULL );
@@ -45,42 +51,23 @@ void Hud::setDebugInfo(std::string pInfo) {
 
 void Hud::draw()
 {
-	//glDisable( GL_CULL_FACE );
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+	//_hudMaterial->render();
 
-    _window->pushGLStates();
-	
+	_window->pushGLStates();
+
+	_inventory.draw(*_window);
     _window->draw(_debugText);
-	
+
 	_window->popGLStates();
 
 }
 
-void Hud::drawImage(int x, int y, std::string* imageWithExtension, bool useSpritesPath)
-{
-	sf::Sprite* sprite;
-
-	if (_spriteCache.find(*imageWithExtension) != _spriteCache.end())
-	{
-		sprite = _spriteCache[*imageWithExtension];
-		if (_stringPointersToSprites.find(imageWithExtension) == _stringPointersToSprites.end())
-		{
-			_stringPointersToSprites[imageWithExtension] = sprite;
-			_spriteConnectionCount[sprite] += 1;
-		}
-	}
-	else
-	{
-		sf::Texture& texture = *new sf::Texture();
-		texture.loadFromFile(Config::MGE_TEXTURE_PATH + *imageWithExtension);
-		sprite = new sf::Sprite(texture);
-		_spriteCache[*imageWithExtension] = sprite;
-		_stringPointersToSprites[imageWithExtension] = sprite;
-		_spriteConnectionCount[sprite] = 1;
-	}
-	
-	_window->draw(*sprite);
+void Hud::drawImage(int x, int y, HudSprite& hudSprite)
+{	
+	hudSprite.setPosition(x, y);
+	_window->draw(hudSprite);
 }
 
 void Hud::drawText(int x, int y, std::string* text)

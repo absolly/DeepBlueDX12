@@ -53,6 +53,8 @@
     <ClCompile Include="src\mge\behaviours\BoatFollowingBehaviour.cpp" />
     <ClCompile Include="src\Content\Hud\Hud.cpp" />
     <ClCompile Include="src\Content\Hud\HudSprite.cpp" />
+    <ClCompile Include="src\Content\Inventory\Inventory.cpp" />
+    <ClCompile Include="src\mge\materials\HUDMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -111,6 +113,9 @@
     <ClInclude Include="src\mge\behaviours\BoatFollowingBehaviour.hpp" />
     <ClInclude Include="src\Content\Hud\Hud.hpp" />
     <ClInclude Include="src\Content\Hud\HudSprite.h" />
+    <ClInclude Include="src\Content\Inventory\Inventory.h" />
+    <ClInclude Include="src\mge\materials\HUDMaterial.hpp" />
+    <ClInclude Include="src\Content\Core\EventNoArgs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

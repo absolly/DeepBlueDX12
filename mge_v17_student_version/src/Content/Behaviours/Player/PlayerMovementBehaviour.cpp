@@ -14,7 +14,7 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_currentMoveSpeed = 0;
 
 	updateFromConfig();
-	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::onConfigUpdatedEvent);
+	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::updateFromConfig);
 }
 
 void PlayerMovementBehaviour::updateFromConfig()
@@ -44,11 +44,6 @@ void PlayerMovementBehaviour::updateFromConfig()
 	Config::updateValue("_maxRollRotationSpeed", _maxRollRotationSpeed);
 	Config::updateValue("_maxRollRotation", _maxRollRotation);
 	Config::updateValue("_rollRotationSpeedMultiplier", _rollRotationSpeedMultiplier);
-}
-
-void PlayerMovementBehaviour::onConfigUpdatedEvent(bool update)
-{
-	updateFromConfig();
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()

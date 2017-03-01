@@ -15,7 +15,7 @@ LuaParser::LuaParser(World* pWorld) {
     lua = luaL_newstate();
     luaL_openlibs(lua);
 
-	smallFish = Mesh::load(config::MGE_MODEL_PATH + "fishLP.obj");
+	smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 	//gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
 
 

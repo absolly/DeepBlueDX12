@@ -5,6 +5,7 @@
 #include <fstream>
 #include <unordered_map>
 #include "Content\Core\EventHandler.h"
+#include "Content\Core\EventNoArgs.h"
 #include "glm.hpp"
 
 class Config 
@@ -16,7 +17,8 @@ public:
 	static std::string MGE_FONT_PATH;// = "mge/fonts/";
 	static std::string MGE_LEVEL_PATH;// = "mge/levels/";
 	static std::string MGE_SETTINGS_PATH;// = "mge/settings/";
-	static Event<bool> onConfigUpdated;
+	static std::string MGE_SPRITES_PATH;// = "mge/sprites/";
+	static EventNoArgs onConfigUpdated;
 
 	static std::string tryGetValue(std::string key, std::string defaultValue);
 	static void updateValue(std::string key, std::string& defaultValue);

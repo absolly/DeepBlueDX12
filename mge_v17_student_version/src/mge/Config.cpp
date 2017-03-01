@@ -10,7 +10,8 @@ std::string Config::MGE_SHADER_PATH = "mge/shaders/";
 std::string Config::MGE_FONT_PATH = "mge/fonts/";
 std::string Config::MGE_LEVEL_PATH = "mge/levels/";
 std::string Config::MGE_SETTINGS_PATH = "mge/settings/";
-Event<bool> Config::onConfigUpdated;
+std::string Config::MGE_SPRITES_PATH = "mge/sprites/";
+EventNoArgs Config::onConfigUpdated;
 
 std::unordered_map<std::string, std::string> Config::_loadedConfigVaraibles = std::unordered_map<std::string, std::string>();
 Config::_init Config::_initializer;
@@ -42,7 +43,7 @@ void Config::updateFromConfig()
 	}
 	infile.close();
 	std::cout << "------ UPDATING CONFIG ------" << std::endl << std::endl;
-	onConfigUpdated(true);
+	onConfigUpdated();
 }
 
 std::string Config::tryGetValue(std::string key, std::string defaultValue)
@@ -59,7 +60,7 @@ std::string Config::tryGetValue(std::string key, std::string defaultValue)
 
 void Config::updateValue(std::string key, std::string& defaultValue)
 {
-	defaultValue = std::stof(tryGetValue(key, defaultValue));
+	defaultValue = tryGetValue(key, defaultValue);
 }
 void Config::updateValue(std::string key, float& defaultValue)
 {
