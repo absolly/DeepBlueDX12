@@ -90,7 +90,8 @@ void TestScene::_initializeScene() {
 	LuaParser * luaparser = new LuaParser(_world);
 	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
-
+	GameObject* sea = new GameObject("sea", glm::vec3(0,720,0));
+	sea->addCollider(BoxColliderArgs(btVector3(1000, 1, 1000)), false, true);
 
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
@@ -100,7 +101,8 @@ void TestScene::_initializeScene() {
 	//_world->add(camera);
 	playerDivingAnimationContainer->add(player);
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
-	player->addBehaviour(new DivingBehaviour());
+	DivingBehaviour* divingBehaviour = new DivingBehaviour();
+	player->addBehaviour(divingBehaviour);
 	btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
 
 	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
@@ -117,6 +119,8 @@ void TestScene::_initializeScene() {
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player));
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
+	Collider& boatTriggerCollider = boat->addCollider(SphereColliderArgs(1000), true, false);
+	boatTriggerCollider.collisionEvents[&playerRigidbody].bind(divingBehaviour, &DivingBehaviour::onCollisionAddAir);
 	
 	_world->add(boat);
 	//ADDING BOAT FOLLOWING PLAYER
