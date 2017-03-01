@@ -71,6 +71,7 @@ void TestScene::_initializeScene() {
 	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane.obj");
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
+	AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png"));
 
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
@@ -108,9 +109,10 @@ void TestScene::_initializeScene() {
 
 	//ADDING BOAT FOLLOWING PLAYER
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
-	GameObject* boat = new GameObject("Boat", glm::vec3(0,750,0));
+	GameObject* boat = new GameObject("Boat", glm::vec3(0,720,0));
 	boat->setMesh(boatMesh);
 	boat->setMaterial(textureMaterial);
+	//boat->scale(glm::vec3(0.1));
 	//boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player));
@@ -156,7 +158,7 @@ void TestScene::_initializeScene() {
 	}
 
 	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3());
-	light3->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
+	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player));
 	_world->add(light3);
 }
@@ -175,7 +177,6 @@ void TestScene::_render() {
 void TestScene::_updateHud() {
 	string debugInfo = "";
 	debugInfo += string("FPS:") + std::to_string((int)_fps) + "\n";
-
 	_hud->setDebugInfo(debugInfo);
 	_hud->draw();
 }

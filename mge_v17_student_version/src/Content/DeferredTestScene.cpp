@@ -57,22 +57,53 @@ void DeferredTestScene::_initializeScene() {
     _world->setMainCamera(camera);
 
     //MESHES
+	string fishModel = "MantaRay.obj";
+	Config::updateValue("fishModel", fishModel);
+	string fishTexture = "bricks.jpg";
+	Config::updateValue("fishTexture", fishTexture);
+	string fishMovementMap = "RayAnimUV.png";
+	Config::updateValue("fishMovementMap", fishMovementMap);
+	string fishNormal = "BricksNormal.png";
+	Config::updateValue("fishNormal", fishNormal);
+	string fishSpecular = "black.png";
+	Config::updateValue("fishSpecular", fishSpecular);
+
+	string groundModel = "plane.obj";
+	Config::updateValue("groundModel", groundModel);
+	string groundTexture = "beachsand.jpg";
+	Config::updateValue("groundTexture", groundTexture);
+	string groundNormal = "BricksNormal.png";
+	Config::updateValue("groundNormal", groundNormal);
+	string groundSpecular = "black.png";
+	Config::updateValue("groundSpecular", groundSpecular);
+	float groundTiling = 1;
+	Config::updateValue("groundTiling", groundTiling);
+
+	string playerModel = "cube_flat.obj";
+	Config::updateValue("playerModel", playerModel);
+	string playerTexture = "bricks.jpg";
+	Config::updateValue("playerTexture", playerTexture);
+	string playerNormal = "BricksNormal.png";
+	Config::updateValue("playerNormal", playerNormal);
+	string playerSpecular = "black.png";
+	Config::updateValue("playerSpecular", playerSpecular);
 
     //load a bunch of meshes we will be using throughout this demo
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
-    Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+"plane.obj");
-    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+"cube_flat.obj");
-	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "Creature3_OBJ.obj");
+    Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+ groundModel);
+    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+ playerModel);
+	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + fishModel);
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
 
     //10 specular teapot material
-    AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+"bricks.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_UVanim.png"), 1, 2);
+    AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+ fishTexture), Texture::load(Config::MGE_TEXTURE_PATH + fishMovementMap), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + fishSpecular), Texture::load(Config::MGE_TEXTURE_PATH + fishNormal));
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "beachsand.jpg"), 10, 2, Texture::load(Config::MGE_TEXTURE_PATH + "Missing.jpg"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 
     //SCENE SETUP
     GameObject* plane = new GameObject("plane", glm::vec3(0,-2,0));
@@ -117,7 +148,7 @@ void DeferredTestScene::_initializeScene() {
 
 	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints));
 	teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(textureMaterial2);
+	teapot->setMaterial(waveMaterial);
 	_world->add(teapot);
 	//for (int i = 0; i < 5; i++) {
 	//	for (int j = 0; j < 5; j++) {
