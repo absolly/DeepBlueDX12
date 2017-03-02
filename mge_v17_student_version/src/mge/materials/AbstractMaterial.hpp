@@ -22,7 +22,6 @@ class AbstractMaterial
         AbstractMaterial();
         virtual ~AbstractMaterial();
 		bool isShadowCaster = true;
-		bool depthTest = true;
         /**
          * Render the given mesh.
          */
