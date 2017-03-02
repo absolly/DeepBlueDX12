@@ -109,8 +109,6 @@ void TestScene::_initializeScene() {
 	player->add(camera);
 
 
-
-
 	//LuaParser * luaparser = new LuaParser(_world);
 //	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
@@ -185,9 +183,17 @@ void TestScene::_initializeScene() {
 	_world->add(light3);
 
 
-	GameObject* seaCollider = new GameObject("", glm::vec3(0, 720, 0));
-	seaCollider->addCollider(BoxColliderArgs(500, 1, 500), false, true);
-	_world->add(seaCollider);
+
+	//SEA COLLIDER
+	btCollisionShape* collisionShape = new btStaticPlaneShape(btVector3(0, -1, 0), 1);
+	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+	btRigidBody* rigidBody = new btRigidBody(0, groundMotionState, collisionShape, btVector3(0, 0, 0));
+	btTransform transform = rigidBody->getCenterOfMassTransform();
+	transform.setOrigin(btVector3(0, 720, 0));
+	rigidBody->setCenterOfMassTransform(transform);
+	_world->physics->addRigidBody(rigidBody);
+	//SEA COLLIDER
+
 	GameObject* sea = new GameObject("sea", glm::vec3(0, 720, 0));
 	sea->setMesh(planeMeshDefault);
 	sea->setMaterial(textureMaterial2);

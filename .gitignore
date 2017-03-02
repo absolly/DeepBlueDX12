@@ -43,6 +43,9 @@ $RECYCLE.BIN/
 *.out
 *.app
 
+# Visual studio
+*.db
+*.suo
 
 ### CodeBlocks ###
 # specific to CodeBlocks IDE
