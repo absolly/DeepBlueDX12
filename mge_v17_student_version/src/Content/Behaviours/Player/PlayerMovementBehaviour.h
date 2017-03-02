@@ -2,6 +2,7 @@
 
 #include "mge\behaviours\AbstractBehaviour.hpp"
 #include "SFML\Window.hpp"
+#include "mge\materials\TextureMaterial.hpp" 
 class GameObject;
 class Player;
 
@@ -60,6 +61,14 @@ private:
 	GameObject* _aimPoint;
 	sf::Vector2f _aimPointPosition;
 	sf::Vector2i _previousMousePosition;
+	
+	glm::mat4 _scooterOffsetMat = glm::mat4(1.0f);
+
+	AbstractMaterial* _diveScooterMaterial;
+	GameObject* _diveScooter;
+	bool _scooterEnquiped = true;
+	void UnenquipScooter();
+	void EnquipScooter();
 
 	float moveTowards(float current, float target, float speed);
 };
