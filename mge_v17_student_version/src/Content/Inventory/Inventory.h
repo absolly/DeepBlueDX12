@@ -9,7 +9,7 @@ public:
 	void updateFromConfig();
 	~Inventory();
 
-	void draw(sf::RenderWindow& renderWindow);
+	void draw();
 
 private:
 	sf::RenderWindow& _window;
@@ -17,5 +17,6 @@ private:
 	HudSprite _inventoryBackgroundSprite;
 	HudSprite _inventorySlotBackgroundSprite;
 
-	int inventorySlots = 5;
+	int _inventorySlots = 5;
+	float _inventorySlotSpacing = 10;
 };

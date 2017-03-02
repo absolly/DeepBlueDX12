@@ -21,13 +21,28 @@ public:
 	static EventNoArgs onConfigUpdated;
 
 	static std::string tryGetValue(std::string key, std::string defaultValue);
+
 	static void updateValue(std::string key, std::string& defaultValue);
+	static std::string getConfigValue(std::string key, std::string defaultValue);
+	static std::string getConfigValue(std::string key, char defaultValue[]);
+
 	static void updateValue(std::string key, float& defaultValue);
+	static float getConfigValue(std::string key, float defaultValue);
+
 	static void updateValue(std::string key, bool& defaultValue);
+	static bool getConfigValue(std::string key, bool defaultValue);
+
 	static void updateValue(std::string key, double& defaultValue);
+	static double getConfigValue(std::string key, double defaultValue);
+
 	static void updateValue(std::string key, int& defaultValue);
-	static void updateValue(std::string key, glm::vec3 & defaultValue);
-	static void updateValue(std::string key, glm::vec4 & defaultValue);
+	static int getConfigValue(std::string key, int defaultValue);
+
+	static void updateValue(std::string key, glm::vec3& defaultValue);
+	static glm::vec3 getConfigValue(std::string key, glm::vec3 defaultValue);
+
+	static void updateValue(std::string key, glm::vec4& defaultValue);
+	static glm::vec4 getConfigValue(std::string key, glm::vec4 defaultValue);
 
 
 private:
