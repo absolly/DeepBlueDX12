@@ -20,7 +20,6 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	Mesh* scooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
 
 	_diveScooterMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "color.jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
-	_diveScooterMaterial->depthTest = false;
 
 	_diveScooter = new GameObject("Dive Scooter");
 	_diveScooter->setMesh(scooterMesh);
@@ -199,7 +198,6 @@ void PlayerMovementBehaviour::UnenquipScooter()
 
 	_diveScooter->setParent(_owner->getParent()->getParent()->getParent());
 	_diveScooter->setTransform(temp);
-	_diveScooterMaterial->depthTest = true;
 	_scooterEnquiped = false;
 }
 
@@ -209,7 +207,6 @@ void PlayerMovementBehaviour::EnquipScooter()
 	if (length(distance) < 5) {
 		_diveScooter->setParent(_owner);
 		_diveScooter->setTransform(_scooterOffsetMat);
-		_diveScooterMaterial->depthTest = false;
 		_scooterEnquiped = true;
 	}
 }
