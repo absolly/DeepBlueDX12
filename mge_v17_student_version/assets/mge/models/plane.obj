@@ -1,22 +1,20 @@
-# This file uses centimeters as units for non-parametric coordinates.
+# This file uses meters as units for non-parametric coordinates.
 
-mtllib plane.mtl
+mtllib Plane.mtl
 g default
-v  -1.0  0.0  1.0
-v   1.0  0.0  1.0
-v   1.0  0.0 -1.0
-v  -1.0  0.0 -1.0
-vt 0.0 0.0
-vt 1.0 0.0
-vt 1.0 1.0
-vt 0.0 1.0
-vn 0.0 1.0 0.0
-vn 0.0 1.0 0.0
-vn 0.0 1.0 0.0
-vn 0.0 1.0 0.0
-s 1
-g pPlane1
-usemtl initialShadingGroup
-f 1/1/1 2/2/2 3/3/3
-f 3/3/3 4/4/4 1/1/1
-
+v -41258.628906 199.167542 41258.628906
+v 41258.628906 199.167542 41258.628906
+v -41258.628906 199.167542 -41258.628906
+v 41258.628906 199.167542 -41258.628906
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+vn 0.000000 1.000000 0.000000
+vn 0.000000 1.000000 0.000000
+vn 0.000000 1.000000 0.000000
+vn 0.000000 1.000000 0.000000
+s off
+g Plane
+usemtl lambert20SG
+f 1/1/1 2/2/2 4/3/3 3/4/4

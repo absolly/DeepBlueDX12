@@ -146,7 +146,7 @@ void TestScene::_initializeScene() {
 	LuaParser * luaparser2 = new LuaParser(_world);
 	luaparser2->setPlayerRigidBody(playerRigidbody);
 	luaparser2->scriptParser = _scriptParser;
-	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "TriggerTest.lua").c_str());
+	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations

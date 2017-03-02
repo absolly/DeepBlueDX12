@@ -1,0 +1,7 @@
+Compile shaders
+Zet de projection matrix
+Zet deze in de shader (net als bij het licht)
+Lijst met matrix4
+
+Declareer de buffer.. (nog even uitzoeken waar!)
+glbuffer data (aantal objecten * matrix size(memory))
