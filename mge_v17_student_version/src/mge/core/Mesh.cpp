@@ -313,6 +313,8 @@ void Mesh::streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUV
 	if (pUVsAttrib != -1) glDisableVertexAttribArray(pUVsAttrib);
 	if (pNormalsAttrib != -1) glDisableVertexAttribArray(pNormalsAttrib);
 	if (pVerticesAttrib != -1) glDisableVertexAttribArray(pVerticesAttrib);
+	if (pTangentAttrib != -1) glDisableVertexAttribArray(pTangentAttrib);
+	if (pBitangentAttrib != -1) glDisableVertexAttribArray(pBitangentAttrib);
 }
 
 void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib) {
