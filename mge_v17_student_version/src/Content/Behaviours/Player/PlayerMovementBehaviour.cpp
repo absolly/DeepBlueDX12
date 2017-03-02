@@ -59,6 +59,7 @@ void PlayerMovementBehaviour::updateFromConfig()
 	Config::updateValue("_maxRollRotationSpeed", _maxRollRotationSpeed);
 	Config::updateValue("_maxRollRotation", _maxRollRotation);
 	Config::updateValue("_rollRotationSpeedMultiplier", _rollRotationSpeedMultiplier);
+
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
@@ -94,23 +95,27 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
+	if (_scooterEnquiped)
+		_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
-	//Moving sideways
-	float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
-	_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
-	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
-	if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
+	if (!_scooterEnquiped) {
+		//Moving sideways
+		float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
+		_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
+		_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
+		if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
 
+		_currentRoll -= sidewayInput * 5 * deltaTime;
+		_currentRoll = glm::clamp(_currentRoll, -3.0f, 3.0f);
 
-	_currentRoll -= sidewayInput * 5 * deltaTime;
-	_currentRoll = glm::clamp(_currentRoll, -3.0f, 3.0f);
-
-	if (sidewayInput != glm::sign(_currentRoll*-1))
-	{
-		_currentRoll = moveTowards(_currentRoll, 0, 5 *deltaTime);
+		if (sidewayInput != glm::sign(_currentRoll*-1))
+		{
+			_currentRoll = moveTowards(_currentRoll, 0, 5 * deltaTime);
+		}
 	}
+
+
 
 	//Moving up and down
 	float upwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1 : 0);
@@ -127,7 +132,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	glm::mat4x4 scaleMatrix = glm::mat4x4(1);
 	glm::mat4x4 transformedVector = translationMatrix * rotationMatrix * scaleMatrix;;// *originalVector;
-	//_owner->setTransform(transformedVector);
+																					  //_owner->setTransform(transformedVector);
 
 	float totalMoveSpeed = glm::sqrt(glm::pow2(glm::sign(_currentMoveSpeed)) + glm::pow2(glm::sign(_currentMoveSideSpeed)));
 	float multiplier = totalMoveSpeed > 0 ? (1 / totalMoveSpeed) : 0;
@@ -140,7 +145,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 		//rigidBody->translate(btVector3(0, 0.0f, _currentMoveSpeed * multiplier * deltaTime));
 		//rigidBody->translate(btVector3(_currentMoveSideSpeed * multiplier * deltaTime, 0.0f, 0.0f));
 		//rigidBody->setLinearVelocity(btVector3(_currentMoveSideSpeed * multiplier, 0.0f, _currentMoveSpeed * multiplier * 1));
-		
+
 		//std::cout << "totalMoveSpeed: " << rigidBody->getWorldTransform().getOrigin()[0] << " active: " << rigidBody->isActive() << std::endl;
 	}
 	glm::quat glmQuaternion = glm::quat_cast(rotationMatrix);
@@ -179,6 +184,11 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	if (Input::getKeyDown(sf::Keyboard::Right))	_maxSideMoveSpeed += 4;
 	if (Input::getKeyDown(sf::Keyboard::Down))	_maxMoveSpeed -= 4;
 	if (Input::getKeyDown(sf::Keyboard::Up))	_maxMoveSpeed += 4;
+
+	if (_scooterEnquiped && Input::getKeyDown(sf::Keyboard::F))
+		UnenquipScooter();
+	else if (!_scooterEnquiped && Input::getKeyDown(sf::Keyboard::F))
+		EnquipScooter();
 
 }
 
