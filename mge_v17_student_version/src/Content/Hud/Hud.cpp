@@ -57,7 +57,7 @@ void Hud::draw()
 
 	_window->pushGLStates();
 
-	_inventory.draw();
+	//_inventory.draw();
     _window->draw(_debugText);
 
 	_window->popGLStates();
