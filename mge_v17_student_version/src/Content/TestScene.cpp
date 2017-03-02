@@ -63,8 +63,6 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
-
-
 	//add camera first (it will be updated last)
 	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
 	camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -108,6 +106,15 @@ void TestScene::_initializeScene() {
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
 
+	//DIVING SCOOTER
+
+	Mesh* divingScooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
+	GameObject* divingScooter = new GameObject("Diving scooter", glm::vec3(0,200,0));
+	divingScooter->setMesh(divingScooterMesh);
+	divingScooter->setMaterial(textureMaterial);
+	_world->add(divingScooter);
+	//DIVING SCOOTER
+
 
 	//LuaParser * luaparser = new LuaParser(_world);
 //	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
@@ -139,7 +146,7 @@ void TestScene::_initializeScene() {
 	LuaParser * luaparser2 = new LuaParser(_world);
 	luaparser2->setPlayerRigidBody(playerRigidbody);
 	luaparser2->scriptParser = _scriptParser;
-	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "TriggerTest.lua").c_str());
+	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations

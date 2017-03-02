@@ -271,6 +271,7 @@ void Mesh::_buffer() {
 }
 
 void Mesh::streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib) {
+	
 	if (pVerticesAttrib != -1) {
 		glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
 		glEnableVertexAttribArray(pVerticesAttrib);

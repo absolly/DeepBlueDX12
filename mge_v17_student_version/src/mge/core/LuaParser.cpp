@@ -385,10 +385,7 @@ int LuaParser::createObject(lua_State * lua) {
 	std::cout << go->getName() << std::endl;
 
 	std::cout << "Create Object: " << meshName << std::endl;
-	if (meshName == "ShipSide1")
-	{
-		go->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
-	}
+
 
     return 1;
 }
@@ -414,15 +411,15 @@ int LuaParser::addMaterial(lua_State * lua){
 	{
 		if (normalMap == "null" && SpecularMap != "null")
 		{
-			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + "white" + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".png"));
+			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"));
 		}
 		else if (normalMap != "null" && SpecularMap == "null")
 		{
-			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"));
+			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + "white" + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".jpg"));
 		}
 		else
 		{
-			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".png"));
+			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".jpg"));
 		}
 	}
 
@@ -448,7 +445,7 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 	float y = lua_tonumber(lua, -6);
 	float z = lua_tonumber(lua, -5);
 
-	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), isCollider, true);
+	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y/2, z / 2), isCollider, true);
 
 	if (isCollider)
 		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
