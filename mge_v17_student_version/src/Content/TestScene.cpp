@@ -17,7 +17,7 @@
 #include "mge/materials/ColorMaterial.hpp"
 #include "mge/materials/TextureMaterial.hpp"
 #include "mge/materials/WobbleMaterial.hpp"
-#include "mge/materials/LitWaveMaterial.hpp"
+#include "mge/materials/SeaMaterial.hpp"
 #include "mge/materials/GPUinstancingMaterial.hpp"
 
 #include "mge/behaviours/RotatingBehaviour.hpp"
@@ -62,16 +62,18 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
+	
+
 	//add camera first (it will be updated last)
-	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),0.1f,100000.0f));
+	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
 	camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
 	//_world->add(camera);
 	_world->setMainCamera(camera);
 
-	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane.obj");
+	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane_8192.obj");
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
-	AbstractMaterial* textureMaterial2 = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png"));
+	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seatexture.jpg"), 1);
 
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
@@ -86,13 +88,6 @@ void TestScene::_initializeScene() {
 	//fishTank->setMaterial(gpuinstancing);
 	//_world->add(fishTank);
 	
-
-	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
-
-	GameObject* sea = new GameObject("sea", glm::vec3(0,720,0));
-	sea->addCollider(BoxColliderArgs(btVector3(1000, 1, 1000)), false, true);
-
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
@@ -108,6 +103,12 @@ void TestScene::_initializeScene() {
 	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
+
+
+
+
+	LuaParser * luaparser = new LuaParser(_world);
+	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
 
 	//ADDING BOAT FOLLOWING PLAYER
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
@@ -165,6 +166,18 @@ void TestScene::_initializeScene() {
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player));
 	_world->add(light3);
+
+
+	GameObject* seaCollider = new GameObject("", glm::vec3(0, 720, 0));
+	seaCollider->addCollider(BoxColliderArgs(500, 1, 500), false, true);
+	_world->add(seaCollider);
+	GameObject* sea = new GameObject("sea", glm::vec3(0, 720, 0));
+	sea->setMesh(planeMeshDefault);
+	sea->setMaterial(textureMaterial2);
+	sea->scale(glm::vec3(5000, 1, 5000));
+	sea->addBehaviour(new CopyTargetPositionBehaviour(player, glm::vec3(1, 0, 1)));
+	sea->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));
+	_world->add(sea);
 }
 
 void TestScene::_render() {

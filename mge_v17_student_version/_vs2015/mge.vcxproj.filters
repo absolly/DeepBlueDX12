@@ -52,6 +52,7 @@
     <ClCompile Include="src\mge\Config.cpp" />
     <ClCompile Include="src\mge\behaviours\BoatFollowingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
+    <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -109,6 +110,7 @@
     <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\BoatFollowingBehaviour.hpp" />
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
+    <ClInclude Include="src\mge\materials\SeaMaterial.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

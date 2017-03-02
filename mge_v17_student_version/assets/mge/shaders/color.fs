@@ -5,6 +5,7 @@
 uniform vec3 diffuseColor;
 layout (location = 0) out vec4 fragment_color;
 layout (location = 1) out vec4 brightness_color;
+layout (location = 2) out vec3 watermask_color;
 
 void main( void ) {
 	fragment_color = vec4 (diffuseColor,1);
@@ -14,4 +15,6 @@ void main( void ) {
         brightness_color = vec4(fragment_color.rgb, 1.0);
 	else
 		brightness_color = vec4(0,0,0,1);
+
+	watermask_color = vec3(0,0,0);
 }

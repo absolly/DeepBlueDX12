@@ -2,8 +2,6 @@ createObject("polySurface4","polySurface4", -0.09999999,0,0,380,0,0.09999999,0,0
 addMeshCollider("meshCollider",False);
 createObject("pPlane2","pPlane2", 0.09999999,0,0,566,0,0.09999999,0,0,0,0,0.09999999,-83,0,0,0,1);
 addBoxCollider("boxCollider", 47174.26,0,47174.26,-77.70117,243.0393,-39.80273,False);
-createObject("boat_baseTank9","boat_baseTank9", 0.09999999,0,0,627,0,0.09999999,0,721,0,0,0.09999999,-9,0,0,0,1);
-addMeshCollider("meshCollider",False);
 createObject("ShipSide1","ShipSide1", 0.08047886,0.02939878,-0.09256027,1165,-0.03114901,0.1216741,0.01156252,235.9,0.09198596,0.01548115,0.08489671,-47.2,0,0,0,1);
 addMeshCollider("meshCollider",False);
 createObject("Rock1 (7)","Rock1", 0.8245069,0,0,351.5,0,0.5206546,0,193.1,0,0,0.8245069,129.2,0,0,0,1);
