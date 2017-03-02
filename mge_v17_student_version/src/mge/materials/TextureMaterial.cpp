@@ -112,6 +112,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 	glUniformMatrix4fv(_shader->getUniformLocation("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
 	glUniformMatrix4fv(_shader->getUniformLocation("depthBiasMVP"), 1, GL_FALSE, glm::value_ptr(depthBiasMVP));
 
+	//std::cout << "ID HERE FUADnwnow iawndI OawndI nawdi Nawdi Naw::::::::::" << _shader->getAttribLocation("tangent") << std::endl;
     //now inform mesh of where to stream its data
     pMesh->streamToOpenGL(
         _shader->getAttribLocation("vertex"),

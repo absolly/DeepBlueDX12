@@ -14,10 +14,12 @@ void Inventory::updateFromConfig()
 	_inventoryBackgroundSprite.setSpriteName(Config::getConfigValue("InventoryBackground", "InventoryBackground.png"));
 	sf::FloatRect& backgroundBounds = _inventoryBackgroundSprite.getLocalBounds();
 	_inventoryBackgroundSprite.setOrigin(backgroundBounds.width / 2, backgroundBounds.height);
+	_inventoryBackgroundSprite.scale(Config::HUD_SCALE_FACTOR);
 
 	_inventorySlotBackgroundSprite.setSpriteName(Config::getConfigValue("InventorySlotBackground", "InventorySlotBackground.png"));
 	sf::FloatRect& backgroundSlotBounds = _inventorySlotBackgroundSprite.getLocalBounds();
-	_inventorySlotBackgroundSprite.setOrigin(0, backgroundSlotBounds.height);
+	_inventorySlotBackgroundSprite.setOrigin(backgroundSlotBounds.width/2, backgroundSlotBounds.height);
+	_inventorySlotBackgroundSprite.scale(Config::HUD_SCALE_FACTOR);
 
 	Config::updateValue("InventorySlots", _inventorySlots);
 	Config::updateValue("InventorySlotSpacing", _inventorySlotSpacing);
@@ -35,10 +37,12 @@ void Inventory::draw()
 	_inventoryBackgroundSprite.setPosition(windowWidth/2, windowHeight);
 	_window.draw(_inventoryBackgroundSprite);
 
-	float offset = _inventorySlotBackgroundSprite.getLocalBounds().width + _inventorySlotSpacing;
+	float offset = _inventorySlotBackgroundSprite.getGlobalBounds().width + _inventorySlotSpacing;
+
+	float totalWidth = (_inventorySlots-1) * offset;
 	for (int i = 0; i < _inventorySlots; i++)
 	{
-		_inventorySlotBackgroundSprite.setPosition(windowWidth / 2 - (_inventorySlots /2.0f * offset) + i * offset, windowHeight);
+		_inventorySlotBackgroundSprite.setPosition(windowWidth / 2 - (totalWidth/2) + i * offset, windowHeight - 5);
 		_window.draw(_inventorySlotBackgroundSprite);
 	}
 }
