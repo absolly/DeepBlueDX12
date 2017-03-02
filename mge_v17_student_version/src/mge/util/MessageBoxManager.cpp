@@ -31,39 +31,46 @@ void MessageBoxManager::_createDebugHud() {
     _debugText.setFont(_font);
 	_debugText.setCharacterSize(16);
 	_debugText.setFillColor(sf::Color::White);
+	_debugText.setPosition(200, 500);
 
 	_objectiveText.setString("");
 	_objectiveText.setFont(_font);
 	_objectiveText.setCharacterSize(16);
+	_objectiveText.setColor(sf::Color::White);
+	//_objectiveText.setOutlineThickness(3.0f);
+	//_objectiveText.setOutlineColor(sf::Color::Red);
 	_objectiveText.setFillColor(sf::Color::White);
 	_objectiveText.setPosition(10, 100);
 }
 
 void MessageBoxManager::addToQueue(string pInfo) {
-	if (messages.size() < 1)
-	{
-		curTime = MessageTimeFrames;
-	}
-
-	messages.push(pInfo);
+		messages.push(pInfo);
 }
 
 void MessageBoxManager::_checkQueue() {
 	
-	if (curTime < 0 && messages.size() > 0)
-	{
-		messages.pop();
-		curTime = MessageTimeFrames;
-	}
 
-	if (messages.size() > 0)
-	{
-		_debugText.setString(messages.front());
-		_debugText.setPosition(200, 500);
-	}
-
-	curTime--;
+	//if (messages.size() > 0)
+	//{
+	//	messages.pop();
+	//	_debugText.setString(messages.front());
+	//	_debugText.setPosition(200, 500);
+	//}
 }
+
+void MessageBoxManager::drawDirectly(std::string pText)
+{
+	_debugText.setString(pText);
+	_debugText.setPosition(200, 500);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(0);
+
+	_window->pushGLStates();
+		_window->draw(_debugText);
+	_window->popGLStates();
+}
+
 
 void MessageBoxManager::draw()
 {
@@ -83,9 +90,10 @@ void MessageBoxManager::draw()
 }
 
 void MessageBoxManager::drawObjective(std::string pText)
-{
-	_objectiveText.setString(pText);
-	
+{	
+	messages.push(pText);
+
+	_objectiveText.setString(messages.front());
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
@@ -93,5 +101,7 @@ void MessageBoxManager::drawObjective(std::string pText)
 	_window->pushGLStates();
 		_window->draw(_objectiveText);
 	_window->popGLStates();
+
+	messages.pop();
 
 }

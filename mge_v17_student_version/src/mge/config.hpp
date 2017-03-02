@@ -15,6 +15,7 @@ public:
 	static std::string MGE_SHADER_PATH;// = "mge/shaders/";
 	static std::string MGE_FONT_PATH;// = "mge/fonts/";
 	static std::string MGE_LEVEL_PATH;// = "mge/levels/";
+	static std::string MGE_SOUNDS_PATH;// = "mge/sounds/";
 	static std::string MGE_SETTINGS_PATH;// = "mge/settings/";
 	static Event<bool> onConfigUpdated;
 

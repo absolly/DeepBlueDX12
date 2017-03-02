@@ -54,6 +54,7 @@
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
     <ClCompile Include="src\mge\core\LuaScriptParser.cpp" />
     <ClCompile Include="src\mge\util\MessageBoxManager.cpp" />
+    <ClCompile Include="..\src\mge\core\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
     <ClInclude Include="src\mge\core\LuaScriptParser.hpp" />
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
+    <ClInclude Include="..\src\mge\core\SoundManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

@@ -367,21 +367,22 @@ int LuaParser::createObject(lua_State * lua) {
 	string meshName = lua_tostring(lua, -17);
 	string name = lua_tostring(lua, -18);
 
-	std::cout << "created " << name << std::endl;
-
 	GameObject* go = new GameObject(name, glm::vec3(0, 0, 0));
 	go->setTransform(glm::transpose(glm::mat4(m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, -m34, m41, m42, m43, m44)));
-	std::cout << meshName << std::endl;
-
 	go->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
 
-	Mesh * gameObjectMesh = Mesh::load(Config::MGE_MODEL_PATH + meshName + ".obj");
-	go->setMesh(gameObjectMesh);
-	go->setMaterial(colorMat);
+	if (meshName != "null")
+	{
+		Mesh * gameObjectMesh = Mesh::load(Config::MGE_MODEL_PATH + meshName + ".obj");
+		go->setMesh(gameObjectMesh);
+		go->setMaterial(colorMat);
+	}
+
 	_currentGameObject = go;
 	AbstractMaterial* purpleColor = new ColorMaterial(glm::vec3(1, 0, 1));
 	_currentGameObject->setMaterial(purpleColor);
 	_world->add(go);
+	std::cout << go->getName() << std::endl;
 
 	std::cout << "Create Object: " << meshName << std::endl;
 	if (meshName == "ShipSide1")
@@ -431,19 +432,26 @@ int LuaParser::addMaterial(lua_State * lua){
 }
 int LuaParser::addMeshCollider(lua_State * lua){
 	string collider = lua_tostring(lua, -2);
-		
-	Collider& objectCollider = _currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), true, true);
-	objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
+	bool isCollider = lua_toboolean(lua, -1);
+
+	Collider& objectCollider = _currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), isCollider, true);
+
+	if(isCollider)
+		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
 	return 1;
 }
 
 int LuaParser::addBoxCollider(lua_State * lua) {
+	bool isCollider = lua_toboolean(lua, -8);
 	float x = lua_tonumber(lua, -7);
 	float y = lua_tonumber(lua, -6);
 	float z = lua_tonumber(lua, -5);
 
-	_currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), false, true);
+	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), isCollider, true);
+
+	if (isCollider)
+		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
 	return 1;
 }

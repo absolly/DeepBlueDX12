@@ -12,6 +12,7 @@
 #include "mge/core/GameObject.hpp"
 #include "mge/core/PhysicsObject.hpp"
 #include "mge/core/Light.hpp"
+#include "mge/core/SoundManager.hpp"
 #include "mge/materials/AbstractMaterial.hpp"
 
 #include "mge/materials/ColorMaterial.hpp"
@@ -62,6 +63,8 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
+
+
 	//add camera first (it will be updated last)
 	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),0.1f,100000.0f));
 	camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -85,6 +88,8 @@ void TestScene::_initializeScene() {
 	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
 	//fishTank->setMaterial(gpuinstancing);
 	//_world->add(fishTank);
+
+	SoundManager * soundmng = new SoundManager();
 
 
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
@@ -114,6 +119,7 @@ void TestScene::_initializeScene() {
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
 	
 	_world->add(boat);
+
 	//ADDING BOAT FOLLOWING PLAYER
 
 	GameObject * objtest = new GameObject("name", glm::vec3(0, 200, 0));
@@ -177,6 +183,8 @@ void TestScene::_render() {
 
 	AbstractGame::_renderToQuad();
 	_updateHud();
+
+	_scriptParser->step();
 
 	//AbstractGame::DrawQuad();
 }

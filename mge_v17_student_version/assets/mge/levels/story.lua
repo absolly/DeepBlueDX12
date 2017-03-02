@@ -1,13 +1,13 @@
 function main()
 	relics = 0;
-	
-	message("test");
+	message(100,"test2");
+	message(1000, "test");
+
 	visit("act1");
 end
 
 function act1()
 	showObjectiveDistance(0);
-	message("testing the messageBox");
 end
 
 function getCaveRelic()
@@ -25,6 +25,10 @@ function checkTempleDoor()
 		message("The temple door is opening..!!");
 		openTempleDoor()
 	end
+end
+
+function onTriggercollision()
+	message("Welcome to the ship..!!");
 end
 
 function openTempleDoor()

@@ -199,6 +199,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
     <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
     <ClInclude Include="src\Content\Behaviours\FlockingBehaviour.hpp" />
@@ -257,6 +258,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\DivingBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\FlockingBehaviour.cpp" />

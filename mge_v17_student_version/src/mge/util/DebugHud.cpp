@@ -41,7 +41,7 @@ void DebugHud::draw()
 	//glDisable( GL_CULL_FACE );
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
-
+	//glBindTexture(gl_texture2d);
     _window->pushGLStates();
 	
     _window->draw(_debugText);

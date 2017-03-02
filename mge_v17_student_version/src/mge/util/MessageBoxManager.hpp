@@ -13,6 +13,7 @@ class MessageBoxManager
 		virtual ~MessageBoxManager();
 		void draw();
 		void drawObjective(std::string pText);
+		void drawDirectly(std::string pText);
 
 		void _checkQueue();
 		void addToQueue (std::string pInfo);

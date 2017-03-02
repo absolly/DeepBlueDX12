@@ -3,6 +3,7 @@
 #include <iostream>
 #include <mge/behaviours/AbstractBehaviour.hpp>
 #include <lua.hpp>
+#include <string>
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -53,7 +54,17 @@ void LuaScriptParser::setup(lua_State * lua) {
 }
 
 int LuaScriptParser::message(lua_State * lua) {
-	_messageBoxManager->addToQueue(lua_tostring(lua, -1));
+	_currentText = lua_tostring(lua, -1);
+
+	int amount = lua_tonumber(lua, -2);
+
+	if (amount > 0)
+	{
+		for (int i = 0; i < amount; i++)
+		{
+			_messageBoxManager->addToQueue(_currentText);
+		}
+	}
 
 	return 0;
 }
@@ -67,8 +78,18 @@ int LuaScriptParser::visit(lua_State * lua)
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 {
 	//dynamic cast naar abstractbehaviour
-	GameObject * object = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.collidingWith)->getOwner();
-	std::cout << object->getName() << std::endl;
+	std::string NewFunction = "on" + dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner()->getName() + "collision";
+
+	lua_getglobal(lua, NewFunction.c_str());
+
+
+	if (lua_isnil(lua, -1)) { //if is doesn't exist, bail out
+		lua_settop(lua, 0);
+		return;
+	}
+
+	lua_call(lua, 0, 0);
+
 	//std::cout << onCollisionArgs.collidingWith->getowner
 }
 
@@ -96,11 +117,10 @@ void LuaScriptParser::SetPlayerAndObjectives(GameObject* pGameobject, std::vecto
 
 void LuaScriptParser::step()
 {
-
-	_messageBoxManager->_checkQueue();
-	_messageBoxManager->draw();
-
 	lua_getglobal(lua, currentFunction);
+
+	_messageBoxManager->drawDirectly(_currentText);
+	_currentText = "";
 
 
 	if (lua_isnil(lua, -1)) { //if is doesn't exist, bail out

@@ -28,6 +28,7 @@ private:
 	const char * currentFunction = "";
 	MessageBoxManager * _messageBoxManager;
 	GameObject * _player;
+	std::string _currentText = "";
 	std::vector<GameObject*> * _objectives;
 
 
