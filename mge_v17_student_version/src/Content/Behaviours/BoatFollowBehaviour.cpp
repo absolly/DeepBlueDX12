@@ -20,6 +20,8 @@ void BoatFollowBehaviour::update(float pStep)
 	_owner->scale(glm::vec3(0.1f, 0.1f, 0.1f));
 }
 
+
+
 void BoatFollowBehaviour::InterPolateDirection(glm::vec3 pDirection, float pSpeed)
 {
 	glm::vec3 LocalPos = _owner->getLocalPosition();

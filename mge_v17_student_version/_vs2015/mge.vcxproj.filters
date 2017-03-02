@@ -55,6 +55,7 @@
     <ClCompile Include="src\mge\core\LuaScriptParser.cpp" />
     <ClCompile Include="src\mge\util\MessageBoxManager.cpp" />
     <ClCompile Include="..\src\mge\core\SoundManager.cpp" />
+    <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -112,6 +113,7 @@
     <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\BoatFollowingBehaviour.hpp" />
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
+    <ClInclude Include="src\mge\materials\SeaMaterial.hpp" />
     <ClInclude Include="src\mge\core\LuaScriptParser.hpp" />
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
     <ClInclude Include="..\src\mge\core\SoundManager.hpp" />

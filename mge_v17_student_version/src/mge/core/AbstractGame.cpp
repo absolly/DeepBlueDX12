@@ -102,6 +102,75 @@ void AbstractGame::_initializeRenderer() {
 	_blurShader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "GaussianBlur.fs");
 	_blurShader->finalize();
 
+	_skyboxShader = new ShaderProgram();
+	_skyboxShader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "Skybox.vs");
+	_skyboxShader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "Skybox.fs");
+	_skyboxShader->finalize();
+
+	GLfloat skyboxVertices[] = {
+		// Positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
+	};
+
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glBindVertexArray(0);
+
+
+	vector<std::string> faces;
+	faces.push_back((Config::MGE_TEXTURE_PATH + "TropicalSunnyDay/TropicalSunnyDayRight2048.png"));
+	faces.push_back(Config::MGE_TEXTURE_PATH + "TropicalSunnyDay/TropicalSunnyDayLeft2048.png");
+	faces.push_back(Config::MGE_TEXTURE_PATH + "TropicalSunnyDay/TropicalSunnyDayUp2048.png");
+	faces.push_back(Config::MGE_TEXTURE_PATH + "TropicalSunnyDay/TropicalSunnyDayDown2048.png");
+	faces.push_back(Config::MGE_TEXTURE_PATH + "TropicalSunnyDay/TropicalSunnyDayBack2048.png");
+	faces.push_back(Config::MGE_TEXTURE_PATH + "TropicalSunnyDay/TropicalSunnyDayFront2048.png");
+	cubemapTexture = loadCubemap(faces);
+
 	static const GLfloat g_quad_vertex_buffer_data[] = {
 		-1.0f, -1.0f, 0.0f,
 		1.0f, -1.0f, 0.0f,
@@ -134,9 +203,11 @@ void AbstractGame::run() {
     sf::Clock renderClock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     sf::Time timePerFrame = sf::seconds(1.0f / 120.0f);
+	_timeSinceStart = sf::Time::Zero;
 
     while (_window->isOpen()) {
         timeSinceLastUpdate += updateClock.restart();
+		_timeSinceStart += updateClock.restart();
 
 		if (timeSinceLastUpdate > timePerFrame) {
 
@@ -197,6 +268,22 @@ void AbstractGame::_render () {
 	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glCullFace(GL_BACK);
+
+	glDepthMask(GL_FALSE);
+	_skyboxShader->use();
+	glm::mat4 view = glm::mat4(glm::mat3(glm::inverse(_world->getMainCamera()->getWorldTransform())));
+	glUniformMatrix4fv(_skyboxShader->getUniformLocation("view"), 1, false, glm::value_ptr(view));
+	glUniformMatrix4fv(_skyboxShader->getUniformLocation("projection"), 1, false, glm::value_ptr(_world->getMainCamera()->getProjection()));
+	// ... Set view and projection matrix
+	glBindVertexArray(skyboxVAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glUniform1i(_skyboxShader->getUniformLocation("skybox"), 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthMask(GL_TRUE);
+	// ... Draw rest of the scene
     _renderer->render(_world);
 }
 
@@ -244,7 +331,14 @@ void AbstractGame::_renderToQuad() {
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, _fogTexure->getId());
 	glUniform1i(_shader->getUniformLocation("fogTexture"), 3);
+	//setup texture slot 4
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, _renderer->waterMaskTexture);
+	glUniform1i(_shader->getUniformLocation("waterMaskTexture"), 4);
 
+	glUniform1f(_shader->getUniformLocation("_time"), _timeSinceStart.asSeconds());
+	glm::vec3 test = glm::eulerAngles(glm::rotate(glm::quat_cast(_world->getMainCamera()->getWorldTransform()), glm::radians(-90.9f), glm::vec3(1,0,0)));
+	glUniform1f(_shader->getUniformLocation("pitch"), glm::degrees(glm::clamp(test.x, 0.f, 180.f)));
 	DrawQuad();
 
 }
@@ -273,6 +367,38 @@ void AbstractGame::DrawQuad() {
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
+}
+
+GLuint AbstractGame::loadCubemap(vector<std::string> faces)
+{
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	glActiveTexture(GL_TEXTURE0);
+	
+	sf::Image image;
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	for (GLuint i = 0; i < faces.size(); i++)
+	{		
+		if (image.loadFromFile(faces[i])) {
+			//create a wrapper for the id (texture is nothing more than that) and
+			//load corresponding data into opengl using this id
+			//Texture * texture = new Texture();
+			std::cout << "loading: " << faces[i] << std::endl;
+			glTexImage2D(
+				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+				GL_RGBA, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
+			);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return textureID;
 }
 
 void AbstractGame::_processEvents() {

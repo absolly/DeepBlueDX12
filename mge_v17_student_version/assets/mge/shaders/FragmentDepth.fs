@@ -5,5 +5,5 @@
 
 void main(){
     // Not really needed, OpenGL does it anyway
-    //fragmentdepth = 0;
+   // fragmentdepth = gl_FragCoord.z;
 }

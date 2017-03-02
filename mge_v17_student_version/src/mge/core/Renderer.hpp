@@ -36,6 +36,7 @@ class Renderer
         //helper method to render all the children of a gameobject
         void renderMeshDebugInfo (Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix);
 		GLuint renderedTexture;
+		GLuint waterMaskTexture;
 		GLuint brightnessTexture;
 		GLuint FramebufferName = 0;
 		GLuint ShadowBuffer = 0;

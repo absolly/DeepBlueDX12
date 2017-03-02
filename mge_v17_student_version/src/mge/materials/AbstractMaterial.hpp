@@ -21,7 +21,7 @@ class AbstractMaterial
     public:
         AbstractMaterial();
         virtual ~AbstractMaterial();
-
+		bool isShadowCaster = true;
         /**
          * Render the given mesh.
          */

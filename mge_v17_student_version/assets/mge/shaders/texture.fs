@@ -22,6 +22,7 @@ in vec3 EyeDirection_tangentspace;
 
 layout (location = 0) out vec4 fragment_color;
 layout (location = 1) out vec4 brightness_color;
+layout (location = 2) out vec3 watermask_color;
 
 vec3 FragNormal_tangentspace;
 vec3 n;
@@ -30,8 +31,8 @@ vec3 E;
 vec3 R;
 float cosTheta;
 float cosAlpha;
-float visibility = 1.0;
 float bias = 0.005;//use if shadow acne is a problem
+float visibility;
 
 vec2 poissonDisk[16] = vec2[]( 
    vec2( -0.94201624, -0.39906216 ), 
@@ -122,27 +123,10 @@ void main( void ) {
 	float distance;
 	float falloff;
 
-	vec3 coord;
-	for (int i=0;i<4;i++){
-		// use either :
-		//  - Always the same samples.
-		//    Gives a fixed pattern in the shadow, but no noise
-		int index = i;
-		//  - A random sample, based on the pixel's screen location. 
-		//    No banding, but the shadow moves with the camera, which looks weird.
-		// int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
-		//  - A random sample, based on the pixel's position in world space.
-		//    The position is rounded to the millimeter to avoid too much aliasing
-		 //int index = int(16.0*random(floor(Position_worldspace.xyz*80.0), i))%16;
-		
-		// being fully in the shadow will eat up 4*0.2 = 0.8
-		// 0.2 potentially remain, which is quite dark.
-		coord = vec3( ShadowCoord.xy + poissonDisk[index]/1200.0,  (ShadowCoord.z)/ShadowCoord.w );
-		if(coord.x > 0 && coord.x < 1 && coord.y > 0 && coord.y < 1 && coord.z > 0 && coord.z < 1)
-			visibility -= 0.2*(1.0-texture( shadowMap, coord));
-	}
+
 
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
+		visibility = 1.0;
         MaterialAmbientColor = vec3(0.01,0.01,0.01) *lightColor[activeLight] * MaterialDiffuseColor;
         MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
@@ -154,6 +138,25 @@ void main( void ) {
             combinedColor += calcPointLight(falloff, lightColor[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
             break;
         case 1:
+			vec3 coord;
+			for (int i=0;i<4;i++){
+				// use either :
+				//  - Always the same samples.
+				//    Gives a fixed pattern in the shadow, but no noise
+				int index = i;
+				//  - A random sample, based on the pixel's screen location. 
+				//    No banding, but the shadow moves with the camera, which looks weird.
+				// int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
+				//  - A random sample, based on the pixel's position in world space.
+				//    The position is rounded to the millimeter to avoid too much aliasing
+				 //int index = int(16.0*random(floor(Position_worldspace.xyz*80.0), i))%16;
+		
+				// being fully in the shadow will eat up 4*0.2 = 0.8
+				// 0.2 potentially remain, which is quite dark.
+				coord = vec3( ShadowCoord.xy + poissonDisk[index]/1200.0,  (ShadowCoord.z)/ShadowCoord.w );
+				if(coord.x > 0 && coord.x < 1 && coord.y > 0 && coord.y < 1 && coord.z > 0 && coord.z < 1)
+					visibility -= 0.2*(1.0-texture( shadowMap, coord));
+			}
             combinedColor += calcDirectionalLight(lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
             break;
 //        case  2:
@@ -204,4 +207,6 @@ void main( void ) {
         brightness_color = vec4(fragment_color.rgb, 1.0);
 	else
 		brightness_color = vec4(0,0,0,1);
+	
+	watermask_color = vec3(0,0,0);
 }

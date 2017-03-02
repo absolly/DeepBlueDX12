@@ -60,6 +60,8 @@ class AbstractGame
         virtual void _processEvents();
 		virtual void _setFogGradient(Texture* pGradientTexture);
 
+		virtual GLuint loadCubemap(vector<std::string> faces);
+
 		sf::RenderWindow* _window;  //sfml window to render into
 		Renderer* _renderer;        //the renderer class to render the world
 		World* _world;              //the root game object that represents our scene
@@ -75,14 +77,18 @@ class AbstractGame
 		void disableMouseLock(sf::Event& event);
 		void enableMousLock(sf::Event& event);
 		void setMouseLockEnabled(bool enabled);
-		ShaderProgram* _shader;
+		ShaderProgram* _shader;		
+		ShaderProgram* _skyboxShader;
 		ShaderProgram* _blurShader;
 		ShaderProgram* _shadowShader;
 		GLuint quad_vertexbuffer;
 		Texture* _fogTexure = nullptr;
 		GLuint quadVAO = 0;
 		GLuint quadVBO;
-
+		GLuint skyboxVAO;
+		GLuint skyboxVBO;
+		GLuint cubemapTexture;
+		sf::Time _timeSinceStart;
 };
 
 #endif // ABSTRACTGAME_H

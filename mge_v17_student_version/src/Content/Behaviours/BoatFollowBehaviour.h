@@ -9,7 +9,6 @@ public:
 	BoatFollowBehaviour(GameObject * pTarget);
 	~BoatFollowBehaviour();
 	virtual void update(float pStep);
-	
 	int _timer = 0;
 
 private:
