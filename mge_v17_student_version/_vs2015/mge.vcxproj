@@ -247,6 +247,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\Physics\CollisionBehaviour.h" />
     <ClInclude Include="src\mge\core\Renderer.hpp" />
     <ClInclude Include="src\mge\core\ShaderProgram.hpp" />
+    <ClInclude Include="src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\Texture.hpp" />
     <ClInclude Include="src\mge\core\World.hpp" />
     <ClInclude Include="src\mge\materials\AbstractMaterial.hpp" />
@@ -308,6 +309,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\Physics\CollisionBehaviour.cpp" />
     <ClCompile Include="src\mge\core\Renderer.cpp" />
     <ClCompile Include="src\mge\core\ShaderProgram.cpp" />
+    <ClCompile Include="src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\core\Texture.cpp" />
     <ClCompile Include="src\mge\core\World.cpp" />
     <ClCompile Include="src\mge\materials\AbstractMaterial.cpp" />
