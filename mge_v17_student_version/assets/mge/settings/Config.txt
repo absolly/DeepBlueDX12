@@ -22,7 +22,7 @@ Test vec4(1.412000, 12312.000000, 12392.220703, 2102.139893)
 InventoryBackground InventoryBackground.png
 InventorySlotBackground InventorySlotBackground.png
 InventorySlotSpacing 25.000000
-InventorySlots 7
+InventorySlots 5
 fishModel MantaRay.obj
 fishTexture bricks.jpg
 fishMovementMap RayAnimUV.png

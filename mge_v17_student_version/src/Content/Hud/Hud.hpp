@@ -30,6 +30,7 @@ class Hud
 		HUDMaterial* _hudMaterial;
         std::string _debugInfo;
 		Inventory& _inventory;
+		HudSprite _visor;
 
         sf::Font _font;
         sf::Text _debugText;
