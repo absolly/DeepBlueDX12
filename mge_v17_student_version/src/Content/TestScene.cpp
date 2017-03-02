@@ -75,7 +75,8 @@ void TestScene::_initializeScene() {
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
 	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seatexture.jpg"), 1);
-
+	
+	
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
 	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0)); 
@@ -107,6 +108,8 @@ void TestScene::_initializeScene() {
 	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
+
+
 
 
 	//LuaParser * luaparser = new LuaParser(_world);
@@ -189,7 +192,7 @@ void TestScene::_initializeScene() {
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btRigidBody* rigidBody = new btRigidBody(0, groundMotionState, collisionShape, btVector3(0, 0, 0));
 	btTransform transform = rigidBody->getCenterOfMassTransform();
-	transform.setOrigin(btVector3(0, 720, 0));
+	transform.setOrigin(btVector3(0, 710, 0));
 	rigidBody->setCenterOfMassTransform(transform);
 	_world->physics->addRigidBody(rigidBody);
 	//SEA COLLIDER

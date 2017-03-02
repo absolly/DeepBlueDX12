@@ -13,7 +13,7 @@ uniform vec3        lightFalloff[5];
 uniform int         lightCount;
 uniform int         tiling;
 uniform int         specularMultiplier;
-
+uniform bool		depthTest;
 in vec2 texCoord;
 in vec4 ShadowCoord;
 in vec3 Position_worldspace;
@@ -209,4 +209,6 @@ void main( void ) {
 		brightness_color = vec4(0,0,0,1);
 	
 	watermask_color = vec4(0,0,0,1);
+	
+	depthTest?gl_FragDepth=gl_FragCoord.z:gl_FragDepth=0;
 }
