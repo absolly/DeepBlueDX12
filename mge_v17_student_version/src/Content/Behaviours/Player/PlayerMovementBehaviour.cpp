@@ -15,6 +15,22 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	updateFromConfig();
 	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::updateFromConfig);
+
+
+	Mesh* scooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
+
+	_diveScooterMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "color.jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
+	_diveScooterMaterial->depthTest = false;
+
+	_diveScooter = new GameObject("Dive Scooter");
+	_diveScooter->setMesh(scooterMesh);
+	_diveScooter->setMaterial(_diveScooterMaterial);
+	_scooterOffsetMat = glm::scale(_scooterOffsetMat, glm::vec3(0.025f));
+
+	_scooterOffsetMat = glm::translate(_scooterOffsetMat, glm::vec3(0, -40, 30));
+	_scooterOffsetMat = glm::rotate(_scooterOffsetMat, glm::radians(90.f), glm::vec3(0, 1, 0));
+	player.add(_diveScooter);
+	_diveScooter->setTransform(_scooterOffsetMat);
 }
 
 void PlayerMovementBehaviour::updateFromConfig()
@@ -44,6 +60,7 @@ void PlayerMovementBehaviour::updateFromConfig()
 	Config::updateValue("_maxRollRotationSpeed", _maxRollRotationSpeed);
 	Config::updateValue("_maxRollRotation", _maxRollRotation);
 	Config::updateValue("_rollRotationSpeedMultiplier", _rollRotationSpeedMultiplier);
+
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
@@ -79,23 +96,27 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
+	if(_scooterEnquiped)
+		_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
-	//Moving sideways
-	float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
-	_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
-	_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
-	if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
+	if (!_scooterEnquiped) {
+		//Moving sideways
+		float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
+		_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
+		_currentMoveSideSpeed = glm::clamp(_currentMoveSideSpeed, _minSideMoveSpeed, _maxSideMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 10 : 1));
+		if (sidewayInput != glm::sign(_currentMoveSideSpeed)) _currentMoveSideSpeed = moveTowards(_currentMoveSideSpeed, 0, _moveSideDecceleration * deltaTime);
+		
+		_currentRoll -= sidewayInput * 5 * deltaTime;
+		_currentRoll = glm::clamp(_currentRoll, -3.0f, 3.0f);
 
-
-	_currentRoll -= sidewayInput * 5 * deltaTime;
-	_currentRoll = glm::clamp(_currentRoll, -3.0f, 3.0f);
-
-	if (sidewayInput != glm::sign(_currentRoll*-1))
-	{
-		_currentRoll = moveTowards(_currentRoll, 0, 5 *deltaTime);
+		if (sidewayInput != glm::sign(_currentRoll*-1))
+		{
+			_currentRoll = moveTowards(_currentRoll, 0, 5 * deltaTime);
+		}
 	}
+
+
 
 	//Moving up and down
 	float upwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1 : 0);
@@ -165,6 +186,32 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	if (Input::getKeyDown(sf::Keyboard::Down))	_maxMoveSpeed -= 4;
 	if (Input::getKeyDown(sf::Keyboard::Up))	_maxMoveSpeed += 4;
 
+	if (_scooterEnquiped && Input::getKeyDown(sf::Keyboard::F))
+		UnenquipScooter();
+	else if (!_scooterEnquiped && Input::getKeyDown(sf::Keyboard::F))
+		EnquipScooter();
+
+}
+
+void PlayerMovementBehaviour::UnenquipScooter()
+{
+	glm::mat4 temp = _diveScooter->getWorldTransform();
+
+	_diveScooter->setParent(_owner->getParent()->getParent()->getParent());
+	_diveScooter->setTransform(temp);
+	_diveScooterMaterial->depthTest = true;
+	_scooterEnquiped = false;
+}
+
+void PlayerMovementBehaviour::EnquipScooter()
+{
+	glm::vec3 distance = (_owner->getWorldPosition() - _diveScooter->getWorldPosition());
+	if (length(distance) < 5) {
+		_diveScooter->setParent(_owner);
+		_diveScooter->setTransform(_scooterOffsetMat);
+		_diveScooterMaterial->depthTest = false;
+		_scooterEnquiped = true;
+	}
 }
 
 float PlayerMovementBehaviour::moveTowards(float current, float target, float speed)

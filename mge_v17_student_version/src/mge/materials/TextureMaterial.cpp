@@ -1,4 +1,4 @@
-#include <glm.hpp>
+﻿#include <glm.hpp>
 
 #include "mge/materials/TextureMaterial.hpp"
 #include "mge/core/Texture.hpp"
@@ -31,7 +31,8 @@ void TextureMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
 
 void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     if (!_diffuseTexture) return;
-
+	if (!depthTest)
+		glDepthFunc(GL_ALWAYS);
 	glm::mat3 MVMatrix;
 
 	MVMatrix = glm::mat3(pViewMatrix * pModelMatrix);
@@ -105,6 +106,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
+	glUniform1i(_shader->getUniformLocation("depthTest"), depthTest);
     //pass in all MVP matrices separately
 	glUniformMatrix3fv(_shader->getUniformLocation("MVMatrix"),	1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),1, GL_FALSE, glm::value_ptr(pViewMatrix));
@@ -121,4 +123,6 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         _shader->getAttribLocation("tangent"),
         _shader->getAttribLocation("bitangent")
     );
+
+	glDepthFunc(GL_LESS);
 }
