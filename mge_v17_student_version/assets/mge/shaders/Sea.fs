@@ -10,5 +10,6 @@ layout (location = 2) out vec4 watermask_color;
 in float distance;
 void main( void ) {
 	fragment_color = vec4(.05,.1,0.2,0.1);
+	brightness_color = vec4(0,0,0,1);
 	watermask_color = vec4(gl_FragCoord.z,0,0,1);
 }
