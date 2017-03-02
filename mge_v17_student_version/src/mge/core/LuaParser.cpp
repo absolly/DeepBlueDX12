@@ -45,7 +45,8 @@ LuaParser::LuaParser(World* pWorld) {
 	lua_setglobal(lua, "createLight");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addLightAttributes>);
 	lua_setglobal(lua, "addLightAttributes");
-
+	lua_pushcfunction(lua, &dispatch<&LuaParser::addLightAttributes>);
+	lua_setglobal(lua, "playSound");
     //load the cube mesh and texture for later use.
     cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+"cube_unity.obj");
     textureMaterial2 = new TextureMaterial (Texture::load (Config::MGE_TEXTURE_PATH+"bricks.jpg"));
@@ -385,6 +386,10 @@ int LuaParser::createObject(lua_State * lua) {
 	std::cout << go->getName() << std::endl;
 
 	std::cout << "Create Object: " << meshName << std::endl;
+	//if (meshName == "ShipSide1")
+	//{
+	//	go->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
+	//}
 
 
     return 1;
@@ -429,25 +434,25 @@ int LuaParser::addMaterial(lua_State * lua){
 }
 int LuaParser::addMeshCollider(lua_State * lua){
 	string collider = lua_tostring(lua, -2);
-	bool isCollider = lua_toboolean(lua, -1);
+	bool isTrigger = lua_toboolean(lua, -1);
 
-	Collider& objectCollider = _currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), isCollider, true);
+	Collider& objectCollider = _currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), isTrigger, true);
 
-	if(isCollider)
+	if(isTrigger)
 		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
 	return 1;
 }
 
 int LuaParser::addBoxCollider(lua_State * lua) {
-	bool isCollider = lua_toboolean(lua, -8);
+	bool isTrigger = lua_toboolean(lua, -1);
 	float x = lua_tonumber(lua, -7);
 	float y = lua_tonumber(lua, -6);
 	float z = lua_tonumber(lua, -5);
 
-	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y/2, z / 2), isCollider, true);
+	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), isTrigger, true);
 
-	if (isCollider)
+	if (isTrigger)
 		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
 	return 1;
@@ -456,8 +461,12 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 
 int LuaParser::addSphereCollider(lua_State * lua) {
 	float radius = lua_tonumber(lua, -5);
+	bool isTrigger = lua_toboolean(lua, -1);
 
-	_currentGameObject->addCollider(SphereColliderArgs(radius), false, true);
+	Collider& objectCollider = _currentGameObject->addCollider(SphereColliderArgs(radius), isTrigger, true);
+
+	if (isTrigger)
+		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
 	return 1;
 }

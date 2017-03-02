@@ -87,9 +87,6 @@ void TestScene::_initializeScene() {
 	//fishTank->setMaterial(gpuinstancing);
 	//_world->add(fishTank);
 
-	SoundManager * soundmng = new SoundManager();
-	soundmng->PlaySound("ambient_underwater", "ambient", true, true, 100);
-
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
@@ -140,7 +137,9 @@ void TestScene::_initializeScene() {
 	std::vector<GameObject*> * objectives = new std::vector<GameObject*>();
 	objectives->push_back(objtest);
 
-	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window);
+	SoundManager * soundmng = new SoundManager();
+
+	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
 	_scriptParser->SetPlayerAndObjectives(player, objectives);
 
 	LuaParser * luaparser2 = new LuaParser(_world);

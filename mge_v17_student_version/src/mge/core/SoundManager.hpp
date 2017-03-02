@@ -11,8 +11,9 @@ class SoundManager
 {
 public:
 	SoundManager();
+	bool GetChannelState(std::string pChannelName);
 	~SoundManager();
-	void PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, int pVolume = 100);
+	void PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume = 100);
 private:
 	sf::Music music;
 	void SetupFiles();

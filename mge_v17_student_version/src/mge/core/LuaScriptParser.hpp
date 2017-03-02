@@ -5,6 +5,7 @@
 #include "mge/util/MessageBoxManager.hpp"
 #include "mge/core/GameObject.hpp"
 #include <SFML/Graphics.hpp>
+#include <mge/core/SoundManager.hpp>
 #include <stdio.h>
 #include <iostream>
 #include <lua.hpp>
@@ -17,11 +18,12 @@
 class LuaScriptParser {
 
 public:
-	LuaScriptParser(const char* pFileName, sf::RenderWindow * aWindow);
+	LuaScriptParser(const char* pFileName, sf::RenderWindow * aWindow, SoundManager * pSoundManager);
 	void SetPlayerAndObjectives(GameObject* pGameobject, std::vector<GameObject*> * pObjectives);
 	void step();
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);
+	void setSoundManager(SoundManager * pSoundManager);
 
 private:
 	lua_State * lua;
@@ -30,9 +32,10 @@ private:
 	GameObject * _player;
 	std::string _currentText = "";
 	std::vector<GameObject*> * _objectives;
+	std::string _lastSong;
+	bool _BreathingIn = true;
+	SoundManager * _soundManager;
 
-
-	
 	//export to lua
 	int message(lua_State * lua);
 	int showObjectiveDistance(lua_State * lua);
@@ -41,6 +44,7 @@ private:
 	int visit(lua_State * lua);
 	int playContiniousSound(lua_State * lua);
 	int playSound(lua_State * lua);
+	int playBreath(lua_State * lua);
 	void inilua(const char* pFileName);
 
 };

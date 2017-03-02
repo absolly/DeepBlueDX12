@@ -1,13 +1,13 @@
 function main()
 	relics = 0;
-	message(100,"test2");
-	message(1000, "test");
-
+	breathing = true;
+	playSound("ambient_underwater", "ambient", true, false, 100);
 	visit("act1");
 end
 
 function act1()
 	showObjectiveDistance(0);
+	playBreath();
 end
 
 function getCaveRelic()
@@ -29,6 +29,7 @@ end
 
 function onTriggercollision()
 	message("Welcome to the ship..!!");
+	playSound("environment_sonar", "environment", false, true, 100);
 end
 
 function openTempleDoor()

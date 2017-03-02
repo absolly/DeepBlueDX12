@@ -103,5 +103,5 @@ addMeshCollider("meshCollider",False);
 createObject("Cube","Cube", 52.34949,0,70.72438,-284.3,0,87.99093,0,0,-70.72443,0,52.34946,-31,0,0,0,1);
 addBoxCollider("boxCollider", 1,1,1,0,0,0,False);
 createObject("Trigger","null", 100,0,0,46.6,0,100,0,41.8,0,0,100,0,0,0,0,1);
-addBoxCollider("boxCollider", 1,1,1,0,0,0,True);
+addBoxCollider("boxCollider", 1,1,1,0,0,0,true);
 createTrigger("Trigger");

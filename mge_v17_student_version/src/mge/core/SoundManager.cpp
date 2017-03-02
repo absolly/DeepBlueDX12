@@ -18,7 +18,7 @@ SoundManager::SoundManager()
 	music.setVolume(30);
 	
 	music.setLoop(true);
-	//music.play();	
+	music.play();	
 
 	SetupFiles();
 	SetupSounds();
@@ -53,24 +53,36 @@ void SoundManager::SetupFiles()
 	
 }
 
-void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, int pVolume)
+void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume)
 {
-	std::cout << "-----------play sound---------" << std::endl;
-	std::cout << pSoundBufferName << std::endl;
-	std::cout << pSoundChannel << std::endl;
-	//if (!sounds.count(pSoundChannel))
-	//{
-	//	sf::Sound sound;
-	//	sounds[pSoundChannel] = sound;
-	//}
+	if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped || !repeatedSong)
+	{
+		std::string path = "mge/sounds/";
 
-	//if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Playing && pInterrupt || sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped)
-	//{
-	//	sounds[pSoundChannel].setBuffer(soundBuffers[pSoundBufferName]);
-	//	sounds[pSoundChannel].setLoop(pLoop);
-	//	sounds[pSoundChannel].setVolume(pVolume);
-	//	sounds[pSoundChannel].play();
-	//}
+
+		if (!sounds.count(pSoundChannel))
+		{
+			sf::Sound sound;
+			sounds[pSoundChannel] = sound;
+		}
+
+		if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Playing && pInterrupt || sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped)
+		{
+
+			sounds[pSoundChannel].setBuffer(soundBuffers[path + pSoundBufferName]);
+			sounds[pSoundChannel].setLoop(pLoop);
+			sounds[pSoundChannel].setVolume(pVolume);
+			sounds[pSoundChannel].play();
+		}
+	}
+}
+
+bool SoundManager::GetChannelState(std::string pChannelName)
+{
+	if (sounds[pChannelName].getStatus() == sf::Sound::Status::Playing)
+		return 1;
+
+	return 0;
 }
 
 void SoundManager::SetupSounds()
@@ -118,7 +130,15 @@ void SoundManager::SetupSounds()
 		}
 
 		soundBuffers[filePath] = soundBuffer;
-		//if(filePath == "")
+		//if (filePath == "mge/sounds/ambient_underwater")
+		//{
+		//	std::cout << "found the sound!!" << std::endl;
+		//	sounds["ambient"] = sound;
+		//	sounds["ambient"].setBuffer(soundBuffers[filePath]);
+		//	sounds["ambient"].setVolume(100.0f);
+		//	sounds["ambient"].setLoop(true);
+		//	sounds["ambient"].play();
+		//}
 	}
 }
 

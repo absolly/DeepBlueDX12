@@ -3,15 +3,20 @@
 #include <iostream>
 #include <mge/behaviours/AbstractBehaviour.hpp>
 #include <lua.hpp>
+#include <time.h>
+#include <random>
+#include <cassert>
+#include <iostream>
 #include <string>
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
 //------------------------------------------------------------------------------------------------------------
-LuaScriptParser::LuaScriptParser(const char* pFileName, sf::RenderWindow * aWindow)
+LuaScriptParser::LuaScriptParser(const char* pFileName, sf::RenderWindow * aWindow, SoundManager * pSoundManager)
 {
 	_messageBoxManager = new MessageBoxManager(aWindow);
-	
+	_soundManager = pSoundManager;
+
 	inilua(pFileName);
 }
 
@@ -51,6 +56,63 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::showObjectiveDistance>);
 	lua_setglobal(lua, "showObjectiveDistance");
 
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::playSound>);
+	lua_setglobal(lua, "playSound");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::playBreath>);
+	lua_setglobal(lua, "playBreath");
+}
+
+void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
+{
+	_soundManager = pSoundManager;
+}
+
+int LuaScriptParser::playSound(lua_State * lua)
+{
+	std::string song = lua_tostring(lua, -5);
+	std::string channel = lua_tostring(lua, -4);
+	bool loop = lua_toboolean(lua, -3);
+	bool interrupt = lua_toboolean(lua, -2);
+	int volume = lua_tonumber(lua, -1);
+	
+
+	bool repeatedSong = (_lastSong == song);
+
+	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume);
+	_lastSong = song;
+
+	return 0;
+}
+
+
+int LuaScriptParser::playBreath(lua_State * lua)
+{
+	std::random_device rd;
+
+	// Initialize Mersenne Twister pseudo-random number generator
+	std::mt19937 gen(rd());
+
+	std::uniform_int_distribution<> dis(1,6);
+
+	if (_BreathingIn)
+	{
+		if (!_soundManager->GetChannelState("player"))
+		{
+			_soundManager->PlaySound("air_in_" + std::to_string(dis(gen)), "player", false, false, false, 100);
+			_BreathingIn = false;
+		}
+	}
+	else
+	{
+		if (!_soundManager->GetChannelState("player"))
+		{
+			_soundManager->PlaySound("air_out_relaxed_" + std::to_string(dis(gen)), "player", false, false, false, 100);
+			_BreathingIn = true;
+		}
+	}
+
+	return 0;
 }
 
 int LuaScriptParser::message(lua_State * lua) {
