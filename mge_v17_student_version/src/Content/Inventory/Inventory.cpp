@@ -34,8 +34,8 @@ void Inventory::draw()
 	float windowWidth = _window.getSize().x;
 	float windowHeight = _window.getSize().y;
 
-	_inventoryBackgroundSprite.setPosition(windowWidth/2, windowHeight);
-	_window.draw(_inventoryBackgroundSprite);
+	//_inventoryBackgroundSprite.setPosition(windowWidth/2, windowHeight);
+	//_window.draw(_inventoryBackgroundSprite);
 
 	float offset = _inventorySlotBackgroundSprite.getGlobalBounds().width + _inventorySlotSpacing;
 
