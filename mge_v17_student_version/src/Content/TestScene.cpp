@@ -85,11 +85,6 @@ void TestScene::_initializeScene() {
 	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
 	//fishTank->setMaterial(gpuinstancing);
 	//_world->add(fishTank);
-	
-
-	LuaParser * luaparser = new LuaParser(_world);
-	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
-
 
 
 	GameObject* test = new GameObject("", glm::vec3(702.763, 718.598, -39.4018));
@@ -120,6 +115,18 @@ void TestScene::_initializeScene() {
 	
 	_world->add(boat);
 	//ADDING BOAT FOLLOWING PLAYER
+
+	GameObject * objtest = new GameObject("name", glm::vec3(0, 200, 0));
+	std::vector<GameObject*> * objectives = new std::vector<GameObject*>();
+	objectives->push_back(objtest);
+
+	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window);
+	_scriptParser->SetPlayerAndObjectives(player, objectives);
+
+	LuaParser * luaparser = new LuaParser(_world);
+	luaparser->setPlayerRigidBody(playerRigidbody);
+	luaparser->scriptParser = _scriptParser;
+	luaparser->loadFile((Config::MGE_LEVEL_PATH + "TriggerTest.lua").c_str());
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
