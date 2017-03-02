@@ -208,11 +208,15 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\Content\Behaviours\PredatorBehaviour.h" />
     <ClInclude Include="src\Content\Core\Event.h" />
     <ClInclude Include="src\Content\Core\EventHandler.h" />
+    <ClInclude Include="src\Content\Core\EventNoArgs.h" />
     <ClInclude Include="src\Content\Core\FastDelegate.h" />
     <ClInclude Include="src\Content\Core\Input.h" />
     <ClInclude Include="src\Content\DeferredTestScene.hpp" />
     <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
     <ClInclude Include="src\Content\GameObjects\Player.h" />
+    <ClInclude Include="src\Content\Hud\Hud.hpp" />
+    <ClInclude Include="src\Content\Hud\HudSprite.h" />
+    <ClInclude Include="src\Content\Inventory\Inventory.h" />
     <ClInclude Include="src\Content\TestScene.hpp" />
     <ClInclude Include="src\glm.hpp" />
     <ClInclude Include="src\mge\behaviours\AbstractBehaviour.hpp" />
@@ -249,6 +253,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\materials\ColorMaterial.hpp" />
     <ClInclude Include="src\mge\materials\DebugRenderMaterial.hpp" />
     <ClInclude Include="src\mge\materials\GPUinstancingMaterial.hpp" />
+    <ClInclude Include="src\mge\materials\HUDMaterial.hpp" />
     <ClInclude Include="src\mge\materials\LitWaveMaterial.hpp" />
     <ClInclude Include="src\mge\materials\SeaMaterial.hpp" />
     <ClInclude Include="src\mge\materials\TerrainMaterial.hpp" />
@@ -271,6 +276,9 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\Content\DeferredTestScene.cpp" />
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
     <ClCompile Include="src\Content\GameObjects\Player.cpp" />
+    <ClCompile Include="src\Content\Hud\Hud.cpp" />
+    <ClCompile Include="src\Content\Hud\HudSprite.cpp" />
+    <ClCompile Include="src\Content\Inventory\Inventory.cpp" />
     <ClCompile Include="src\Content\TestScene.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mge\behaviours\AbstractBehaviour.cpp" />
@@ -306,6 +314,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\materials\ColorMaterial.cpp" />
     <ClCompile Include="src\mge\materials\DebugRenderMaterial.cpp" />
     <ClCompile Include="src\mge\materials\GPUinstancingMaterial.cpp" />
+    <ClCompile Include="src\mge\materials\HUDMaterial.cpp" />
     <ClCompile Include="src\mge\materials\LitWaveMaterial.cpp" />
     <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
     <ClCompile Include="src\mge\materials\TerrainMaterial.cpp" />

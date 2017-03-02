@@ -10,7 +10,8 @@ std::string Config::MGE_SHADER_PATH = "mge/shaders/";
 std::string Config::MGE_FONT_PATH = "mge/fonts/";
 std::string Config::MGE_LEVEL_PATH = "mge/levels/";
 std::string Config::MGE_SETTINGS_PATH = "mge/settings/";
-Event<bool> Config::onConfigUpdated;
+std::string Config::MGE_SPRITES_PATH = "mge/sprites/";
+EventNoArgs Config::onConfigUpdated;
 
 std::unordered_map<std::string, std::string> Config::_loadedConfigVaraibles = std::unordered_map<std::string, std::string>();
 Config::_init Config::_initializer;
@@ -42,7 +43,7 @@ void Config::updateFromConfig()
 	}
 	infile.close();
 	std::cout << "------ UPDATING CONFIG ------" << std::endl << std::endl;
-	onConfigUpdated(true);
+	onConfigUpdated();
 }
 
 std::string Config::tryGetValue(std::string key, std::string defaultValue)
@@ -59,11 +60,27 @@ std::string Config::tryGetValue(std::string key, std::string defaultValue)
 
 void Config::updateValue(std::string key, std::string& defaultValue)
 {
-	defaultValue = (tryGetValue(key, defaultValue));
+	defaultValue = tryGetValue(key, defaultValue);
+}
+std::string Config::getConfigValue(std::string key, std::string defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
+}
+std::string Config::getConfigValue(std::string key, char defaultValue[])
+{
+	updateValue(key, std::string(defaultValue));
+	return defaultValue;
 }
 void Config::updateValue(std::string key, float& defaultValue)
 {
 	defaultValue = std::stof(tryGetValue(key, std::to_string(defaultValue)));
+}
+
+float Config::getConfigValue(std::string key, float defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
 }
 
 void Config::updateValue(std::string key, bool& defaultValue)
@@ -71,14 +88,31 @@ void Config::updateValue(std::string key, bool& defaultValue)
 	defaultValue = std::stoi(tryGetValue(key, std::to_string(defaultValue)));
 }
 
+bool Config::getConfigValue(std::string key, bool defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
+}
+
 void Config::updateValue(std::string key, double& defaultValue)
 {
 	defaultValue = std::stod(tryGetValue(key, std::to_string(defaultValue)));
 }
 
+double Config::getConfigValue(std::string key, double defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
+}
+
 void Config::updateValue(std::string key, int& defaultValue)
 {
 	defaultValue = std::stoi(tryGetValue(key, std::to_string(defaultValue)));
+}
+int Config::getConfigValue(std::string key, int defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
 }
 void Config::updateValue(std::string key, glm::vec3& defaultValue)
 {
@@ -91,6 +125,11 @@ void Config::updateValue(std::string key, glm::vec3& defaultValue)
 	defaultValue.y = std::stof(token);
 	std::getline(ss, token, ')');
 	defaultValue.z = std::stof(token);
+}
+glm::vec3 Config::getConfigValue(std::string key, glm::vec3 defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
 }
 void Config::updateValue(std::string key, glm::vec4& defaultValue)
 {
@@ -106,4 +145,10 @@ void Config::updateValue(std::string key, glm::vec4& defaultValue)
 	std::getline(ss, token, ')');
 	defaultValue.w = std::stof(token);
 	
+}
+
+glm::vec4 Config::getConfigValue(std::string key, glm::vec4 defaultValue)
+{
+	updateValue(key, defaultValue);
+	return defaultValue;
 }

@@ -53,7 +53,7 @@ void TestScene::initialize() {
 
 	//setup the custom part
 	cout << "Initializing HUD" << endl;
-	_hud = new DebugHud(_window);
+	_hud = new Hud(_window);
 	cout << "HUD initialized." << endl << endl;
 }
 

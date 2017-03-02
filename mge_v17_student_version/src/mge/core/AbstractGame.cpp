@@ -87,6 +87,7 @@ void AbstractGame::_initializeGlew() {
 }
 
 void AbstractGame::_initializeRenderer() {
+	//return;
     //setup our own renderer
     cout << "Initializing renderer..." << endl;
     _renderer = new Renderer();
@@ -233,7 +234,7 @@ void AbstractGame::_update(float pStep) {
 }
 
 void AbstractGame::_render () {
-
+	//return;
 	// Compute the MVP matrix from the light's point of view
 	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
 	glm::mat4 depthViewMatrix;
@@ -288,6 +289,7 @@ void AbstractGame::_render () {
 }
 
 void AbstractGame::_renderToQuad() {
+	//return;
 	glActiveTexture(GL_TEXTURE0);
 
 	GLboolean horizontal = true, first_iteration = true;
@@ -344,6 +346,7 @@ void AbstractGame::_renderToQuad() {
 }
 
 void AbstractGame::DrawQuad() {
+	//return;
 	if (quadVAO == 0)
 	{
 		GLfloat quadVertices[] = {

@@ -51,6 +51,10 @@
     <ClCompile Include="src\mge\behaviours\CopyTargetPositionBehaviour.cpp" />
     <ClCompile Include="src\mge\Config.cpp" />
     <ClCompile Include="src\mge\behaviours\BoatFollowingBehaviour.cpp" />
+    <ClCompile Include="src\Content\Hud\Hud.cpp" />
+    <ClCompile Include="src\Content\Hud\HudSprite.cpp" />
+    <ClCompile Include="src\Content\Inventory\Inventory.cpp" />
+    <ClCompile Include="src\mge\materials\HUDMaterial.cpp" />
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
     <ClCompile Include="src\mge\core\LuaScriptParser.cpp" />
     <ClCompile Include="src\mge\util\MessageBoxManager.cpp" />
@@ -112,6 +116,11 @@
     <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
     <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\BoatFollowingBehaviour.hpp" />
+    <ClInclude Include="src\Content\Hud\Hud.hpp" />
+    <ClInclude Include="src\Content\Hud\HudSprite.h" />
+    <ClInclude Include="src\Content\Inventory\Inventory.h" />
+    <ClInclude Include="src\mge\materials\HUDMaterial.hpp" />
+    <ClInclude Include="src\Content\Core\EventNoArgs.h" />
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
     <ClInclude Include="src\mge\materials\SeaMaterial.hpp" />
     <ClInclude Include="src\mge\core\LuaScriptParser.hpp" />

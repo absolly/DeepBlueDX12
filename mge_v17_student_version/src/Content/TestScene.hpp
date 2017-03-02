@@ -4,6 +4,7 @@
 #include <mge/core/AbstractGame.hpp>
 #include "mge/core/LuaParser.hpp"
 #include "mge/core/LuaScriptParser.hpp"
+#include "Content\Hud\Hud.hpp"
 #include <vector>
 
 class DebugHud;
@@ -25,7 +26,7 @@ class TestScene: public AbstractGame
 	    virtual void _render();
 
 	private:
-		DebugHud* _hud;                   //hud display
+		Hud* _hud;                   //hud display
         LuaParser* _parser;
 		LuaScriptParser * _scriptParser;
         void _updateHud();
