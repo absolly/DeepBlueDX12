@@ -44,8 +44,8 @@ $RECYCLE.BIN/
 *.app
 
 # Visual studio
-*.db
-*.suo
+mge.VC.db
+.suo
 
 ### CodeBlocks ###
 # specific to CodeBlocks IDE
