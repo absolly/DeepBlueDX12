@@ -118,7 +118,7 @@ void SoundManager::SetupSounds()
 		}
 
 		soundBuffers[filePath] = soundBuffer;
-		if(filePath == "")
+		//if(filePath == "")
 	}
 }
 
