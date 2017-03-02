@@ -15,6 +15,21 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	updateFromConfig();
 	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::updateFromConfig);
+
+
+	Mesh* scooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
+
+	_diveScooterMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "color.jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
+
+	_diveScooter = new GameObject("Dive Scooter");
+	_diveScooter->setMesh(scooterMesh);
+	_diveScooter->setMaterial(_diveScooterMaterial);
+	_scooterOffsetMat = glm::scale(_scooterOffsetMat, glm::vec3(0.025f));
+
+	_scooterOffsetMat = glm::translate(_scooterOffsetMat, glm::vec3(0, -40, 30));
+	_scooterOffsetMat = glm::rotate(_scooterOffsetMat, glm::radians(90.f), glm::vec3(0, 1, 0));
+	player.add(_diveScooter);
+	_diveScooter->setTransform(_scooterOffsetMat);
 }
 
 void PlayerMovementBehaviour::updateFromConfig()
@@ -165,6 +180,25 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	if (Input::getKeyDown(sf::Keyboard::Down))	_maxMoveSpeed -= 4;
 	if (Input::getKeyDown(sf::Keyboard::Up))	_maxMoveSpeed += 4;
 
+}
+
+void PlayerMovementBehaviour::UnenquipScooter()
+{
+	glm::mat4 temp = _diveScooter->getWorldTransform();
+
+	_diveScooter->setParent(_owner->getParent()->getParent()->getParent());
+	_diveScooter->setTransform(temp);
+	_scooterEnquiped = false;
+}
+
+void PlayerMovementBehaviour::EnquipScooter()
+{
+	glm::vec3 distance = (_owner->getWorldPosition() - _diveScooter->getWorldPosition());
+	if (length(distance) < 5) {
+		_diveScooter->setParent(_owner);
+		_diveScooter->setTransform(_scooterOffsetMat);
+		_scooterEnquiped = true;
+	}
 }
 
 float PlayerMovementBehaviour::moveTowards(float current, float target, float speed)
