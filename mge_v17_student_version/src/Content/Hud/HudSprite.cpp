@@ -22,7 +22,7 @@ HudSprite::~HudSprite()
 
 void HudSprite::setSpriteName(std::string spriteName, bool useSpritePath)
 {
-	//if (_spriteName != spriteName)
+	if (_spriteName != spriteName)
 	{
 		//New sprite name;
 		removeTextureReference();

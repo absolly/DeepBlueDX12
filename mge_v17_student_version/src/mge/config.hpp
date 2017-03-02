@@ -19,6 +19,7 @@ public:
 	static std::string MGE_SOUNDS_PATH;// = "mge/sounds/";
 	static std::string MGE_SETTINGS_PATH;// = "mge/settings/";
 	static std::string MGE_SPRITES_PATH;// = "mge/sprites/";
+	static sf::Vector2f HUD_SCALE_FACTOR;
 	static EventNoArgs onConfigUpdated;
 
 	static std::string tryGetValue(std::string key, std::string defaultValue);
