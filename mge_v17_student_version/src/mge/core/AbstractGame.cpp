@@ -13,7 +13,7 @@ using namespace std;
 #include "mge/config.hpp"
 #include "mge/core/Camera.hpp"
 #include "mge/core/Light.hpp"
-
+#include "Time.h"
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
@@ -216,6 +216,7 @@ void AbstractGame::run() {
 				timeSinceLastUpdate -= timePerFrame;
 				_update(timePerFrame.asSeconds());
 				_world->updatePhysics(timePerFrame.asSeconds());
+				Time::DeltaTime = timePerFrame.asSeconds();
 				Input::updateInput();
 			}
 

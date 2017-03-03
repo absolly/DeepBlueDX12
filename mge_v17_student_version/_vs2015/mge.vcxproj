@@ -249,6 +249,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\ShaderProgram.hpp" />
     <ClInclude Include="src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\Texture.hpp" />
+    <ClInclude Include="src\mge\core\Time.h" />
     <ClInclude Include="src\mge\core\World.hpp" />
     <ClInclude Include="src\mge\materials\AbstractMaterial.hpp" />
     <ClInclude Include="src\mge\materials\ColorMaterial.hpp" />
@@ -311,6 +312,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\ShaderProgram.cpp" />
     <ClCompile Include="src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\core\Texture.cpp" />
+    <ClCompile Include="src\mge\core\Time.cpp" />
     <ClCompile Include="src\mge\core\World.cpp" />
     <ClCompile Include="src\mge\materials\AbstractMaterial.cpp" />
     <ClCompile Include="src\mge\materials\ColorMaterial.cpp" />

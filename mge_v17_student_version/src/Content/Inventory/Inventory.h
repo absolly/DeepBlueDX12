@@ -9,6 +9,16 @@ public:
 	void updateFromConfig();
 	~Inventory();
 
+	void addItem(std::string itemName);
+
+	bool hasItem(std::string itemName);
+
+	int getItemIndex(std::string itemName);
+
+	void removeItem(std::string itemName);
+
+	void removeItem(int itemIndex);
+
 	void draw();
 
 private:
@@ -16,6 +26,8 @@ private:
 
 	HudSprite _inventoryBackgroundSprite;
 	HudSprite _inventorySlotBackgroundSprite;
+
+	std::vector<HudSprite> _inventory;
 
 	int _inventorySlots = 5;
 	float _inventorySlotSpacing = 10;
