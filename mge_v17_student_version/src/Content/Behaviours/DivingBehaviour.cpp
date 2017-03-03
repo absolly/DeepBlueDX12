@@ -27,7 +27,7 @@ void DivingBehaviour::update(float pStep)
 	_timer--;
 	
 	
-	Hud::getInstance()->setDepth((int)ceil(71.7-_owner->getWorldPosition().y/10));
+	Hud::getInstance()->setDepth((int)ceil(71.7-_owner->getChildAt(0)->getWorldPosition().y/10));
 	Hud::getInstance()->setOxygenLeft(to_string((int)ceil(_airLeft)));
 }
 

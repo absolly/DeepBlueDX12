@@ -69,9 +69,9 @@ private:
 
 	AbstractMaterial* _diveScooterMaterial;
 	GameObject* _diveScooter;
-	bool _scooterEnquiped = true;
-	void UnenquipScooter();
-	void EnquipScooter();
+	bool _scooterEquiped = true;
+	void unEquipScooter();
+	void equipScooter();
 
 	float moveTowards(float current, float target, float speed);
 };
