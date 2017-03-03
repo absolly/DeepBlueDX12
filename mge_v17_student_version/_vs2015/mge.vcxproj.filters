@@ -61,6 +61,7 @@
     <ClCompile Include="..\src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
+    <ClCompile Include="src\mge\core\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
     <ClInclude Include="..\src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\SoundManager.hpp" />
+    <ClInclude Include="src\mge\core\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

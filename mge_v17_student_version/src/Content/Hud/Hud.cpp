@@ -6,6 +6,7 @@
 #include <GL/glew.h>
 #include <SFML/Graphics/Text.hpp>
 #include "mge/config.hpp"
+#include "mge\core\Time.h"
 
 Hud* Hud::_instance;
 Hud* Hud::getInstance()
@@ -20,7 +21,9 @@ Hud::Hud(sf::RenderWindow * window) :
 	_debugText(),
 	_inventory(*new Inventory(*window)),
 	_hudMaterial(new HUDMaterial()),
-	_visor("Visor.png")
+	_visor("Visor.png"),
+	_depthBar("DepthBar.png"),
+	_oxygenBar("OxygenBar.png")
 {
 	_instance = this;
 	assert(_window != NULL);
@@ -31,6 +34,12 @@ Hud::Hud(sf::RenderWindow * window) :
 	}
 
 	_visor.setScale(Config::HUD_SCALE_FACTOR);
+	_depthBar.setScale(Config::HUD_SCALE_FACTOR);
+	_oxygenBar.setScale(Config::HUD_SCALE_FACTOR);
+
+	_depthBar.setPosition(50, window->getSize().y - 200);
+	_depthText.setPosition(50, window->getSize().y - 200);
+	_oxygenBar.setPosition(50, window->getSize().y - 300);
 
 	_createDebugHud();
 }
@@ -45,6 +54,16 @@ void Hud::_createDebugHud() {
 	_debugText.setFont(_font);
 	_debugText.setCharacterSize(16);
 	_debugText.setFillColor(sf::Color::White);
+
+	_oxygenText.setString("100%");
+	_oxygenText.setFont(_font);
+	_oxygenText.setCharacterSize(38);
+	_oxygenText.setFillColor(sf::Color::White);
+
+	_depthText.setString("1");
+	_depthText.setFont(_font);
+	_depthText.setCharacterSize(37);
+	_depthText.setFillColor(sf::Color::White);
 }
 
 void Hud::setDebugInfo(std::string pInfo) {
@@ -52,18 +71,52 @@ void Hud::setDebugInfo(std::string pInfo) {
 	_debugText.setPosition(10, 10);
 }
 
+void Hud::setOxygenLeft(std::string oxygenLeft)
+{
+	if (oxygenLeft == "0")
+	{
+		_noOxygenLeft = true;
+	}
+	if (oxygenLeft == "100") 
+	{
+		_noOxygenLeft = false;
+	}
+
+	_oxygenText.setString(oxygenLeft + "%");
+	_oxygenText.setPosition(_oxygenBar.getPosition().x + 120 * Config::HUD_SCALE_FACTOR.x - _oxygenText.getLocalBounds().width / 2, _oxygenBar.getPosition().y);
+}
+
+void Hud::setDepth(std::string depth)
+{
+	_depthText.setString(depth);
+	_depthText.setPosition(_depthBar.getPosition().x + 64 * Config::HUD_SCALE_FACTOR.x - _depthText.getLocalBounds().width / 2, _depthBar.getPosition().y);
+}
+
 void Hud::draw()
 {
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
-	//_hudMaterial->render();
 
 	_window->pushGLStates();
 
 	_window->draw(_visor);
+	_window->draw(_oxygenBar);
+	_window->draw(_oxygenText);
+	_window->draw(_depthBar);
+	_window->draw(_depthText);
 	_inventory.draw();
-	_window->draw(_debugText);
 
+	if (_noOxygenLeft || _deathSpriteOpacity != 0)
+	{
+		_deathSpriteOpacity += (_noOxygenLeft ? 64 : -128) * Time::DeltaTime;
+		if (_deathSpriteOpacity > 255) _deathSpriteOpacity = 255;
+		if (_deathSpriteOpacity < 0) _deathSpriteOpacity = 0;
+		sf::RectangleShape deathScreen = sf::RectangleShape(sf::Vector2f(_window->getSize()));
+		deathScreen.setFillColor(sf::Color(0, 0, 0, _deathSpriteOpacity));
+		_window->draw(deathScreen);
+	}
+
+	_window->draw(_debugText);
 	_window->popGLStates();
 
 }

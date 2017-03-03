@@ -22,6 +22,9 @@ class Hud
 
 		void setDebugInfo (std::string pInfo);
 
+		void setOxygenLeft(std::string oxygenLeft);
+		void setDepth(std::string depthInCM);
+
 	private:
 		static Hud* _instance;
 
@@ -31,6 +34,15 @@ class Hud
         std::string _debugInfo;
 		Inventory& _inventory;
 		HudSprite _visor;
+
+		HudSprite _depthBar;
+		sf::Text _depthText;
+		HudSprite _oxygenBar;
+		sf::Text _oxygenText;
+
+		bool _noOxygenLeft;
+		float _deathSpriteOpacity = 0;
+		HudSprite _deathSprite;
 
         sf::Font _font;
         sf::Text _debugText;
