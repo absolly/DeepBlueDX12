@@ -16,7 +16,7 @@ GLint SeaMaterial::_aUV = 0;
 GLint SeaMaterial::_aTangent = 0;
 GLint SeaMaterial::_aBitangent = 0;
 
-SeaMaterial::SeaMaterial(Texture* pDiffuseTexture, float pTiling)
+SeaMaterial::SeaMaterial(Texture* pDiffuseTexture, float pTiling) : _normalTexture(pDiffuseTexture)
 {
 	//every time we create an instance of colormaterial we check if the corresponding shader has already been loaded
 	_lazyInitializeShader();
@@ -54,7 +54,14 @@ void SeaMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::
 	_time = (float)difftime(clock(), start);
 	//pass in a precalculate mvp matrix (see texture material for the opposite)
 	glm::mat4 mvpMatrix = pProjectionMatrix * pViewMatrix * pModelMatrix;
+
+	//setup texture slot 0
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _normalTexture->getId());
+	glUniform1i(_shader->getUniformLocation("normalTexture"), 0);
+
 	glUniformMatrix4fv(_uMVPMatrix, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
+	glUniformMatrix4fv(_shader->getUniformLocation("modelMatrix"), 1, GL_FALSE, glm::value_ptr(pModelMatrix));
 	glUniform1f(_shader->getUniformLocation("_time"), _time);
 	//set the material color
 	//glUniform3fv(_uDiffuseColor, 1 , glm::value_ptr(_diffuseColor));

@@ -59,7 +59,7 @@ void TestScene::initialize() {
 
 //build the game _world
 void TestScene::_initializeScene() {
-	//_renderer->setClearColor(1, 0, 0);
+	_renderer->setClearColor(0, 0, 0);
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
@@ -73,7 +73,7 @@ void TestScene::_initializeScene() {
 
 	AbstractMaterial* templeMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1000);
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
-	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seatexture.jpg"), 1);
+	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seanormal.jpg"), 1);
 
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
@@ -105,8 +105,6 @@ void TestScene::_initializeScene() {
 	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
-
-
 
 
 	//LuaParser * luaparser = new LuaParser(_world);
@@ -219,7 +217,7 @@ void TestScene::_initializeScene() {
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}*/
 
-	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3());
+	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.5), 100, glm::vec3(0,0,1));
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player));
 	_world->add(light3);
