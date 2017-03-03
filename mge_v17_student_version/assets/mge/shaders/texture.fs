@@ -21,7 +21,8 @@ in vec3 Position_worldspace;
 in vec3 LightDirection_tangentspace[5];
 in vec3 EyeDirection_tangentspace;
 in vec3 LightDirection_cameraspace2;
-in vec3 LightDirection_cameraspace;
+in vec3 LightDirection_cameraspace3;
+
 
 layout (location = 0) out vec4 fragment_color;
 layout (location = 1) out vec4 brightness_color;
@@ -181,7 +182,7 @@ void main( void ) {
             cosAlpha = clamp( dot( E,R ), 0,1 );
             // if(cosTheta > 0.0) {
 
-            float spotEffect = dot(normalize(LightDirection_cameraspace), normalize(-LightDirection_cameraspace2));
+            float spotEffect = dot(normalize(LightDirection_cameraspace3), normalize(-LightDirection_cameraspace2));
 
             float multiplier;
             if (spotEffect < .8)
