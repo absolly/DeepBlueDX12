@@ -4,6 +4,7 @@
 #include "Content\Core\Input.h"
 #include "Content\GameObjects\Player.h"
 #include "mge\Config.hpp"
+#include "mge/core/Light.hpp"
 
 PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 {
@@ -26,6 +27,12 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_diveScooter->setMesh(scooterMesh);
 	_diveScooter->setMaterial(_diveScooterMaterial);
 	_scooterOffsetMat = glm::scale(_scooterOffsetMat, glm::vec3(0.025f));
+
+	Light* spotlight = new Light(Light::lightType::SPOT,"spotlight",glm::vec3(0), glm::vec3(1,1,1), 200, glm::vec3(0,0,1));
+	_diveScooter->add(spotlight);
+	spotlight->setTransform(glm::mat4(1.0f));
+//	spotlight->translate(glm::vec3(1, 0, 0));
+	spotlight->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
 
 	_scooterOffsetMat = glm::translate(_scooterOffsetMat, glm::vec3(0, -40, 30));
 	_scooterOffsetMat = glm::rotate(_scooterOffsetMat, glm::radians(90.f), glm::vec3(0, 1, 0));
