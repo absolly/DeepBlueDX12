@@ -450,7 +450,7 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 	float y = lua_tonumber(lua, -6);
 	float z = lua_tonumber(lua, -5);
 
-	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y, z / 2), isTrigger, true);
+	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y / 2, z / 2), isTrigger, true);
 
 	if (isTrigger)
 		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);

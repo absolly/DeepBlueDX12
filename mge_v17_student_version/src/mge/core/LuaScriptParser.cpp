@@ -116,16 +116,19 @@ int LuaScriptParser::playBreath(lua_State * lua)
 }
 
 int LuaScriptParser::message(lua_State * lua) {
-	_currentText = lua_tostring(lua, -1);
 
-	int amount = lua_tonumber(lua, -2);
+	int amount = lua_tonumber(lua, -1);
 
 	if (amount > 0)
 	{
 		for (int i = 0; i < amount; i++)
 		{
-			_messageBoxManager->addToQueue(_currentText);
+			_messageBoxManager->addToQueue(lua_tostring(lua, -2));
 		}
+	}
+	else
+	{
+		_currentText = lua_tostring(lua, -1);
 	}
 
 	return 0;
@@ -166,7 +169,7 @@ int LuaScriptParser::showObjectiveDistance(lua_State * lua)
 	if (distance < 50)
 		result = "The relic is too close to pinpoint!";
 
-	_messageBoxManager->drawObjective(result);
+	_objectiveText = result;
 
 	return 0;
 }
@@ -183,7 +186,8 @@ void LuaScriptParser::step()
 
 	_messageBoxManager->drawDirectly(_currentText);
 	_currentText = "";
-
+	_messageBoxManager->drawObjective(_objectiveText);
+	_objectiveText = "";
 
 	if (lua_isnil(lua, -1)) { //if is doesn't exist, bail out
 		lua_settop(lua, 0);

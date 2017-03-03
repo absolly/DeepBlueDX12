@@ -29,6 +29,7 @@ private:
 	lua_State * lua;
 	const char * currentFunction = "";
 	MessageBoxManager * _messageBoxManager;
+	std::string _objectiveText;
 	GameObject * _player;
 	std::string _currentText = "";
 	std::vector<GameObject*> * _objectives;

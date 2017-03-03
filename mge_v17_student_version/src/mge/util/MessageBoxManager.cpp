@@ -31,7 +31,7 @@ void MessageBoxManager::_createDebugHud() {
     _debugText.setFont(_font);
 	_debugText.setCharacterSize(16);
 	_debugText.setFillColor(sf::Color::White);
-	_debugText.setPosition(200, 500);
+	_debugText.setPosition(10, 500);
 
 	_objectiveText.setString("");
 	_objectiveText.setFont(_font);
@@ -60,15 +60,28 @@ void MessageBoxManager::_checkQueue() {
 
 void MessageBoxManager::drawDirectly(std::string pText)
 {
-	_debugText.setString(pText);
-	_debugText.setPosition(200, 500);
+	if (pText != "")
+	{
+		messages.empty();
+		_debugText.setString(pText);
+	}
+	else
+	{
+		if (messages.size() > 0)
+		{
+			_debugText.setString(messages.front());
+			messages.pop();
+		}
+	}
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
 
 	_window->pushGLStates();
-		_window->draw(_debugText);
+	_window->draw(_debugText);
 	_window->popGLStates();
+
+	_debugText.setString("");
 }
 
 
@@ -91,17 +104,12 @@ void MessageBoxManager::draw()
 
 void MessageBoxManager::drawObjective(std::string pText)
 {	
-	messages.push(pText);
-
-	_objectiveText.setString(messages.front());
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
+
+	_objectiveText.setString(pText);
 
 	_window->pushGLStates();
 		_window->draw(_objectiveText);
 	_window->popGLStates();
-
-	messages.pop();
-
 }
