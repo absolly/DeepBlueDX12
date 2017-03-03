@@ -11,9 +11,10 @@ std::string Config::MGE_FONT_PATH = "mge/fonts/";
 std::string Config::MGE_LEVEL_PATH = "mge/levels/";
 std::string Config::MGE_SETTINGS_PATH = "mge/settings/";
 std::string Config::MGE_SPRITES_PATH = "mge/sprites/";
+std::string Config::MGE_SOUNDS_PATH = "mge/sounds/";
 sf::Vector2f Config::HUD_SCALE_FACTOR;
 sf::Vector2i Config::SCREEN_RESOLUTION = sf::Vector2i(FULL_SCREEN ? 1920 : 1600, FULL_SCREEN ? 1080 : 900);
-bool Config::FULL_SCREEN = false;
+bool Config::FULL_SCREEN = true;
 EventNoArgs Config::onConfigUpdated;
 
 std::unordered_map<std::string, std::string> Config::_loadedConfigVaraibles = std::unordered_map<std::string, std::string>();

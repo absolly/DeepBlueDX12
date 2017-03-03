@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include "mge/config.hpp"
 #include "mge\core\Time.h"
+#include "Content\Core\Input.h"
 
 Hud* Hud::_instance;
 Hud* Hud::getInstance()
@@ -87,9 +88,11 @@ void Hud::setOxygenLeft(std::string oxygenLeft)
 	_oxygenText.setPosition(_oxygenBar.getPosition().x + 120 * Config::HUD_SCALE_FACTOR.x - _oxygenText.getLocalBounds().width / 2, _oxygenBar.getPosition().y);
 }
 
-void Hud::setDepth(std::string depth)
+void Hud::setDepth(int depth)
 {
-	_depthText.setString(depth);
+	std::string depthString = to_string(depth);
+	_depthSpriteOpacity = depth*1.5f;
+	_depthText.setString(depthString);
 	_depthText.setPosition(_depthBar.getPosition().x + 64 * Config::HUD_SCALE_FACTOR.x - _depthText.getLocalBounds().width / 2, _depthBar.getPosition().y);
 }
 

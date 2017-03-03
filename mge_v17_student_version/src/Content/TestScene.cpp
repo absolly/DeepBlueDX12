@@ -90,7 +90,7 @@ void TestScene::_initializeScene() {
 	fishTank->setMaterial(gpuinstancing);
 	_world->add(fishTank);
 
-	GameObject* test = new GameObject("", glm::vec3(702.763, 400, -39.4018));
+	GameObject* test = new GameObject("", glm::vec3(-2000, 718.598, -700));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
 	test->add(playerDivingAnimationContainer);
@@ -173,7 +173,7 @@ void TestScene::_initializeScene() {
 		teapot->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
 		teapot->setMaterial(relicAndTreasureMaterial);
 		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
-		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true, true);
+		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(4, 8), true, true);
 		_world->add(teapot);
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}
@@ -194,7 +194,8 @@ void TestScene::_initializeScene() {
 	temple->scale(glm::vec3(0.1f, 0.1f, 0.1f));
 	templeDoors->scale(glm::vec3(0.1f, 0.1f, 0.1f));
 
-	templeDoors->setLocalPosition(glm::vec3(1.76276, 8.27295, 375.963));
+	temple->setLocalPosition(glm::vec3(-402.35, 79.9474, 995.567));
+	templeDoors->setLocalPosition(glm::vec3(-404.713, 82.5058, 1362.81));
 
 	Collider& templeDoorsCollider = templeDoors->addCollider(BoxColliderArgs(200, 800, 20), true, true);
 	templeDoorsCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onTempleDoorCollision);
@@ -283,7 +284,7 @@ void TestScene::onTempleDoorCollision(OnCollisionArgs onCollisionArgs)
 		std::cout << "YOU NEED A RELIC STATUE TO OPEN THIS DOOR";
 		return;
 	}
-	std::cout << "YOU USED A RELIC STATUE TO OPEN THIS DOOR";
+	std::cout << "You used a relic statue to open the door.";
 	Hud::getInstance()->getInventory().removeItem(itemIndexOfRelicStatue);
 
 	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);

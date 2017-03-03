@@ -58,7 +58,6 @@
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
     <ClCompile Include="src\mge\core\LuaScriptParser.cpp" />
     <ClCompile Include="src\mge\util\MessageBoxManager.cpp" />
-    <ClCompile Include="..\src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
     <ClCompile Include="src\mge\core\Time.cpp" />
@@ -127,7 +126,6 @@
     <ClInclude Include="src\mge\materials\SeaMaterial.hpp" />
     <ClInclude Include="src\mge\core\LuaScriptParser.hpp" />
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
-    <ClInclude Include="..\src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\Time.h" />
   </ItemGroup>

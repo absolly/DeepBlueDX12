@@ -23,7 +23,7 @@ class Hud
 		void setDebugInfo (std::string pInfo);
 
 		void setOxygenLeft(std::string oxygenLeft);
-		void setDepth(std::string depthInCM);
+		void setDepth(int depthInCM);
 
 		Inventory& getInventory();
 
@@ -37,6 +37,7 @@ class Hud
 		Inventory& _inventory;
 		HudSprite _visor;
 
+		float _depthSpriteOpacity = 0;
 		HudSprite _depthBar;
 		sf::Text _depthText;
 		HudSprite _oxygenBar;

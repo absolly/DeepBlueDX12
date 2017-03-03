@@ -14,7 +14,7 @@ DivingBehaviour::~DivingBehaviour()
 
 void DivingBehaviour::update(float pStep)
 {
-	_airLeft -= _drainRate * pStep;
+	_airLeft -= _drainRate * 0.5f * pStep;
 	_refillCooldownTimer -= pStep;
 	
 	/*if (_owner->getWorldPosition().y >  727.386)
@@ -27,7 +27,7 @@ void DivingBehaviour::update(float pStep)
 	_timer--;
 	
 	
-	Hud::getInstance()->setDepth(to_string((int)ceil(71.7-_owner->getWorldPosition().y/10)));
+	Hud::getInstance()->setDepth((int)ceil(71.7-_owner->getWorldPosition().y/10));
 	Hud::getInstance()->setOxygenLeft(to_string((int)ceil(_airLeft)));
 }
 

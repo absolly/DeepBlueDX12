@@ -53,6 +53,8 @@ private:
 	float _rollRotationSpeedMultiplier = 20;
 	float _currentRoll;
 
+	float _sensitivity = 0.05f;
+
 	//[Header("Gravity")]
 	float _inWaterGravity = 0.5f;
 	float _outOfWaterGravity = 5;

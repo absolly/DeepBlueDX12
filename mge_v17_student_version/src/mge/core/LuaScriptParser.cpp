@@ -88,6 +88,7 @@ int LuaScriptParser::playSound(lua_State * lua)
 
 int LuaScriptParser::playBreath(lua_State * lua)
 {
+	/*
 	std::random_device rd;
 
 	// Initialize Mersenne Twister pseudo-random number generator
@@ -110,7 +111,7 @@ int LuaScriptParser::playBreath(lua_State * lua)
 			_soundManager->PlaySound("air_out_relaxed_" + std::to_string(dis(gen)), "player", false, false, false, 100);
 			_BreathingIn = true;
 		}
-	}
+	}*/
 
 	return 0;
 }

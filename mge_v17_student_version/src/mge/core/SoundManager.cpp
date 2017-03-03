@@ -5,21 +5,23 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "mge\core\SoundManager.hpp"
+
+SoundManager* SoundManager::_instance;
 
 SoundManager::SoundManager()
 {
+	_instance = this;
 	std::cout << "---- sound incoming ---" << std::endl;
-
-	////std::string path = Config::MGE_SOUNDS_PATH + "full_soundtrack.wav";
-	if (!music.openFromFile("mge/sounds/full_soundtrack.wav"))
+	/*
+	if (!music.openFromFile(Config::MGE_SOUNDS_PATH + "full_soundtrack.wav"))
 		return;
-
-	//std::cout << "hey link hey listen" << std::endl;
 	music.setVolume(30);
-	
 	music.setLoop(true);
 	music.play();	
-
+	*/
+	PlayMusic(Config::MGE_SOUNDS_PATH + "full_soundtrack.wav", 75, true);
+	PlayMusic(Config::MGE_SOUNDS_PATH + "ambient_underwater.wav", 75, true);
 	SetupFiles();
 	SetupSounds();
 }
@@ -51,6 +53,16 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "suffocating");
 
 	
+}
+
+void SoundManager::PlayMusic(std::string pSoundName, float volume, bool loop)
+{
+	sf::Music& music = *new sf::Music();
+	if (!music.openFromFile(pSoundName))
+		return;
+	music.setVolume(volume);
+	music.setLoop(loop);
+	music.play();
 }
 
 void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume)
@@ -145,4 +157,9 @@ void SoundManager::SetupSounds()
 
 SoundManager::~SoundManager()
 {
+}
+
+SoundManager * SoundManager::getInstance()
+{
+	return _instance;
 }

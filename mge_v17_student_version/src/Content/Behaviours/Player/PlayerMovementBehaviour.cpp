@@ -61,6 +61,8 @@ void PlayerMovementBehaviour::updateFromConfig()
 	Config::updateValue("_maxRollRotation", _maxRollRotation);
 	Config::updateValue("_rollRotationSpeedMultiplier", _rollRotationSpeedMultiplier);
 
+	Config::updateValue("_sensitivity", _sensitivity);
+
 }
 
 PlayerMovementBehaviour::~PlayerMovementBehaviour()
@@ -69,7 +71,6 @@ PlayerMovementBehaviour::~PlayerMovementBehaviour()
 
 void PlayerMovementBehaviour::update(float deltaTime)
 {
-	float sensitivity = 0.15f;
 	float invertYAxis = false;
 
 	//TODO Get the screen position and screensize from the actual window.
@@ -84,8 +85,8 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	if (Input::mouseLocked)
 	{
 		sf::Mouse::setPosition(windowCenter);
-		_currentYaw += mouseMovement.x * sensitivity;
-		_currentPitch += (invertYAxis ? 1 : -1) * mouseMovement.y * sensitivity;
+		_currentYaw += mouseMovement.x * _sensitivity;
+		_currentPitch += (invertYAxis ? 1 : -1) * mouseMovement.y * _sensitivity;
 		_currentPitch = glm::clamp(_currentPitch, -90.0f, 90.0f);
 	}
 
@@ -135,7 +136,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	
 	if (_scooterEnquiped) {
 		_diveScooter->setTransform(_scooterOffsetMat);//_owner->setTransform(transformedVector);
-		_prevYaw = glm::clamp(glm::lerp(_prevYaw, mouseMovement.x * sensitivity * 4, deltaTime * 3), -10.0f, 10.0f);
+		_prevYaw = glm::clamp(glm::lerp(_prevYaw, mouseMovement.x * _sensitivity * 4, deltaTime * 3), -10.0f, 10.0f);
 		_diveScooter->rotate(glm::radians(_prevYaw), glm::vec3(0, 1, 0));
 		_diveScooter->rotate(glm::radians(_currentPitch * 0.1f), glm::vec3(0, 0, 1));
 
