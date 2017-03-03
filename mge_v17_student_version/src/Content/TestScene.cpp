@@ -81,11 +81,13 @@ void TestScene::_initializeScene() {
 	plane->setMaterial(textureMaterial);
 	_world->add(plane);
 */
-	//FishTank* fishTank = new FishTank(glm::vec3(0,200,0), _world, "", 100, 200);
-	//fishTank->setMesh(smallFish);
-	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
-	//fishTank->setMaterial(gpuinstancing);
-	//_world->add(fishTank);
+	Mesh * smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+
+	FishTank* fishTank = new FishTank(glm::vec3(-1200,300,270), _world, "", 150, 200, 20);
+	fishTank->setMesh(smallFish);
+	AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+	fishTank->setMaterial(gpuinstancing);
+	_world->add(fishTank);
 
 	GameObject* test = new GameObject("", glm::vec3(-2000, 718.598, -700));
 	GameObject* playerDivingAnimationContainer = new GameObject("");

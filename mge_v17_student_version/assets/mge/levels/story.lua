@@ -1,7 +1,7 @@
 function main()
 	playSound("ambient_underwater", "ambient", true, false, 100);
 	visit("act1_1");
-	message("Welcome to our playtest, please proceed to the objective and have fun!",500);
+	message("Welcome to our playtest, please proceed to the objective and have fun!", 1000);
 end
 
 function act1_1()
