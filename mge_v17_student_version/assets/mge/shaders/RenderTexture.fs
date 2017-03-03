@@ -26,7 +26,33 @@ float sigmoid(float a, float f)
 {
 	return 1.0/(1.0+exp(-f*a));
 }
+vec4 kawaseBloom( sampler2D texture, vec2 uv, vec2 texturesize, float iteration ) {
+    vec2 texelSize = 1.0 / texturesize;
+    vec2 texelSize05 = texelSize * 0.5;
+    
+    vec2 uvOffset = texelSize.xy * vec2( iteration) + texelSize05;
+    
+    vec2 texCoordSample;
+    vec4 color;
+    
+    texCoordSample.x = uv.x - uvOffset.x;
+    texCoordSample.y = uv.y + uvOffset.y;
+    color = texture2D( texture, texCoordSample );
 
+    texCoordSample.x = uv.x + uvOffset.x;
+    texCoordSample.y = uv.y + uvOffset.y;
+    color += texture2D( texture, texCoordSample );
+    
+    texCoordSample.x = uv.x + uvOffset.x;
+    texCoordSample.y = uv.y - uvOffset.y;
+    color += texture2D( texture, texCoordSample );
+    
+    texCoordSample.x = uv.x - uvOffset.x;
+    texCoordSample.y = uv.y - uvOffset.y;
+    color += texture2D( texture, texCoordSample );
+    
+    return color * 0.25;
+}
 void main(){
 
 	//float depth = log(texture( depthTexture, UV).x*1 + 1) / log(texture( depthTexture, UV).x*100000 + 1);
@@ -57,11 +83,12 @@ void main(){
 	//fogFactor = clamp( fogFactor, 0.0, 1.0);
 	float distortion=(cos(UV.x*200 + _time * 10000) + sin(UV.y*200 + _time * 10000))*(0.1f * depth + 0.001);
 	if(texture(waterMaskTexture, UV).r >0 && texture(waterMaskTexture, vec2(UV.x+distortion, UV.y)).r >0){
-		
+		vec3 blurcolor = kawaseBloom( renderedTexture, vec2(UV.x+distortion, UV.y), textureSize(renderedTexture,0), 1).xyz;
+		vec3 blurbrightness = kawaseBloom( bloomTexture, vec2(UV.x+distortion, UV.y), textureSize(renderedTexture,0), 1).xyz;
 		const float gamma = 2.2;
 		const float exposure = 1;
-		vec3 hdrColor = texture(renderedTexture, vec2(UV.x+distortion, UV.y)).rgb;
-		vec3 bloomColor = texture(bloomTexture, vec2(UV.x+distortion, UV.y)).rgb;
+		vec3 hdrColor = blurcolor;
+		vec3 bloomColor = blurbrightness;
 		hdrColor += bloomColor; // additive blending
 		// Exposure tone mapping
 		vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);

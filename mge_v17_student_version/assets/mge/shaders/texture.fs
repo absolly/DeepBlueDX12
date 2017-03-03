@@ -21,7 +21,6 @@ in vec3 Position_worldspace;
 in vec3 LightDirection_tangentspace[5];
 in vec3 EyeDirection_tangentspace;
 in vec3 LightDirection_cameraspace2;
-in vec3 LightDirection_cameraspace3;
 
 
 layout (location = 0) out vec4 fragment_color;
@@ -90,7 +89,7 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
                       +  visibility * pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
 }
 
-vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
+vec3 calcDirectionalLight(float pFalloff, vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
     // Normal of the computed fragment, in camera space
     n = normalize( FragNormal_tangentspace );
@@ -109,11 +108,11 @@ vec3 calcDirectionalLight(vec3 pLightColor, float pLightIntensity, vec3 pMateria
     //  - Looking elsewhere -> < 1
     cosAlpha = clamp( dot( E,R ), 0,1 );
 
-    return pMaterialAmbientColor +
-           // Diffuse : "color" of the object
-           visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
-           // Specular : reflective highlight, like a mirror
-           +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50) ;
+    return pFalloff *( pMaterialAmbientColor +
+                       // Diffuse : "color" of the object
+                       visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
+                       // Specular : reflective highlight, like a mirror
+                       +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50));
 }
 
 void main( void ) {
@@ -131,7 +130,7 @@ void main( void ) {
 
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
         visibility = 1.0;
-        MaterialAmbientColor = vec3(0.01,0.01,0.01) *lightColor[activeLight] * MaterialDiffuseColor;
+        MaterialAmbientColor = vec3(0.001,0.001,0.001) *lightColor[activeLight] * MaterialDiffuseColor;
         MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
         distance = length(Position_worldspace - lightPosition[activeLight]);
@@ -159,17 +158,17 @@ void main( void ) {
                 // 0.2 potentially remain, which is quite dark.
                 coord = vec3( ShadowCoord.xy + poissonDisk[index]/1200.0,  (ShadowCoord.z)/ShadowCoord.w );
                 if(coord.x > 0 && coord.x < 1 && coord.y > 0 && coord.y < 1 && coord.z > 0 && coord.z < 1)
-                    visibility -= 0.2*(1.0-texture( shadowMap, coord));
+                    visibility -= 0.23*(1.0-texture( shadowMap, coord));
             }
-            combinedColor += calcDirectionalLight(lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
+            combinedColor += calcDirectionalLight(falloff, lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
             break;
         case  2:
             // Normal of the computed fragment, in camera space
             n = normalize( FragNormal_tangentspace );
             // Direction of the light (from the fragment to the light)
-            l = normalize( LightDirection_tangentspace[activeLight] );
+            l = normalize( abs(LightDirection_tangentspace[activeLight]));
 
-            cosTheta = clamp( dot( n,l ), 0,1 );
+            cosTheta = max( dot( n,l ), 0.0);
 
             // Eye vector (towards the camera)
             E = normalize(EyeDirection_tangentspace);
@@ -182,38 +181,16 @@ void main( void ) {
             cosAlpha = clamp( dot( E,R ), 0,1 );
             // if(cosTheta > 0.0) {
 
-            float spotEffect = dot(normalize(LightDirection_cameraspace3), normalize(-LightDirection_cameraspace2));
+            float spotEffect = dot(normalize(lightPosition[activeLight] - Position_worldspace), normalize(-LightDirection_cameraspace2));
 
-            float multiplier;
-            if (spotEffect < .8)
-                multiplier=0;
+            if (spotEffect > .85) {
+				float multiplier = clamp(pow((spotEffect - 0.85) * 10, 2), 0.0, 1.0);
 
-            multiplier = pow((spotEffect - 0.8) * 10, 2);
-
-            if (spotEffect >0.9) {
-                multiplier = 1;
-            }
-
-
-            if (spotEffect > .8) {
-                fragment_color = vec4(1,0,0,1);
-                return;
-
-//                    //spotEffect = 0;
-//
-//
-//                    // att = spotEffect * lightIntensity[activeLight] / (lightAttenuation[activeLight].x +
-//                    //    lightAttenuation[activeLight].y * distance +
-//                    // lightAttenuation[activeLight].z * distance * distance);
-//
-                vec3 color =
-                    //MaterialDiffuseColor;
-                    // Ambient : simulates indirect lighting
-                    MaterialAmbientColor +
-                    // Diffuse : "color" of the object
-                    multiplier * MaterialDiffuseColor * lightColor[activeLight] * lightIntensity[activeLight] * cosTheta / falloff
-                    // Specular : reflective highlight, like a mirror
-                    + multiplier * MaterialSpecularColor * lightColor[activeLight] * lightIntensity[activeLight] * pow(cosAlpha,50) / falloff;
+                vec3 color = clamp(falloff, 0.0, 0.02) *(MaterialAmbientColor +
+                                       // Diffuse : "color" of the object
+                                       multiplier * MaterialDiffuseColor * lightColor[activeLight] * lightIntensity[activeLight] * cosTheta
+                                       // Specular : reflective highlight, like a mirror
+                                       +  multiplier * MaterialSpecularColor * lightColor[activeLight] * lightIntensity[activeLight] * pow(cosAlpha,50));
 
                 combinedColor += (color);
             }

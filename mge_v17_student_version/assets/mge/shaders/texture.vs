@@ -25,7 +25,6 @@ out vec3 LightDirection_tangentspace[5];
 out vec3 EyeDirection_tangentspace;
 vec3 EyeDirection_cameraspace;
 out vec3 LightDirection_cameraspace2;
-out vec3 LightDirection_cameraspace3;
 
 
 void main( void ) {
@@ -66,9 +65,8 @@ void main( void ) {
             LightDirection_cameraspace =  (viewMatrix * vec4(lightDirection[activeLight],0)).xyz;
             break;
         case 2:
-			LightDirection_cameraspace2 = ( viewMatrix * vec4(lightDirection[activeLight],0)).xyz;
+			LightDirection_cameraspace2 = lightDirection[activeLight];
             LightDirection_cameraspace = LightPosition_cameraspace + EyeDirection_cameraspace;
-			LightDirection_cameraspace3 = LightDirection_cameraspace;
             break;
 		}
 
