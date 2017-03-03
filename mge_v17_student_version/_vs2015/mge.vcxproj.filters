@@ -8,7 +8,6 @@
     <ClCompile Include="src\mge\behaviours\CameraOrbitBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\KeysBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\LookAt.cpp" />
-    <ClCompile Include="src\mge\behaviours\RigidBody.cpp" />
     <ClCompile Include="src\mge\behaviours\RotatingBehaviour.cpp" />
     <ClCompile Include="src\mge\core\AbstractGame.cpp" />
     <ClCompile Include="src\mge\core\Camera.cpp" />
@@ -61,6 +60,9 @@
     <ClCompile Include="src\mge\core\SoundManager.cpp" />
     <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
     <ClCompile Include="src\mge\core\Time.cpp" />
+    <ClCompile Include="src\mge\core\Random.cpp" />
+    <ClCompile Include="src\Content\Behaviours\Player\PlayerBreathingBehaviour.cpp" />
+    <ClCompile Include="src\mge\core\Physics\RigidBody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -71,7 +73,6 @@
     <ClInclude Include="src\mge\behaviours\CameraOrbitBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\KeysBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\LookAt.hpp" />
-    <ClInclude Include="src\mge\behaviours\RigidBody.hpp" />
     <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp" />
     <ClInclude Include="src\mge\Config.hpp" />
     <ClInclude Include="src\mge\core\AbstractGame.hpp" />
@@ -128,6 +129,9 @@
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
     <ClInclude Include="src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\Time.h" />
+    <ClInclude Include="src\mge\core\Random.h" />
+    <ClInclude Include="src\Content\Behaviours\Player\PlayerBreathingBehaviour.h" />
+    <ClInclude Include="src\mge\core\Physics\RigidBody.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

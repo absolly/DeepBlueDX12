@@ -6,16 +6,44 @@
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "mge\core\SoundManager.hpp"
 #include "mge\core\Time.h"
-#include <random>
+#include "mge\core\Random.h"
+#include "Content\Core\Input.h"
+#include "mge\core\Camera.hpp"
+#include "mge\core\Physics\RigidBody.hpp"
+#include "Content\Behaviours\DivingBehaviour.h"
+#include "Content\Behaviours\Player\PlayerBreathingBehaviour.h"
+#include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 
 Player::Player() : GameObject("Player")
 {
-	Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
-	setMesh(cubeMeshF);
-	AbstractMaterial* material = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
-	setMaterial(material);
-	_playerMovementBehaviour = new PlayerMovementBehaviour(*this);
-	addBehaviour(_playerMovementBehaviour);
+	//Add a camera
+	_camera = new Camera("Player Camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f), (16.0f / 9.0f), .5f, 100000.0f));
+	_camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
+	//Add a camera
+
+
+	GameObject* temp = new GameObject();
+	add(temp);
+	temp->add(_camera);
+	//Add behaviours
+	addBehaviour(new PlayerBreathingBehaviour(*this));
+	addBehaviour(new DivingAnimationBehaviour());
+	addBehaviour(new DivingBehaviour());
+	//Add behaviours
+
+	//Set the position
+	_spawnPosition = glm::vec3(-2000, 718.598, -700);
+	temp->setLocalPosition(_spawnPosition);
+	//Set the position
+
+
+	//Add rigidbody and collider
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(getBulletPhysicsTransform());
+	temp->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
+	temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
+	temp->addBehaviour(new PlayerMovementBehaviour(*this));
+	//Add rigidbody and collider
+
 }
 
 Player::~Player()
@@ -26,35 +54,29 @@ Player::~Player()
 void Player::update(float deltaTime)
 {
 	GameObject::update(deltaTime);
-	PlayBreatheSound();
 }
 
-void Player::PlayBreatheSound()
+void Player::setAffraidness(float affraidness)
 {
-	if (_breatheDelay > 0)
-	{
-		_breatheDelay -= Time::DeltaTime;
-		return;
-	}
-	std::random_device rd;
+	_affraidness = glm::clamp(affraidness, 0.0f, 100.0f);
+}
 
-	// Initialize Mersenne Twister pseudo-random number generator
-	std::mt19937 gen(rd());
-	
-	std::uniform_int_distribution<> dis(1, 6);
+float Player::getAffraidness()
+{
+	return _affraidness;
+}
 
-	SoundManager* soundManager = SoundManager::getInstance();
-	if (_breathingIn)
-	{
-		soundManager->PlaySound("air_in_" + std::to_string(dis(gen)), "player", false, false, false, 100);
-	}
-	else
-	{
-		soundManager->PlaySound("air_out_relaxed_" + std::to_string(dis(gen)), "player", false, false, false, 100);
-	}
+void Player::scare(float scareAmount)
+{
+	_affraidness = glm::clamp(_affraidness + scareAmount, 0.0f, 100.0f);
+}
 
-	std::uniform_real_distribution<> breatheDelayRange(2.0, 3.0);
+Camera * Player::getCamera()
+{
+	return _camera;
+}
 
-	_breatheDelay = breatheDelayRange(gen);
-	_breathingIn = !_breathingIn;
+int Player::getDepthInCM()
+{
+	return (int)ceil(7170 - getWorldPosition().y * 10);
 }

@@ -64,10 +64,10 @@ void TestScene::_initializeScene() {
 	AbstractGame::_setFogGradient(fog);
 
 	//add camera first (it will be updated last)
-	Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
-	camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
+	//Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
+	//camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
 	//_world->add(camera);
-	_world->setMainCamera(camera);
+	//_world->setMainCamera(camera);
 
 	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane_8192.obj");
 
@@ -90,22 +90,28 @@ void TestScene::_initializeScene() {
 	fishTank->setMaterial(gpuinstancing);
 	_world->add(fishTank);
 
-	GameObject* test = new GameObject("", glm::vec3(-2000, 718.598, -700));
-	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
-	test->add(playerDivingAnimationContainer);
-	_world->add(test);
-	//_world->add(camera);
-	playerDivingAnimationContainer->add(player);
+	_world->add(player);
+	_world->setMainCamera(player->getCamera());
+	RigidBody* playerRigidbody = player->getBehaviour<RigidBody>();
+
+	/*
+	GameObject* player = new GameObject("player", glm::vec3(-2000, 718.598, -700));
+	Player* playerContainer = new Player();
+
+	GameObject* playerDivingAnimationContainer = new GameObject("playerDivingAnimationContainer");
+	player->add(playerDivingAnimationContainer);
+	_world->add(player);
+	playerDivingAnimationContainer->add(playerContainer);
 	playerDivingAnimationContainer->addBehaviour(new DivingAnimationBehaviour());
 	DivingBehaviour* divingBehaviour = new DivingBehaviour();
-	player->addBehaviour(divingBehaviour);
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(player->getBulletPhysicsTransform());
+	playerContainer->addBehaviour(divingBehaviour);
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(playerContainer->getBulletPhysicsTransform());
 
 	RigidBody& playerRigidbody = playerDivingAnimationContainer->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
-	player->add(camera);
-
+	playerContainer->add(camera);
+	*/
 
 	//LuaParser * luaparser = new LuaParser(_world);
 //	luaparser->loadFile((Config::MGE_LEVEL_PATH + "sceneWithFish.lua").c_str());
@@ -118,14 +124,14 @@ void TestScene::_initializeScene() {
 	//boat->scale(glm::vec3(0.1));
 	//boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	//float surfaceHeight = 750;
-	boat->addBehaviour(new BoatFollowBehaviour(player));
+	boat->addBehaviour(new BoatFollowBehaviour(player->getChildAt(0)));
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
 	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,50,0));
 	boat->add(boatColliderContainer);
 	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,50), true, false);
 	boatColliderContainer->rotate(glm::radians(90.0f), glm::vec3(1,0, 0));
 	
-	boatTriggerCollider.collisionEvents[&playerRigidbody].bind(divingBehaviour, &DivingBehaviour::onCollisionAddAir);
+	boatTriggerCollider.collisionEvents[playerRigidbody].bind(player->getBehaviour<DivingBehaviour>(), &DivingBehaviour::onCollisionAddAir);
 	
 	_world->add(boat);
 
@@ -143,10 +149,10 @@ void TestScene::_initializeScene() {
 	SoundManager * soundmng = new SoundManager();
 
 	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	_scriptParser->SetPlayerAndObjectives(player, objectives);
+	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
 	LuaParser * luaparser2 = new LuaParser(_world);
-	luaparser2->setPlayerRigidBody(playerRigidbody);
+	luaparser2->setPlayerRigidBody(*playerRigidbody);
 	luaparser2->scriptParser = _scriptParser;
 	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
 
@@ -173,7 +179,7 @@ void TestScene::_initializeScene() {
 		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
 		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(4, 8), true, true);
 		_world->add(teapot);
-		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+		teapotTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}
 
 	Mesh* templeMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleWODoors.obj");
@@ -196,7 +202,7 @@ void TestScene::_initializeScene() {
 	templeDoors->setLocalPosition(glm::vec3(-404.713, 82.5058, 1362.81));
 
 	Collider& templeDoorsCollider = templeDoors->addCollider(BoxColliderArgs(200, 800, 20), true, true);
-	templeDoorsCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onTempleDoorCollision);
+	templeDoorsCollider.collisionEnterEvents[playerRigidbody].bind(this, &TestScene::onTempleDoorCollision);
 
 	_world->add(temple);
 	_world->add(templeDoors);
@@ -219,7 +225,7 @@ void TestScene::_initializeScene() {
 
 	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.5), 100, glm::vec3(0,0,1));
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
-	light3->addBehaviour(new CopyTargetPositionBehaviour(player));
+	light3->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0)));
 	_world->add(light3);
 
 
@@ -238,7 +244,7 @@ void TestScene::_initializeScene() {
 	sea->setMesh(planeMeshDefault);
 	sea->setMaterial(textureMaterial2);
 	sea->scale(glm::vec3(5000, 1, 5000));
-	sea->addBehaviour(new CopyTargetPositionBehaviour(player, glm::vec3(1, 0, 1)));
+	sea->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::vec3(1, 0, 1)));
 	sea->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));
 	_world->add(sea);
 }

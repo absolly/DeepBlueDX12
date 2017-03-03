@@ -8,7 +8,7 @@ DivingAnimationBehaviour::DivingAnimationBehaviour()
 
 void DivingAnimationBehaviour::update(float deltaTime)
 {
-	float moveRange = 0.1f * 3;
+	float moveRange = 0.1f * 6;
 
 	//Moving up
 	//float moveUpSpeed = 1.2f;
@@ -17,7 +17,7 @@ void DivingAnimationBehaviour::update(float deltaTime)
 
 	if (_moveUp)
 	{
-		_currentMoveUpSpeed += 2.5f * 3* deltaTime;
+		_currentMoveUpSpeed += 2.5f * 6* deltaTime;
 		_currentOffset += _currentMoveUpSpeed * deltaTime;
 		if (_currentOffset > moveRange / 2)
 		{
@@ -28,7 +28,7 @@ void DivingAnimationBehaviour::update(float deltaTime)
 	}
 	else
 	{
-		_currentMoveUpSpeed -= 1.0f * 3 * deltaTime;
+		_currentMoveUpSpeed -= 1.0f * 6 * deltaTime;
 		_currentOffset += _currentMoveUpSpeed * deltaTime;
 		if (_currentOffset < -moveRange / 2)
 		{

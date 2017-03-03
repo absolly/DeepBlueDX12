@@ -10,6 +10,7 @@ public:
 	~RigidBody();
 
 	virtual void update(float pStep);
+	void updateTransform();
 
 	Collider& getCollider();
 protected:

@@ -11,18 +11,22 @@ public:
 	~Player();
 
 	virtual void update(float deltaTime);
+	
+	void setAffraidness(float affraidness);
+	float getAffraidness();
+	void scare(float affraidnessIncrease);
+
+	Camera* getCamera();
 private:
 
-	void PlayBreatheSound();
+	glm::vec3 _spawnPosition;
+	Camera* _camera;
 
-	PlayerMovementBehaviour* _playerMovementBehaviour;
+	int getDepthInCM();
 
-	bool _breathingIn = true;
-	float _breatheDelay = 0;
-
-	float _depth;
-	float _airRemaining;
-	float _affraidness;
+	float _depth = 0;
+	float _airRemaining = 100;
+	float _affraidness = 0;
 
 	std::string breatheInSounds = "breathe";
 };

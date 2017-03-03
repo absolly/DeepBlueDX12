@@ -36,7 +36,8 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	_scooterOffsetMat = glm::translate(_scooterOffsetMat, glm::vec3(0, -40, 30));
 	_scooterOffsetMat = glm::rotate(_scooterOffsetMat, glm::radians(90.f), glm::vec3(0, 1, 0));
-	player.add(_diveScooter);
+	
+	player.getChildAt(0)->add(_diveScooter);
 	_diveScooter->setTransform(_scooterOffsetMat);
 }
 
@@ -104,10 +105,10 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed, _maxMoveSpeed*(_scooterEnquiped && Input::getKey(sf::Keyboard::LShift) ? 3 : 1));
+	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed, _maxMoveSpeed*(_scooterEquiped && Input::getKey(sf::Keyboard::LShift) ? 3 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
-	if (!_scooterEnquiped) {
+	if (!_scooterEquiped) {
 		//Moving sideways
 		float sidewayInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ? 1 : 0);
 		_currentMoveSideSpeed += sidewayInput * _moveSideAcceleration * deltaTime;
@@ -126,7 +127,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 
 	//Moving up and down
-	float upwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1 : 0);
+	float upwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ? 1 : 0);// -(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1 : 0);
 	_currentMoveUpSpeed += upwardInput * _moveUpAcceleration * deltaTime;
 	_currentMoveUpSpeed = glm::clamp(_currentMoveUpSpeed, _minMoveUpSpeed, _maxMoveUpSpeed);
 	if (upwardInput != glm::sign(_currentMoveUpSpeed)) _currentMoveUpSpeed = moveTowards(_currentMoveUpSpeed, 0, _moveUpDecceleration * deltaTime);
@@ -141,7 +142,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	glm::mat4x4 scaleMatrix = glm::mat4x4(1);
 	glm::mat4x4 transformedVector = translationMatrix * rotationMatrix * scaleMatrix;;// *originalVector;
 	
-	if (_scooterEnquiped) {
+	if (_scooterEquiped) {
 		_diveScooter->setTransform(_scooterOffsetMat);//_owner->setTransform(transformedVector);
 		_prevYaw = glm::clamp(glm::lerp(_prevYaw, mouseMovement.x * _sensitivity * 4, deltaTime * 3), -10.0f, 10.0f);
 		_diveScooter->rotate(glm::radians(_prevYaw), glm::vec3(0, 1, 0));
@@ -152,7 +153,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	float totalMoveSpeed = glm::sqrt(glm::pow2(glm::sign(_currentMoveSpeed)) + glm::pow2(glm::sign(_currentMoveSideSpeed)));
 	float multiplier = totalMoveSpeed > 0 ? (1 / totalMoveSpeed) : 0;
-	btRigidBody* rigidBody = _owner->getParent()->getBehaviour<btRigidBody>();
+	btRigidBody* rigidBody = _owner->getBehaviour<btRigidBody>();
 	if (totalMoveSpeed != 0)
 	{
 		//_owner->translate(glm::vec3(0.0f, 0.0f, _currentMoveSpeed * multiplier * deltaTime));
@@ -168,14 +169,14 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	btQuaternion& quaternion = btQuaternion(glmQuaternion.x, glmQuaternion.y, glmQuaternion.z, glmQuaternion.w);
 	rigidBody->getWorldTransform().setRotation(quaternion);
 
-	btVector3& velocity = btVector3(_currentMoveSideSpeed * multiplier, _currentMoveUpSpeed, _currentMoveSpeed * multiplier * 1);
+	btVector3& velocity = btVector3(_currentMoveSideSpeed * multiplier, 0, _currentMoveSpeed * multiplier * 1);
 	velocity = quatRotate(quaternion, velocity);
-	velocity += btVector3(0, -1, 0);
+	velocity += btVector3(0, -1 + _currentMoveUpSpeed, 0);
 	rigidBody->setLinearVelocity(velocity);
 
 
 	rigidBody->setAngularFactor(btVector3(0, 0, 0));
-	rigidBody->setActivationState(ACTIVE_TAG);
+	//rigidBody->setActivationState(ACTIVE_TAG);
 	glm::vec3 ownerPosition = _owner->getWorldPosition();
 	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
 	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
@@ -184,48 +185,35 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	if (Input::getKeyDown(sf::Keyboard::I))
 	{
 		std::cout << "Player information: " << std::endl << "{" << std::endl;
-		std::cout << "_minMoveUpSpeed: " << _minMoveSpeed << std::endl;
-		std::cout << "_maxMoveUpSpeed: " << _maxMoveSpeed << std::endl;
-		//std::cout << "_moveAcceleration: " << _moveAcceleration << std::endl;
-		//std::cout << "_moveDecceleration: " << _moveDecceleration << std::endl;
-		std::cout << "_minSideMoveSpeed: " << _minSideMoveSpeed << std::endl;
-		std::cout << "_maxSideMoveSpeed: " << _maxSideMoveSpeed << std::endl;
-		//std::cout << "_moveSideAcceleration: " << _moveSideAcceleration << std::endl;
-		//std::cout << "_moveSideDecceleration: " << _moveSideDecceleration << std::endl;
 		std::cout << "Position: " << ownerPosition.x << ", " << ownerPosition.y << ", " << ownerPosition.z << std::endl;
 		std::cout << "}" << std::endl;
 	}
 
-	if (Input::getKeyDown(sf::Keyboard::Left))	_maxSideMoveSpeed -= 4;
-	if (Input::getKeyDown(sf::Keyboard::Right))	_maxSideMoveSpeed += 4;
-	if (Input::getKeyDown(sf::Keyboard::Down))	_maxMoveSpeed -= 4;
-	if (Input::getKeyDown(sf::Keyboard::Up))	_maxMoveSpeed += 4;
-
-	if (_scooterEnquiped && Input::getKeyDown(sf::Keyboard::F))
-		UnenquipScooter();
-	else if (!_scooterEnquiped && Input::getKeyDown(sf::Keyboard::F))
-		EnquipScooter();
+	if (_scooterEquiped && Input::getKeyDown(sf::Keyboard::E))
+		unEquipScooter();
+	else if (!_scooterEquiped && Input::getKeyDown(sf::Keyboard::E))
+		equipScooter();
 
 }
 
-void PlayerMovementBehaviour::UnenquipScooter()
+void PlayerMovementBehaviour::unEquipScooter()
 {
 	_diveScooter->setLocalPosition(glm::vec3(0, -3, 2.0f));
 	_diveScooter->scale(glm::vec3(3));
 	glm::mat4 temp = _diveScooter->getWorldTransform();
 
-	_diveScooter->setParent(_owner->getParent()->getParent()->getParent());
+	_diveScooter->setParent(_owner->getParent()->getParent()); // Get world
 	_diveScooter->setTransform(temp);
-	_scooterEnquiped = false;
+	_scooterEquiped = false;
 }
 
-void PlayerMovementBehaviour::EnquipScooter()
+void PlayerMovementBehaviour::equipScooter()
 {
 	glm::vec3 distance = (_owner->getWorldPosition() - _diveScooter->getWorldPosition());
 	if (length(distance) < 5) {
 		_diveScooter->setParent(_owner);
 		_diveScooter->setTransform(_scooterOffsetMat);
-		_scooterEnquiped = true;
+		_scooterEquiped = true;
 	}
 }
 

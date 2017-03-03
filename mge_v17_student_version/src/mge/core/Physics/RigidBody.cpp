@@ -23,24 +23,29 @@ RigidBody::~RigidBody()
 
 void RigidBody::update(float pStep)
 {
+	updateTransform();
+}
+
+void RigidBody::updateTransform()
+{
 	//btTransform btTransform = getWorldTransform();
 	glm::mat4& transform = glm::mat4(1);// = glm::mat4(_owner->getWorldTransform());
-	/*glm::vec3 scale = glm::vec3(glm::length(btTransform[0]), glm::length(transform[1]), glm::length(transform[2]));
-	transform = glm::scale(transform, glm::vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
-	glm::quat rotation = glm::quat_cast(transform);*/
+										/*glm::vec3 scale = glm::vec3(glm::length(btTransform[0]), glm::length(transform[1]), glm::length(transform[2]));
+										transform = glm::scale(transform, glm::vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
+										glm::quat rotation = glm::quat_cast(transform);*/
 	btTransform& rigidTransform = getWorldTransform();
 	btVector3& position = rigidTransform.getOrigin();
 	//transform.setIdentity();
 	//transform.setOrigin(btVector3(position.x, position.y, position.z));
 	//transform.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
-	
+
 	transform[3][0] = position.getX();
 	transform[3][1] = position.getY();
 	transform[3][2] = position.getZ();
 	btQuaternion& rotation = rigidTransform.getRotation();
-	
-	
-	
+
+
+
 	glm::quat quat;
 	quat.x = rotation.getX();
 	quat.y = rotation.getY();
@@ -49,7 +54,7 @@ void RigidBody::update(float pStep)
 
 	glm::mat4 mat = glm::mat4_cast(quat);
 
-	_owner->setWorldTransform_TEST(transform * mat);
+	_owner->setTransform(transform * mat);
 }
 
 Collider & RigidBody::getCollider()
