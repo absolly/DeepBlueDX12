@@ -143,7 +143,7 @@ int LuaScriptParser::visit(lua_State * lua)
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 {
 	//dynamic cast naar abstractbehaviour
-	std::string NewFunction = "on" + dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner()->getName() + "collision";
+	std::string NewFunction = "on" + dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner()->getName() + "Collision";
 
 	lua_getglobal(lua, NewFunction.c_str());
 
@@ -166,8 +166,8 @@ int LuaScriptParser::showObjectiveDistance(lua_State * lua)
 
 	std::string result = "Distance to relic: " + std::to_string(distance);
 
-	if (distance < 50)
-		result = "The relic is too close to pinpoint!";
+	if (distance < 350)
+		result = "You are close to the objective!";
 
 	_objectiveText = result;
 

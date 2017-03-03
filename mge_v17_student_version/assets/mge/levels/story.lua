@@ -1,39 +1,34 @@
 function main()
-	relics = 0;
-	breathing = true;
 	playSound("ambient_underwater", "ambient", true, false, 100);
-	visit("act1");
-	message("testing this msg",1000);
-	message("testing this msg2",400);
+	visit("act1_1");
+	message("Welcome to our playtest, please proceed to the objective and have fun!",500);
 end
 
-function act1()
+function act1_1()
 	showObjectiveDistance(0);
 	playBreath();
-	message("hi");
 end
 
-function getCaveRelic()
-	relics = relics + 1;
-	visit("act2");
+function act1_2()
+	showObjectiveDistance(1);
+	playBreath();
 end
 
-function getBoatRelic()
-	relics = relics + 1;
-	visit("act3");
+function act2_1()
+	showObjectiveDistance(2);
+	playBreath();
 end
 
-function checkTempleDoor()
-	if(relics > 1) then
-		message("The temple door is opening..!!");
-		openTempleDoor()
-	end
+function onAct1_1Collision()
+	message("That cave might just have something interesting for me.");
+	visit("act1_2");
 end
 
-function onTriggercollision()
-	message("Welcome to the ship..!!");
-	playSound("environment_sonar", "environment", false, true, 100);
+function onAct1_2Collision()
+	message("This artifact.. it doesn't look human made..?!");
+	visit("act2_1");
 end
 
-function openTempleDoor()
+function onAct1_3Collision()
+	message("I hole in the lower deck of the ship? Intersting..");
 end

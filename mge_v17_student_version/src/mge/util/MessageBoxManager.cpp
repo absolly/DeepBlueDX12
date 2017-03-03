@@ -29,9 +29,9 @@ MessageBoxManager::~MessageBoxManager()
 void MessageBoxManager::_createDebugHud() {
     _debugText.setString("");
     _debugText.setFont(_font);
-	_debugText.setCharacterSize(16);
+	_debugText.setCharacterSize(20);
 	_debugText.setFillColor(sf::Color::White);
-	_debugText.setPosition(10, 500);
+	_debugText.setPosition(40, 500);
 
 	_objectiveText.setString("");
 	_objectiveText.setFont(_font);
