@@ -30,11 +30,16 @@ void HudSprite::setSpriteName(std::string spriteName, bool useSpritePath)
 	}
 }
 
+std::string HudSprite::getSpriteName()
+{
+	return _spriteName;
+}
+
 void HudSprite::loadTexture(std::string spriteName, bool useSpritePath)
 {
+	_spriteName = spriteName;
 	if (useSpritePath)
 		spriteName = Config::MGE_SPRITES_PATH + spriteName;
-	_spriteName = spriteName;
 	if (_textureCache.find(spriteName) == _textureCache.end())
 	{
 		//If texture isn't stored in the texture cache yet

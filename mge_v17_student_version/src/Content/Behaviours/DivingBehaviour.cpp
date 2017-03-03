@@ -1,6 +1,7 @@
 #include "DivingBehaviour.h"
 #include "mge/core/GameObject.hpp"
 #include "Content\Core\Input.h"
+#include "Content\Hud\Hud.hpp"
 
 DivingBehaviour::DivingBehaviour(float pTankSize, float pDrainRate, float pRefillCooldown) : _tankSize(pTankSize), _drainRate(pDrainRate), _airLeft(pTankSize), _refillCooldown(pRefillCooldown), _refillCooldownTimer(pRefillCooldown)
 {
@@ -15,7 +16,7 @@ void DivingBehaviour::update(float pStep)
 {
 	_airLeft -= _drainRate * pStep;
 	_refillCooldownTimer -= pStep;
-
+	
 	/*if (_owner->getWorldPosition().y >  727.386)
 		_airLeft = _tankSize;*/
 	if (_timer <= 0) {
@@ -24,9 +25,10 @@ void DivingBehaviour::update(float pStep)
 	}
 
 	_timer--;
-
-
-
+	
+	
+	Hud::getInstance()->setDepth(to_string((int)ceil(71.7-_owner->getWorldPosition().y/10)));
+	Hud::getInstance()->setOxygenLeft(to_string((int)ceil(_airLeft)));
 }
 
 void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)

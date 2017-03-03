@@ -12,6 +12,7 @@ public:
 	~HudSprite();
 
 	void setSpriteName(std::string spriteName, bool useSpritePath = true);
+	std::string getSpriteName();
 
 private:
 	std::string _spriteName;

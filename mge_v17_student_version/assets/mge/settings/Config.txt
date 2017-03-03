@@ -1,5 +1,5 @@
 _minMoveSpeed -13.000000
-_maxMoveSpeed 250.000000
+_maxMoveSpeed 25.000000
 _moveAcceleration 40.000000
 _moveDecceleration 40.000000
 _minSideMoveSpeed -10.000000
@@ -7,7 +7,7 @@ _maxSideMoveSpeed 10.000000
 _moveSideAcceleration 40.000000
 _moveSideDecceleration 40.000000
 _minMoveUpSpeed -4.000000
-_maxMoveUpSpeed 10.000000
+_maxMoveUpSpeed 25.000000
 _moveUpAcceleration 40.000000
 _moveUpDecceleration 40.000000
 _minPitchRotationSpeed 50.000000
