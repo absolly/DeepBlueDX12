@@ -63,6 +63,7 @@ private:
 	sf::Vector2i _previousMousePosition;
 	
 	glm::mat4 _scooterOffsetMat = glm::mat4(1.0f);
+	float _prevYaw = 0;
 
 	AbstractMaterial* _diveScooterMaterial;
 	GameObject* _diveScooter;
