@@ -20,6 +20,7 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	Mesh* scooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
 
 	_diveScooterMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "color.jpg"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
+	_diveScooterMaterial->isShadowCaster = false;
 
 	_diveScooter = new GameObject("Dive Scooter");
 	_diveScooter->setMesh(scooterMesh);
@@ -95,8 +96,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 	_currentMoveSpeed += forwardInput * _moveAcceleration * deltaTime;
-	if (_scooterEnquiped)
-		_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1), _maxMoveSpeed*(Input::getKey(sf::Keyboard::LShift) ? 2 : 1));
+	_currentMoveSpeed = glm::clamp(_currentMoveSpeed, _minMoveSpeed, _maxMoveSpeed*(_scooterEnquiped && Input::getKey(sf::Keyboard::LShift) ? 3 : 1));
 	if (forwardInput != glm::sign(_currentMoveSpeed)) _currentMoveSpeed = moveTowards(_currentMoveSpeed, 0, _moveDecceleration * deltaTime);
 
 	if (!_scooterEnquiped) {
@@ -132,7 +132,15 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	glm::mat4x4 scaleMatrix = glm::mat4x4(1);
 	glm::mat4x4 transformedVector = translationMatrix * rotationMatrix * scaleMatrix;;// *originalVector;
-																					  //_owner->setTransform(transformedVector);
+	
+	if (_scooterEnquiped) {
+		_diveScooter->setTransform(_scooterOffsetMat);//_owner->setTransform(transformedVector);
+		_prevYaw = glm::clamp(glm::lerp(_prevYaw, mouseMovement.x * sensitivity * 4, deltaTime * 3), -10.0f, 10.0f);
+		_diveScooter->rotate(glm::radians(_prevYaw), glm::vec3(0, 1, 0));
+		_diveScooter->rotate(glm::radians(_currentPitch * 0.1f), glm::vec3(0, 0, 1));
+
+		_diveScooter->translate(glm::vec3(-_currentMoveSpeed * 0.2f, _currentMoveUpSpeed * 0.2f, 0));
+	}
 
 	float totalMoveSpeed = glm::sqrt(glm::pow2(glm::sign(_currentMoveSpeed)) + glm::pow2(glm::sign(_currentMoveSideSpeed)));
 	float multiplier = totalMoveSpeed > 0 ? (1 / totalMoveSpeed) : 0;
@@ -194,6 +202,8 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 void PlayerMovementBehaviour::UnenquipScooter()
 {
+	_diveScooter->setLocalPosition(glm::vec3(0, -3, 2.0f));
+	_diveScooter->scale(glm::vec3(3));
 	glm::mat4 temp = _diveScooter->getWorldTransform();
 
 	_diveScooter->setParent(_owner->getParent()->getParent()->getParent());
