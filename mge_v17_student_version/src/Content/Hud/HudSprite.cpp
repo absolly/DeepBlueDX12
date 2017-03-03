@@ -44,7 +44,7 @@ void HudSprite::loadTexture(std::string spriteName, bool useSpritePath)
 	{
 		//If texture isn't stored in the texture cache yet
 		_textureCache[spriteName] = sf::Texture();
-		
+		std::cout << spriteName << std::endl;
 
 		if (!_textureCache[spriteName].loadFromFile(spriteName))
 		{

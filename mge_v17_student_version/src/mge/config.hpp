@@ -20,6 +20,8 @@ public:
 	static std::string MGE_SETTINGS_PATH;// = "mge/settings/";
 	static std::string MGE_SPRITES_PATH;// = "mge/sprites/";
 	static sf::Vector2f HUD_SCALE_FACTOR;
+	static sf::Vector2i SCREEN_RESOLUTION;
+	static bool FULL_SCREEN;
 	static EventNoArgs onConfigUpdated;
 
 	static std::string tryGetValue(std::string key, std::string defaultValue);
@@ -59,6 +61,7 @@ private:
 	public:
 		_init() {
 			updateFromConfig();
+			HUD_SCALE_FACTOR = sf::Vector2f(SCREEN_RESOLUTION.x / 1920.0f, SCREEN_RESOLUTION.y / 1080.0f);
 			EventHandler::bindKeyDownEvent(sf::Keyboard::F5, this, &_init::onRefreshPressedEvent);
 		}
 		void onRefreshPressedEvent(sf::Event::KeyEvent& event) { updateFromConfig(); }

@@ -25,6 +25,8 @@ class Hud
 		void setOxygenLeft(std::string oxygenLeft);
 		void setDepth(std::string depthInCM);
 
+		Inventory& getInventory();
+
 	private:
 		static Hud* _instance;
 

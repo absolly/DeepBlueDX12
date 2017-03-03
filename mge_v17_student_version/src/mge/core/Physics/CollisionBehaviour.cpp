@@ -31,7 +31,7 @@ CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shap
 	{
 		setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	}
-
+	
 	_physicsWorld->addCollisionObject(this, isStatic ? COL_STATIC : COL_DYNAMIC, isStatic ? COL_DYNAMIC : (COL_STATIC | COL_DYNAMIC));
 	_owner = &owner;
 	updatePositon();

@@ -73,13 +73,14 @@ void Hud::setDebugInfo(std::string pInfo) {
 
 void Hud::setOxygenLeft(std::string oxygenLeft)
 {
-	if (oxygenLeft == "0")
-	{
-		_noOxygenLeft = true;
-	}
 	if (oxygenLeft == "100") 
 	{
 		_noOxygenLeft = false;
+	}
+	if (oxygenLeft == "0" || _noOxygenLeft)
+	{
+		oxygenLeft = "0";
+		_noOxygenLeft = true;
 	}
 
 	_oxygenText.setString(oxygenLeft + "%");
@@ -90,6 +91,11 @@ void Hud::setDepth(std::string depth)
 {
 	_depthText.setString(depth);
 	_depthText.setPosition(_depthBar.getPosition().x + 64 * Config::HUD_SCALE_FACTOR.x - _depthText.getLocalBounds().width / 2, _depthBar.getPosition().y);
+}
+
+Inventory& Hud::getInventory()
+{
+	return _inventory;
 }
 
 void Hud::draw()
@@ -108,7 +114,7 @@ void Hud::draw()
 
 	if (_noOxygenLeft || _deathSpriteOpacity != 0)
 	{
-		_deathSpriteOpacity += (_noOxygenLeft ? 64 : -128) * Time::DeltaTime;
+		_deathSpriteOpacity += (_noOxygenLeft ? 32 : -128) * Time::DeltaTime;
 		if (_deathSpriteOpacity > 255) _deathSpriteOpacity = 255;
 		if (_deathSpriteOpacity < 0) _deathSpriteOpacity = 0;
 		sf::RectangleShape deathScreen = sf::RectangleShape(sf::Vector2f(_window->getSize()));

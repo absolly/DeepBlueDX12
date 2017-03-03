@@ -14,17 +14,17 @@ void Inventory::updateFromConfig()
 	_inventoryBackgroundSprite.setSpriteName(Config::getConfigValue("InventoryBackground", "InventoryBackground.png"));
 	sf::FloatRect& backgroundBounds = _inventoryBackgroundSprite.getLocalBounds();
 	_inventoryBackgroundSprite.setOrigin(backgroundBounds.width / 2, backgroundBounds.height);
-	_inventoryBackgroundSprite.scale(Config::HUD_SCALE_FACTOR);
+	_inventoryBackgroundSprite.setScale(Config::HUD_SCALE_FACTOR);
 
 	_inventorySlotBackgroundSprite.setSpriteName(Config::getConfigValue("InventorySlotBackground", "InventorySlotBackground.png"));
 	sf::FloatRect& backgroundSlotBounds = _inventorySlotBackgroundSprite.getLocalBounds();
 	_inventorySlotBackgroundSprite.setOrigin(backgroundSlotBounds.width / 2, backgroundSlotBounds.height / 2);
-	_inventorySlotBackgroundSprite.scale(Config::HUD_SCALE_FACTOR);
+	_inventorySlotBackgroundSprite.setScale(Config::HUD_SCALE_FACTOR);
 
 	Config::updateValue("InventorySlots", _inventorySlots);
 	Config::updateValue("InventorySlotSpacing", _inventorySlotSpacing);
 
-	addItem("ShipItem.png");
+	/*addItem("ShipItem.png");
 	addItem("ShipItem.png");
 	addItem("ShipItem.png");
 	addItem("poison.png");
@@ -32,7 +32,7 @@ void Inventory::updateFromConfig()
 	addItem("poison.png");
 	removeItem("ShipItem.png");
 	addItem("ShipItem.png");
-	addItem("ShipItem.png");
+	addItem("ShipItem.png");*/
 }
 
 Inventory::~Inventory()
@@ -45,6 +45,7 @@ void Inventory::addItem(std::string itemName)
 	_inventory[_inventory.size() - 1].setSpriteName(itemName);
 	sf::FloatRect& itemBounds = _inventory[_inventory.size() - 1].getLocalBounds();
 	_inventory[_inventory.size() - 1].setOrigin(itemBounds.width / 2, itemBounds.height / 2);
+	_inventory[_inventory.size() - 1].setScale(Config::HUD_SCALE_FACTOR);
 }
 
 bool Inventory::hasItem(std::string itemName)

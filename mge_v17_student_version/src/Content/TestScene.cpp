@@ -71,6 +71,7 @@ void TestScene::_initializeScene() {
 
 	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane_8192.obj");
 
+	AbstractMaterial* templeMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1000);
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
 	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seatexture.jpg"), 1);
 
@@ -89,7 +90,7 @@ void TestScene::_initializeScene() {
 	fishTank->setMaterial(gpuinstancing);
 	_world->add(fishTank);
 
-	GameObject* test = new GameObject("", glm::vec3(-2000, 718.598, -700));
+	GameObject* test = new GameObject("", glm::vec3(702.763, 400, -39.4018));
 	GameObject* playerDivingAnimationContainer = new GameObject("");
 	Player* player = new Player();
 	test->add(playerDivingAnimationContainer);
@@ -105,14 +106,7 @@ void TestScene::_initializeScene() {
 	//RigidBody& rigidbody = playerDivingAnimationContainer->addRigidBody(1, btVector3(), *fallMotionState);
 	player->add(camera);
 
-	//DIVING SCOOTER
 
-	Mesh* divingScooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
-	GameObject* divingScooter = new GameObject("Diving scooter", glm::vec3(0,200,0));
-	divingScooter->setMesh(divingScooterMesh);
-	divingScooter->setMaterial(textureMaterial);
-	_world->add(divingScooter);
-	//DIVING SCOOTER
 
 
 	//LuaParser * luaparser = new LuaParser(_world);
@@ -128,7 +122,11 @@ void TestScene::_initializeScene() {
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player));
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
-	Collider& boatTriggerCollider = boat->addCollider(SphereColliderArgs(1000), true, false);
+	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,50,0));
+	boat->add(boatColliderContainer);
+	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,50), true, false);
+	boatColliderContainer->rotate(glm::radians(90.0f), glm::vec3(1,0, 0));
+	
 	boatTriggerCollider.collisionEvents[&playerRigidbody].bind(divingBehaviour, &DivingBehaviour::onCollisionAddAir);
 	
 	_world->add(boat);
@@ -157,24 +155,54 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
 	{
-		glm::vec3(1313.73, 318.135, -104.237),
-		glm::vec3(1331.22, 332.901, 5.06077),
-		glm::vec3(1208.6, 269.945, 60.0267)
+		glm::vec3(387.028, 189.747, -283.077),
+		glm::vec3(414.763, 144.757, -296.977),
+		glm::vec3(306.804, 118.942, -82.5193)
 	};
-	Mesh* relicMesh = Mesh::load(Config::MGE_MODEL_PATH + "relic_alienTablet.obj");
-	Mesh* relicMesh2 = Mesh::load(Config::MGE_MODEL_PATH + "relic_disc.obj");
+
+	std::string relicNames[] =
+	{
+		"relic_tablet",
+		"relic_disc",
+		"relic_statue"
+	};
 	for (int i = 0; i<relicLocations.size(); i++)
 	{
 		glm::vec3 relicLocation = relicLocations[i];
-		GameObject* teapot = new GameObject("Relic", relicLocation);
-		teapot->setMesh(i % 2 == 0 ? relicMesh : relicMesh2);
+		GameObject* teapot = new GameObject(relicNames[i], relicLocation);
+		teapot->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
 		teapot->setMaterial(relicAndTreasureMaterial);
 		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
 		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true, true);
 		_world->add(teapot);
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}
-	std::vector<glm::vec3> treasureLocations
+
+	Mesh* templeMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleWODoors.obj");
+	Mesh* templeDoorsMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleDoors.obj");
+
+
+	GameObject* temple = new GameObject("Temple");
+	GameObject* templeDoors = new GameObject("TempleDoors");
+
+	temple->setMesh(templeMesh);
+	templeDoors->setMesh(templeDoorsMesh);
+
+	temple->setMaterial(templeMaterial);
+	templeDoors->setMaterial(templeMaterial);
+
+	temple->scale(glm::vec3(0.1f, 0.1f, 0.1f));
+	templeDoors->scale(glm::vec3(0.1f, 0.1f, 0.1f));
+
+	templeDoors->setLocalPosition(glm::vec3(1.76276, 8.27295, 375.963));
+
+	Collider& templeDoorsCollider = templeDoors->addCollider(BoxColliderArgs(200, 800, 20), true, true);
+	templeDoorsCollider.collisionEnterEvents[&playerRigidbody].bind(this, &TestScene::onTempleDoorCollision);
+
+	_world->add(temple);
+	_world->add(templeDoors);
+
+	/*std::vector<glm::vec3> treasureLocations
 	{
 		glm::vec3(1260.71, 504.485, 43.6736)
 	};
@@ -188,7 +216,7 @@ void TestScene::_initializeScene() {
 		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(1, 2), true, true);
 		_world->add(teapot);
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
-	}
+	}*/
 
 	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.1), 1, glm::vec3());
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
@@ -238,11 +266,30 @@ void TestScene::_updateHud() {
 
 void TestScene::onCollisionRemoveSelf(OnCollisionArgs onCollisionArgs)
 {
+	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
+	Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
 	std::cout << "SHIT HAPPENED" << std::endl;
 	_world->physics->removeCollisionObject(onCollisionArgs.sender);
-	_world->remove(dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner());
+	_world->remove(abstractBehaviour->getOwner());
 	delete onCollisionArgs.sender;
 	std::cout << "TEAPOT COLLIDING WITH COLLISION OBJECT" << std::endl;
+}
+
+void TestScene::onTempleDoorCollision(OnCollisionArgs onCollisionArgs)
+{
+	int itemIndexOfRelicStatue = Hud::getInstance()->getInventory().getItemIndex("relic_statue.png");
+	if (itemIndexOfRelicStatue == -1)
+	{
+		std::cout << "YOU NEED A RELIC STATUE TO OPEN THIS DOOR";
+		return;
+	}
+	std::cout << "YOU USED A RELIC STATUE TO OPEN THIS DOOR";
+	Hud::getInstance()->getInventory().removeItem(itemIndexOfRelicStatue);
+
+	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
+	_world->physics->removeCollisionObject(onCollisionArgs.sender);
+	_world->remove(abstractBehaviour->getOwner());
+	delete onCollisionArgs.sender;
 }
 
 void TestScene::onCollisionRemoveOther(OnCollisionArgs onCollisionArgs)

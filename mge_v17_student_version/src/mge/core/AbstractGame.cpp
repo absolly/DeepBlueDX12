@@ -47,8 +47,8 @@ void AbstractGame::initialize() {
 
 void AbstractGame::_initializeWindow() {
     cout << "Initializing window..." << endl;
-    _window = new sf::RenderWindow(sf::VideoMode(1600, 900), "My Game!", sf::Style::Default, sf::ContextSettings(24,8,0,3,3));    
-	
+    _window = new sf::RenderWindow(sf::VideoMode((int)Config::SCREEN_RESOLUTION.x, (int)Config::SCREEN_RESOLUTION.y), "My Game!", Config::FULL_SCREEN ? sf::Style::Fullscreen : sf::Style::None, sf::ContextSettings(24,8,0,3,3));
+
 	//_window->setMouseCursorGrabbed(true);
 	_window->setMouseCursorVisible(false);
     //_window->setVerticalSyncEnabled(true); 
@@ -267,7 +267,7 @@ void AbstractGame::_render () {
 	// Clear the screen
 	// Render to our framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, _renderer->FramebufferName);
-	glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	glViewport(0, 0, Config::SCREEN_RESOLUTION.x, Config::SCREEN_RESOLUTION.y); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glCullFace(GL_BACK);
 
@@ -312,7 +312,7 @@ void AbstractGame::_renderToQuad() {
 
 	// Render to the screen
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glViewport(0, 0, 1600, 900); // Render on the whole framebuffer, complete from the lower left corner to the upper right
+	//glViewport(0, 0, Config::SCREEN_RESOLUTION.x, Config::SCREEN_RESOLUTION.y); // Render on the whole framebuffer, complete from the lower left corner to the upper right
 
 								 // Clear the screen
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
