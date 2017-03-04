@@ -11,15 +11,24 @@ uniform sampler2D fogTexture;
 uniform sampler2D waterMaskTexture;
 uniform float _time;
 uniform float pitch;
-float FogDensity = 200;
+float FogDensity = 100;
 vec3 fogColor = vec3(77/255.0f,190/255.0f,1);
 
+
+float fogFactorExp2(
+  const float dist,
+  const float density
+) {
+  return 0.999 - clamp(exp(-density * dist), 0.0, 1.0);
+}
 
 float fogFactorExp(
   const float dist,
   const float density
 ) {
-  return 0.999 - clamp(exp(-density * dist), 0.0, 1.0);
+  const float LOG2 = -1.442695;
+  float d = density * dist;
+  return 0.999 - clamp(exp2(d * d * LOG2), 0.0, 1.0);
 }
 
 float sigmoid(float a, float f)
