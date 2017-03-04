@@ -173,12 +173,11 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	velocity = quatRotate(quaternion, velocity);
 	velocity += btVector3(0, -1 + _currentMoveUpSpeed, 0);
 	rigidBody->setLinearVelocity(velocity);
-
-
+	
 	rigidBody->setAngularFactor(btVector3(0, 0, 0));
-	//rigidBody->setActivationState(ACTIVE_TAG);
+	rigidBody->setActivationState(ACTIVE_TAG);
 	glm::vec3 ownerPosition = _owner->getWorldPosition();
-	ownerPosition.y += _currentMoveUpSpeed *deltaTime;
+	//ownerPosition.y += _currentMoveUpSpeed *deltaTime;
 	//ownerPosition.y = glm::clamp(ownerPosition.y, 1.0f, 30.0f);
 	//_owner->setLocalPosition(ownerPosition);
 
