@@ -93,7 +93,7 @@ void TestScene::_initializeScene() {
 	Player* player = new Player();
 	_world->add(player);
 	_world->setMainCamera(player->getCamera());
-	RigidBody* playerRigidbody = player->getBehaviour<RigidBody>();
+	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
 	/*
 	GameObject* player = new GameObject("player", glm::vec3(-2000, 718.598, -700));
