@@ -32,6 +32,7 @@
 #include "mge/util/DebugHud.hpp"
 
 #include "Content/GameObjects/FishTank.hpp"
+#include "Content/GameObjects/PlayerFishFlock.hpp"
 
 #include "mge/config.hpp"
 #include "Content/TestScene.hpp"
@@ -84,11 +85,6 @@ void TestScene::_initializeScene() {
 */
 	Mesh * smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
-	FishTank* fishTank = new FishTank(glm::vec3(-1200,300,270), _world, "", 150, 200, 20);
-	fishTank->setMesh(smallFish);
-	AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
-	fishTank->setMaterial(gpuinstancing);
-	_world->add(fishTank);
 
 	Player* player = new Player();
 	_world->add(player);
@@ -146,7 +142,7 @@ void TestScene::_initializeScene() {
 	objectives->push_back(objtest2);
 	objectives->push_back(objtest3);
 
-	SoundManager * soundmng = new SoundManager();
+	//SoundManager * soundmng = new SoundManager();
 
 	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
 	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
@@ -257,7 +253,7 @@ void TestScene::_render() {
 	AbstractGame::_renderToQuad();
 	_updateHud();
 
-	_scriptParser->step();
+	//_scriptParser->step();
 
 	//AbstractGame::DrawQuad();
 }
