@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "mge\core\SoundManager.hpp"
+//#include "mge\core\SoundManager.hpp"
 
 SoundManager* SoundManager::_instance;
 

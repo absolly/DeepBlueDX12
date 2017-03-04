@@ -23,6 +23,7 @@ public:
 
 private:
 	glm::vec3 _parentPos;
+	glm::vec3 _placedPos;
 	GameObject * _player;
 	bool _AllowedToExist = true;
 

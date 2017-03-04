@@ -29,6 +29,7 @@
 #include "mge/behaviours/BoatFollowingBehaviour.hpp"
 #include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "Content/Behaviours/BoatFollowBehaviour.h"
+#include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
 #include "mge/util/DebugHud.hpp"
 
 #include "Content/GameObjects/FishTank.hpp"
@@ -85,11 +86,13 @@ void TestScene::_initializeScene() {
 */
 	Mesh * smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
-
 	Player* player = new Player();
+	AbstractBehaviour * playerap = new PlayerFishAbilityBehaviour(_world, player->getChildAt(0));
+	player->getChildAt(0)->addBehaviour(playerap);
 	_world->add(player);
 	_world->setMainCamera(player->getCamera());
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
+
 
 	/*
 	GameObject* player = new GameObject("player", glm::vec3(-2000, 718.598, -700));
@@ -142,15 +145,15 @@ void TestScene::_initializeScene() {
 	objectives->push_back(objtest2);
 	objectives->push_back(objtest3);
 
-	//SoundManager * soundmng = new SoundManager();
+	SoundManager * soundmng = new SoundManager();
 
-	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
+	//_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
+	//_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
-	LuaParser * luaparser2 = new LuaParser(_world);
-	luaparser2->setPlayerRigidBody(*playerRigidbody);
-	luaparser2->scriptParser = _scriptParser;
-	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
+	//LuaParser * luaparser2 = new LuaParser(_world);
+	//luaparser2->setPlayerRigidBody(*playerRigidbody);
+	//luaparser2->scriptParser = _scriptParser;
+	//luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
