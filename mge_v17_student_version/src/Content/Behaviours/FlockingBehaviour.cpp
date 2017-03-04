@@ -3,18 +3,30 @@
 #include "mge/core/GameObject.hpp"
 #include <SFML/Window/Keyboard.hpp>
 #include <vector>
+#include <iostream>
 #include <random>
 using namespace std;
 #include "Content/GameObjects/FishTank.hpp"
 
 
-FlockingBehaviour::FlockingBehaviour(FishTank * pFishtank, int pUpdaterate, glm::vec3 pScale) : AbstractBehaviour()
+FlockingBehaviour::FlockingBehaviour(GameObject * pParentGameObject, std::vector<GameObject*> * pallFish, int pUpdaterate, glm::vec3 firstGoalPosition, int TankSize, int FishCount, bool IsAbility, glm::vec3 pScale) : AbstractBehaviour()
 {
-	fishtank = pFishtank;
+	ParentGameObject = pParentGameObject;
+	if (!IsAbility)
+		fishtank = dynamic_cast<FishTank*>(pParentGameObject);
+
 	srand(time(NULL));
+	allFish = pallFish;
 	_updateRate = pUpdaterate;
 	_scale = pScale;
-	_parentPosition = fishtank->getLocalPosition();
+	_parentPosition = pParentGameObject->getLocalPosition();
+	_tankSize = TankSize;
+	_fishCount = FishCount;
+	goal = firstGoalPosition;
+	_isAbility = IsAbility;
+
+	if(IsAbility)
+		playerFishFlock = dynamic_cast<PlayerFishFlock*>(pParentGameObject);
 }
 
 FlockingBehaviour::~FlockingBehaviour()
@@ -24,16 +36,16 @@ FlockingBehaviour::~FlockingBehaviour()
 
 void FlockingBehaviour::update(float pStep)
 {
-	
-
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
 	uniform_int_distribution<> dis(0, _updateRate);
 
-	_speed = (dis(gen) / 2) + 3.0f;
+	uniform_int_distribution<> rspeed(1, 10);
 
-	if (glm::distance(_owner->getWorldPosition(), fishtank->getLocalPosition()) >= (fishtank->getTankSize() * 2))
+	_speed = (rspeed(gen) + 10.0f);
+
+	if (glm::distance(_owner->getWorldPosition(), ParentGameObject->getLocalPosition()) >= (_tankSize * 2))
 	{
 		turning = true;
 	}
@@ -65,21 +77,25 @@ void FlockingBehaviour::ApplyRules()
 
 	gSpeed = 0.1f;
 
-	if (glm::distance(fishtank->goalPosition, ownerPosition) < 30.0f)
+	if (_isAbility)
+		goal = playerFishFlock->updatePlayerPos();
+
+	if (glm::distance(goal, ownerPosition) < 30.0f && !_isAbility)
 	{
 		fishtank->SetNewGoal();
 	}
 
-	goal = fishtank->goalPosition;
+	if(!_isAbility)
+		goal = fishtank->goalPosition;
 
 	dist = 0;
 
 	groupSize = 0;
 
 	
-	for (int i = 0; i < fishtank->getFishCount(); i++)
+	for (int i = 0; i < _fishCount; i++)
 	{
-		curObject = fishtank->allFish->at(i);
+		curObject = allFish->at(i);
 		if (curObject != _owner)
 		{
 			dist = glm::distance(curObject->getWorldPosition(), ownerPosition);
@@ -105,7 +121,7 @@ void FlockingBehaviour::ApplyRules()
 
 	if (groupSize > 0)
 	{
-		vcentre = (vcentre / groupSize) + (fishtank->goalPosition - ownerPosition);
+		vcentre = (vcentre / groupSize) + (goal - ownerPosition);
 
 		//std::cout << glm::distance(ownerPosition,vcentre) << std::endl;
 
@@ -139,7 +155,7 @@ void FlockingBehaviour::InterPolateDirection(glm::vec3 pDirection)
 
 	//std::cout << _owner->getLocalPosition() << std::endl;
 
-	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.02f));
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.045f));
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);
@@ -159,7 +175,7 @@ void FlockingBehaviour::InverseDirection()
 	//std::cout << currentDir << std::endl;
 
 	//glm::mat4 newMat = glm::eulerAngleXYZ(direction.x, direction.y, direction.z);
-	glm::mat4 newMat = glm::inverse(glm::lookAt(_owner->getLocalPosition(), fishtank->goalPosition, glm::vec3(0, 1, 0)));
+	glm::mat4 newMat = glm::inverse(glm::lookAt(_owner->getLocalPosition(), goal, glm::vec3(0, 1, 0)));
 	glm::quat newDir = glm::quat_cast(newMat);
 
 	//std::cout << _owner->getLocalPosition() << std::endl;

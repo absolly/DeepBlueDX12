@@ -39,21 +39,21 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int p
 
 	uniform_int_distribution<> dis(1, pTankSize / 4);
 
+	goalPosition = glm::vec3(dis(gen), dis(gen), dis(gen)) + getLocalPosition();
+
+
 	for (int i = 0; i < _fishCount; i++)
 	{
 		int randomX = dis(gen);
 		int randomY = dis(gen);
 		int randomZ = dis(gen);
-		AbstractBehaviour* flock = new FlockingBehaviour(this, updateRate, glm::vec3(1.0f, 1.0f, 1.0f));
+		AbstractBehaviour* flock = new FlockingBehaviour(this, allFish, updateRate, goalPosition, _tankSize, _fishCount);
 
 		GameObject* fish = new GameObject("fish", glm::vec3(_parentPos.x + randomX, _parentPos.y + randomY, _parentPos.z + randomZ));
 		fish->addBehaviour(flock);
 		pWorld->add(fish);
 		allFish->push_back(fish);
 	}
-
-	goalPosition = glm::vec3(dis(gen), dis(gen), dis(gen)) + getLocalPosition();
-	
 
 };
 
@@ -86,8 +86,6 @@ std::vector<glm::vec3> * waypointsValidator(std::vector<glm::vec3> * pWaypoints)
 
 void FishTank::SetNewGoal()
 {
-	std::cout << "set new goal" << std::endl;
-
 	random_device rd;
 
 	// Initialize Mersenne Twister pseudo-random number generator

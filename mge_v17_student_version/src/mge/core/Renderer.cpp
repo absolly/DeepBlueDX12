@@ -204,7 +204,7 @@ void Renderer::renderToShadowMap(Mesh * pMesh, const glm::mat4 & pModelMatrix, c
 }
 
 void Renderer::renderMesh (Mesh* pMesh, AbstractMaterial* pMaterial, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
-    if (!renderShadow && pMesh != NULL && pMaterial!= NULL) pMaterial->render(pMesh, pModelMatrix, pViewMatrix, pProjectionMatrix);
+	if (!renderShadow && pMesh != NULL && pMaterial!= NULL && pMaterial->allowedToRender) pMaterial->render(pMesh, pModelMatrix, pViewMatrix, pProjectionMatrix);
 	else if (renderShadow && pMesh != NULL && pMaterial != NULL && pMaterial->isShadowCaster) renderToShadowMap(pMesh, pModelMatrix, pViewMatrix, pProjectionMatrix);
 }
 
