@@ -29,11 +29,11 @@ void PlayerFishAbilityBehaviour::update(float deltaTime)
 		std::cout << "CALLL THE FIESH" << std::endl;
 		_playerFishFlock->CallFish();
 	}
+}
 
-	if (Input::getKeyDown(sf::Keyboard::Z))
-	{
-		std::cout << _owner->getWorldPosition() << std::endl;
-	}
+bool PlayerFishAbilityBehaviour::getIsProtected()
+{
+	return _playerFishFlock->GetIsProtected();
 }
 
 PlayerFishAbilityBehaviour::~PlayerFishAbilityBehaviour()

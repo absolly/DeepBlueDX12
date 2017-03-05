@@ -20,7 +20,9 @@
 #include "mge/materials/WobbleMaterial.hpp"
 #include "mge/materials/SeaMaterial.hpp"
 #include "mge/materials/GPUinstancingMaterial.hpp"
+#include "mge/materials/BillBoardMaterial.hpp"
 
+#include "Content/GameObjects/ParticleSystem.hpp"
 #include "mge/behaviours/RotatingBehaviour.hpp"
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
@@ -65,6 +67,9 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
+
+	
+
 	//add camera first (it will be updated last)
 	//Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
 	//camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -92,6 +97,17 @@ void TestScene::_initializeScene() {
 	_world->add(player);
 	_world->setMainCamera(player->getCamera());
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
+
+	glm::vec3 ParticlePosition = player->getChildAt(0)->getWorldPosition();
+	ParticlePosition.y -= 200;
+	ParticleSystem * particleSystem = new ParticleSystem(ParticlePosition, "name");
+
+	particleSystem->setMesh(planeMeshDefault);
+	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
+	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
+	particleSystem->setMaterial(billboardMat);
+	_world->add(particleSystem);
+
 
 
 	/*
@@ -147,13 +163,13 @@ void TestScene::_initializeScene() {
 
 	SoundManager * soundmng = new SoundManager();
 
-	//_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	//_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
+	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
+	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
-	//LuaParser * luaparser2 = new LuaParser(_world);
-	//luaparser2->setPlayerRigidBody(*playerRigidbody);
-	//luaparser2->scriptParser = _scriptParser;
-	//luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
+	LuaParser * luaparser2 = new LuaParser(_world);
+	luaparser2->setPlayerRigidBody(*playerRigidbody);
+	luaparser2->scriptParser = _scriptParser;
+	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations

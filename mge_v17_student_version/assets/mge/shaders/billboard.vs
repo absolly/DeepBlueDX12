@@ -8,6 +8,8 @@ uniform mat4 VP;
 uniform vec3 BillboardPos;
 uniform vec2 BillboardSize;
 
+out vec2 UV;
+
 void main( void ){
 
 	vec3 particleCenter_wordspace = BillboardPos;
@@ -18,4 +20,6 @@ void main( void ){
 		+ CameraUp_worldspace * squareVertices.y * BillboardSize.y;
 		
 	gl_Position = VP * vec4(vertexPosition_worldspace, 1.0f);
+	
+	UV = squareVertices.xy + vec2(0.5, 0.5);
 }
