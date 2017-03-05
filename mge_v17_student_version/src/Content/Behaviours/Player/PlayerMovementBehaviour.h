@@ -18,10 +18,24 @@ public:
 private:
 
 	//[Header("Forward Movement")]
-	float _minMoveSpeed = -13.0f;
-	float _maxMoveSpeed = 25;
-	float _moveAcceleration = 40;
-	float _moveDecceleration = 40;
+	float _diverMinMoveSpeed = -12.5f;
+	float _diverMinMoveSpeedBoost = -12.5f * 1.25f;
+	float _diverMaxMoveSpeed = 25;
+	float _diverMaxMoveSpeedBoost = 25 * 1.5f;
+	float _diverAcceleration = 40;
+	float _diverAccelerationBoost = 40 * 1.25f;
+	float _diverDeceleration = 40;
+	float _diverDecelerationBoost = 40 * 1.25f;
+
+	float _scooterMinMoveSpeed = -25;
+	float _scooterMinMoveSpeedBoost = -25 * 1.5f;
+	float _scooterMaxMoveSpeed = 50;
+	float _scooterMaxMoveSpeedBoost = 50 * 1.5f;
+	float _scooterAcceleration = 40;
+	float _scooterAccelerationBoost = 40 * 1.5f;
+	float _scooterDeceleration = 40;
+	float _scooterDecelerationBoost = 40 * 1.5f;
+
 	float _currentMoveSpeed;
 	//[Header("Sideway Movement")]
 	float _minSideMoveSpeed = -10;
@@ -53,7 +67,8 @@ private:
 	float _rollRotationSpeedMultiplier = 20;
 	float _currentRoll;
 
-	float _sensitivity = 0.05f;
+	float _diverSensitivity = 0.05f;
+	float _scooterSensitivity = 0.02f;
 
 	//[Header("Gravity")]
 	float _inWaterGravity = 0.5f;
