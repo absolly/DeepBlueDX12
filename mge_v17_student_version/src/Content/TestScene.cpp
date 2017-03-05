@@ -270,22 +270,25 @@ void TestScene::_initializeScene() {
 	_world->add(light3);
 
 
-
+	GameObject* seaCollider = new GameObject("SeaCollider", glm::vec3(0, 720, 0));
+	seaCollider->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::bvec3(true, false, true)));
+	seaCollider->addCollider(BoxColliderArgs(100, 5, 100), false, false);
+	_world->add(seaCollider);
 	//SEA COLLIDER
-	btCollisionShape* collisionShape = new btStaticPlaneShape(btVector3(0, -1, 0), 1);
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0), btVector3(0, 720, 0)));
-	btRigidBody* rigidBody = new btRigidBody(0, groundMotionState, collisionShape, btVector3(0, 0, 0));
-	btTransform transform = rigidBody->getCenterOfMassTransform();
+	//btCollisionShape* collisionShape = new btStaticPlaneShape(btVector3(0, -1, 0), 1);
+	//btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0), btVector3(0, 720, 0)));
+	//btRigidBody* rigidBody = new btRigidBody(0, groundMotionState, collisionShape, btVector3(0, 0, 0));
+	//btTransform transform = rigidBody->getCenterOfMassTransform();
 	//transform.setOrigin(btVector3(0, 720, 0));
-	rigidBody->setCenterOfMassTransform(transform);
-	_world->physics->addRigidBody(rigidBody);
+	//rigidBody->setCenterOfMassTransform(transform);
+	//_world->physics->addRigidBody(rigidBody);
 	//SEA COLLIDER
 
 	GameObject* sea = new GameObject("sea", glm::vec3(0, 720, 0));
 	sea->setMesh(planeMeshDefault);
 	sea->setMaterial(textureMaterial2);
 	sea->scale(glm::vec3(5000, 1, 5000));
-	sea->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::vec3(1, 0, 1)));
+	sea->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::bvec3(true, false, true)));
 	sea->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));
 	_world->add(sea);
 }
