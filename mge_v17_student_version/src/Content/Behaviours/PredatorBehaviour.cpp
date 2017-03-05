@@ -2,12 +2,12 @@
 #include "mge/core/GameObject.hpp"
 #include "mge/config.hpp"
 #include "mge/core/Physics/PhysicsWorld.h"
-#include "mge\core\World.hpp"
+#include "mge\core\World.hpp" 
 #include "Content/Core/Input.h"
 PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _target(pTarget), _world(pWorld)
 {
-	Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
-	AbstractMaterial* colorMaterial2 = new ColorMaterial((glm::vec3(0.1, 1, 0.1)));
+	cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
+	colorMaterial2 = new ColorMaterial((glm::vec3(0.1, 1, 0.1)));
 	for (int i = 0; i < 16; i++) {
 		_crumbObjects[i] = new GameObject("", glm::vec3(0, 0, 0));
 		_crumbObjects[i]->setMesh(cubeMeshF);
@@ -39,12 +39,16 @@ void PredatorBehaviour::update(float pStep)
 				go->setParent(_world);
 			for each(GameObject* go in _crumbObjects)
 				go->setParent(_world);
-		
+			for each(GameObject* go in _returnPathMarkers)
+				go->setParent(_world);
+			  
 		}
 		else {
 			for each(GameObject* go in _debugMarkers)
 				go->setParent(NULL);
 			for each(GameObject* go in _crumbObjects)
+				go->setParent(NULL);
+			for each(GameObject* go in _returnPathMarkers)
 				go->setParent(NULL);
 		}
 	}
@@ -54,39 +58,59 @@ void PredatorBehaviour::update(float pStep)
 		_crumbObjects[crumbHead]->setLocalPosition(_target->getWorldPosition());
 		crumbHead = (crumbHead + 1) % 16;
 		_crumbCooldown = 20;
-		std::cout << _owner->getWorldPosition() << std::endl;
+		//std::cout << _owner->getWorldPosition() << std::endl;
 	}
-	glm::vec3 closest = glm::vec3(0,0,0);
+	glm::vec3 closest = glm::vec3(0, 0, 0);
 	glm::vec3 mypos = _owner->getWorldPosition();
 	float clostestDist = -1;
 	bool followingCrumbs = false;
 	for (int i = 0; i < 16; i++) {
-		if (glm::distance(mypos, _crumbs[(i+ crumbHead)%16]) < 10)
+		if (glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 10)
 		{
 			closest = _crumbs[(i + crumbHead) % 16];
 			followingCrumbs = true;
-		} 
+		}
 		else if (!followingCrumbs && glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 100) {
 			btVector3 Start = btVector3(mypos.x, mypos.y, mypos.z);
 			btVector3 End = btVector3(_crumbs[(i + crumbHead) % 16].x, _crumbs[(i + crumbHead) % 16].y, _crumbs[(i + crumbHead) % 16].z);
 			btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
-			
+
 			// Perform raycast
 			World::physics->rayTest(Start, End, RayCallback);
-			#define BIT(x) (1<<(x))
+#define BIT(x) (1<<(x))
 			if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
 				//std::cout << "no hit!" << std::endl;
 				closest = _crumbs[(i + crumbHead) % 16];
 
 				// Do some clever stuff here
 			}
-			
-		}
-	} 
 
-	if (closest != glm::vec3(0,0,0)) {
+		}
+	}
+
+	if (closest != glm::vec3(0, 0, 0)) {
+
 		//std::cout << "following player" << std::endl;
 		_targetPos = closest;
+		if (_returnPath.size() == 0 || glm::distance(_returnPath.top(), _owner->getWorldPosition()) >= 5) {
+			GameObject* go = new GameObject("", _owner->getWorldPosition());
+			go->setMesh(cubeMeshF);
+			go->setMaterial(colorMaterial2);
+			_world->add(go);
+			if (!debug)
+				go->setParent(NULL);
+			_returnPathMarkers.push_back(go);
+			_returnPath.push(_owner->getWorldPosition());
+
+		}
+	}
+	else if (_returnPath.size() > 1) {
+		if (glm::distance(_returnPath.top(), _owner->getWorldPosition()) < 3) {
+			_returnPath.pop();
+			delete _returnPathMarkers.back();
+			_returnPathMarkers.pop_back();
+		}
+		_targetPos = _returnPath.top();
 	}
 	else if (glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) > 1) {
 		//std::cout << "navigating to waypoint " << _currentWaypoint << " current distance: " << glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) << std::endl;

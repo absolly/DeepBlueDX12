@@ -83,7 +83,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         lightPosition[i] = light->getWorldPosition();
 		if (light->type == Light::DIRECTIONAL) {
 			depthViewMatrix = glm::inverse(light->getWorldTransform());
-			lightPosition[i].y = 750;
+			lightPosition[i].y = 900;
 		}
         lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
         lightColor[i] = light->getColor();

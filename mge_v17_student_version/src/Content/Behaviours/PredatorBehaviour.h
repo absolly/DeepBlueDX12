@@ -4,6 +4,9 @@
 #include <vector>
 #include <btBulletDynamicsCommon.h>
 #include <vector>
+#include <stack>
+class Mesh;
+class AbstractMaterial;
 class World;
 class PredatorBehaviour : public AbstractBehaviour {
 public:
@@ -19,10 +22,14 @@ private:
 	glm::vec3 _crumbs[16];
 	GameObject* _crumbObjects[16];
 	std::vector<GameObject*> _debugMarkers;
+	std::vector<GameObject*> _returnPathMarkers;
+	std::stack<glm::vec3> _returnPath;
 	int crumbHead = 0;
 	int _crumbCooldown = 0;
 	void InterPolateDirection(glm::vec3 pDirection);
 	bool debug = false;
 	World* _world;
+	Mesh* cubeMeshF;
+	AbstractMaterial* colorMaterial2;
 };
 
