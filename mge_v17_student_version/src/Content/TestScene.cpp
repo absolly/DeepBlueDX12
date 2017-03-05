@@ -174,13 +174,13 @@ void TestScene::_initializeScene() {
 
 	SoundManager * soundmng = new SoundManager();
 
-	//_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	//_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
+	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
+	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
-	//LuaParser * luaparser2 = new LuaParser(_world);
-	//luaparser2->setPlayerRigidBody(*playerRigidbody);
-	//luaparser2->scriptParser = _scriptParser;
-	//luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
+	LuaParser * luaparser2 = new LuaParser(_world);
+	luaparser2->setPlayerRigidBody(*playerRigidbody);
+	luaparser2->scriptParser = _scriptParser;
+	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
@@ -283,7 +283,7 @@ void TestScene::_render() {
 	AbstractGame::_renderToQuad();
 	_updateHud();
 
-	//_scriptParser->step();
+	_scriptParser->step();
 
 	//AbstractGame::DrawQuad();
 }

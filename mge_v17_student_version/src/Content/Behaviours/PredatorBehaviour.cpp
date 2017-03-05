@@ -4,8 +4,8 @@
 #include "mge/materials/TextureMaterial.hpp"
 #include "mge/core/Physics/PhysicsWorld.h"
 #include "mge\core\World.hpp"
-
-PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3> pWaypoints, GameObject * pWorld) : _waypoints(pWaypoints), _target(pTarget)
+#include "Content/Core/Input.h"
+PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _target(pTarget), _world(pWorld)
 {
 	Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"));
@@ -15,6 +15,7 @@ PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3
 		_crumbObjects[i]->setMaterial(textureMaterial);
 		_crumbObjects[i]->scale(glm::vec3(0.1f));
 		pWorld->add(_crumbObjects[i]);
+		_crumbObjects[i]->setParent(NULL);
 	}
 	AbstractMaterial* colorMaterial2 = new ColorMaterial((glm::vec3(0.1,1,0.1)));
 	for each(glm::vec3 waypoint in _waypoints) {
@@ -22,6 +23,8 @@ PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3
 		go->setMesh(cubeMeshF);
 		go->setMaterial(colorMaterial2);
 		pWorld->add(go);
+		go->setParent(NULL);
+		_debugMarkers.push_back(go);
 	}
 }
 
@@ -31,6 +34,22 @@ PredatorBehaviour::~PredatorBehaviour()
 
 void PredatorBehaviour::update(float pStep)
 {
+	if (Input::getKeyDown(sf::Keyboard::F3)) {
+		debug = !debug;
+		if (debug) {
+			for each(GameObject* go in _debugMarkers)
+				go->setParent(_world);
+			for each(GameObject* go in _crumbObjects)
+				go->setParent(_world);
+		
+		}
+		else {
+			for each(GameObject* go in _debugMarkers)
+				go->setParent(NULL);
+			for each(GameObject* go in _crumbObjects)
+				go->setParent(NULL);
+		}
+	}
 	_crumbCooldown--;
 	if (_crumbCooldown <= 0) {
 		_crumbs[crumbHead] = _target->getWorldPosition();

@@ -4,10 +4,10 @@
 #include <vector>
 #include <btBulletDynamicsCommon.h>
 #include <vector>
-
+class World;
 class PredatorBehaviour : public AbstractBehaviour {
 public:
-	PredatorBehaviour(GameObject* pTarget, std::vector<glm::vec3> pWaypoints, GameObject* pWorld);
+	PredatorBehaviour(GameObject* pTarget, std::vector<glm::vec3> pWaypoints, World* pWorld);
 	~PredatorBehaviour();
 	virtual void update(float pStep);
 
@@ -18,8 +18,11 @@ private:
 	int _currentWaypoint = 0;
 	glm::vec3 _crumbs[16];
 	GameObject* _crumbObjects[16];
+	std::vector<GameObject*> _debugMarkers;
 	int crumbHead = 0;
 	int _crumbCooldown = 0;
 	void InterPolateDirection(glm::vec3 pDirection);
+	bool debug = false;
+	World* _world;
 };
 
