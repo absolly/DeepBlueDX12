@@ -5,6 +5,7 @@
 #include "mge\core\World.hpp" 
 #include "Content/Core/Input.h"
 #include "Content/Hud/Hud.hpp"
+#include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
 
 PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _target(pTarget), _world(pWorld)
 {
@@ -71,29 +72,31 @@ void PredatorBehaviour::update(float pStep)
 	glm::vec3 mypos = _owner->getWorldPosition();
 	float clostestDist = -1;
 	bool followingCrumbs = false;
-	for (int i = 0; i < 16; i++) {
-		if (glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 10)
-		{
-			closest = _crumbs[(i + crumbHead) % 16];
-			followingCrumbs = true;
-		}
-		else if (!followingCrumbs && glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 100) {
-			btVector3 Start = btVector3(mypos.x, mypos.y, mypos.z);
-			btVector3 End = btVector3(_crumbs[(i + crumbHead) % 16].x, _crumbs[(i + crumbHead) % 16].y, _crumbs[(i + crumbHead) % 16].z);
-			btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+	if (!_target->getBehaviour<PlayerFishAbilityBehaviour>()->getIsProtected())
+		for (int i = 0; i < 16; i++) {
 
-			// Perform raycast
-			World::physics->rayTest(Start, End, RayCallback);
-#define BIT(x) (1<<(x))
-			if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
-				//std::cout << "no hit!" << std::endl;
+			if (glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 10)
+			{
 				closest = _crumbs[(i + crumbHead) % 16];
-
-				// Do some clever stuff here
+				followingCrumbs = true;
 			}
+			else if (!followingCrumbs && glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 100) {
+				btVector3 Start = btVector3(mypos.x, mypos.y, mypos.z);
+				btVector3 End = btVector3(_crumbs[(i + crumbHead) % 16].x, _crumbs[(i + crumbHead) % 16].y, _crumbs[(i + crumbHead) % 16].z);
+				btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 
+				// Perform raycast
+				World::physics->rayTest(Start, End, RayCallback);
+#define BIT(x) (1<<(x))
+				if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
+					//std::cout << "no hit!" << std::endl;
+					closest = _crumbs[(i + crumbHead) % 16];
+
+					// Do some clever stuff here
+				}
+
+			}
 		}
-	}
 
 	if (closest != glm::vec3(0, 0, 0)) {
 		_speed = 0.2;
