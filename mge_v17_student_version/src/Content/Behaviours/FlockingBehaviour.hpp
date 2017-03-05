@@ -4,6 +4,7 @@
 #include "mge/behaviours/AbstractBehaviour.hpp"
 #include "glm.hpp"
 #include "Content/GameObjects/FishTank.hpp"
+#include "Content/GameObjects/PlayerFishFlock.hpp"
 #include <random>
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
 class FlockingBehaviour : public AbstractBehaviour
 {
 	public:
-		FlockingBehaviour(FishTank * pFishtank, int pUpdateRate, glm::vec3 pScale = glm::vec3(1,1,1));
+		FlockingBehaviour(GameObject * pParentGameObject, std::vector<GameObject*> * pallFish, int pUpdateRate, glm::vec3 firstGoalPosition, int TankSize, int FishCount, bool IsAbility = false, glm::vec3 pScale = glm::vec3(1,1,1));
 		virtual ~FlockingBehaviour();
 		virtual void update( float pStep );
 		float speed = 0.4f;
@@ -28,16 +29,22 @@ class FlockingBehaviour : public AbstractBehaviour
 		int _updateRate = 0;
 		bool turning = false;
 		void ApplyRules();
+		std::vector<GameObject*> * allFish;
 		void InterPolateDirection(glm::vec3 pDirection);
 		void InverseDirection();
 		FishTank * fishtank;
+		PlayerFishFlock * playerFishFlock;
+		GameObject * ParentGameObject;
 		glm::vec3 _parentPosition;
 		glm::vec3 _scale;
+		bool _isAbility;
 
 		//moved some variable creation out of the update loop
 		glm::vec3 vcentre;
 		glm::vec3 vavoid;
 		glm::vec3 ownerPosition;
+		int _tankSize;
+		int _fishCount;
 		float gSpeed;
 		glm::vec3 goal;
 		float dist;

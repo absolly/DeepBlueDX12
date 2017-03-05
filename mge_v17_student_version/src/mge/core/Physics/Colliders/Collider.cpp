@@ -2,6 +2,8 @@
 #include "btBulletCollisionCommon.h"
 #include "mge\core\GameObject.hpp"
 #include "mge\core\Physics\RigidBody.hpp"
+#include "mge\core\World.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
 Collider::Collider(btCollisionShape& colliderShape, GameObject& owner, bool isTrigger, bool isStatic) : 
 	CollisionBehaviour(owner, &colliderShape, isTrigger, false, isStatic),
@@ -11,6 +13,7 @@ Collider::Collider(btCollisionShape& colliderShape, GameObject& owner, bool isTr
 
 RigidBody& Collider::makeRigidBody(float mass, btVector3& inertia, btDefaultMotionState& defaultMotionState)
 {
+	World::physics->removeCollisionObject(this);
 	_colliderShape.calculateLocalInertia(mass, inertia);
 	RigidBody& rigidBody = *new RigidBody(*this, mass, &defaultMotionState, inertia);
 	_owner->addBehaviour(&rigidBody);
