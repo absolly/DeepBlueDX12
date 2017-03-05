@@ -17,7 +17,7 @@
 
 #include "mge/materials/ColorMaterial.hpp"
 #include "mge/materials/TextureMaterial.hpp"
-#include "mge/materials/WobbleMaterial.hpp"
+#include "mge/materials/LitWaveMaterial.hpp"
 #include "mge/materials/SeaMaterial.hpp"
 #include "mge/materials/GPUinstancingMaterial.hpp"
 #include "mge/materials/BillBoardMaterial.hpp"
@@ -64,7 +64,7 @@ void TestScene::initialize() {
 //build the game _world
 void TestScene::_initializeScene() {
 	_renderer->setClearColor(0, 0, 0);
-	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
+	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog2.png");
 	AbstractGame::_setFogGradient(fog);
 
 
@@ -152,6 +152,33 @@ void TestScene::_initializeScene() {
 
 	//ADDING BOAT FOLLOWING PLAYER
 
+
+	//GameObject* teapot = new GameObject("teapot", glm::vec3(-2068, 283, 541));
+	//glm::vec3 _waypoints[10]{};
+
+
+	//float random = 9;
+	//std::cout << "random seed: " << random << std::endl;
+	//srand(random);
+	//Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
+	//for (int i = 0; i < 10; i++) {
+	//	glm::vec3* lightColor = new glm::vec3(rand() % 100, rand() % 100, rand() % 100);
+	//	glm::vec3 pos = glm::vec3((rand() % 100 - 50) - 2068, 283, (rand() % 100 - 50)+541);
+	//	GameObject* light = new GameObject("light1", pos);
+	//	_waypoints[i] = pos;
+	//	light->setMesh(cubeMeshF);
+	//	AbstractMaterial* colorMaterial2 = new ColorMaterial((*lightColor));
+	//	//light->setBehaviour(new LookAt(teapot));
+	//	light->setMaterial(colorMaterial2);
+	//	_world->add(light);
+	//}
+	//Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "MantaRay.obj");
+	//AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "BricksNormal.png"));
+
+	//teapot->addBehaviour(new PredatorBehaviour(player->getChildAt(0), _waypoints, _world));
+	//teapot->setMesh(teapotMeshS);
+	//teapot->setMaterial(waveMaterial);
+	//_world->add(teapot);
 	GameObject * objtest1 = new GameObject("name", glm::vec3(-2078, 290, 766));
 	GameObject * objtest2 = new GameObject("name", glm::vec3(-2292, 22, 2093));
 	GameObject * objtest3 = new GameObject("name", glm::vec3(304, 116, 297));
@@ -238,7 +265,7 @@ void TestScene::_initializeScene() {
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}*/
 
-	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.1, 0.1, 0.5), 100, glm::vec3(0,0,1));
+	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.905882, 0.807843, 0.572549), 700, glm::vec3(0,0,1));
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0)));
 	_world->add(light3);
@@ -272,7 +299,7 @@ void TestScene::_render() {
 	AbstractGame::_renderToQuad();
 	_updateHud();
 
-	//_scriptParser->step();
+	_scriptParser->step();
 
 	//AbstractGame::DrawQuad();
 }

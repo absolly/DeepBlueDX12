@@ -60,6 +60,7 @@ class LuaParser {
 		int createFish(lua_State * lua);
 		int addLightAttributes(lua_State * lua);
         int destoryLuaObject(lua_State * lua);
+		int addPredator(lua_State * lua);
 
 		RigidBody * _playerRigidBody;
 		Mesh* smallFish;

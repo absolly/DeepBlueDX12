@@ -26,6 +26,7 @@ class Hud
 		void setDepth(int depthInCM);
 
 		Inventory& getInventory();
+		bool isPlayerKilled = false;
 
 	private:
 		static Hud* _instance;

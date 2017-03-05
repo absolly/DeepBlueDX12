@@ -87,10 +87,12 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 
 	int i = 0;
 	for (Light* light : World::activeLights) {
+
+		lightPosition[i] = light->getWorldPosition();
 		if (light->type == Light::DIRECTIONAL) {
 			depthViewMatrix = glm::inverse(light->getWorldTransform());
+			lightPosition[i].y = 900;
 		}
-		lightPosition[i] = light->getWorldPosition();
 		lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
 		lightColor[i] = light->getColor();
 		lightType[i] = ((int)light->type);
@@ -112,6 +114,7 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
 	glUniform1f(_shader->getUniformLocation("_time"), _time);
+	glUniform1f(_shader->getUniformLocation("speed"), speed);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),         1, GL_FALSE, glm::value_ptr(pViewMatrix));

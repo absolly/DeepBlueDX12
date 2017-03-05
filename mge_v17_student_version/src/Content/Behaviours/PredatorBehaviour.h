@@ -2,20 +2,39 @@
 #include "mge\behaviours\AbstractBehaviour.hpp"
 #include "glm.hpp"
 #include <vector>
+#include <btBulletDynamicsCommon.h>
+#include <vector>
+#include <stack>
+#include "mge/materials/LitWaveMaterial.hpp"
 
+
+class Mesh;
+class AbstractMaterial;
+class World;
 class PredatorBehaviour : public AbstractBehaviour {
 public:
-	PredatorBehaviour(GameObject* pTarget, glm::vec3 pWaypoints[10]);
+	PredatorBehaviour(GameObject* pTarget, std::vector<glm::vec3> pWaypoints, World* pWorld);
 	~PredatorBehaviour();
 	virtual void update(float pStep);
 
 private:
+	float _speed = 0.1;
 	GameObject* _target;
 	glm::vec3 _targetPos;
-	glm::vec3 _waypoints[10]{};
+	std::vector<glm::vec3> _waypoints;
 	int _currentWaypoint = 0;
-	glm::vec3 _crumbs[64];
-	int _crumbCooldown;
+	glm::vec3 _crumbs[16];
+	GameObject* _crumbObjects[16];
+	std::vector<GameObject*> _debugMarkers;
+	std::vector<GameObject*> _returnPathMarkers;
+	std::stack<glm::vec3> _returnPath;
+	int crumbHead = 0;
+	int _crumbCooldown = 0;
 	void InterPolateDirection(glm::vec3 pDirection);
+	bool debug = false;
+	World* _world;
+	Mesh* cubeMeshF;
+	AbstractMaterial* colorMaterial2;
+	LitWaveMaterial* _ownerMat = nullptr;
 };
 

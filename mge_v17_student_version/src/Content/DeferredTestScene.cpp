@@ -128,7 +128,7 @@ void DeferredTestScene::_initializeScene() {
 	//_world->add(fishTank);
 
 	GameObject* teapot = new GameObject("teapot", glm::vec3(11, 1, 11));
-	glm::vec3 _waypoints[10]{};
+	std::vector<glm::vec3> _waypoints;
 
 
 	float random = 9;
@@ -138,7 +138,7 @@ void DeferredTestScene::_initializeScene() {
 	    glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
 		glm::vec3 pos = glm::vec3(rand() % 100 - 50, 5, rand() % 100 - 50);
 	    Light* light = new Light (Light::lightType::POINT, "light1", pos, *lightColor, 20, glm::vec3(0,0,1));
-		_waypoints[i] = pos;
+		_waypoints.push_back(pos);
 	    light->setMesh (cubeMeshF);
 	    AbstractMaterial* colorMaterial2 = new ColorMaterial ((*lightColor));
 	    //light->setBehaviour(new LookAt(teapot));
@@ -146,7 +146,7 @@ void DeferredTestScene::_initializeScene() {
 	    _world->add(light);
 	}
 
-	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints));
+	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints, _world));
 	teapot->setMesh(teapotMeshS);
 	teapot->setMaterial(waveMaterial);
 	_world->add(teapot);
