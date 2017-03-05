@@ -7,6 +7,8 @@
 #include "Content/GameObjects/FishTank.hpp"
 #include "World.hpp"
 #include "Content/Behaviours/PredatorBehaviour.h"
+#include "mge/materials/LitWaveMaterial.hpp"
+#include <algorithm>
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -592,15 +594,22 @@ int LuaParser::addPredator(lua_State * lua)
 		for (int j = 0; j < 3; j++) {
 			//std::cout << "pos: " << (-((i * 3) + j + 2)) << " | " << i << "," << j << std::endl;
 			pos[2-j] = lua_tonumber(lua, -((i * 3) + j + 2));
-			if (j == 2)
+			if (j == 0)
 				pos[2-j] = -pos[2-j];
 		}
 		waypoints.push_back(pos);
-		std::cout << "pos: " << pos << std::endl;
 	}
+	std::reverse(waypoints.begin(), waypoints.end());
+	for each (glm::vec3 waypoint in waypoints)
+		std::cout << "waypoint: " << waypoint << std::endl;
 
-	//GameObject* predator = new GameObject("", waypoints[0]);
-	//predator->addBehaviour(new PredatorBehaviour(_playerRigidBody->getOwner(), waypoints, _world));
+	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "MantaRay.obj");
+	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "BricksNormal.png"));
 
+	GameObject* predator = new GameObject("", waypoints[0]);
+	predator->addBehaviour(new PredatorBehaviour(_playerRigidBody->getOwner(), waypoints, _world));
+	predator->setMesh(teapotMeshS);
+	predator->setMaterial(waveMaterial);
+	_world->add(predator);
 	return 0;
 }

@@ -16,6 +16,13 @@ PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3
 		_crumbObjects[i]->scale(glm::vec3(0.1f));
 		pWorld->add(_crumbObjects[i]);
 	}
+	AbstractMaterial* colorMaterial2 = new ColorMaterial((glm::vec3(0.1,1,0.1)));
+	for each(glm::vec3 waypoint in _waypoints) {
+		GameObject* go = new GameObject("", waypoint);
+		go->setMesh(cubeMeshF);
+		go->setMaterial(colorMaterial2);
+		pWorld->add(go);
+	}
 }
 
 PredatorBehaviour::~PredatorBehaviour()
@@ -30,7 +37,7 @@ void PredatorBehaviour::update(float pStep)
 		_crumbObjects[crumbHead]->setLocalPosition(_target->getWorldPosition());
 		crumbHead = (crumbHead + 1) % 16;
 		_crumbCooldown = 20;
-		std::cout << _target->getWorldPosition() << std::endl;
+		std::cout << _owner->getWorldPosition() << std::endl;
 	}
 	glm::vec3 closest = glm::vec3(0,0,0);
 	glm::vec3 mypos = _owner->getWorldPosition();
@@ -71,7 +78,7 @@ void PredatorBehaviour::update(float pStep)
 	else {
 		//std::cout << "navigating to next waypoint " << _currentWaypoint << std::endl;
 		_currentWaypoint++;
-		_currentWaypoint = _currentWaypoint % 10;
+		_currentWaypoint = _currentWaypoint % _waypoints.size();
 		_targetPos = _waypoints[_currentWaypoint];
 	}
 	InterPolateDirection(_owner->getWorldPosition() - _targetPos);

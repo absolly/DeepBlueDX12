@@ -14,7 +14,7 @@ public:
 private:
 	GameObject* _target;
 	glm::vec3 _targetPos;
-	std::vector<glm::vec3>& _waypoints;
+	std::vector<glm::vec3> _waypoints;
 	int _currentWaypoint = 0;
 	glm::vec3 _crumbs[16];
 	GameObject* _crumbObjects[16];

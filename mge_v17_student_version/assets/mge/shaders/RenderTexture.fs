@@ -93,11 +93,11 @@ void main(){
 	float distortion=(cos(UV.x*200 + _time * 10000) + sin(UV.y*200 + _time * 10000))*(0.1f * depth + 0.001);
 	if(texture(waterMaskTexture, UV).r >0 && texture(waterMaskTexture, vec2(UV.x+distortion, UV.y)).r >0){
 		vec3 blurcolor = kawaseBloom( renderedTexture, vec2(UV.x+distortion, UV.y), textureSize(renderedTexture,0), 1).xyz;
-		vec3 blurbrightness = kawaseBloom( bloomTexture, vec2(UV.x+distortion, UV.y), textureSize(renderedTexture,0), 1).xyz;
+		//vec3 blurbrightness = kawaseBloom( bloomTexture, UV, textureSize(renderedTexture,0), 1).xyz;
 		const float gamma = 2.2;
 		const float exposure = 1;
 		vec3 hdrColor = blurcolor;
-		vec3 bloomColor = blurbrightness;
+		vec3 bloomColor = texture( bloomTexture, UV).xyz;
 		hdrColor += bloomColor; // additive blending
 		// Exposure tone mapping
 		vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
