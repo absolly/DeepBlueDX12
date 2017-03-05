@@ -69,6 +69,7 @@
     <ClCompile Include="src\mge\materials\BillBoardMaterial.cpp" />
     <ClCompile Include="src\Content\GameObjects\ParticleSystem.cpp" />
     <ClCompile Include="src\Content\GameObjects\Particle.cpp" />
+    <ClCompile Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="src\mge\materials\BillBoardMaterial.hpp" />
     <ClInclude Include="src\Content\GameObjects\ParticleSystem.hpp" />
     <ClInclude Include="src\Content\GameObjects\Particle.hpp" />
+    <ClInclude Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
