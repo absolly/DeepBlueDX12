@@ -5,6 +5,9 @@
 #include <btBulletDynamicsCommon.h>
 #include <vector>
 #include <stack>
+#include "mge/materials/LitWaveMaterial.hpp"
+
+
 class Mesh;
 class AbstractMaterial;
 class World;
@@ -15,6 +18,7 @@ public:
 	virtual void update(float pStep);
 
 private:
+	float _speed = 0.1;
 	GameObject* _target;
 	glm::vec3 _targetPos;
 	std::vector<glm::vec3> _waypoints;
@@ -31,5 +35,6 @@ private:
 	World* _world;
 	Mesh* cubeMeshF;
 	AbstractMaterial* colorMaterial2;
+	LitWaveMaterial* _ownerMat = nullptr;
 };
 

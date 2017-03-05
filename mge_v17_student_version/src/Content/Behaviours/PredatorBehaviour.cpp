@@ -4,6 +4,8 @@
 #include "mge/core/Physics/PhysicsWorld.h"
 #include "mge\core\World.hpp" 
 #include "Content/Core/Input.h"
+#include "Content/Hud/Hud.hpp"
+
 PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _target(pTarget), _world(pWorld)
 {
 	cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
@@ -24,6 +26,8 @@ PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3
 		go->setParent(NULL);
 		_debugMarkers.push_back(go);
 	}
+
+
 }
 
 PredatorBehaviour::~PredatorBehaviour()
@@ -32,6 +36,9 @@ PredatorBehaviour::~PredatorBehaviour()
 
 void PredatorBehaviour::update(float pStep)
 {
+	if (_ownerMat == nullptr)
+		_ownerMat = dynamic_cast<LitWaveMaterial*>(_owner->getMaterial());
+
 	if (Input::getKeyDown(sf::Keyboard::F3)) {
 		debug = !debug;
 		if (debug) {
@@ -41,7 +48,7 @@ void PredatorBehaviour::update(float pStep)
 				go->setParent(_world);
 			for each(GameObject* go in _returnPathMarkers)
 				go->setParent(_world);
-			  
+
 		}
 		else {
 			for each(GameObject* go in _debugMarkers)
@@ -89,7 +96,7 @@ void PredatorBehaviour::update(float pStep)
 	}
 
 	if (closest != glm::vec3(0, 0, 0)) {
-
+		_speed = 0.2;
 		//std::cout << "following player" << std::endl;
 		_targetPos = closest;
 		if (_returnPath.size() == 0 || glm::distance(_returnPath.top(), _owner->getWorldPosition()) >= 5) {
@@ -105,6 +112,7 @@ void PredatorBehaviour::update(float pStep)
 		}
 	}
 	else if (_returnPath.size() > 1) {
+		_speed = 0.1;
 		if (glm::distance(_returnPath.top(), _owner->getWorldPosition()) < 3) {
 			_returnPath.pop();
 			delete _returnPathMarkers.back();
@@ -113,17 +121,22 @@ void PredatorBehaviour::update(float pStep)
 		_targetPos = _returnPath.top();
 	}
 	else if (glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) > 1) {
+		_speed = 0.1;
 		//std::cout << "navigating to waypoint " << _currentWaypoint << " current distance: " << glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) << std::endl;
 		_targetPos = _waypoints[_currentWaypoint];
 	}
 	else {
+		_speed = 0.1;
 		//std::cout << "navigating to next waypoint " << _currentWaypoint << std::endl;
 		_currentWaypoint++;
 		_currentWaypoint = _currentWaypoint % _waypoints.size();
 		_targetPos = _waypoints[_currentWaypoint];
 	}
 	InterPolateDirection(_owner->getWorldPosition() - _targetPos);
-	_owner->translate(glm::vec3(0, 0, 0.1));
+	_ownerMat->speed = _speed;
+	_owner->translate(glm::vec3(0, 0, _speed * pStep * 100));
+	if (glm::distance(mypos, _target->getWorldPosition()) < 5)
+		Hud::getInstance()->isPlayerKilled = true;
 }
 
 

@@ -74,7 +74,7 @@ void Hud::setDebugInfo(std::string pInfo) {
 
 void Hud::setOxygenLeft(std::string oxygenLeft)
 {
-	if (oxygenLeft == "100") 
+	if (oxygenLeft == "100")
 	{
 		_noOxygenLeft = false;
 	}
@@ -115,7 +115,7 @@ void Hud::draw()
 	_window->draw(_depthText);
 	_inventory.draw();
 
-	if (_noOxygenLeft || _deathSpriteOpacity != 0)
+	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))
 	{
 		_deathSpriteOpacity += (_noOxygenLeft ? 32 : -128) * Time::DeltaTime;
 		if (_deathSpriteOpacity > 255) _deathSpriteOpacity = 255;
@@ -123,7 +123,26 @@ void Hud::draw()
 		sf::RectangleShape deathScreen = sf::RectangleShape(sf::Vector2f(_window->getSize()));
 		deathScreen.setFillColor(sf::Color(0, 0, 0, _deathSpriteOpacity));
 		_window->draw(deathScreen);
+		if (_deathSpriteOpacity >= 255)
+			isPlayerKilled = true;
 	}
+	else if (isPlayerKilled) {
+		_deathSpriteOpacity += 512 * Time::DeltaTime;
+		if (_deathSpriteOpacity > 255) _deathSpriteOpacity = 255;
+		if (_deathSpriteOpacity < 0) _deathSpriteOpacity = 0;
+		sf::RectangleShape deathScreen = sf::RectangleShape(sf::Vector2f(_window->getSize()));
+		deathScreen.setFillColor(sf::Color(0, 0, 0, _deathSpriteOpacity));
+		_window->draw(deathScreen);
+
+		sf::Text _deathText;
+		_deathText.setString("You Died");
+		_deathText.setFont(_font);
+		_deathText.setCharacterSize(24);
+		_deathText.setFillColor(sf::Color(255, 255, 255, _deathSpriteOpacity));
+		_deathText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_deathText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_deathText.getGlobalBounds().height / 2)));
+		_window->draw(_deathText);
+	}
+
 
 	_window->draw(_debugText);
 	_window->popGLStates();
