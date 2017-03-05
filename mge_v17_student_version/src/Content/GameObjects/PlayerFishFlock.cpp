@@ -19,6 +19,7 @@ PlayerFishFlock::PlayerFishFlock(glm::vec3 pPosition, World * pWorld, std::strin
 	allFish = new vector<GameObject*>();
 	_player = pPlayer;
 	_parentPos = getLocalPosition();
+	_coolDown = _coolDownMaximum;
 
 	Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "small_fish.OBJ");
 	AbstractMaterial* colormat = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
@@ -54,11 +55,15 @@ bool PlayerFishFlock::GetIsProtected()
 
 void PlayerFishFlock::update(float pStep)
 {
+	if (_coolDown >= 0)
+		_coolDown -= pStep;
+
 	if (_AllowedToExist)
 	{
 		_IsProtected = false;
-		if (glm::distance(goalPosition, _placedPos) < 40.0f)
+		if (glm::distance(goalPosition, _placedPos) < 40.0f && _coolDown <= 0)
 		{
+			std::cout << "your fishie delivery has arrived" << std::endl;
 			goalPosition = _player->getWorldPosition();
 			_IsProtected = true;
 		}
@@ -72,6 +77,7 @@ void PlayerFishFlock::update(float pStep)
 
 void PlayerFishFlock::CallFish()
 {
+	_coolDown = _coolDownMaximum;
 	_placedPos = _player->getWorldPosition();
 	glm::vec3 spawnPoint = _player->getTransform() * glm::vec4(0,0,-20,1);
 	setLocalPosition(_player->getWorldPosition());
