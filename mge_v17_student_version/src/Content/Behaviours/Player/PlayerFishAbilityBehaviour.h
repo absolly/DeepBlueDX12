@@ -12,6 +12,7 @@ class PlayerFishAbilityBehaviour : public AbstractBehaviour
 public:
 	PlayerFishAbilityBehaviour(World * pWorld, GameObject * pOwner);
 	~PlayerFishAbilityBehaviour();
+	bool getIsProtected();
 
 	virtual void update(float deltaTime);
 

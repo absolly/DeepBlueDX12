@@ -216,6 +216,8 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\Content\Core\Input.h" />
     <ClInclude Include="src\Content\DeferredTestScene.hpp" />
     <ClInclude Include="src\Content\GameObjects\FishTank.hpp" />
+    <ClInclude Include="src\Content\GameObjects\Particle.hpp" />
+    <ClInclude Include="src\Content\GameObjects\ParticleSystem.hpp" />
     <ClInclude Include="src\Content\GameObjects\Player.h" />
     <ClInclude Include="src\Content\Hud\Hud.hpp" />
     <ClInclude Include="src\Content\Hud\HudSprite.h" />
@@ -256,6 +258,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\Time.h" />
     <ClInclude Include="src\mge\core\World.hpp" />
     <ClInclude Include="src\mge\materials\AbstractMaterial.hpp" />
+    <ClInclude Include="src\mge\materials\BillBoardMaterial.hpp" />
     <ClInclude Include="src\mge\materials\ColorMaterial.hpp" />
     <ClInclude Include="src\mge\materials\DebugRenderMaterial.hpp" />
     <ClInclude Include="src\mge\materials\GPUinstancingMaterial.hpp" />
@@ -284,6 +287,8 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\Content\Core\Input.cpp" />
     <ClCompile Include="src\Content\DeferredTestScene.cpp" />
     <ClCompile Include="src\Content\GameObjects\FishTank.cpp" />
+    <ClCompile Include="src\Content\GameObjects\Particle.cpp" />
+    <ClCompile Include="src\Content\GameObjects\ParticleSystem.cpp" />
     <ClCompile Include="src\Content\GameObjects\Player.cpp" />
     <ClCompile Include="src\Content\Hud\Hud.cpp" />
     <ClCompile Include="src\Content\Hud\HudSprite.cpp" />
@@ -323,6 +328,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\Time.cpp" />
     <ClCompile Include="src\mge\core\World.cpp" />
     <ClCompile Include="src\mge\materials\AbstractMaterial.cpp" />
+    <ClCompile Include="src\mge\materials\BillBoardMaterial.cpp" />
     <ClCompile Include="src\mge\materials\ColorMaterial.cpp" />
     <ClCompile Include="src\mge\materials\DebugRenderMaterial.cpp" />
     <ClCompile Include="src\mge\materials\GPUinstancingMaterial.cpp" />

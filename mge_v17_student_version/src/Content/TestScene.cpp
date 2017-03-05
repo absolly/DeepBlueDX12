@@ -20,7 +20,9 @@
 #include "mge/materials/WobbleMaterial.hpp"
 #include "mge/materials/SeaMaterial.hpp"
 #include "mge/materials/GPUinstancingMaterial.hpp"
+#include "mge/materials/BillBoardMaterial.hpp"
 
+#include "Content/GameObjects/ParticleSystem.hpp"
 #include "mge/behaviours/RotatingBehaviour.hpp"
 #include "mge/behaviours/KeysBehaviour.hpp"
 #include "mge/behaviours/LookAt.hpp"
@@ -65,6 +67,9 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 	AbstractGame::_setFogGradient(fog);
 
+
+	
+
 	//add camera first (it will be updated last)
 	//Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
 	//camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -92,6 +97,17 @@ void TestScene::_initializeScene() {
 	_world->add(player);
 	_world->setMainCamera(player->getCamera());
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
+
+	glm::vec3 ParticlePosition = player->getChildAt(0)->getWorldPosition();
+	ParticlePosition.y -= 200;
+	ParticleSystem * particleSystem = new ParticleSystem(ParticlePosition, "name");
+
+	particleSystem->setMesh(planeMeshDefault);
+	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg");
+	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
+	particleSystem->setMaterial(billboardMat);
+	_world->add(particleSystem);
+
 
 
 	/*

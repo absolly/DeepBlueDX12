@@ -20,8 +20,10 @@ public:
 	glm::vec3 updatePlayerPos();
 	void spawnFishes();
 	void CallFish();
+	bool GetIsProtected();
 
 private:
+	bool _IsProtected = false;
 	glm::vec3 _parentPos;
 	glm::vec3 _placedPos;
 	GameObject * _player;

@@ -47,12 +47,21 @@ PlayerFishFlock::PlayerFishFlock(glm::vec3 pPosition, World * pWorld, std::strin
 	}
 };
 
+bool PlayerFishFlock::GetIsProtected()
+{
+	return _IsProtected;
+}
+
 void PlayerFishFlock::update(float pStep)
 {
 	if (_AllowedToExist)
 	{
+		_IsProtected = false;
 		if (glm::distance(goalPosition, _placedPos) < 40.0f)
+		{
 			goalPosition = _player->getWorldPosition();
+			_IsProtected = true;
+		}
 
 		for (int i = 0; i < allFish->size(); i++)
 		{

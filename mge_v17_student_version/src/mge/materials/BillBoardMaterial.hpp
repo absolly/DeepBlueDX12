@@ -3,6 +3,7 @@
 
 #include "mge/materials/AbstractMaterial.hpp"
 #include "mge/core/ShaderProgram.hpp"
+#include "mge/core/Texture.hpp"
 #include "mge/core/GameObject.hpp"
 #include "mge/core/Camera.hpp"
 #include "Content\GameObjects\ParticleSystem.hpp"
@@ -18,7 +19,7 @@ class BillBoardMaterial : public AbstractMaterial
     public:
 
 	//GPUinstancingMaterial(std::vector<GameObject*> gameObjects);
-	BillBoardMaterial(ParticleSystem * pParticleSystem);
+	BillBoardMaterial(ParticleSystem * pParticleSystem, Texture * pTexture);
 	virtual ~BillBoardMaterial();
 
 	virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
@@ -26,6 +27,7 @@ class BillBoardMaterial : public AbstractMaterial
     private:
 
 	int _listSize = 0;
+	Texture * _diffuseTexture;
 	
 	static ShaderProgram* _shader;
 	static void _lazyInitializeShader();
@@ -47,7 +49,7 @@ class BillBoardMaterial : public AbstractMaterial
 	static GLint CameraRight;
 	static GLint BillboardPos;
 	static GLint BillboardSize;
- 
+	static GLuint TextureID;
 };
 
 #endif // COLORMATERIAL_H

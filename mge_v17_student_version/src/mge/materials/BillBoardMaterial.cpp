@@ -2,6 +2,7 @@
 
 #include "mge/materials/BillBoardMaterial.hpp"
 #include "mge/config.hpp"
+#include "mge/core/Texture.hpp"
 #include "mge/core/GameObject.hpp"
 #include "Content\GameObjects\ParticleSystem.hpp"
 #include "mge/core/Mesh.hpp"
@@ -15,6 +16,7 @@ GLint BillBoardMaterial::CameraUp = 0;
 GLint BillBoardMaterial::CameraRight = 0;
 GLint BillBoardMaterial::BillboardPos = 0;
 GLint BillBoardMaterial::BillboardSize = 0;
+GLuint BillBoardMaterial::TextureID = 0;
 GLuint BillBoardMaterial::billboard_vertex_buffer = 0;
 
 //GPUinstancingMaterial::GPUinstancingMaterial(std::vector<GameObject*> gameObjects)
@@ -24,7 +26,7 @@ GLuint BillBoardMaterial::billboard_vertex_buffer = 0;
 //}
 //
 
-BillBoardMaterial::BillBoardMaterial(ParticleSystem * pParticleSystem)
+BillBoardMaterial::BillBoardMaterial(ParticleSystem * pParticleSystem, Texture * pTexture) : _diffuseTexture(pTexture)
 {
 	_lazyInitializeShader();
 	_particleSystem = pParticleSystem;
@@ -67,6 +69,7 @@ void BillBoardMaterial::_lazyInitializeShader() {
 		CameraRight = _shader->getUniformLocation("CameraRight_worldspace");
 		BillboardPos = _shader->getUniformLocation("BillboardPos");
 		BillboardSize = _shader->getUniformLocation("BillboardSize");
+		TextureID = _shader->getUniformLocation("myTextureSampler");
 
     }
 }
@@ -87,6 +90,11 @@ void BillBoardMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const
 	glUniform3f(CameraUp, pViewMatrix[0][1], pViewMatrix[1][1], pViewMatrix[2][1]);
 
 	glUniform2f(BillboardSize, 0.5f, 0.5f);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _diffuseTexture->getId());
+	// Set our "myTextureSampler" sampler to user Texture Unit 0
+	glUniform1i(TextureID, 0);
 
 	glm::mat4 vpMatrix = pProjectionMatrix * pViewMatrix;
 
