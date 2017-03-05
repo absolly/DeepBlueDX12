@@ -130,7 +130,7 @@ void main( void ) {
 
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
         visibility = 1.0;
-        MaterialAmbientColor = vec3(0.001,0.001,0.001) *lightColor[activeLight] * MaterialDiffuseColor;
+        MaterialAmbientColor = vec3(0.1,0.1,0.1) *lightColor[activeLight] * MaterialDiffuseColor;
         MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
         distance = length(Position_worldspace - lightPosition[activeLight]);
@@ -158,7 +158,7 @@ void main( void ) {
                 // 0.2 potentially remain, which is quite dark.
                 coord = vec3( ShadowCoord.xy + poissonDisk[index]/1200.0,  (ShadowCoord.z)/ShadowCoord.w );
                 if(coord.x > 0 && coord.x < 1 && coord.y > 0 && coord.y < 1 && coord.z > 0 && coord.z < 1)
-                    visibility -= 0.23*(1.0-texture( shadowMap, coord));
+                    visibility -= 0.2*(1.0-texture( shadowMap, coord));
             }
             combinedColor += calcDirectionalLight(falloff, lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
             break;

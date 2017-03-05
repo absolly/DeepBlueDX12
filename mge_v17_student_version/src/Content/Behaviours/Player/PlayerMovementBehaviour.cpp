@@ -28,7 +28,7 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_diveScooter->setMaterial(_diveScooterMaterial);
 	_scooterOffsetMat = glm::scale(_scooterOffsetMat, glm::vec3(0.025f));
 
-	Light* spotlight = new Light(Light::lightType::SPOT,"spotlight",glm::vec3(0), glm::vec3(0.4, 0.4, 0.7), 50, glm::vec3(0,0,1));
+	Light* spotlight = new Light(Light::lightType::SPOT,"spotlight",glm::vec3(0), glm::vec3(0.964706, 0.917647, 0.827451), 70, glm::vec3(0,0,1));
 	_diveScooter->add(spotlight);
 	spotlight->setTransform(glm::mat4(1.0f));
 	spotlight->translate(glm::vec3(-30, 0, 0));
@@ -188,9 +188,9 @@ void PlayerMovementBehaviour::update(float deltaTime)
 		std::cout << "}" << std::endl;
 	}
 
-	if (_scooterEquiped && Input::getKeyDown(sf::Keyboard::E))
+	if (_scooterEquiped && Input::getKeyDown(sf::Keyboard::F))
 		unEquipScooter();
-	else if (!_scooterEquiped && Input::getKeyDown(sf::Keyboard::E))
+	else if (!_scooterEquiped && Input::getKeyDown(sf::Keyboard::F))
 		equipScooter();
 
 }
