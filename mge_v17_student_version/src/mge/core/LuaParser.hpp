@@ -31,8 +31,10 @@ class LuaParser {
         void update(float pStep);
         bool hitTest(GameObject* objectA, GameObject* objectB);
 		LuaScriptParser * scriptParser;
-		void setPlayerRigidBody(RigidBody& pRigidBody);
+		void setPlayerRigidBody(class Player& pRigidBody);
 
+
+		static std::map<std::string, std::vector<GameObject*>> groups;
 
     private:
         struct collisionListener {
@@ -54,6 +56,7 @@ class LuaParser {
 		int addMaterial(lua_State * lua);
 		int addSphereCollider(lua_State * lua);
 		int addBoxCollider(lua_State * lua);
+		int addToGroup(lua_State * lua);
 		int addMeshCollider(lua_State * lua);
 		int createTrigger(lua_State * lua);
 		int createLight(lua_State * lua);
@@ -62,6 +65,7 @@ class LuaParser {
         int destoryLuaObject(lua_State * lua);
 		int addPredator(lua_State * lua);
 
+		Player * _player;
 		RigidBody * _playerRigidBody;
 		Mesh* smallFish;
 		AbstractMaterial * gpuinstancing;

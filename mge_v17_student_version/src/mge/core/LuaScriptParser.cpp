@@ -8,6 +8,8 @@
 #include <cassert>
 #include <iostream>
 #include <string>
+#include "mge\core\LuaParser.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -59,8 +61,8 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::playSound>);
 	lua_setglobal(lua, "playSound");
 
-	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::playBreath>);
-	lua_setglobal(lua, "playBreath");
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroyGroup>);
+	lua_setglobal(lua, "destroyGroup");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -81,37 +83,6 @@ int LuaScriptParser::playSound(lua_State * lua)
 
 	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume);
 	_lastSong = song;
-
-	return 0;
-}
-
-
-int LuaScriptParser::playBreath(lua_State * lua)
-{
-	/*
-	std::random_device rd;
-
-	// Initialize Mersenne Twister pseudo-random number generator
-	std::mt19937 gen(rd());
-
-	std::uniform_int_distribution<> dis(1,6);
-
-	if (_BreathingIn)
-	{
-		if (!_soundManager->GetChannelState("player"))
-		{
-			_soundManager->PlaySound("air_in_" + std::to_string(dis(gen)), "player", false, false, false, 100);
-			_BreathingIn = false;
-		}
-	}
-	else
-	{
-		if (!_soundManager->GetChannelState("player"))
-		{
-			_soundManager->PlaySound("air_out_relaxed_" + std::to_string(dis(gen)), "player", false, false, false, 100);
-			_BreathingIn = true;
-		}
-	}*/
 
 	return 0;
 }
@@ -147,7 +118,6 @@ void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 	std::string NewFunction = "on" + dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner()->getName() + "Collision";
 
 	lua_getglobal(lua, NewFunction.c_str());
-
 
 	if (lua_isnil(lua, -1)) { //if is doesn't exist, bail out
 		lua_settop(lua, 0);
@@ -198,3 +168,35 @@ void LuaScriptParser::step()
 	lua_call(lua, 0, 0);
 }
 
+
+int LuaScriptParser::destroyGroup(lua_State *lua)
+{
+	std::string groupName = lua_tostring(lua, -1);
+	if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	{
+		return 1;
+	}
+	std::cout << "Attempting to destroy group: " << groupName << std::endl;
+	/*if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	{
+		std::cout << "GROUP CANNOT BE FOUND: " << groupName << std::endl;
+		return 1;
+	}*/
+	for each (GameObject* gameObject in LuaParser::groups[groupName])
+	{
+		RigidBody* rigidBody = gameObject->getBehaviour<RigidBody>();
+		if (rigidBody != nullptr)
+		{
+			World::physics->removeRigidBody(rigidBody);
+		}
+		Collider* collider = gameObject->getBehaviour<Collider>();
+		if (collider != nullptr)
+		{
+			World::physics->removeCollisionObject(collider);
+		}
+		delete gameObject;
+	}
+	std::cout << "Destroyed group: " << groupName << std::endl;
+	LuaParser::groups.erase(groupName);
+	return 1;
+}

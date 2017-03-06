@@ -11,6 +11,7 @@
 #include <lua.hpp>
 #include <string>
 #include <vector>
+#include <map>
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser
@@ -21,6 +22,7 @@ public:
 	LuaScriptParser(const char* pFileName, sf::RenderWindow * aWindow, SoundManager * pSoundManager);
 	void SetPlayerAndObjectives(GameObject* pGameobject, std::vector<GameObject*> * pObjectives);
 	void step();
+	int destroyGroup(lua_State * lua);
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);
 	void setSoundManager(SoundManager * pSoundManager);
@@ -45,9 +47,7 @@ private:
 	int visit(lua_State * lua);
 	int playContiniousSound(lua_State * lua);
 	int playSound(lua_State * lua);
-	int playBreath(lua_State * lua);
 	void inilua(const char* pFileName);
-
 };
 
 //------------------------------------------------------------------------------------------------------------

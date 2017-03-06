@@ -6,6 +6,7 @@
 #include <vector>
 #include <stack>
 #include "mge/materials/LitWaveMaterial.hpp"
+#include "Content\GameObjects\Player.h"
 
 
 class Mesh;
@@ -13,12 +14,13 @@ class AbstractMaterial;
 class World;
 class PredatorBehaviour : public AbstractBehaviour {
 public:
-	PredatorBehaviour(GameObject* pTarget, std::vector<glm::vec3> pWaypoints, World* pWorld);
+	PredatorBehaviour(Player* pTarget, std::vector<glm::vec3> pWaypoints, World* pWorld);
 	~PredatorBehaviour();
 	virtual void update(float pStep);
 
 private:
 	float _speed = 0.1;
+	Player* _player;
 	GameObject* _target;
 	glm::vec3 _targetPos;
 	std::vector<glm::vec3> _waypoints;

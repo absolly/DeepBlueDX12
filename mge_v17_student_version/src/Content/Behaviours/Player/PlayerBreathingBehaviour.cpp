@@ -33,7 +33,7 @@ void PlayerBreathingBehaviour::update(float deltaTime)
 void PlayerBreathingBehaviour::playBreatheSound()
 {
 	std::string soundToPlay = getSoundToPlay();
-	std::string soundChannel = "Player";
+	std::string soundChannel = getSoundToPlay();
 	bool interupt = true;
 	int volume = _breathingIn ? _breatheInVolume : _breatheOutVolume;
 	SoundManager::getInstance()->PlaySound(getSoundToPlay(), soundChannel, false, interupt, false, volume);
@@ -67,7 +67,7 @@ std::string PlayerBreathingBehaviour::getSoundToPlay()
 {
 	std::string soundToPlay;
 	if (_breathingIn)
-		soundToPlay = _player.getAffraidness() > 50 ? "air_in_" : "air_in_";
+		soundToPlay = _player.getAffraidness() > 50 ? "air_in_panic_" : "air_in_relaxed_";
 	else
 		soundToPlay = _player.getAffraidness() > 50 ? "air_out_panic_" : "air_out_relaxed_";
 

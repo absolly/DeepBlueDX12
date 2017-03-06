@@ -7,7 +7,7 @@
 #include "Content/Hud/Hud.hpp"
 #include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
 
-PredatorBehaviour::PredatorBehaviour(GameObject * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _target(pTarget), _world(pWorld)
+PredatorBehaviour::PredatorBehaviour(Player * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _player(pTarget), _target(pTarget->getChildAt(0)), _world(pWorld)
 {
 	cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_flat.obj");
 	colorMaterial2 = new ColorMaterial((glm::vec3(0.1, 1, 0.1)));
@@ -138,8 +138,15 @@ void PredatorBehaviour::update(float pStep)
 	InterPolateDirection(_owner->getWorldPosition() - _targetPos);
 	_ownerMat->speed = _speed;
 	_owner->translate(glm::vec3(0, 0, _speed * pStep * 100));
-	if (glm::distance(mypos, _target->getWorldPosition()) < 5)
+
+	float distanceToPlayer = glm::distance(mypos, _target->getWorldPosition());
+	if (distanceToPlayer < 5)
+	{
 		Hud::getInstance()->isPlayerKilled = true;
+	}
+	float maxDistance = 400;
+	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;
+	_player->setAffraidness(affraidness * 100);
 }
 
 

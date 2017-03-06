@@ -6,21 +6,19 @@ end
 
 function act1_1()
 	showObjectiveDistance(0);
-	playBreath();
 end
 
 function act1_2()
 	showObjectiveDistance(1);
-	playBreath();
 end
 
 function act2_1()
 	showObjectiveDistance(2);
-	playBreath();
 end
 
 function onAct1_1Collision()
 	message("That cave might just have something interesting for me.");
+	destroyGroup("Door1");
 	visit("act1_2");
 end
 

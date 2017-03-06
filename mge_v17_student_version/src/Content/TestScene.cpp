@@ -140,9 +140,9 @@ void TestScene::_initializeScene() {
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player->getChildAt(0)));
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
-	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,50,0));
+	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,-80,0));
 	boat->add(boatColliderContainer);
-	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,50), true, false);
+	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,60), true, false);
 	boatColliderContainer->rotate(glm::radians(90.0f), glm::vec3(1,0, 0));
 	
 	boatTriggerCollider.collisionEvents[playerRigidbody].bind(player->getBehaviour<DivingBehaviour>(), &DivingBehaviour::onCollisionAddAir);
@@ -193,7 +193,7 @@ void TestScene::_initializeScene() {
 	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
 	LuaParser * luaparser2 = new LuaParser(_world);
-	luaparser2->setPlayerRigidBody(*playerRigidbody);
+	luaparser2->setPlayerRigidBody(*player);
 	luaparser2->scriptParser = _scriptParser;
 	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
 
@@ -225,7 +225,6 @@ void TestScene::_initializeScene() {
 
 	Mesh* templeMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleWODoors.obj");
 	Mesh* templeDoorsMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleDoors.obj");
-
 
 	GameObject* temple = new GameObject("Temple");
 	GameObject* templeDoors = new GameObject("TempleDoors");

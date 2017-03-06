@@ -20,8 +20,8 @@ SoundManager::SoundManager()
 	music.setLoop(true);
 	music.play();	
 	*/
-	PlayMusic(Config::MGE_SOUNDS_PATH + "full_soundtrack.wav", 15, true);
-	PlayMusic(Config::MGE_SOUNDS_PATH + "ambient_underwater.wav", 15, true);
+	PlayMusic(Config::MGE_SOUNDS_PATH + "full_soundtrack.wav", 10, true);
+	PlayMusic(Config::MGE_SOUNDS_PATH + "ambient_underwater.wav", 10, true);
 	SetupFiles();
 	SetupSounds();
 }
