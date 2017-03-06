@@ -28,13 +28,14 @@ class Hud
 		Inventory& getInventory();
 		bool isPlayerKilled = false;
 
-		void addCoin();
+		void addCoin(int pAmount);
 
 	private:
 		static Hud* _instance;
 
 		sf::RenderWindow * _window;
 		int _coins = 0;
+		int _coinsDisplayed = 0;
 
 		HUDMaterial* _hudMaterial;
         std::string _debugInfo;

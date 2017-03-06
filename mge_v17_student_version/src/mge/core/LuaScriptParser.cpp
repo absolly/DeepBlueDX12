@@ -11,6 +11,7 @@
 #include "mge\core\LuaParser.hpp"
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "Content\Hud\Hud.hpp"
+#include "mge\core\Random.h"
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -97,7 +98,7 @@ int LuaScriptParser::playSound(lua_State * lua)
 int LuaScriptParser::addCoin(lua_State * lua)
 {
 	std::cout << "You've picked up a coin! " << std::endl;
-	Hud::getInstance()->addCoin();
+	Hud::getInstance()->addCoin(Random::Range(150,250));
 	return 1;
 }
 

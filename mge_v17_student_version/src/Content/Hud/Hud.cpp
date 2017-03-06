@@ -8,7 +8,6 @@
 #include "mge/config.hpp"
 #include "mge\core\Time.h"
 #include "Content\Core\Input.h"
-#include "mge\core\Random.h"
 
 Hud* Hud::_instance;
 Hud* Hud::getInstance()
@@ -108,14 +107,20 @@ Inventory& Hud::getInventory()
 	return _inventory;
 }
 
-void Hud::addCoin()
+void Hud::addCoin(int pAmount)
 {
-	_coins += Random::Range(150,250);
-	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
+	std::cout << "adding coins: " + pAmount << std::endl;
+	_coins += pAmount;
 }
 
 void Hud::draw()
 {
+	if (_coinsDisplayed < _coins)
+		_coinsDisplayed++;
+	else if (_coinsDisplayed > _coins)
+		_coinsDisplayed--;
+	_coinCounterText.setString("Gold: " + to_string(_coinsDisplayed) + "");
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
 

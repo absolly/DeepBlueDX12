@@ -38,6 +38,7 @@ void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 
 	if (Input::getKeyDown(sf::Keyboard::E) && _refillCooldownTimer <= 0) {
 		std::cout << "added air" << std::endl;
+		Hud::getInstance()->addCoin((int)(_airLeft - _tankSize));
 		_airLeft = _tankSize;
 		_refillCooldownTimer = _refillCooldown;
 	}
