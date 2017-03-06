@@ -24,7 +24,8 @@ Hud::Hud(sf::RenderWindow * window) :
 	_hudMaterial(new HUDMaterial()),
 	_visor("Visor.png"),
 	_depthBar("DepthBar.png"),
-	_oxygenBar("OxygenBar.png")
+	_oxygenBar("OxygenBar.png"),
+	_coinCounterBar("TransparantBar.png")
 {
 	_instance = this;
 	assert(_window != NULL);
@@ -33,14 +34,16 @@ Hud::Hud(sf::RenderWindow * window) :
 		std::cout << "Could not load font, exiting..." << std::endl;
 		return;
 	}
-
+	
 	_visor.setScale(Config::HUD_SCALE_FACTOR);
 	_depthBar.setScale(Config::HUD_SCALE_FACTOR);
 	_oxygenBar.setScale(Config::HUD_SCALE_FACTOR);
+	_coinCounterBar.setScale(Config::HUD_SCALE_FACTOR);
 
 	_depthBar.setPosition(50, window->getSize().y - 200);
 	_depthText.setPosition(50, window->getSize().y - 200);
 	_oxygenBar.setPosition(50, window->getSize().y - 300);
+	_coinCounterBar.setPosition(50, window->getSize().y - 400);
 	_coinCounterText.setPosition(50, window->getSize().y - 400);
 
 	_createDebugHud();
@@ -67,7 +70,7 @@ void Hud::_createDebugHud() {
 	_depthText.setCharacterSize(37);
 	_depthText.setFillColor(sf::Color::White);
 
-	_coinCounterText.setString("1");
+	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
 	_coinCounterText.setFont(_font);
 	_coinCounterText.setCharacterSize(37);
 	_coinCounterText.setFillColor(sf::Color::White);
@@ -115,6 +118,9 @@ void Hud::addCoin(int pAmount)
 
 void Hud::draw()
 {
+	if (Input::getKey(sf::Keyboard::P))
+		addCoin(100);
+
 	if (_coinsDisplayed < _coins)
 		_coinsDisplayed++;
 	else if (_coinsDisplayed > _coins)
@@ -131,7 +137,9 @@ void Hud::draw()
 	_window->draw(_oxygenText);
 	_window->draw(_depthBar);
 	_window->draw(_depthText);
+	_window->draw(_coinCounterBar);
 	_window->draw(_coinCounterText);
+	sf::RectangleShape s;
 	_inventory.draw();
 
 	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))

@@ -47,7 +47,7 @@ class Hud
 		sf::Text _depthText;
 		HudSprite _oxygenBar;
 		sf::Text _oxygenText;
-
+		HudSprite _coinCounterBar;
 		sf::Text _coinCounterText;
 
 		bool _noOxygenLeft;
