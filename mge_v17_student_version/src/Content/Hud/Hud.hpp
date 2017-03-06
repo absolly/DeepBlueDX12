@@ -28,10 +28,13 @@ class Hud
 		Inventory& getInventory();
 		bool isPlayerKilled = false;
 
+		void addCoin();
+
 	private:
 		static Hud* _instance;
 
 		sf::RenderWindow * _window;
+		int _coins = 0;
 
 		HUDMaterial* _hudMaterial;
         std::string _debugInfo;
@@ -43,6 +46,8 @@ class Hud
 		sf::Text _depthText;
 		HudSprite _oxygenBar;
 		sf::Text _oxygenText;
+
+		sf::Text _coinCounterText;
 
 		bool _noOxygenLeft;
 		float _deathSpriteOpacity = 0;

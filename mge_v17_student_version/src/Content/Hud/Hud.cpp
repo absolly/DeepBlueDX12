@@ -8,6 +8,7 @@
 #include "mge/config.hpp"
 #include "mge\core\Time.h"
 #include "Content\Core\Input.h"
+#include "mge\core\Random.h"
 
 Hud* Hud::_instance;
 Hud* Hud::getInstance()
@@ -41,6 +42,7 @@ Hud::Hud(sf::RenderWindow * window) :
 	_depthBar.setPosition(50, window->getSize().y - 200);
 	_depthText.setPosition(50, window->getSize().y - 200);
 	_oxygenBar.setPosition(50, window->getSize().y - 300);
+	_coinCounterText.setPosition(50, window->getSize().y - 400);
 
 	_createDebugHud();
 }
@@ -65,6 +67,11 @@ void Hud::_createDebugHud() {
 	_depthText.setFont(_font);
 	_depthText.setCharacterSize(37);
 	_depthText.setFillColor(sf::Color::White);
+
+	_coinCounterText.setString("1");
+	_coinCounterText.setFont(_font);
+	_coinCounterText.setCharacterSize(37);
+	_coinCounterText.setFillColor(sf::Color::White);
 }
 
 void Hud::setDebugInfo(std::string pInfo) {
@@ -101,6 +108,12 @@ Inventory& Hud::getInventory()
 	return _inventory;
 }
 
+void Hud::addCoin()
+{
+	_coins += Random::Range(150,250);
+	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
+}
+
 void Hud::draw()
 {
 	glActiveTexture(GL_TEXTURE0);
@@ -113,6 +126,7 @@ void Hud::draw()
 	_window->draw(_oxygenText);
 	_window->draw(_depthBar);
 	_window->draw(_depthText);
+	_window->draw(_coinCounterText);
 	_inventory.draw();
 
 	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))

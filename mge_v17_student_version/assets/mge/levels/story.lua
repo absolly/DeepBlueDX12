@@ -16,7 +16,14 @@ function act2_1()
 	showObjectiveDistance(2);
 end
 
+function onTreasureCollision(self)
+	playSound("ability.wav", "Coin", false, true, 100);
+	addCoin();
+	destroy(self);
+end
+
 function onAct1_1Collision(self)
+	playSound("ability.wav", "Coin", false, true, 100);
 	message("That cave might just have something interesting for me.");
 	destroyGroup("Door1");
 	visit("act1_2");

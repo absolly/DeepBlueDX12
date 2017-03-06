@@ -10,6 +10,7 @@
 #include <string>
 #include "mge\core\LuaParser.hpp"
 #include "mge\core\Physics\PhysicsWorld.h"
+#include "Content\Hud\Hud.hpp"
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -66,6 +67,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroy>);
 	lua_setglobal(lua, "destroy");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addCoin>);
+	lua_setglobal(lua, "addCoin");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -88,6 +92,13 @@ int LuaScriptParser::playSound(lua_State * lua)
 	_lastSong = song;
 
 	return 0;
+}
+
+int LuaScriptParser::addCoin(lua_State * lua)
+{
+	std::cout << "You've picked up a coin! " << std::endl;
+	Hud::getInstance()->addCoin();
+	return 1;
 }
 
 int LuaScriptParser::message(lua_State * lua) {

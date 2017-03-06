@@ -421,7 +421,6 @@ int LuaParser::addMaterial(lua_State * lua) {
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".png"), tiling, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + ((SpecularMap == "null") ? "black" : SpecularMap) + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + ((normalMap == "null") ? "NormalNormalMap" : normalMap) + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + ((emissionMap == "null") ? "black" : emissionMap) + ".png"));
 
-
 	_currentGameObject->setMaterial(textureMaterial);
 
 	return 1;

@@ -48,6 +48,7 @@ private:
 	int visit(lua_State * lua);
 	int playContiniousSound(lua_State * lua);
 	int playSound(lua_State * lua);
+	int addCoin(lua_State * lua);
 	void inilua(const char* pFileName);
 };
 
