@@ -143,11 +143,6 @@ void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))
 		addCoin(100);
-	if (Input::getKey(sf::Keyboard::O))
-		setSubtitleText("This is some text that should represent the subtitles from \n     the guy that's talking. Cool huh? Yea. Fuck my life.");
-	if (Input::getKey(sf::Keyboard::E))
-		setInteractionText("You did something magical. Well done.");
-
 
 	if (_coinsDisplayed < _coins)
 		_coinsDisplayed++;

@@ -16,25 +16,30 @@ function act2_1()
 	showObjectiveDistance(2);
 end
 
-function onTreasureCollision(self)
-	playSound("ability.wav", "Coin", false, true, 100);
-	addCoin();
-	destroy(self);
+function onTreasureCollision(self, ePressed)
+	if (ePressed) then
+		playSound("ability.wav", "Coin", false, true, 100);
+		addCoin();
+		destroy(self);
+		setInteractionText("");
+	else
+		setInteractionText("Press E to pick up the treasure");
+	end
 end
 
-function onAct1_1Collision(self)
+function onAct1_1Collision(self, ePressed)
 	playSound("ability.wav", "Coin", false, true, 100);
-	message("That cave might just have something interesting for me.");
+	message("That cave might just have something interesting for me." + ePressed);
 	destroyGroup("Door1");
 	visit("act1_2");
-	destroy(self);
+	--destroy(self);
 end
 
-function onAct1_2Collision(self)
+function onAct1_2Collision(self, ePressed)
 	message("This artifact.. it doesn't look human made..?!");
 	visit("act2_1");
 end
 
-function onAct1_3Collision(self)
+function onAct1_3Collision(self, ePressed)
 	message("I hole in the lower deck of the ship? Intersting..");
 end

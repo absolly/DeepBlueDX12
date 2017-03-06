@@ -132,7 +132,7 @@ void TestScene::_initializeScene() {
 
 	//ADDING BOAT FOLLOWING PLAYER
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
-	GameObject* boat = new GameObject("Boat", glm::vec3(0,720,0));
+	GameObject* boat = new GameObject("Boat", glm::vec3(-2068,720, 541));
 	boat->setMesh(boatMesh);
 	boat->setMaterial(textureMaterial);
 	//boat->scale(glm::vec3(0.1));

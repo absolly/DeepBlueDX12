@@ -12,6 +12,7 @@
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "Content\Hud\Hud.hpp"
 #include "mge\core\Random.h"
+#include "Content\Core\Input.h"
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -68,9 +69,12 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroy>);
 	lua_setglobal(lua, "destroy");
-
+	
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addCoin>);
 	lua_setglobal(lua, "addCoin");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setInteractionText>);
+	lua_setglobal(lua, "setInteractionText");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -139,10 +143,18 @@ void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 		lua_settop(lua, 0);
 		return;
 	}
+	bool ePressed = Input::getKey(sf::Keyboard::E);
 	lua_pushinteger(lua, (size_t)sender);
-	lua_call(lua, 1, 0);
+	lua_pushboolean(lua, ePressed);
+	lua_call(lua, 2, 0);
 
 	//std::cout << onCollisionArgs.collidingWith->getowner
+}
+
+int LuaScriptParser::setInteractionText(lua_State * lua)
+{
+	Hud::getInstance()->setInteractionText(lua_tostring(lua, -1));
+	return 1;
 }
 
 int LuaScriptParser::showObjectiveDistance(lua_State * lua)
