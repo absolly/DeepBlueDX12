@@ -1793,6 +1793,6 @@ createObject("Kelp","Kelp", 9.42026,0,0,-1927.73,0,9.420245,0,480,0,0,9.420245,-
 addMaterial(1,"null","Kelpp","null","null",0.08);
 createObject("Treasure","TreasureChest", 30,0,0,-2255.081,0,30,0,3.257233,0,0,30,-2199.392,0,0,0,1);
 addMaterial(1,"TableCoral_BaseYEL","TableCoral_BaseYEL","null","null",0);
-addBoxCollider("boxCollider", 1.117989,1.101691,1.204462,0.0008665025,0.5510285,-0.233854,true);
-createTrigger("Treasure");
+addSphereCollider("sphereCollider", 1.2,0.0008665025,0.5510285,-0.233854,true);
+addBoxCollider("boxCollider", 1.117989,1.101691,1.204462,0.0008665025,0.5510285,-0.233854,false);
 addPredator(-2140.963,318.6407,-712.0931,-2254.881,381.1043,-697.6021,-2099.663,381.1043,-558.6931,-1896.963,368.6407,-583.0931,-1921.963,339.5407,-794.0931,-2226.163,337.6407,-761.1931,6);
