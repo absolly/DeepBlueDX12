@@ -309,3 +309,4 @@ createObject("Rock16 (2)","Rock3", 14.11555,-1.956177,1.228544,-2008,7.893292,3.
 addMaterial(1,"null","rockthree_albedo","rockthree_normal","null",0);
 addMeshCollider("meshCollider",false);
 addToGroup("Door1");
+addPredator(-2040.4,303.6,-626.4,-2027.988,295.6602,-559.4773,-1972.588,342.3602,-698.1773,-1883.788,295.6602,-646.1773,-1932,313.5,-585.6,-2077.9,329.1,-649,-2040.788,295.6602,-676.8773,7);

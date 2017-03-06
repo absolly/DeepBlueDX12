@@ -22,6 +22,7 @@ public:
 	LuaScriptParser(const char* pFileName, sf::RenderWindow * aWindow, SoundManager * pSoundManager);
 	void SetPlayerAndObjectives(GameObject* pGameobject, std::vector<GameObject*> * pObjectives);
 	void step();
+	int destroy(lua_State * lua);
 	int destroyGroup(lua_State * lua);
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);

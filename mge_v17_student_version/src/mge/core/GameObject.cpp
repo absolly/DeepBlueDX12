@@ -9,6 +9,7 @@ using namespace std;
 #include "Bullet3Common\b3Vector3.h"
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\RigidBody.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition)
 	: _name(pName), _transform(glm::translate(pPosition)),
@@ -27,10 +28,21 @@ GameObject::~GameObject()
 		remove(child);
 		delete child;
 	}
-	for each (Collider* collider in colliders)
+
+	Collider* collider = getBehaviour<Collider>();
+	if (collider != nullptr)
 	{
+		World::physics->removeCollisionObject(collider);
 		delete collider;
 	}
+
+	RigidBody* rigidbody = getBehaviour<RigidBody>();
+	if (rigidbody != nullptr)
+	{
+		World::physics->removeRigidBody(rigidbody);
+		delete rigidbody;
+	}
+
 	colliders.clear();
 	EventHandler::unbindEvents(this);
 	//do not forget to delete behaviour, material, mesh, collider manually if required!

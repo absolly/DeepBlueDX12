@@ -16,17 +16,18 @@ function act2_1()
 	showObjectiveDistance(2);
 end
 
-function onAct1_1Collision()
+function onAct1_1Collision(self)
 	message("That cave might just have something interesting for me.");
 	destroyGroup("Door1");
 	visit("act1_2");
+	destroy(self);
 end
 
-function onAct1_2Collision()
+function onAct1_2Collision(self)
 	message("This artifact.. it doesn't look human made..?!");
 	visit("act2_1");
 end
 
-function onAct1_3Collision()
+function onAct1_3Collision(self)
 	message("I hole in the lower deck of the ship? Intersting..");
 end

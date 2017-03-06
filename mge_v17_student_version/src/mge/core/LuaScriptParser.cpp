@@ -63,6 +63,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroyGroup>);
 	lua_setglobal(lua, "destroyGroup");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroy>);
+	lua_setglobal(lua, "destroy");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -115,7 +118,8 @@ int LuaScriptParser::visit(lua_State * lua)
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 {
 	//dynamic cast naar abstractbehaviour
-	std::string NewFunction = "on" + dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner()->getName() + "Collision";
+	GameObject* sender = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner();
+	std::string NewFunction = "on" + sender->getName() + "Collision";
 
 	lua_getglobal(lua, NewFunction.c_str());
 
@@ -123,8 +127,8 @@ void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 		lua_settop(lua, 0);
 		return;
 	}
-
-	lua_call(lua, 0, 0);
+	lua_pushinteger(lua, (size_t)sender);
+	lua_call(lua, 1, 0);
 
 	//std::cout << onCollisionArgs.collidingWith->getowner
 }
@@ -167,7 +171,14 @@ void LuaScriptParser::step()
 
 	lua_call(lua, 0, 0);
 }
-
+int LuaScriptParser::destroy(lua_State *lua)
+{
+	int objectPointer = lua_tointeger(lua, -1);
+	GameObject* gameObject = (GameObject*)objectPointer;
+	std::cout << "DESTROYING OBJECT: " << gameObject->getName() << std::endl;
+	delete gameObject;
+	return 1;
+}
 
 int LuaScriptParser::destroyGroup(lua_State *lua)
 {
@@ -184,16 +195,6 @@ int LuaScriptParser::destroyGroup(lua_State *lua)
 	}*/
 	for each (GameObject* gameObject in LuaParser::groups[groupName])
 	{
-		RigidBody* rigidBody = gameObject->getBehaviour<RigidBody>();
-		if (rigidBody != nullptr)
-		{
-			World::physics->removeRigidBody(rigidBody);
-		}
-		Collider* collider = gameObject->getBehaviour<Collider>();
-		if (collider != nullptr)
-		{
-			World::physics->removeCollisionObject(collider);
-		}
 		delete gameObject;
 	}
 	std::cout << "Destroyed group: " << groupName << std::endl;
