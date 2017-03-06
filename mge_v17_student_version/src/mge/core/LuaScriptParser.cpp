@@ -154,7 +154,7 @@ void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 int LuaScriptParser::setInteractionText(lua_State * lua)
 {
 	Hud::getInstance()->setInteractionText(lua_tostring(lua, -1));
-	return 1;
+	return 0;
 }
 
 int LuaScriptParser::showObjectiveDistance(lua_State * lua)

@@ -41,10 +41,11 @@ void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 		str += " gold)";
 		Hud::getInstance()->setInteractionText(str);
 	}
-	else if (cost > Hud::getInstance()->getCoinCount()) {
+	else if (_refillCooldownTimer <= 0 && cost > Hud::getInstance()->getCoinCount()) {
 		std::string str = "Not enough gold to refill air (cost: ";
 		str += to_string(cost);
 		str += " gold)";
+		Hud::getInstance()->setInteractionText(str);
 	}
 	else {
 		Hud::getInstance()->setInteractionText("");
