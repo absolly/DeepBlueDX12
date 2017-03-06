@@ -8,6 +8,7 @@
 #include "mge/core/Camera.hpp"
 #include "Content\GameObjects\ParticleSystem.hpp"
 #include <vector>
+#include <list>
 
 /**
  * Simple single color material.

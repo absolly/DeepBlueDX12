@@ -3,17 +3,20 @@
 
 #include <vector>
 #include <string>
+#include <list>
 #include <iostream>
 #include <glm.hpp>
 
 #include <mge/core/GameObject.hpp>
+
+class Particle;
 
 class ParticleSystem : public GameObject
 {
 public:
 	ParticleSystem(glm::vec3 pPosition, std::string pName);
 	virtual ~ParticleSystem();
-	std::vector<GameObject*> * DeadParticles;
+	std::vector<Particle *> DeadParticles;
 	std::vector<GameObject *> GetParticles();
 
 private:
@@ -24,7 +27,7 @@ private:
 	glm::vec3 startScaleSize;
 	glm::vec3 endScaleSize;
 	glm::vec3 _startPosition;
-	float duration = 100;
+	float duration = 2;
 	void update(float pStep);
 
 };

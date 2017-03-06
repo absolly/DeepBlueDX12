@@ -98,7 +98,7 @@ void TestScene::_initializeScene() {
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
 	glm::vec3 ParticlePosition = player->getChildAt(0)->getWorldPosition();
-	ParticlePosition.y -= 200;
+	ParticlePosition.y -= 20;
 	ParticleSystem * particleSystem = new ParticleSystem(ParticlePosition, "name");
 
 	particleSystem->setMesh(planeMeshDefault);
@@ -106,6 +106,25 @@ void TestScene::_initializeScene() {
 	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
 	particleSystem->setMaterial(billboardMat);
 	_world->add(particleSystem);
+
+	ParticlePosition += 2;
+
+	ParticleSystem * particleSystem2 = new ParticleSystem(ParticlePosition, "name");
+
+	particleSystem2->setMesh(planeMeshDefault);
+	BillBoardMaterial * billboardMat2 = new BillBoardMaterial(particleSystem2, bubble);
+	particleSystem2->setMaterial(billboardMat2);
+	_world->add(particleSystem2);
+	ParticlePosition.z += 10;
+
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	ParticlePosition.x += 1;
+	//	FishTank * tank = new FishTank(ParticlePosition, _world, "fishies", 50, 100, 15);
+	//	tank->setMesh(smallFish);
+	//	tank->setMaterial(new GPUinstancingMaterial(*tank->allFish));
+	//	_world->add(tank);
+	//}
 
 
 

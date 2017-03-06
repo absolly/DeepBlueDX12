@@ -93,9 +93,9 @@ void FishTank::SetNewGoal()
 
 	uniform_int_distribution<> dis(1, _tankSize * 1.5);
 
-	int randomX = dis(gen);
-	int randomY = dis(gen);
-	int randomZ = dis(gen);
+	int randomX = dis(gen) - _tankSize;
+	int randomY = dis(gen) - _tankSize;
+	int randomZ = dis(gen) - _tankSize;
 
 	goalPosition = glm::vec3(randomX, randomY, randomZ) + getLocalPosition();
 

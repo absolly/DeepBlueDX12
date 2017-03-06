@@ -15,22 +15,30 @@ Particle::Particle(glm::vec3 pPosition, std::string pName, glm::vec3 pDirection,
 {
 	_index = pIndex;
 	_duration = pDuration;
+	_OriginalDuration = pDuration;
+	originalDirection = pDirection;
 	direction = pDirection;
 	_owner = pOwner;
 }
 
 void Particle::update(float pStep)
 {
-	if (_duration < 1)
-	{
-		//_owner->DeadParticles->push_back(this);
-		//auto it = std::find(_owner->GetParticles().begin(), _owner->GetParticles().end(), this);
-		//_owner->GetParticles().erase(it);
-	}
-	
+	//direction = originalDirection * (_duration / originalDirection);
+
 	translate(direction);
-	_duration--;
+	_duration -= pStep;
 }
+
+float Particle::getDuration()
+{
+	return _duration;
+}
+
+void Particle::setDuration(float pDuration)
+{
+	_duration = pDuration;
+}
+
 
 void Particle::ResetDuration(float pDuration)
 {

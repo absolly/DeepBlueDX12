@@ -89,7 +89,7 @@ void BillBoardMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const
 	glUniform3f(CameraRight, pViewMatrix[0][0], pViewMatrix[1][0], pViewMatrix[2][0]);
 	glUniform3f(CameraUp, pViewMatrix[0][1], pViewMatrix[1][1], pViewMatrix[2][1]);
 
-	glUniform2f(BillboardSize, 0.5f, 0.5f);
+	glUniform2f(BillboardSize, 1.0f, 1.0f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _diffuseTexture->getId());
@@ -122,6 +122,9 @@ void BillBoardMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const
 	}
 
 	glDisableVertexAttribArray(0);
+
+	// Cleanup VBO and shader
+
 
 	/*pMesh->instanceToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);*/
 

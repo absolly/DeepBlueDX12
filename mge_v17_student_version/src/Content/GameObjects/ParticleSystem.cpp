@@ -12,12 +12,11 @@ using namespace std;
 #include "Content\GameObjects\Particle.hpp"
 #include "mge/materials/TextureMaterial.hpp"
 
+
 ParticleSystem::ParticleSystem(glm::vec3 pPosition, std::string pName) : GameObject(pName ,pPosition)
 {	
 	_startPosition = pPosition;
 	_spawnRate = 1;
-
-	DeadParticles = new std::vector<GameObject*>();
 }
 
 ParticleSystem::~ParticleSystem()
@@ -37,9 +36,13 @@ void ParticleSystem::update(float pStep)
 	{
 		for (size_t i = 0; i < _spawnRate; i++)
 		{
-			if (DeadParticles->size() > 0)
+			if (DeadParticles.size() > 0)
 			{
-				//Use this one instead of a new particle damnit! RECYCLE IT COEN
+				Particle * particle = *DeadParticles.begin();
+				particle->setLocalPosition(glm::vec3(_startPosition.x, _startPosition.y, _startPosition.z));
+				particle->setDuration(duration);
+				particles.push_back(particle);
+				DeadParticles.pop_back();
 			}
 			else
 			{
@@ -50,12 +53,31 @@ void ParticleSystem::update(float pStep)
 		}
 	}
 
-	for (GameObject * partic : particles) {
-		if(partic != nullptr)
-			partic->update(0);
-	}
-
+	//for (GameObject * partic : particles) {
+	//	Particle * part = dynamic_cast<Particle*>(partic);
+	//	if (!part->updateParticle(pStep))
+	//	{
+	//		break;
+	//	}
+	//}
 	
+	for (std::vector<GameObject *>::iterator it = particles.begin(); it != particles.end();)
+	{
+		Particle * object = dynamic_cast<Particle*>(*it);
+
+		if (object->getDuration() < 0.1f)
+		{
+			DeadParticles.push_back(object);
+			particles.erase(it);
+		}
+		else
+		{
+			object->update(pStep);
+			++it;
+		}
+
+
+	}
 }
 
 std::vector<GameObject *> ParticleSystem::GetParticles()

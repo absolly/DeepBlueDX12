@@ -12,12 +12,17 @@ class Particle : public GameObject
 public:
 	Particle(glm::vec3 pPosition, std::string pName, glm::vec3 pDirection, float pDuration, ParticleSystem * pOwner, int pIndex);
 	void ResetDuration(float pDuration);
+	float getDuration();
+	void setDuration(float pDuration);
 	virtual ~Particle();
 	void update(float pStep);
+	bool updateParticle(float pStep);
 private:
 	int _index = 0;
 	ParticleSystem * _owner;
 	glm::vec3 direction;
+	glm::vec3 originalDirection;
+	float _OriginalDuration;
 	float _duration;
 };
 
