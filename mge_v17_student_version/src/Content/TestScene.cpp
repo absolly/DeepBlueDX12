@@ -100,6 +100,7 @@ void TestScene::_initializeScene() {
 	glm::vec3 ParticlePosition = player->getChildAt(0)->getWorldPosition();
 	ParticlePosition.y -= 20;
 	ParticleSystem * particleSystem = new ParticleSystem(ParticlePosition, "name");
+	particleSystem->SetStartEndScale(0.001f, 1.0f);
 
 	particleSystem->setMesh(planeMeshDefault);
 	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
@@ -109,13 +110,13 @@ void TestScene::_initializeScene() {
 
 	ParticlePosition += 2;
 
-	ParticleSystem * particleSystem2 = new ParticleSystem(ParticlePosition, "name");
+	//ParticleSystem * particleSystem2 = new ParticleSystem(ParticlePosition, "name");
 
-	particleSystem2->setMesh(planeMeshDefault);
-	BillBoardMaterial * billboardMat2 = new BillBoardMaterial(particleSystem2, bubble);
-	particleSystem2->setMaterial(billboardMat2);
-	_world->add(particleSystem2);
-	ParticlePosition.z += 10;
+	//particleSystem2->setMesh(planeMeshDefault);
+	//BillBoardMaterial * billboardMat2 = new BillBoardMaterial(particleSystem2, bubble);
+	//particleSystem2->setMaterial(billboardMat2);
+	//_world->add(particleSystem2);
+	//ParticlePosition.z += 10;
 
 	//for (int i = 0; i < 5; i++)
 	//{

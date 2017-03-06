@@ -4,6 +4,7 @@
 #include "mge/config.hpp"
 #include "mge/core/Texture.hpp"
 #include "mge/core/GameObject.hpp"
+#include "Content\GameObjects\Particle.hpp"
 #include "Content\GameObjects\ParticleSystem.hpp"
 #include "mge/core/Mesh.hpp"
 
@@ -89,8 +90,6 @@ void BillBoardMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const
 	glUniform3f(CameraRight, pViewMatrix[0][0], pViewMatrix[1][0], pViewMatrix[2][0]);
 	glUniform3f(CameraUp, pViewMatrix[0][1], pViewMatrix[1][1], pViewMatrix[2][1]);
 
-	glUniform2f(BillboardSize, 1.0f, 1.0f);
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _diffuseTexture->getId());
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
@@ -111,11 +110,14 @@ void BillBoardMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const
 		(void*)0            // array buffer offset
 	);
 
-	std::vector<GameObject*> particleList = _particleSystem->GetParticles();
+	std::vector<Particle*> particleList = _particleSystem->GetParticles();
 
 	for (int i = 0; i < particleList.size();i++)
 	{
-		glm::vec3 particlepos = particleList[i]->getWorldPosition();
+		//dynamic_cast<GameObject*>(particleList.at(i))
+		Particle * particle = particleList[i];
+		glm::vec3 particlepos = particle->getWorldPosition();
+		glUniform2f(BillboardSize, particle->getScale(), particle->getScale());
 		glUniform3f(BillboardPos, particlepos.x, particlepos.y, particlepos.z); // The billboard will be just above the cube
 
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

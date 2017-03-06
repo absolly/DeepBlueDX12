@@ -483,10 +483,10 @@ int LuaParser::createFish(lua_State * lua)
 
 	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
-	FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
-	fishTank->setMesh(smallFish);
-	fishTank->setMaterial(gpuinstancing);
-	_world->add(fishTank);
+	//FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
+	//fishTank->setMesh(smallFish);
+	//fishTank->setMaterial(gpuinstancing);
+	//_world->add(fishTank);
 
 	return 1;
 }
