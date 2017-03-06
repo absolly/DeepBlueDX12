@@ -15,6 +15,8 @@ class Hud
 
 		Hud( sf::RenderWindow * aWindow );
 		virtual ~Hud();
+		void setInteractionText(std::string text);
+		void setSubtitleText(std::string text);
 		void draw();
 
 		void drawImage(int x, int y, HudSprite& hudSprite);
@@ -49,6 +51,9 @@ class Hud
 		sf::Text _oxygenText;
 		HudSprite _coinCounterBar;
 		sf::Text _coinCounterText;
+
+		sf::Text _interactionText;
+		sf::Text _subtitleText;
 
 		bool _noOxygenLeft;
 		float _deathSpriteOpacity = 0;

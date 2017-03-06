@@ -34,7 +34,8 @@ Hud::Hud(sf::RenderWindow * window) :
 		std::cout << "Could not load font, exiting..." << std::endl;
 		return;
 	}
-	
+	_createDebugHud();
+
 	_visor.setScale(Config::HUD_SCALE_FACTOR);
 	_depthBar.setScale(Config::HUD_SCALE_FACTOR);
 	_oxygenBar.setScale(Config::HUD_SCALE_FACTOR);
@@ -45,13 +46,25 @@ Hud::Hud(sf::RenderWindow * window) :
 	_oxygenBar.setPosition(50, window->getSize().y - 300);
 	_coinCounterBar.setPosition(50, window->getSize().y - 400);
 	_coinCounterText.setPosition(50, window->getSize().y - 400);
-
-	_createDebugHud();
+	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
+	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
 }
 
 Hud::~Hud()
 {
 	//dtor
+}
+
+void Hud::setInteractionText(std::string text)
+{
+	_interactionText.setString(text);
+	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
+}
+
+void Hud::setSubtitleText(std::string text)
+{
+	_subtitleText.setString(text);
+	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
 }
 
 void Hud::_createDebugHud() {
@@ -69,6 +82,16 @@ void Hud::_createDebugHud() {
 	_depthText.setFont(_font);
 	_depthText.setCharacterSize(37);
 	_depthText.setFillColor(sf::Color::White);
+
+	_interactionText.setString("Press E to do something magical!");
+	_interactionText.setFont(_font);
+	_interactionText.setCharacterSize(37);
+	_interactionText.setFillColor(sf::Color::White);
+
+	_subtitleText.setString("Look at these awesome subtitles!");
+	_subtitleText.setFont(_font);
+	_subtitleText.setCharacterSize(25);
+	_subtitleText.setFillColor(sf::Color::White);
 
 	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
 	_coinCounterText.setFont(_font);
@@ -120,6 +143,11 @@ void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))
 		addCoin(100);
+	if (Input::getKey(sf::Keyboard::O))
+		setSubtitleText("This is some text that should represent the subtitles from \n     the guy that's talking. Cool huh? Yea. Fuck my life.");
+	if (Input::getKey(sf::Keyboard::E))
+		setInteractionText("You did something magical. Well done.");
+
 
 	if (_coinsDisplayed < _coins)
 		_coinsDisplayed++;
@@ -139,6 +167,8 @@ void Hud::draw()
 	_window->draw(_depthText);
 	_window->draw(_coinCounterBar);
 	_window->draw(_coinCounterText);
+	_window->draw(_interactionText);
+	_window->draw(_subtitleText);
 	sf::RectangleShape s;
 	_inventory.draw();
 
