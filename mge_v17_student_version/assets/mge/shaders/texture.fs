@@ -202,6 +202,8 @@ void main( void ) {
 
 	vec3 emissionColor = texture(emissionMap, texCoord * tiling).rgb;
     fragment_color = vec4(combinedColor + (emissionColor * 2),texture(textureDiffuse,texCoord * tiling).a);
+	if(fragment_color.a <= 0.9)
+		discard;
     float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(brightness > 1)
         brightness_color = vec4(fragment_color.rgb, 1.0);
