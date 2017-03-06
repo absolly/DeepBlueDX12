@@ -51,7 +51,7 @@ void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 		Hud::getInstance()->setInteractionText("");
 	}
 
-	if (Input::getKeyDown(sf::Keyboard::E) && _refillCooldownTimer <= 0) {
+	if (Input::getKeyDown(sf::Keyboard::E) && _refillCooldownTimer <= 0 && cost < Hud::getInstance()->getCoinCount()) {
 		std::cout << "added air" << std::endl;
 		Hud::getInstance()->addCoin(-cost);
 		_airLeft = _tankSize;
