@@ -13,7 +13,7 @@
 #include "Content\Behaviours\DivingBehaviour.h"
 #include "Content\Behaviours\Player\PlayerBreathingBehaviour.h"
 #include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
-
+#include "Content/Hud/Hud.hpp"
 Player::Player() : GameObject("Player")
 {
 	//Add a camera
@@ -32,7 +32,7 @@ Player::Player() : GameObject("Player")
 	//Add behaviours
 
 	//Set the position
-	_spawnPosition = glm::vec3(-2068, 718.598, 541);
+	_spawnPosition = glm::vec3(-2068, 700, 541);
 	temp->setLocalPosition(_spawnPosition);
 	//Set the position
 
@@ -55,6 +55,14 @@ Player::~Player()
 void Player::update(float deltaTime)
 {
 	GameObject::update(deltaTime);
+	if (Input::getKeyDown(sf::Keyboard::F4)) {
+		GameObject* temp = getChildAt(0);
+		temp->setLocalPosition(_spawnPosition);
+		temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
+		Hud::getInstance()->isPlayerKilled = false;
+		getBehaviour<DivingBehaviour>()->_airLeft = 100;
+		//getChildAt(0)->getBehaviour<RigidBody>()->setWorldTransform()
+	}
 }
 
 void Player::setAffraidness(float affraidness)

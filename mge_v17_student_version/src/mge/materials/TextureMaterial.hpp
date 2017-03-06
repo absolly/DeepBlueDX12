@@ -14,7 +14,7 @@
 class TextureMaterial : public AbstractMaterial
 {
     public:
-        TextureMaterial (Texture* pDiffuseTexture, float pTiling = 1, float pSpecularMultiplier = 1, Texture* pSpecularTexture = Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture* pNormalTexture = Texture::load(Config::MGE_TEXTURE_PATH + "BricksNormal.png"));
+        TextureMaterial (Texture* pDiffuseTexture, float pTiling = 1, float pSpecularMultiplier = 1, Texture* pSpecularTexture = Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture* pNormalTexture = Texture::load(Config::MGE_TEXTURE_PATH + "BricksNormal.png"), Texture* pEmissionMap = Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"));
         virtual ~TextureMaterial ();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
@@ -29,6 +29,7 @@ class TextureMaterial : public AbstractMaterial
         Texture* _diffuseTexture;
         Texture* _specularTexture;
         Texture* _normalTexture;
+		Texture* _emissionMap;
         float _specularMultiplier;
         float _tiling;
         TextureMaterial(const TextureMaterial&);

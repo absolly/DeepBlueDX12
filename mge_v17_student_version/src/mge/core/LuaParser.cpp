@@ -412,32 +412,15 @@ void LuaParser::setPlayerRigidBody(Player &player)
 }
 
 int LuaParser::addMaterial(lua_State * lua) {
+	float tiling = lua_tonumber(lua, -6);
+	string emissionMap = lua_tostring(lua, -5);
 	string image = lua_tostring(lua, -4);
 	string normalMap = lua_tostring(lua, -3);
 	string SpecularMap = lua_tostring(lua, -2);
 	float SpecularMultiplier = lua_tonumber(lua, -1);
 
-	AbstractMaterial* textureMaterial;
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".png"), tiling, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + ((SpecularMap == "null") ? "black" : SpecularMap) + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + ((normalMap == "null") ? "NormalNormalMap" : normalMap) + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + ((emissionMap == "null") ? "black" : emissionMap) + ".png"));
 
-	if (normalMap == "null" && SpecularMap == "null")
-	{
-		textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier);
-	}
-	else
-	{
-		if (normalMap == "null" && SpecularMap != "null")
-		{
-			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"));
-		}
-		else if (normalMap != "null" && SpecularMap == "null")
-		{
-			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 5, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + "white" + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".jpg"));
-		}
-		else
-		{
-			textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".jpg"), 1, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + SpecularMap + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + normalMap + ".jpg"));
-		}
-	}
 
 	_currentGameObject->setMaterial(textureMaterial);
 

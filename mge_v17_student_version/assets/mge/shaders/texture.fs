@@ -5,6 +5,7 @@ uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
 uniform sampler2DShadow shadowMap;
+uniform sampler2D	emissionMap;
 uniform	mat4 	viewMatrix;
 uniform vec3        lightPosition[5];
 uniform vec3        lightColor[5];
@@ -199,7 +200,8 @@ void main( void ) {
     }
 
 
-    fragment_color = vec4(combinedColor,1);
+	vec3 emissionColor = texture(emissionMap, texCoord * tiling).rgb;
+    fragment_color = vec4(combinedColor + (emissionColor * 2),texture(textureDiffuse,texCoord * tiling).a);
     float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
     if(brightness > 1)
         brightness_color = vec4(fragment_color.rgb, 1.0);

@@ -9,8 +9,8 @@
 
 ShaderProgram* TextureMaterial::_shader = NULL;
 
-TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture):
-_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture) {
+TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture, Texture* pEmissionMap):
+_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap) {
     _lazyInitializeShader();
 }
 
@@ -57,6 +57,11 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, Renderer::shadowDepthTexture);
 	glUniform1i(_shader->getUniformLocation("shadowMap"), 3);
+
+	//setup texture slot 4
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, _emissionMap->getId());
+	glUniform1i(_shader->getUniformLocation("emissionMap"), 4);
 
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
 
