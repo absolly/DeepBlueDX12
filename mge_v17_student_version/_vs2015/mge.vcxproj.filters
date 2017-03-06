@@ -63,9 +63,7 @@
     <ClCompile Include="src\mge\core\Random.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerBreathingBehaviour.cpp" />
     <ClCompile Include="src\mge\core\Physics\RigidBody.cpp" />
-    <ClCompile Include="..\src\Content\GameObjects\PlayerFishFlock.cpp" />
-    <ClCompile Include="..\src\mge\core\SoundManager.cpp" />
-    <ClCompile Include="..\src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.cpp" />
+    <ClCompile Include="src\Content\GameObjects\PlayerFishFlock.cpp" />
     <ClCompile Include="src\mge\materials\BillBoardMaterial.cpp" />
     <ClCompile Include="src\Content\GameObjects\ParticleSystem.cpp" />
     <ClCompile Include="src\Content\GameObjects\Particle.cpp" />
@@ -136,12 +134,10 @@
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
     <ClInclude Include="src\mge\core\SoundManager.hpp" />
     <ClInclude Include="src\mge\core\Time.h" />
-    <ClInclude Include="..\src\Content\GameObjects\PlayerFishFlock.hpp" />
+    <ClInclude Include="src\Content\GameObjects\PlayerFishFlock.hpp" />
     <ClInclude Include="src\mge\core\Random.h" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerBreathingBehaviour.h" />
     <ClInclude Include="src\mge\core\Physics\RigidBody.hpp" />
-    <ClInclude Include="..\src\mge\core\SoundManager.hpp" />
-    <ClInclude Include="..\src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.h" />
     <ClInclude Include="src\mge\materials\BillBoardMaterial.hpp" />
     <ClInclude Include="src\Content\GameObjects\ParticleSystem.hpp" />
     <ClInclude Include="src\Content\GameObjects\Particle.hpp" />
