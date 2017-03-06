@@ -22,7 +22,7 @@ Player::Player() : GameObject("Player")
 	//Add a camera
 
 
-	GameObject* temp = new GameObject();
+	GameObject* temp = new GameObject("PlayerChild0");
 	add(temp);
 	temp->add(_camera);
 	//Add behaviours
@@ -32,7 +32,7 @@ Player::Player() : GameObject("Player")
 	//Add behaviours
 
 	//Set the position
-	_spawnPosition = glm::vec3(-2068, 700, 541);
+	_spawnPosition = glm::vec3(-2068, 300, 541);
 	temp->setLocalPosition(_spawnPosition);
 	//Set the position
 

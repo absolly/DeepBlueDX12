@@ -112,12 +112,12 @@ void CollisionBehaviour::checkForCollisions()
 					if (_collidingObjects.find(collidingWith) == _collidingObjects.end())
 					{
 						_collidingObjects.insert(collidingWith);
-						if (collisionEnterEvents.find(collidingWith) != collisionEnterEvents.end())
+						//if (collisionEnterEvents.find(collidingWith) != collisionEnterEvents.end())
 							collisionEnterEventsToExecute.push_back(OnCollisionArgs(self, collidingWith));
 					}
 					//Collision Continuous
 					thisCheckCollidingObjects.insert(collidingWith);
-					if (collisionEvents.find(collidingWith) != collisionEvents.end())
+					//if (collisionEvents.find(collidingWith) != collisionEvents.end())
 						collisionEventsToExecute.push_back(OnCollisionArgs(self, collidingWith));
 					//std::cout << "COLLISION" << std::endl;
 					// handle collisions here
@@ -137,7 +137,11 @@ void CollisionBehaviour::checkForCollisions()
 
 	for each (OnCollisionArgs onCollisionArgs in collisionEnterEventsToExecute)
 	{
-		std::cout << "COLLISION ENTER" << onCollisionArgs.collidingWith << std::endl;
+		GameObject* sender = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner();
+		GameObject* collidingWith = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.collidingWith)->getOwner();
+
+		std::cout << "COLLISION ENTER (Sender: " << sender->getName() << ", CollidingWith: " << collidingWith->getName() << ")" << std::endl;
+
 		if (collisionEnterEvents.find(onCollisionArgs.collidingWith) != collisionEnterEvents.end())
 			collisionEnterEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
 	}
@@ -148,7 +152,9 @@ void CollisionBehaviour::checkForCollisions()
 	}
 	for each (OnCollisionArgs onCollisionArgs in collisionExitEventsToExecute)
 	{
-		std::cout << "COLLISION EXIT" << onCollisionArgs.collidingWith << std::endl;
+		GameObject* sender = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner();
+		GameObject* collidingWith = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.collidingWith)->getOwner();
+		std::cout << "COLLISION EXIT (Sender: " << sender->getName() << ", CollidingWith: " << collidingWith->getName() << ")" << std::endl;
 		if (collisionExitEvents.find(onCollisionArgs.collidingWith) != collisionExitEvents.end())
 			collisionExitEvents[onCollisionArgs.collidingWith](OnCollisionArgs(onCollisionArgs.sender, onCollisionArgs.collidingWith));
 	}

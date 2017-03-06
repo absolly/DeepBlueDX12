@@ -131,6 +131,12 @@ int LuaScriptParser::visit(lua_State * lua)
 	return 0;
 }
 
+void LuaScriptParser::clearPrintTest(OnCollisionArgs onCollisionArgs)
+{
+	std::cout << "Clear this shit" << std::endl;
+	Hud::getInstance()->setInteractionText("");
+}
+
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 {
 	//dynamic cast naar abstractbehaviour

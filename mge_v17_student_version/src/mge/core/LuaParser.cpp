@@ -432,8 +432,10 @@ int LuaParser::addMeshCollider(lua_State * lua) {
 	Collider& objectCollider = _currentGameObject->addCollider(MeshColliderArgs(*_currentGameObject->getMesh()), isTrigger, true);
 
 	if (isTrigger)
+	{
 		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
-
+		objectCollider.collisionExitEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::clearPrintTest);
+	}
 	return 1;
 }
 
@@ -446,7 +448,10 @@ int LuaParser::addBoxCollider(lua_State * lua) {
 	Collider& objectCollider = _currentGameObject->addCollider(BoxColliderArgs(x / 2, y / 2, z / 2), isTrigger, true);
 
 	if (isTrigger)
+	{
 		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
+		objectCollider.collisionExitEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::clearPrintTest);
+	}
 
 	return 1;
 }
@@ -471,9 +476,12 @@ int LuaParser::addSphereCollider(lua_State * lua) {
 
 	Collider& objectCollider = _currentGameObject->addCollider(SphereColliderArgs(radius), isTrigger, true);
 
-	if (isTrigger)
-		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
 
+	if (isTrigger)
+	{
+		objectCollider.collisionEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::printTest);
+		objectCollider.collisionExitEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::clearPrintTest);
+	}
 	return 1;
 }
 

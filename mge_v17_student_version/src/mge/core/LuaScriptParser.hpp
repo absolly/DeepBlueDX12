@@ -29,6 +29,7 @@ public:
 	int setInteractionText(lua_State * lua);
 	void setSoundManager(SoundManager * pSoundManager);
 
+	void clearPrintTest(OnCollisionArgs onCollisionArgs);
 private:
 	lua_State * lua;
 	const char * currentFunction = "";

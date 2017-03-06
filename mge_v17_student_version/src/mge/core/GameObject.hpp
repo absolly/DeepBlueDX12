@@ -88,7 +88,7 @@ class GameObject
         GameObject* getChildAt (int pIndex);
 	protected:
 		std::string _name;
-		glm::mat4 _transform;
+		glm::mat4 _transform = glm::mat4(1);
 
         GameObject* _parent;
 		std::vector<GameObject*> _children;
