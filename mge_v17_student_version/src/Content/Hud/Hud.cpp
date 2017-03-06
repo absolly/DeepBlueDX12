@@ -139,6 +139,11 @@ void Hud::addCoin(int pAmount)
 	_coins += pAmount;
 }
 
+int Hud::getCoinCount()
+{
+	return _coins;
+}
+
 void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))

@@ -13,6 +13,6 @@ public:
 	float _refillCooldownTimer;
 	int _timer = 0;
 	void onCollisionAddAir(struct OnCollisionArgs onCollisionArgs);
-
+	void onExitCollisionAddAir(struct OnCollisionArgs onCollisionArgs);
 };
 

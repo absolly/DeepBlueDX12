@@ -31,7 +31,7 @@ class Hud
 		bool isPlayerKilled = false;
 
 		void addCoin(int pAmount);
-
+		int getCoinCount();
 	private:
 		static Hud* _instance;
 

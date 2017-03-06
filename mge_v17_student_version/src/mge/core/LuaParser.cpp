@@ -393,9 +393,9 @@ int LuaParser::createObject(lua_State * lua) {
 	AbstractMaterial* purpleColor = new ColorMaterial(glm::vec3(1, 0, 1));
 	_currentGameObject->setMaterial(purpleColor);
 	_world->add(go);
-	std::cout << go->getName() << std::endl;
+	//std::cout << go->getName() << std::endl;
 
-	std::cout << "Create Object: " << meshName << std::endl;
+	//std::cout << "Create Object: " << meshName << std::endl;
 	//if (meshName == "ShipSide1")
 	//{
 	//	go->rotate(glm::radians(90.0f), glm::vec3(0, 1, 0));
