@@ -325,29 +325,29 @@ void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint p
 		glVertexAttribPointer(pVerticesAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 
-	if (pNormalsAttrib != -1) {
-		glBindBuffer(GL_ARRAY_BUFFER, _normalBufferId);
-		glEnableVertexAttribArray(pNormalsAttrib);
-		glVertexAttribPointer(pNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, 0);
-	}
+	//if (pNormalsAttrib != -1) {
+	//	glBindBuffer(GL_ARRAY_BUFFER, _normalBufferId);
+	//	glEnableVertexAttribArray(pNormalsAttrib);
+	//	glVertexAttribPointer(pNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, 0);
+	//}
 
-	if (pUVsAttrib != -1) {
-		glBindBuffer(GL_ARRAY_BUFFER, _uvBufferId);
-		glEnableVertexAttribArray(pUVsAttrib);
-		glVertexAttribPointer(pUVsAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	}
+	//if (pUVsAttrib != -1) {
+	//	glBindBuffer(GL_ARRAY_BUFFER, _uvBufferId);
+	//	glEnableVertexAttribArray(pUVsAttrib);
+	//	glVertexAttribPointer(pUVsAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	//}
 
-	if (pTangentAttrib != -1) {
-		glBindBuffer(GL_ARRAY_BUFFER, _tangentBufferId);
-		glEnableVertexAttribArray(pTangentAttrib);
-		glVertexAttribPointer(pTangentAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	}
+	//if (pTangentAttrib != -1) {
+	//	glBindBuffer(GL_ARRAY_BUFFER, _tangentBufferId);
+	//	glEnableVertexAttribArray(pTangentAttrib);
+	//	glVertexAttribPointer(pTangentAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	//}
 
-	if (pBitangentAttrib != -1) {
-		glBindBuffer(GL_ARRAY_BUFFER, _bitangentBufferId);
-		glEnableVertexAttribArray(pBitangentAttrib);
-		glVertexAttribPointer(pBitangentAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	}
+	//if (pBitangentAttrib != -1) {
+	//	glBindBuffer(GL_ARRAY_BUFFER, _bitangentBufferId);
+	//	glEnableVertexAttribArray(pBitangentAttrib);
+	//	glVertexAttribPointer(pBitangentAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	//}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
 

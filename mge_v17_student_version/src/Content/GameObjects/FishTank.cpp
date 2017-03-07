@@ -13,10 +13,12 @@ using namespace std;
 #include "Content/Behaviours/FlockingBehaviour.hpp"
 #include "mge/materials//GPUinstancingMaterial.hpp"
 
-FishTank::FishTank(glm::vec3 pPosition, World * pWorld, std::string pName, int pTankSize, int pFishCount, int updateRate) : GameObject(pName ,pPosition)
+FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, std::string pName, int pTankSize, int pFishCount, int updateRate) : GameObject(pName ,pPosition)
 {
 	_tankSize = pTankSize;
 	_fishCount = pFishCount;
+	_player = pPlayer;
+
 
 	allFish = new vector<GameObject*>();
 	
@@ -67,9 +69,26 @@ int FishTank::getFishCount()
 	return _fishCount;
 }
 
+void FishTank::SetRenderDistance(int pDistance)
+{
+	renderDistance += renderDistance + _tankSize;
+}
+
 void FishTank::update(float pStep)
 {
-	
+	if (glm::distance(getWorldPosition(), _player->getWorldPosition()) < renderDistance)
+	{
+		getMaterial()->allowedToRender = true;
+
+		for (GameObject * fish : *allFish)
+		{
+			fish->update(pStep);
+		}
+	}
+	else
+	{
+		getMaterial()->allowedToRender = false;
+	}
 }
 
 std::vector<glm::vec3> * waypointsValidator(std::vector<glm::vec3> * pWaypoints)
@@ -93,9 +112,9 @@ void FishTank::SetNewGoal()
 
 	uniform_int_distribution<> dis(1, _tankSize * 1.5);
 
-	int randomX = dis(gen);
-	int randomY = dis(gen);
-	int randomZ = dis(gen);
+	int randomX = dis(gen) - _tankSize;
+	int randomY = dis(gen) - _tankSize;
+	int randomZ = dis(gen) - _tankSize;
 
 	goalPosition = glm::vec3(randomX, randomY, randomZ) + getLocalPosition();
 
