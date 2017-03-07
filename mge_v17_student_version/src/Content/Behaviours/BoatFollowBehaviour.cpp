@@ -1,4 +1,5 @@
 #include "BoatFollowBehaviour.h"
+#include "Content\Core\Input.h"
 
 BoatFollowBehaviour::BoatFollowBehaviour(GameObject * pTarget) : _target(pTarget)
 {
@@ -45,6 +46,10 @@ void BoatFollowBehaviour::InterPolateDirection(glm::vec3 pDirection, float pSpee
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);
+	if (Input::getKeyDown(sf::Keyboard::I))
+	{
+		std::cout << std::endl << "Boat follow behaviour matrix after rotating: " << std::endl << _owner->getTransform() << std::endl << std::endl;
+	}
 }
 
 float BoatFollowBehaviour::clip(float n, float lower, float upper)

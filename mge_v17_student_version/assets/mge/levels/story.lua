@@ -18,7 +18,7 @@ end
 
 function onTreasureCollision(self, ePressed)
 	if (ePressed) then
-		playSound("ability.wav", "Coin", false, true, 100);
+		playSound("environment_sonar.wav", "Coin", true, true, 100);
 		addCoin();
 		destroy(self);
 		setInteractionText("");
@@ -28,7 +28,7 @@ function onTreasureCollision(self, ePressed)
 end
 
 function onAct1_1Collision(self, ePressed)
-	playSound("ability.wav", "Coin", false, true, 100);
+	playSound("environment_sonar.wav", "Coin", false, true, 100);
 	message("That cave might just have something interesting for me." + ePressed);
 	destroyGroup("Door1");
 	visit("act1_2");
