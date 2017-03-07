@@ -221,9 +221,16 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
 	{
-		glm::vec3(-2238.6, +12.7, +2198.9),
-		glm::vec3(414.763, 144.757, -296.977),
+		glm::vec3(-2238.6, +12.7, +2198.9), //In Tutorial cave
+		glm::vec3(414.763, 144.757, -296.977), 
 		glm::vec3(306.804, 118.942, -82.5193)
+	};
+
+	std::vector<glm::vec3> relicScales
+	{	
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.3f, 0.3f, 0.3f)
 	};
 
 	std::string relicNames[] =
@@ -238,7 +245,7 @@ void TestScene::_initializeScene() {
 		GameObject* teapot = new GameObject(relicNames[i], relicLocation);
 		teapot->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
 		teapot->setMaterial(relicAndTreasureMaterial);
-		teapot->scale(glm::vec3(0.6f, 0.6f, 0.6f));
+		teapot->scale(relicScales[i]);
 		teapot->addBehaviour(new RotatingBehaviour());
 		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(12, 16), true, true);
 		_world->add(teapot);

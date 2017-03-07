@@ -8,6 +8,7 @@
 #include "mge/config.hpp"
 #include "mge\core\Time.h"
 #include "Content\Core\Input.h"
+#include "mge\core\LuaParser.hpp"
 
 Hud* Hud::_instance;
 Hud* Hud::getInstance()
@@ -148,6 +149,27 @@ void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))
 		addCoin(100);
+	if (Input::getKey(sf::Keyboard::R))
+	{
+		if (LuaParser::groups.find("door1") != LuaParser::groups.end())
+		{
+			for each (GameObject* gameObject in LuaParser::groups["door1"])
+			{
+				delete gameObject;
+			}
+			LuaParser::groups.erase("door1");
+			std::cout << "Destroyed group: " << "door1" << std::endl;
+		}
+		if (LuaParser::groups.find("door2") != LuaParser::groups.end())
+		{
+			for each (GameObject* gameObject in LuaParser::groups["door2"])
+			{
+				delete gameObject;
+			}
+			LuaParser::groups.erase("door2");
+			std::cout << "Destroyed group: " << "door2" << std::endl;
+		}
+	}
 
 	if (_coinsDisplayed < _coins)
 		_coinsDisplayed++;
