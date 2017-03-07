@@ -31,6 +31,8 @@ class Mesh
 
 		void instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib);
 
+		GLuint GetVertexBuffer();
+
 		void drawInstancedmesh();
 
 		void DisableVertexAttribArrays();

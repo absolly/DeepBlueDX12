@@ -349,7 +349,7 @@ void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint p
 	//	glVertexAttribPointer(pBitangentAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	//}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
 
 	//glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, (GLvoid*)0);
 
@@ -381,6 +381,10 @@ void Mesh::DisableVertexAttribArrays()
 	if (_verticesattrb != -1) glDisableVertexAttribArray(_verticesattrb);
 }
 
+GLuint Mesh::GetVertexBuffer()
+{
+	return _vertexBufferId;
+}
 
 
 

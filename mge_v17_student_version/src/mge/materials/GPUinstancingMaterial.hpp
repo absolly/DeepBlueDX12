@@ -15,7 +15,7 @@ class GPUinstancingMaterial : public AbstractMaterial
 {
     public:
 		//GPUinstancingMaterial(std::vector<GameObject*> gameObjects);
-		GPUinstancingMaterial(std::vector<GameObject*> pGameObjects);
+		GPUinstancingMaterial(std::vector<GameObject*> pGameObjects, Mesh * pMesh);
         virtual ~GPUinstancingMaterial();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
@@ -29,8 +29,11 @@ class GPUinstancingMaterial : public AbstractMaterial
 		static ShaderProgram* _shader;
 		void  _lazyInitializeShader();
 		std::vector<GameObject*> _gameObjects;
+		Mesh * _mesh;
 
 		GLint _uMVPMatrix = 0;
+		GLint _Projection = 0;
+		GLint _View = 0;
 		GLint _offset = 0;
 
 		GLint _aVertex = 0;

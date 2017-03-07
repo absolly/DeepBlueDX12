@@ -14,7 +14,7 @@ PlayerFishAbilityBehaviour::PlayerFishAbilityBehaviour(World * pWorld, GameObjec
 
 	PlayerFishFlock * playerFishFlock = new PlayerFishFlock(pOwner->getWorldPosition(), _world, "playerflock", pOwner);
 	playerFishFlock->setMesh(smallFish);
-	GPUinstancingMaterial * GPUmat = new  GPUinstancingMaterial(*playerFishFlock->allFish);
+	GPUinstancingMaterial * GPUmat = new  GPUinstancingMaterial(*playerFishFlock->allFish, smallFish);
 	playerFishFlock->setMaterial(GPUmat);
 	pOwner->add(playerFishFlock);
 

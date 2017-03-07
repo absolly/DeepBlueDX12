@@ -203,20 +203,27 @@ void TestScene::_initializeScene() {
 	GameObject * objtest2 = new GameObject("name", glm::vec3(-2292, 22, 2093));
 	GameObject * objtest3 = new GameObject("name", glm::vec3(304, 116, 297));
 
+
 	std::vector<GameObject*> * objectives = new std::vector<GameObject*>();
 	objectives->push_back(objtest1);
 	objectives->push_back(objtest2);
 	objectives->push_back(objtest3);
 
+	GameObject * fish1 = new GameObject("name", glm::vec3(1, 0, 0));
+	fish1->setMaterial(new GPUinstancingMaterial(*objectives, smallFish));
+	fish1->setMesh(smallFish);
+	_world->add(fish1);
+
 	SoundManager * soundmng = new SoundManager();
 
-	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
+	//_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
+	//_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
-	LuaParser * luaparser2 = new LuaParser(_world);
-	luaparser2->setPlayerRigidBody(*player);
-	luaparser2->scriptParser = _scriptParser;
-	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
+	//LuaParser * luaparser2 = new LuaParser(_world);
+	//luaparser2->setPlayerRigidBody(*player);
+	//luaparser2->scriptParser = _scriptParser;
+	//luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());	
+
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
@@ -321,7 +328,7 @@ void TestScene::_render() {
 	AbstractGame::_renderToQuad();
 	_updateHud();
 
-	_scriptParser->step();
+	//_scriptParser->step();
 
 	//AbstractGame::DrawQuad();
 }
