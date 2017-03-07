@@ -51,6 +51,10 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "environment_sonar");
 	fileNames->push_back(path + "environment_whale");
 	fileNames->push_back(path + "suffocating");
+	fileNames->push_back(path + "ability");
+	fileNames->push_back(path + "Alright its a beautiful day");
+	fileNames->push_back(path + "But what is this");
+	fileNames->push_back(path + "Ive deciphered");
 
 	
 }
@@ -71,7 +75,6 @@ void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundCha
 	{
 		std::string path = "mge/sounds/";
 
-
 		if (!sounds.count(pSoundChannel))
 		{
 			sf::Sound sound;
@@ -80,7 +83,6 @@ void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundCha
 
 		if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Playing && pInterrupt || sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped)
 		{
-
 			sounds[pSoundChannel].setBuffer(soundBuffers[path + pSoundBufferName]);
 			sounds[pSoundChannel].setLoop(pLoop);
 			sounds[pSoundChannel].setVolume(pVolume);
@@ -137,7 +139,7 @@ void SoundManager::SetupSounds()
 
 		if (!soundBuffer.loadFromFile(filePath + ".wav"))
 		{ 
-			std::cout << "unable to find " << filePath << ".wav" << std::endl;
+			std::cout << std::endl << "[ERROR] Unable to find " << filePath << ".wav" << std::endl << std::endl;
 			continue;
 		}
 

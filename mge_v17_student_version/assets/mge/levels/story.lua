@@ -18,7 +18,7 @@ end
 
 function onTreasureCollision(self, ePressed)
 	if (ePressed) then
-		playSound("environment_sonar.wav", "Coin", true, true, 100);
+		playSound("environment_whale", "Coin", false, true, 100);
 		addCoin();
 		destroy(self);
 		setInteractionText("");
@@ -27,10 +27,28 @@ function onTreasureCollision(self, ePressed)
 	end
 end
 
+function onTrigger1Collision(self, ePressed)
+	playSound("Alright its a beautiful day", "Voice line", false, true, 100);
+	setSubtitleText("Alright, it's a beatiful day for some diving! Let's start by \n exploring the cave, we might be able to find some kind of treasure. \n I'll send you the coordinates, and don't worry. I'll be following you with the boat.");
+	destroy(self);
+end
+
+function onTrigger2Collision(self, ePressed)
+	playSound("But what is this", "Voice line", false, true, 100);
+	setSubtitleText("But what is this! I've never seen anything like it! \n It doesn't look humanmade.");
+	destroyGroup("door1");
+	destroy(self);
+end
+
+function onTrigger3Collision(self, ePressed)
+	playSound("Ive deciphered", "Voice line", false, true, 100);
+	setSubtitleText("I've deciphered the strange singal coming from the artifact. \n It has something to do with fish. Try and find some fish and  \n see what the artifact does.");
+	destroy(self);
+end
+
 function onAct1_1Collision(self, ePressed)
-	playSound("environment_sonar.wav", "Coin", false, true, 100);
-	message("That cave might just have something interesting for me." + ePressed);
-	destroyGroup("Door1");
+	--playSound("environment_sonar", "environment_sonar", false, true, 100);
+	--destroyGroup("Door1");
 	visit("act1_2");
 	--destroy(self);
 end

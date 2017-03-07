@@ -83,12 +83,12 @@ void Hud::_createDebugHud() {
 	_depthText.setCharacterSize(37);
 	_depthText.setFillColor(sf::Color::White);
 
-	_interactionText.setString("Press E to do something magical!");
+	_interactionText.setString("");
 	_interactionText.setFont(_font);
 	_interactionText.setCharacterSize(37);
 	_interactionText.setFillColor(sf::Color::White);
 
-	_subtitleText.setString("Look at these awesome subtitles!");
+	_subtitleText.setString("");
 	_subtitleText.setFont(_font);
 	_subtitleText.setCharacterSize(25);
 	_subtitleText.setFillColor(sf::Color::White);

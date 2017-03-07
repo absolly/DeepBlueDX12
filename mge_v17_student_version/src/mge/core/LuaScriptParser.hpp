@@ -27,6 +27,7 @@ public:
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);
 	int setInteractionText(lua_State * lua);
+	int setSubtitleText(lua_State * lua);
 	void setSoundManager(SoundManager * pSoundManager);
 
 	void clearPrintTest(OnCollisionArgs onCollisionArgs);

@@ -75,6 +75,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setInteractionText>);
 	lua_setglobal(lua, "setInteractionText");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setSubtitleText>);
+	lua_setglobal(lua, "setSubtitleText");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -92,8 +95,18 @@ int LuaScriptParser::playSound(lua_State * lua)
 	
 
 	bool repeatedSong = (_lastSong == song);
-
+	std::cout << "Lua called play sound" << std::endl;
 	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume);
+
+
+	//std::string soundToPlay = song;
+	//std::string soundChannel = song;
+	//bool interupt = true;
+	//int volume = 100;
+	//SoundManager::getInstance()->PlaySound(soundToPlay, soundChannel, false, interupt, false, volume);
+
+
+
 	_lastSong = song;
 
 	return 0;
@@ -162,6 +175,13 @@ int LuaScriptParser::setInteractionText(lua_State * lua)
 	Hud::getInstance()->setInteractionText(lua_tostring(lua, -1));
 	return 0;
 }
+
+int LuaScriptParser::setSubtitleText(lua_State * lua)
+{
+	Hud::getInstance()->setSubtitleText(lua_tostring(lua, -1));
+	return 0;
+}
+
 
 int LuaScriptParser::showObjectiveDistance(lua_State * lua)
 {
