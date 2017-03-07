@@ -373,11 +373,11 @@ void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint p
 		glVertexAttribPointer(pVerticesAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 
-	//if (pNormalsAttrib != -1) {
-	//	glBindBuffer(GL_ARRAY_BUFFER, _normalBufferId);
-	//	glEnableVertexAttribArray(pNormalsAttrib);
-	//	glVertexAttribPointer(pNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, 0);
-	//}
+	if (pNormalsAttrib != -1) {
+		glBindBuffer(GL_ARRAY_BUFFER, _normalBufferId);
+		glEnableVertexAttribArray(pNormalsAttrib);
+		glVertexAttribPointer(pNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, 0);
+	}
 
 	if (pUVsAttrib != -1) {
 		glBindBuffer(GL_ARRAY_BUFFER, _uvBufferId);

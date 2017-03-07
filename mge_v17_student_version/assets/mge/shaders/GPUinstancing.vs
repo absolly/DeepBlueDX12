@@ -9,6 +9,7 @@ out vec2 texCoord;
 uniform	mat4 	mvpMatrix;
 
 void main( void ){
+
 	gl_Position = mvpMatrix * (vec4(vertex, 1.f));
 	texCoord = uv;
 }

@@ -8,14 +8,15 @@
 
 ShaderProgram* GPUinstancingMaterial::_shader = NULL;
 
-GLint _uMVPMatrix = 0;
-GLuint TextureID = 0;
 
-GLint _aVertex = 0;
-GLint _aNormal = 0;
-GLint _aUV = 0;
-GLint _aTangent = 0;
-GLint _aBitangent = 0;
+GLint GPUinstancingMaterial::_uMVPMatrix = 0;
+GLint GPUinstancingMaterial::TextureID = 0;
+
+GLint GPUinstancingMaterial::_aVertex = 0;
+GLint GPUinstancingMaterial::_aNormal = 0;
+GLint GPUinstancingMaterial::_aUV = 0;
+GLint GPUinstancingMaterial::_aTangent = 0;
+GLint GPUinstancingMaterial::_aBitangent = 0;
 
 //GPUinstancingMaterial::GPUinstancingMaterial(std::vector<GameObject*> gameObjects)
 //{
