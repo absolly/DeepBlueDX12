@@ -257,9 +257,14 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	if (Input::getKeyDown(sf::Keyboard::I))
 	{
-		std::cout << "Player information: " << std::endl << "{" << std::endl;
+		std::cout << std::endl << "Player information: " << std::endl << "{" << std::endl << std::endl;
 		std::cout << "Position: " << ownerPosition.x << ", " << ownerPosition.y << ", " << ownerPosition.z << std::endl;
-		std::cout << "}" << std::endl;
+		std::cout << _owner->getWorldTransform() << std::endl;
+		btVector3 origin = rigidBody->getWorldTransform().getOrigin();
+		std::cout << "origin: "<< origin.x() << ", " << origin.y() << ", " << origin.z() << std::endl;
+		btQuaternion rotation = rigidBody->getWorldTransform().getRotation();
+		std::cout << "rotation: " << rotation.x() << ", " << rotation.y() << ", " << rotation.z() << ", " << rotation.w() << std::endl;
+		std::cout << "}" << std::endl << std::endl;
 	}
 
 	if (_scooterEquiped && Input::getKeyDown(sf::Keyboard::F))

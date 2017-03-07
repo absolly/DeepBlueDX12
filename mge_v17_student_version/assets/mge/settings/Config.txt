@@ -58,5 +58,5 @@ MinRollRotationSpeed 10.000000
 MaxRollRotationSpeed 50.000000
 MaxRollRotation 10.000000
 RollRotationSpeedMultiplier 20.000000
-DiverSensitivity 0.050000
-ScooterSensitivity 0.020000
+DiverSensitivity 0.070000
+ScooterSensitivity 0.060000

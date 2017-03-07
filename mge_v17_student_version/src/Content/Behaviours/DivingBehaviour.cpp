@@ -16,7 +16,7 @@ void DivingBehaviour::update(float pStep)
 {
 	_airLeft -= _drainRate * 0.5f * pStep;
 	_refillCooldownTimer -= pStep;
-	
+
 	/*if (_owner->getWorldPosition().y >  727.386)
 		_airLeft = _tankSize;*/
 	if (_timer <= 0) {
@@ -25,20 +25,43 @@ void DivingBehaviour::update(float pStep)
 	}
 
 	_timer--;
-	
-	
-	Hud::getInstance()->setDepth((int)ceil(71.7-_owner->getChildAt(0)->getWorldPosition().y/10));
+
+
+	Hud::getInstance()->setDepth((int)ceil(71.7 - _owner->getChildAt(0)->getWorldPosition().y / 10));
 	Hud::getInstance()->setOxygenLeft(to_string((int)ceil(_airLeft)));
 }
 
 void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 {
-	if (_timer <= 0 && _refillCooldownTimer <= 0)
-		std::cout << "Press e to add air" << std::endl;
+	int cost = _tankSize - _airLeft;
 
-	if (Input::getKeyDown(sf::Keyboard::E) && _refillCooldownTimer <= 0) {
+	if (_refillCooldownTimer <= 0 && cost < Hud::getInstance()->getCoinCount()) {
+		std::string str = "Press E to refill air (cost: ";
+		str += to_string(cost);
+		str += " gold)";
+		Hud::getInstance()->setInteractionText(str);
+	}
+	else if (_refillCooldownTimer <= 0 && cost > Hud::getInstance()->getCoinCount()) {
+		std::string str = "Not enough gold to refill air (cost: ";
+		str += to_string(cost);
+		str += " gold)";
+		Hud::getInstance()->setInteractionText(str);
+	}
+	else {
+		Hud::getInstance()->setInteractionText("");
+	}
+
+	if (Input::getKeyDown(sf::Keyboard::E) && _refillCooldownTimer <= 0 && cost < Hud::getInstance()->getCoinCount()) {
 		std::cout << "added air" << std::endl;
+		Hud::getInstance()->addCoin(-cost);
 		_airLeft = _tankSize;
 		_refillCooldownTimer = _refillCooldown;
 	}
+}
+
+void DivingBehaviour::onExitCollisionAddAir(OnCollisionArgs onCollisionArgs)
+{
+	Hud::getInstance()->setInteractionText("");
+	//std::cout << "exit trigger" << std::endl;
+
 }

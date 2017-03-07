@@ -79,7 +79,7 @@ void TestScene::_initializeScene() {
 	Mesh* planeMeshDefault = Mesh::load(Config::MGE_MODEL_PATH + "plane_8192.obj");
 
 	AbstractMaterial* templeMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1000);
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "water.png"), 1000, 0, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "white.png"));
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), 1, 0, Texture::load(Config::MGE_TEXTURE_PATH + "Black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
 	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seanormal.jpg"), 1);
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
@@ -152,7 +152,7 @@ void TestScene::_initializeScene() {
 
 	//ADDING BOAT FOLLOWING PLAYER
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
-	GameObject* boat = new GameObject("Boat", glm::vec3(0,720,0));
+	GameObject* boat = new GameObject("Boat", glm::vec3(-2068,720, 541));
 	boat->setMesh(boatMesh);
 	boat->setMaterial(textureMaterial);
 	//boat->scale(glm::vec3(0.1));
@@ -160,13 +160,14 @@ void TestScene::_initializeScene() {
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player->getChildAt(0)));
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
-	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,50,0));
+	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,-80,0));
 	boat->add(boatColliderContainer);
-	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,50), true, false);
+	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,60), true, false);
 	boatColliderContainer->rotate(glm::radians(90.0f), glm::vec3(1,0, 0));
 	
 	boatTriggerCollider.collisionEvents[playerRigidbody].bind(player->getBehaviour<DivingBehaviour>(), &DivingBehaviour::onCollisionAddAir);
-	
+	boatTriggerCollider.collisionExitEvents[playerRigidbody].bind(player->getBehaviour<DivingBehaviour>(), &DivingBehaviour::onExitCollisionAddAir);
+
 	_world->add(boat);
 
 	//ADDING BOAT FOLLOWING PLAYER
@@ -213,7 +214,7 @@ void TestScene::_initializeScene() {
 	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
 	LuaParser * luaparser2 = new LuaParser(_world);
-	luaparser2->setPlayerRigidBody(*playerRigidbody);
+	luaparser2->setPlayerRigidBody(*player);
 	luaparser2->scriptParser = _scriptParser;
 	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
 
@@ -245,7 +246,6 @@ void TestScene::_initializeScene() {
 
 	Mesh* templeMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleWODoors.obj");
 	Mesh* templeDoorsMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleDoors.obj");
-
 
 	GameObject* temple = new GameObject("Temple");
 	GameObject* templeDoors = new GameObject("TempleDoors");

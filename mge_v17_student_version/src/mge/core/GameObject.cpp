@@ -9,6 +9,7 @@ using namespace std;
 #include "Bullet3Common\b3Vector3.h"
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\RigidBody.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition)
 	: _name(pName), _transform(glm::translate(pPosition)),
@@ -27,10 +28,21 @@ GameObject::~GameObject()
 		remove(child);
 		delete child;
 	}
-	for each (Collider* collider in colliders)
+
+	Collider* collider = getBehaviour<Collider>();
+	if (collider != nullptr)
 	{
+		World::physics->removeCollisionObject(collider);
 		delete collider;
 	}
+
+	RigidBody* rigidbody = getBehaviour<RigidBody>();
+	if (rigidbody != nullptr)
+	{
+		World::physics->removeRigidBody(rigidbody);
+		delete rigidbody;
+	}
+
 	colliders.clear();
 	EventHandler::unbindEvents(this);
 	//do not forget to delete behaviour, material, mesh, collider manually if required!
@@ -66,6 +78,8 @@ const btTransform& GameObject::getBulletPhysicsTransform() const
 	btTransform btTransform;
 	glm::mat4 transform = getWorldTransform();
 	glm::vec3 scale = glm::vec3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
+	//std::cout << "Scale " << transform << std::endl;
+	//std::cout << getName() << std::endl;
 	transform = glm::scale(transform, glm::vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
 	glm::quat rotation = glm::quat_cast(transform);
 	glm::vec3 position = transform[3];

@@ -8,6 +8,11 @@
 #include <cassert>
 #include <iostream>
 #include <string>
+#include "mge\core\LuaParser.hpp"
+#include "mge\core\Physics\PhysicsWorld.h"
+#include "Content\Hud\Hud.hpp"
+#include "mge\core\Random.h"
+#include "Content\Core\Input.h"
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -59,8 +64,17 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::playSound>);
 	lua_setglobal(lua, "playSound");
 
-	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::playBreath>);
-	lua_setglobal(lua, "playBreath");
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroyGroup>);
+	lua_setglobal(lua, "destroyGroup");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroy>);
+	lua_setglobal(lua, "destroy");
+	
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addCoin>);
+	lua_setglobal(lua, "addCoin");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setInteractionText>);
+	lua_setglobal(lua, "setInteractionText");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -85,35 +99,11 @@ int LuaScriptParser::playSound(lua_State * lua)
 	return 0;
 }
 
-
-int LuaScriptParser::playBreath(lua_State * lua)
+int LuaScriptParser::addCoin(lua_State * lua)
 {
-	/*
-	std::random_device rd;
-
-	// Initialize Mersenne Twister pseudo-random number generator
-	std::mt19937 gen(rd());
-
-	std::uniform_int_distribution<> dis(1,6);
-
-	if (_BreathingIn)
-	{
-		if (!_soundManager->GetChannelState("player"))
-		{
-			_soundManager->PlaySound("air_in_" + std::to_string(dis(gen)), "player", false, false, false, 100);
-			_BreathingIn = false;
-		}
-	}
-	else
-	{
-		if (!_soundManager->GetChannelState("player"))
-		{
-			_soundManager->PlaySound("air_out_relaxed_" + std::to_string(dis(gen)), "player", false, false, false, 100);
-			_BreathingIn = true;
-		}
-	}*/
-
-	return 0;
+	std::cout << "You've picked up a coin! " << std::endl;
+	Hud::getInstance()->addCoin(Random::Range(150,250));
+	return 1;
 }
 
 int LuaScriptParser::message(lua_State * lua) {
@@ -141,22 +131,36 @@ int LuaScriptParser::visit(lua_State * lua)
 	return 0;
 }
 
+void LuaScriptParser::clearPrintTest(OnCollisionArgs onCollisionArgs)
+{
+	std::cout << "Clear this shit" << std::endl;
+	Hud::getInstance()->setInteractionText("");
+}
+
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 {
 	//dynamic cast naar abstractbehaviour
-	std::string NewFunction = "on" + dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner()->getName() + "Collision";
+	GameObject* sender = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender)->getOwner();
+	std::string NewFunction = "on" + sender->getName() + "Collision";
 
 	lua_getglobal(lua, NewFunction.c_str());
-
 
 	if (lua_isnil(lua, -1)) { //if is doesn't exist, bail out
 		lua_settop(lua, 0);
 		return;
 	}
-
-	lua_call(lua, 0, 0);
+	bool ePressed = Input::getKey(sf::Keyboard::E);
+	lua_pushinteger(lua, (size_t)sender);
+	lua_pushboolean(lua, ePressed);
+	lua_call(lua, 2, 0);
 
 	//std::cout << onCollisionArgs.collidingWith->getowner
+}
+
+int LuaScriptParser::setInteractionText(lua_State * lua)
+{
+	Hud::getInstance()->setInteractionText(lua_tostring(lua, -1));
+	return 0;
 }
 
 int LuaScriptParser::showObjectiveDistance(lua_State * lua)
@@ -197,4 +201,33 @@ void LuaScriptParser::step()
 
 	lua_call(lua, 0, 0);
 }
+int LuaScriptParser::destroy(lua_State *lua)
+{
+	int objectPointer = lua_tointeger(lua, -1);
+	GameObject* gameObject = (GameObject*)objectPointer;
+	std::cout << "DESTROYING OBJECT: " << gameObject->getName() << std::endl;
+	delete gameObject;
+	return 1;
+}
 
+int LuaScriptParser::destroyGroup(lua_State *lua)
+{
+	std::string groupName = lua_tostring(lua, -1);
+	if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	{
+		return 1;
+	}
+	std::cout << "Attempting to destroy group: " << groupName << std::endl;
+	/*if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	{
+		std::cout << "GROUP CANNOT BE FOUND: " << groupName << std::endl;
+		return 1;
+	}*/
+	for each (GameObject* gameObject in LuaParser::groups[groupName])
+	{
+		delete gameObject;
+	}
+	std::cout << "Destroyed group: " << groupName << std::endl;
+	LuaParser::groups.erase(groupName);
+	return 1;
+}

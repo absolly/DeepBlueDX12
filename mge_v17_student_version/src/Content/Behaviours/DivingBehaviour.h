@@ -3,7 +3,7 @@
 #include <iostream>
 class DivingBehaviour : public AbstractBehaviour {
 public:
-	DivingBehaviour(float pTankSize = 100, float pDrainRate = 1, float pRefillCooldown = 1);
+	DivingBehaviour(float pTankSize = 100, float pDrainRate = 1, float pRefillCooldown = 3);
 	~DivingBehaviour();
 	virtual void update(float pStep);
 	float _tankSize;
@@ -13,6 +13,6 @@ public:
 	float _refillCooldownTimer;
 	int _timer = 0;
 	void onCollisionAddAir(struct OnCollisionArgs onCollisionArgs);
-
+	void onExitCollisionAddAir(struct OnCollisionArgs onCollisionArgs);
 };
 

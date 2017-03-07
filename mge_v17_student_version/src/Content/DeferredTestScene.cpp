@@ -146,7 +146,7 @@ void DeferredTestScene::_initializeScene() {
 	    _world->add(light);
 	}
 
-	teapot->addBehaviour(new PredatorBehaviour(player,_waypoints, _world));
+	//teapot->addBehaviour(new PredatorBehaviour(player,_waypoints, _world));
 	teapot->setMesh(teapotMeshS);
 	teapot->setMaterial(waveMaterial);
 	_world->add(teapot);

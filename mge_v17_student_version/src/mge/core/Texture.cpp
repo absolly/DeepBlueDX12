@@ -29,8 +29,7 @@ Texture* Texture::load(std::string pName)
 
    	if (textureIterator == _textures.end()) {
         texture = _loadFromFile(pName);
-        std::cout << "Texture " << pName << " with id " << texture->getId() << " loaded." << std::endl;
-        std::cout << "Caching texture." << std::endl;
+        std::cout << "Caching Texture " << pName << " with id " << texture->getId() << " loaded." << std::endl;
         _textures[pName] = texture;
     } else {
         //std::cout << "Returning cached texture " << pName << std::endl;

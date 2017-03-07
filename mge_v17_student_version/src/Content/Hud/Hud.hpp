@@ -15,6 +15,8 @@ class Hud
 
 		Hud( sf::RenderWindow * aWindow );
 		virtual ~Hud();
+		void setInteractionText(std::string text);
+		void setSubtitleText(std::string text);
 		void draw();
 
 		void drawImage(int x, int y, HudSprite& hudSprite);
@@ -28,10 +30,14 @@ class Hud
 		Inventory& getInventory();
 		bool isPlayerKilled = false;
 
+		void addCoin(int pAmount);
+		int getCoinCount();
 	private:
 		static Hud* _instance;
 
 		sf::RenderWindow * _window;
+		int _coins = 0;
+		int _coinsDisplayed = 0;
 
 		HUDMaterial* _hudMaterial;
         std::string _debugInfo;
@@ -43,6 +49,11 @@ class Hud
 		sf::Text _depthText;
 		HudSprite _oxygenBar;
 		sf::Text _oxygenText;
+		HudSprite _coinCounterBar;
+		sf::Text _coinCounterText;
+
+		sf::Text _interactionText;
+		sf::Text _subtitleText;
 
 		bool _noOxygenLeft;
 		float _deathSpriteOpacity = 0;

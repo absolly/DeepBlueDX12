@@ -67,7 +67,7 @@ Mesh::~Mesh() {
  * Note that loading this mesh isn't cached like we do with texturing, this is an exercise left for the students.
  */
 Mesh* Mesh::load(string pFileName) {
-	cout << "Loading " << pFileName << "...";
+	//cout << "Loading " << pFileName << "...";
 
 	Mesh* mesh = new Mesh(pFileName);
 
@@ -232,7 +232,7 @@ Mesh* Mesh::load(string pFileName) {
 		file.close();
 		mesh->_buffer();
 
-		cout << "Mesh loaded and buffered:" << (mesh->_indices.size() / 3.0f) << " triangles." << endl;
+		//cout << "Mesh loaded and buffered:" << (mesh->_indices.size() / 3.0f) << " triangles." << endl;
 		return mesh;
 	}
 	else {
