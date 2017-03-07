@@ -18,15 +18,15 @@ public:
 
 	Camera* getCamera();
 private:
-
+	void resetLevel();
 	glm::vec3 _spawnPosition;
 	Camera* _camera;
-
+	void respawn();
 	int getDepthInCM();
 
 	float _depth = 0;
 	float _airRemaining = 100;
 	float _affraidness = 0;
-
+	int _deaths = 0;
 	std::string breatheInSounds = "breathe";
 };

@@ -71,6 +71,8 @@ class GameObject
 
 		template <class BehaviourType>
 		BehaviourType* getBehaviour();
+		template <class BehaviourType>
+		std::vector<BehaviourType*> getBehavioursOfType();
 
 		virtual void update(float pStep);
 
@@ -116,6 +118,19 @@ inline BehaviourType * GameObject::getBehaviour()
 		if (castedBehaviour) return castedBehaviour;
 	}
 	return nullptr;
+}
+
+template<class BehaviourType>
+inline std::vector<BehaviourType*> GameObject::getBehavioursOfType()
+{
+	std::vector<BehaviourType*> castedBehaviours;
+	BehaviourType* castedBehaviour;
+	for each (AbstractBehaviour* behaviour in _behaviours)
+	{
+		castedBehaviour = dynamic_cast<BehaviourType*>(behaviour);
+		if (castedBehaviour) castedBehaviours.push_back(castedBehaviour);
+	}
+	return castedBehaviours;
 }
 
 #endif // GAMEOBJECT_H

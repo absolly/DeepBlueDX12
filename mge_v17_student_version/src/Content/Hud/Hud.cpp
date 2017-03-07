@@ -140,6 +140,11 @@ void Hud::addCoin(int pAmount)
 	_coins += pAmount;
 }
 
+void Hud::setCoinCount(int pAmount) {
+	_coinsDisplayed = pAmount;
+	_coins = pAmount;
+}
+
 int Hud::getCoinCount()
 {
 	return _coins;
@@ -214,7 +219,7 @@ void Hud::draw()
 		_window->draw(deathScreen);
 
 		sf::Text _deathText;
-		_deathText.setString("You Died");
+		_deathText.setString("You Died, Press E to respawn");
 		_deathText.setFont(_font);
 		_deathText.setCharacterSize(24);
 		_deathText.setFillColor(sf::Color(255, 255, 255, _deathSpriteOpacity));

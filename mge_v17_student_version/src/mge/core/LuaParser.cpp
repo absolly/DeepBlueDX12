@@ -420,8 +420,10 @@ int LuaParser::addMaterial(lua_State * lua) {
 	float SpecularMultiplier = lua_tonumber(lua, -1);
 
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + image + ".png"), tiling, SpecularMultiplier, Texture::load(Config::MGE_TEXTURE_PATH + ((SpecularMap == "null") ? "black" : SpecularMap) + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + ((normalMap == "null") ? "NormalNormalMap" : normalMap) + ".png"), Texture::load(Config::MGE_TEXTURE_PATH + ((emissionMap == "null") ? "black" : emissionMap) + ".png"));
-
+	if (image == "BoundariesTexture")
+		textureMaterial->isShadowCaster = false;
 	_currentGameObject->setMaterial(textureMaterial);
+
 
 	return 1;
 }

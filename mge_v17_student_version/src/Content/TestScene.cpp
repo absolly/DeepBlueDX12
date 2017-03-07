@@ -47,6 +47,8 @@
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "mge\core\Physics\RigidBody.hpp"
 
+EventNoArgs& TestScene::resetEvent = *new EventNoArgs();
+
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene() :AbstractGame(), _hud(0) {
 }
@@ -67,9 +69,6 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog2.png");
 	AbstractGame::_setFogGradient(fog);
 
-
-
-
 	//add camera first (it will be updated last)
 	//Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
 	//camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -81,6 +80,7 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* templeMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1000);
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), 1, 0, Texture::load(Config::MGE_TEXTURE_PATH + "Black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
 	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seanormal.jpg"), 1);
+	textureMaterial2->isShadowCaster = false;
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
 	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));
@@ -317,6 +317,7 @@ void TestScene::_initializeScene() {
 	GameObject* sea = new GameObject("sea", glm::vec3(0, 720, 0));
 	sea->setMesh(planeMeshDefault);
 	sea->setMaterial(textureMaterial2);
+
 	sea->scale(glm::vec3(5000, 1, 5000));
 	sea->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::bvec3(true, false, true)));
 	sea->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));

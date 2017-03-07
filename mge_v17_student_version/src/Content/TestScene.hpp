@@ -6,6 +6,7 @@
 #include "mge/core/LuaScriptParser.hpp"
 #include "Content\Hud\Hud.hpp"
 #include <vector>
+#include "Content/Core/EventNoArgs.h"
 
 class DebugHud;
 
@@ -18,13 +19,13 @@ class TestScene: public AbstractGame
 		virtual ~TestScene();
 
         virtual void initialize();
+		static EventNoArgs& resetEvent;
 
 	protected:
         virtual void _initializeScene();
 
 	    //override render to render the hud as well.
 	    virtual void _render();
-
 	private:
 		Hud* _hud;                   //hud display
         LuaParser* _parser;
