@@ -235,21 +235,22 @@ void TestScene::_initializeScene() {
 
 	std::string relicNames[] =
 	{
-		"relic_tablet",
-		"relic_disc",
-		"relic_statue"
+		"Relic_tablet",
+		"Relic_disc",
+		"Relic_statue"
 	};
+	
 	for (int i = 0; i < relicLocations.size(); i++)
 	{
 		glm::vec3 relicLocation = relicLocations[i];
-		GameObject* teapot = new GameObject(relicNames[i], relicLocation);
-		teapot->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
-		teapot->setMaterial(relicAndTreasureMaterial);
-		teapot->scale(relicScales[i]);
-		teapot->addBehaviour(new RotatingBehaviour());
-		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(12, 16), true, true);
-		_world->add(teapot);
-		teapotTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+		GameObject* relic = new GameObject(relicNames[i], relicLocation);
+		relic->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
+		relic->setMaterial(relicAndTreasureMaterial);
+		relic->scale(relicScales[i]);
+		relic->addBehaviour(new RotatingBehaviour());
+		Collider& relicTriggerCollider = relic->addCollider(CapsuleColliderArgs(12, 16), true, true);
+		_world->add(relic);
+		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);
 	}
 
 	/*
@@ -298,7 +299,6 @@ void TestScene::_initializeScene() {
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0)));
 	_world->add(light3);
-
 
 	GameObject* seaCollider = new GameObject("SeaCollider", glm::vec3(0, 720, 0));
 	seaCollider->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::bvec3(true, false, true)));

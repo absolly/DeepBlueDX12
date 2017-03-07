@@ -16,6 +16,7 @@ function act2_1()
 	showObjectiveDistance(2);
 end
 
+--------------RELICS--------------
 function onTreasureCollision(self, ePressed)
 	if (ePressed) then
 		playSound("environment_whale", "Coin", false, true, 100);
@@ -26,6 +27,20 @@ function onTreasureCollision(self, ePressed)
 		setInteractionText("Press E to pick up the treasure");
 	end
 end
+
+--------------RELICS--------------
+function onRelic_tabletCollision(self, ePressed)
+	print("onRelic_tabletCollision");
+end
+
+function onRelic_discCollision(self, ePressed)
+	print("onRelic_discCollision");
+end
+
+function onRelic_statueCollision(self, ePressed)
+	print("onRelic_statueCollision");
+end
+--------------RELICS--------------
 
 function onTrigger1Collision(self, ePressed)
 	playSound("Alright its a beautiful day", "Voice line", false, true, 100);
