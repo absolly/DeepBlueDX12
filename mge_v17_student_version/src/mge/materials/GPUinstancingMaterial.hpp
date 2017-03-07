@@ -3,7 +3,9 @@
 
 #include "mge/materials/AbstractMaterial.hpp"
 #include "mge/core/ShaderProgram.hpp"
+#include <mge/core/Texture.hpp>
 #include "mge/core/GameObject.hpp"
+#include <mge/config.hpp>
 #include <vector>
 
 /**
@@ -15,7 +17,7 @@ class GPUinstancingMaterial : public AbstractMaterial
 {
     public:
 		//GPUinstancingMaterial(std::vector<GameObject*> gameObjects);
-		GPUinstancingMaterial(std::vector<GameObject*> pGameObjects);
+		GPUinstancingMaterial(std::vector<GameObject*> pGameObjects, Texture * pTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Kelpp.png"));
         virtual ~GPUinstancingMaterial();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
@@ -26,12 +28,16 @@ class GPUinstancingMaterial : public AbstractMaterial
     private:
 
 		int _listSize = 0;
+		bool firstTry = true;
+
 		static ShaderProgram* _shader;
 		void  _lazyInitializeShader();
 		std::vector<GameObject*> _gameObjects;
 
+		Texture * _diffuseTexture;
 		GLint _uMVPMatrix = 0;
 		GLint _offset = 0;
+		GLuint TextureID = 0;
 
 		GLint _aVertex = 0;
 		GLint _aNormal = 0;

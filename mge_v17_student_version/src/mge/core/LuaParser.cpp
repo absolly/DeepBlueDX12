@@ -12,6 +12,7 @@
 #include "mge\core\Physics\RigidBody.hpp"
 #include "mge\core\Physics\Colliders\Collider.h"
 #include <algorithm>
+#include <vector>
 
 std::map<std::string, std::vector<GameObject*>> LuaParser::groups;
 
@@ -437,6 +438,26 @@ int LuaParser::addMeshCollider(lua_State * lua) {
 		objectCollider.collisionExitEvents[_playerRigidBody].bind(scriptParser, &LuaScriptParser::clearPrintTest);
 	}
 	return 1;
+}
+
+void LuaParser::SetGroupsInstanced()
+{
+	std::map<std::string, std::vector<GameObject*>> maps;
+
+	for (std::map<std::string, std::vector<GameObject*>>::iterator it = groups.begin(); it != groups.end(); ++it)
+	{
+		Mesh * gameObjectMesh = Mesh::load(Config::MGE_MODEL_PATH + "Kelp" + ".obj");
+		GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
+		for (int i = 0; i < it->second.size(); i++)
+		{
+			_world->remove(it->second[i]);
+		}
+
+		GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second);
+		object->setMesh(gameObjectMesh);
+		object->setMaterial(gpuMat);
+		_world->add(object);
+	}
 }
 
 int LuaParser::addBoxCollider(lua_State * lua) {

@@ -9,6 +9,7 @@
 ShaderProgram* GPUinstancingMaterial::_shader = NULL;
 
 GLint _uMVPMatrix = 0;
+GLuint TextureID = 0;
 
 GLint _aVertex = 0;
 GLint _aNormal = 0;
@@ -23,7 +24,7 @@ GLint _aBitangent = 0;
 //}
 //
 
-GPUinstancingMaterial::GPUinstancingMaterial(std::vector<GameObject*> pGameObjects)
+GPUinstancingMaterial::GPUinstancingMaterial(std::vector<GameObject*> pGameObjects, Texture * pTexture) : _diffuseTexture(pTexture)
 {
 	_gameObjects = pGameObjects;
 	_listSize = _gameObjects.size();
@@ -43,7 +44,7 @@ void GPUinstancingMaterial::_lazyInitializeShader() {
 
         //cache all the uniform and attribute indexes
         _uMVPMatrix= _shader->getUniformLocation("mvpMatrix");
-        //_uDiffuseColor = _shader->getUniformLocation("diffuseColor");
+		TextureID = _shader->getUniformLocation("myTextureSampler");
 
         _aVertex = _shader->getAttribLocation("vertex");
         _aNormal = _shader->getAttribLocation("normal");
@@ -67,10 +68,14 @@ void GPUinstancingMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, c
 
 	pMesh->instanceToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, _diffuseTexture->getId());
+	// Set our "myTextureSampler" sampler to user Texture Unit 0
+	glUniform1i(TextureID, 0);
+
 
 	for (int i = 0; i < _listSize; i++)
 	{
-
 		glm::mat4 mvpMatrix = pProjectionMatrix * pViewMatrix * _gameObjects.at(i)->getTransform();
 
 		glUniformMatrix4fv(_uMVPMatrix, 1, GL_FALSE, glm::value_ptr(mvpMatrix));

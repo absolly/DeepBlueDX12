@@ -30,6 +30,7 @@ class LuaParser {
         void loadFile(const char* pFileName);
         void update(float pStep);
         bool hitTest(GameObject* objectA, GameObject* objectB);
+		void SetGroupsInstanced();
 		LuaScriptParser * scriptParser;
 		void setPlayerRigidBody(class Player& pRigidBody);
 
