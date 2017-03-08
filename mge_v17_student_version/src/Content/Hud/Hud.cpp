@@ -159,6 +159,11 @@ int Hud::getCoinCount()
 	return _coins;
 }
 
+bool Hud::getNoOxygenLeft()
+{
+	return _noOxygenLeft;
+}
+
 void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))
@@ -220,7 +225,7 @@ void Hud::draw()
 
 	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))
 	{
-		_deathSpriteOpacity += (_noOxygenLeft ? 32 : -128) * Time::DeltaTime;
+		_deathSpriteOpacity += (_noOxygenLeft ? 96 : -128) * Time::DeltaTime;
 		if (_deathSpriteOpacity > 255) _deathSpriteOpacity = 255;
 		if (_deathSpriteOpacity < 0) _deathSpriteOpacity = 0;
 		sf::RectangleShape deathScreen = sf::RectangleShape(sf::Vector2f(_window->getSize()));

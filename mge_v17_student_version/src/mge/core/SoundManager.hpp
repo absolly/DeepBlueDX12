@@ -12,6 +12,8 @@ public:
 	~SoundManager();
 	void PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume = 100, std::string subtitle = "");
 
+	void StopSoundChannel(std::string pChannelName);
+
 	static SoundManager* getInstance();
 private:
 	static SoundManager* _instance;

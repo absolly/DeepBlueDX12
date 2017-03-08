@@ -6,6 +6,7 @@
 #include "Content/Core/Input.h"
 #include "Content/Hud/Hud.hpp"
 #include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
+#include "mge\core\SoundManager.hpp"
 
 PredatorBehaviour::PredatorBehaviour(Player * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _player(pTarget), _target(pTarget->getChildAt(0)), _world(pWorld)
 {
@@ -164,7 +165,12 @@ void PredatorBehaviour::update(float pStep)
 	float distanceToPlayer = glm::distance(mypos, _target->getWorldPosition());
 	if (distanceToPlayer < 7)
 	{
-		Hud::getInstance()->isPlayerKilled = true;
+		if (!Hud::getInstance()->isPlayerKilled)
+		{
+			SoundManager::getInstance()->PlaySound("hit", "hit", false, true, false);
+			SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
+			Hud::getInstance()->isPlayerKilled = true;
+		}
 	}
 	float maxDistance = 400;
 	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;

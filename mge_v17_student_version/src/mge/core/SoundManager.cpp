@@ -111,6 +111,14 @@ void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundCha
 	}
 }
 
+void SoundManager::StopSoundChannel(std::string pChannelName)
+{
+	if (sounds[pChannelName].getStatus() == sf::Sound::Status::Playing)
+	{
+		sounds[pChannelName].stop();
+	}
+}
+
 bool SoundManager::GetChannelState(std::string pChannelName)
 {
 	if (sounds[pChannelName].getStatus() == sf::Sound::Status::Playing)
