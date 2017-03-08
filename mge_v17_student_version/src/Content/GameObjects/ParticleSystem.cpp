@@ -17,7 +17,7 @@ using namespace std;
 ParticleSystem::ParticleSystem(glm::vec3 pPosition, std::string pName) : GameObject(pName ,pPosition)
 {	
 	_startPosition = pPosition;
-	_spawnRate = 10;
+	_spawnRate = 20;
 }
 
 ParticleSystem::~ParticleSystem()

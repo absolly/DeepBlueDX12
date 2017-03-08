@@ -11,10 +11,11 @@
 PlayerFishAbilityBehaviour::PlayerFishAbilityBehaviour(World * pWorld, GameObject * pOwner) : _world(pWorld)
 {
 	Mesh * smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+	Texture * texture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseBLU.png");
 
 	PlayerFishFlock * playerFishFlock = new PlayerFishFlock(pOwner->getWorldPosition(), _world, "playerflock", pOwner);
 	playerFishFlock->setMesh(smallFish);
-	GPUinstancingMaterial * GPUmat = new  GPUinstancingMaterial(*playerFishFlock->allFish);
+	GPUinstancingMaterial * GPUmat = new  GPUinstancingMaterial(*playerFishFlock->allFish, texture);
 	playerFishFlock->setMaterial(GPUmat);
 	pOwner->add(playerFishFlock);
 

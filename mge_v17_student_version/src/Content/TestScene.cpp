@@ -99,18 +99,6 @@ void TestScene::_initializeScene() {
 	_world->setMainCamera(player->getCamera());
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
-	glm::vec3 ParticlePosition = player->getChildAt(0)->getWorldPosition();
-	ParticlePosition.y -= 20;
-	ParticleSystem * particleSystem = new ParticleSystem(ParticlePosition, "name");
-	particleSystem->SetStartEndScale(0.001f, 1.0f);
-
-	particleSystem->setMesh(planeMeshDefault);
-	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
-	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
-	particleSystem->setMaterial(billboardMat);
-	_world->add(particleSystem);
-
-	ParticlePosition += 2;
 
 	//ParticleSystem * particleSystem2 = new ParticleSystem(ParticlePosition, "name");
 

@@ -9,6 +9,7 @@
 #include "Content/Behaviours/PredatorBehaviour.h"
 #include "mge/materials/LitWaveMaterial.hpp"
 #include "Content\GameObjects\Player.h"
+#include "mge/materials/BillBoardMaterial.hpp"
 #include "mge\core\Physics\RigidBody.hpp"
 #include "mge\core\Physics\Colliders\Collider.h"
 #include <algorithm>
@@ -58,6 +59,10 @@ LuaParser::LuaParser(World* pWorld) {
 	lua_setglobal(lua, "addPredator");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addToGroup>);
 	lua_setglobal(lua, "addToGroup");
+	lua_pushcfunction(lua, &dispatch<&LuaParser::addToGroup>);
+	lua_setglobal(lua, "addToGroup");
+	lua_pushcfunction(lua, &dispatch<&LuaParser::addParticles>);
+	lua_setglobal(lua, "addParticles");
 	//load the cube mesh and texture for later use.
 	cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "cube_unity.obj");
 	textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"));
@@ -123,6 +128,7 @@ void LuaParser::loadFile(const char* pFileName) {
 	//lua_getglobal(lua, "main");
 	//lua_call(lua, 0, 0);
 }
+
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      update()
@@ -448,17 +454,35 @@ void LuaParser::SetGroupsInstanced()
 
 	for (std::map<std::string, std::vector<GameObject*>>::iterator it = groups.begin(); it != groups.end(); ++it)
 	{
-		Mesh * gameObjectMesh = Mesh::load(Config::MGE_MODEL_PATH + "Kelp" + ".obj");
-		GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
-		for (int i = 0; i < it->second.size(); i++)
+		if (it->first == "Kelp")
 		{
-			_world->remove(it->second[i]);
+			GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
+			for (int i = 0; i < it->second.size(); i++)
+			{
+				_world->remove(it->second[i]);
+			}
+
+			GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second);
+			object->setMesh(it->second[0]->getMesh());
+			object->setMaterial(gpuMat);
+			_world->add(object);
 		}
 
-		GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second);
-		object->setMesh(gameObjectMesh);
-		object->setMaterial(gpuMat);
-		_world->add(object);
+		if (it->first == "SeaGrass")
+		{
+			Texture * grassTexture = Texture::load(Config::MGE_TEXTURE_PATH + "SeaGrass2_UV.png");
+			GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
+			for (int i = 0; i < it->second.size(); i++)
+			{
+				_world->remove(it->second[i]);
+			}
+
+			GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second, grassTexture);
+			object->setMesh(it->second[0]->getMesh());
+			object->setMaterial(gpuMat);
+			_world->add(object);
+		}
+	
 	}
 }
 
@@ -511,6 +535,8 @@ int LuaParser::addSphereCollider(lua_State * lua) {
 
 int LuaParser::createFish(lua_State * lua)
 {
+	std::cout << "Add Fish" << std::endl;
+
 	float x = lua_tonumber(lua, -3);
 	float y = lua_tonumber(lua, -2);
 	float z = lua_tonumber(lua, -1);
@@ -521,6 +547,32 @@ int LuaParser::createFish(lua_State * lua)
 	//fishTank->setMesh(smallFish);
 	//fishTank->setMaterial(gpuinstancing);
 	//_world->add(fishTank);
+
+	return 1;
+}
+
+int LuaParser::addParticles(lua_State * lua)
+{
+
+	float x = lua_tonumber(lua, -3);
+	float y = lua_tonumber(lua, -2);
+	float z = lua_tonumber(lua, -1);
+
+	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+
+	//FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
+	//fishTank->setMesh(smallFish);
+	//fishTank->setMaterial(gpuinstancing);
+	//_world->add(fishTank);
+
+	ParticleSystem * particleSystem = new ParticleSystem(glm::vec3(x, y, -z), "name");
+	particleSystem->SetStartEndScale(0.001f, 2.0f);
+
+	particleSystem->setMesh(smallFish);
+	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
+	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
+	particleSystem->setMaterial(billboardMat);
+	_world->add(particleSystem);
 
 	return 1;
 }
