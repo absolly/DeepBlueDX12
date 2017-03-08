@@ -7,6 +7,7 @@
 #include "Content/Hud/Hud.hpp"
 #include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
 #include "mge\core\SoundManager.hpp"
+#include "mge\core\Random.h"
 
 PredatorBehaviour::PredatorBehaviour(Player * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _player(pTarget), _target(pTarget->getChildAt(0)), _world(pWorld)
 {
@@ -171,6 +172,12 @@ void PredatorBehaviour::update(float pStep)
 			SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
 			Hud::getInstance()->isPlayerKilled = true;
 		}
+	}
+	_soundDelayTimer -= pStep;
+	if (distanceToPlayer < 200 && _soundDelayTimer <= 0)
+	{
+		SoundManager::getInstance()->PlaySound("environment_whale", "environment_whale", false, true, false);
+		_soundDelayTimer = Random::Range(5.0f, 10.0f);
 	}
 	float maxDistance = 400;
 	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;
