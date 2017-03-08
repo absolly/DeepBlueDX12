@@ -4,7 +4,7 @@
 #include "Content\Hud\Hud.hpp"
 #include "mge\core\SoundManager.hpp"
 
-DivingBehaviour::DivingBehaviour(float pTankSize, float pDrainRate, float pRefillCooldown) : _tankSize(pTankSize), _drainRate(pDrainRate), _airLeft(20), _refillCooldown(pRefillCooldown), _refillCooldownTimer(pRefillCooldown)
+DivingBehaviour::DivingBehaviour(float pTankSize, float pDrainRate, float pRefillCooldown) : _tankSize(pTankSize), _drainRate(pDrainRate), _airLeft(pTankSize), _refillCooldown(pRefillCooldown), _refillCooldownTimer(pRefillCooldown)
 {
 }
 
