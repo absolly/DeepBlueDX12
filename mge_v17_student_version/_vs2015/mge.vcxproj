@@ -199,6 +199,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Content\GameObjects\EnvironmentSoundPlayer.h" />
     <ClInclude Include="src\Content\GameObjects\PlayerFishFlock.hpp" />
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
     <ClInclude Include="src\Content\Behaviours\DivingBehaviour.h" />
@@ -272,6 +273,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Content\GameObjects\EnvironmentSoundPlayer.cpp" />
     <ClCompile Include="src\Content\GameObjects\PlayerFishFlock.cpp" />
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
     <ClCompile Include="src\Content\Behaviours\DivingBehaviour.cpp" />

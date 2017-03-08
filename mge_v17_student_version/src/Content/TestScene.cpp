@@ -46,6 +46,8 @@
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "mge\core\Physics\RigidBody.hpp"
+#include "Content\GameObjects\EnvironmentSoundPlayer.h"
+#include "Content\Core\Input.h"
 
 EventNoArgs& TestScene::resetEvent = *new EventNoArgs();
 
@@ -209,6 +211,8 @@ void TestScene::_initializeScene() {
 	objectives->push_back(objtest3);
 
 	SoundManager * soundmng = new SoundManager();
+	EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
+	_world->add(environmentSoundPlayer);
 
 	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
 	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
@@ -252,7 +256,9 @@ void TestScene::_initializeScene() {
 		Collider& relicTriggerCollider = relic->addCollider(CapsuleColliderArgs(12, 16), true, true);
 		_world->add(relic);
 		relicTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onRelicCollision);
+		relicTriggerCollider.collisionExitEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::clearPrintTest);
 	}
+
 
 	/*
 	Mesh* templeMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleWODoors.obj");
@@ -347,8 +353,11 @@ void TestScene::_updateHud() {
 
 void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
 {
-	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
-	Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
+	if (Input::getKeyDown(sf::Keyboard::E))
+	{
+		AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
+		Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
+	}
 	_scriptParser->printTest(onCollisionArgs);
 }
 
