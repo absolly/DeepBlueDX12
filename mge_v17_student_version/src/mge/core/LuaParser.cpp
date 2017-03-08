@@ -564,7 +564,7 @@ int LuaParser::createFish(lua_State * lua)
 	}
 	else if (FishType == 4)
 	{
-		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseGRNpng");
+		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseGRN.png");
 	}
 
 

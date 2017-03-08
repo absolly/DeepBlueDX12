@@ -89,8 +89,10 @@ class GameObject
         int getChildCount();
         GameObject* getChildAt (int pIndex);
 	protected:
+		glm::vec3 * _cachedWorldPosition;
 		std::string _name;
 		glm::mat4 _transform = glm::mat4(1);
+		bool _gotWorldPosition = false;
 
         GameObject* _parent;
 		std::vector<GameObject*> _children;

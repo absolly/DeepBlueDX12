@@ -53,7 +53,6 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, st
 
 		GameObject* fish = new GameObject("fish", glm::vec3(_parentPos.x + randomX, _parentPos.y + randomY, _parentPos.z + randomZ));
 		fish->addBehaviour(flock);
-		pWorld->add(fish);
 		allFish->push_back(fish);
 	}
 
@@ -76,11 +75,6 @@ void FishTank::SetRenderDistance(int pDistance)
 
 void FishTank::update(float pStep)
 {
-	for (GameObject * fish : *allFish)
-	{
-		fish->update(pStep);
-	}
-
 	if (glm::distance(getWorldPosition(), _player->getWorldPosition()) < renderDistance)
 	{
 		getMaterial()->allowedToRender = true;
