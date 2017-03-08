@@ -76,6 +76,11 @@ void FishTank::SetRenderDistance(int pDistance)
 
 void FishTank::update(float pStep)
 {
+	for (GameObject * fish : *allFish)
+	{
+		fish->update(pStep);
+	}
+
 	if (glm::distance(getWorldPosition(), _player->getWorldPosition()) < renderDistance)
 	{
 		getMaterial()->allowedToRender = true;
