@@ -2,6 +2,7 @@
 #include "mge/core/GameObject.hpp"
 #include "Content\Core\Input.h"
 #include "Content\Hud\Hud.hpp"
+#include "mge\core\SoundManager.hpp"
 
 DivingBehaviour::DivingBehaviour(float pTankSize, float pDrainRate, float pRefillCooldown) : _tankSize(pTankSize), _drainRate(pDrainRate), _airLeft(pTankSize), _refillCooldown(pRefillCooldown), _refillCooldownTimer(pRefillCooldown)
 {
@@ -14,7 +15,18 @@ DivingBehaviour::~DivingBehaviour()
 
 void DivingBehaviour::update(float pStep)
 {
+	float previousAirLeft = _airLeft;
 	_airLeft -= _drainRate * 0.5f * pStep;
+
+	if (_airLeft <= 15 && previousAirLeft > 15)
+	{
+		SoundManager::getInstance()->PlaySound("Careful with the air", "Careful with the air", false, true, false);
+	}
+	if (_airLeft <= 0 && previousAirLeft > 0)
+	{
+		SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
+	}
+
 	_refillCooldownTimer -= pStep;
 
 	/*if (_owner->getWorldPosition().y >  727.386)
@@ -56,6 +68,8 @@ void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 		Hud::getInstance()->addCoin(-cost);
 		_airLeft = _tankSize;
 		_refillCooldownTimer = _refillCooldown;
+		SoundManager::getInstance()->PlaySound("treasure_grab", "treasure_grab", false, true, false);
+		SoundManager::getInstance()->StopSoundChannel("suffocating");
 	}
 }
 

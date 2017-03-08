@@ -20,7 +20,7 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	Mesh* scooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
 
-	_diveScooterMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "dive_scooter.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
+	_diveScooterMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "divescooter_diffuse.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture::load(Config::MGE_TEXTURE_PATH + "divescooter_normal.png"));
 	_diveScooterMaterial->isShadowCaster = false;
 
 	_diveScooter = new GameObject("Dive Scooter");

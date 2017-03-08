@@ -55,7 +55,8 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "ability");
 	fileNames->push_back(path + "treasure_grab");
 	fileNames->push_back(path + "hit");
-	fileNames->push_back(path + "door_opening"); 
+	fileNames->push_back(path + "door_opening");
+	fileNames->push_back(path + "relic_grab"); 
 
 	fileNames->push_back(path + "Be careful out there");
 	fileNames->push_back(path + "The current");
@@ -108,6 +109,14 @@ void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundCha
 			if (subtitle != "")
 				Hud::getInstance()->setSubtitleText(subtitle, soundBuffers[path + pSoundBufferName].getDuration().asSeconds());
 		}
+	}
+}
+
+void SoundManager::StopSoundChannel(std::string pChannelName)
+{
+	if (sounds[pChannelName].getStatus() == sf::Sound::Status::Playing)
+	{
+		sounds[pChannelName].stop();
 	}
 }
 

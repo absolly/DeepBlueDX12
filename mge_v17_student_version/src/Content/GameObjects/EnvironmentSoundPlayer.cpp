@@ -20,7 +20,7 @@ void EnvironmentSoundPlayer::update(float deltaTime)
 	{
 		int soundIndex = Random::Range(0, _sounds.size());
 		std::cout << soundIndex << std::endl;
-		_soundManager.PlaySound(_sounds[soundIndex], "Environment sound", false, true, false, 100, "");
+		_soundManager.PlaySound(_sounds[soundIndex], "Environment sound", false, true, false, Random::Range(_soundVolumes[soundIndex]-10, _soundVolumes[soundIndex]), "");
 		_randomSoundTimer = Random::Range(45.0f, 120.0f);
 	}
 }

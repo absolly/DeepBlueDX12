@@ -6,6 +6,8 @@
 #include "Content/Core/Input.h"
 #include "Content/Hud/Hud.hpp"
 #include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
+#include "mge\core\SoundManager.hpp"
+#include "mge\core\Random.h"
 
 PredatorBehaviour::PredatorBehaviour(Player * pTarget, std::vector<glm::vec3> pWaypoints, World * pWorld) : _waypoints(pWaypoints), _player(pTarget), _target(pTarget->getChildAt(0)), _world(pWorld)
 {
@@ -37,6 +39,9 @@ PredatorBehaviour::~PredatorBehaviour()
 
 void PredatorBehaviour::update(float pStep)
 {
+#define BIT(x) (1<<(x))
+
+	_owner->scale(glm::vec3(0.5f, 0.5f, 0.5f));
 	if (_ownerMat == nullptr)
 		_ownerMat = dynamic_cast<LitWaveMaterial*>(_owner->getMaterial());
 
@@ -72,7 +77,7 @@ void PredatorBehaviour::update(float pStep)
 	glm::vec3 mypos = _owner->getWorldPosition();
 	float clostestDist = -1;
 	bool followingCrumbs = false;
-	if (!_target->getBehaviour<PlayerFishAbilityBehaviour>()->getIsProtected())
+	if (!_target->getBehaviour<PlayerFishAbilityBehaviour>()->getIsProtected()) {
 		for (int i = 0; i < 16; i++) {
 
 			if (glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 10)
@@ -80,14 +85,13 @@ void PredatorBehaviour::update(float pStep)
 				closest = _crumbs[(i + crumbHead) % 16];
 				followingCrumbs = true;
 			}
-			else if (!followingCrumbs && glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 100) {
+			else if (!followingCrumbs && glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 300) {
 				btVector3 Start = btVector3(mypos.x, mypos.y, mypos.z);
 				btVector3 End = btVector3(_crumbs[(i + crumbHead) % 16].x, _crumbs[(i + crumbHead) % 16].y, _crumbs[(i + crumbHead) % 16].z);
 				btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
 
 				// Perform raycast
 				World::physics->rayTest(Start, End, RayCallback);
-#define BIT(x) (1<<(x))
 				if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
 					//std::cout << "no hit!" << std::endl;
 					closest = _crumbs[(i + crumbHead) % 16];
@@ -97,7 +101,7 @@ void PredatorBehaviour::update(float pStep)
 
 			}
 		}
-
+	}
 	if (closest != glm::vec3(0, 0, 0)) {
 		_speed = 0.2;
 		//std::cout << "following player" << std::endl;
@@ -116,12 +120,32 @@ void PredatorBehaviour::update(float pStep)
 	}
 	else if (_returnPath.size() > 1) {
 		_speed = 0.1;
-		if (glm::distance(_returnPath.top(), _owner->getWorldPosition()) < 3) {
+		btVector3 Start = btVector3(mypos.x, mypos.y, mypos.z);
+		btVector3 End = btVector3(_waypoints[_currentWaypoint].x, _waypoints[_currentWaypoint].y, _waypoints[_currentWaypoint].z);
+		btCollisionWorld::ClosestRayResultCallback RayCallback(Start, End);
+
+		// Perform raycast
+		World::physics->rayTest(Start, End, RayCallback);
+		if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
+			std::cout << "clear return path" << std::endl;
+			while (!_returnPath.empty())
+			{
+				_returnPath.pop();
+			}
+			for each(GameObject* go in _returnPathMarkers)
+				delete go;
+			_returnPathMarkers.clear();
+
+			// Do some clever stuff here
+		} else if (glm::distance(_returnPath.top(), _owner->getWorldPosition()) < 5) {
 			_returnPath.pop();
 			delete _returnPathMarkers.back();
 			_returnPathMarkers.pop_back();
+			_targetPos = _returnPath.top();
 		}
-		_targetPos = _returnPath.top();
+		else {
+			_targetPos = _returnPath.top();
+		}
 	}
 	else if (glm::distance(_owner->getWorldPosition(), _waypoints[_currentWaypoint]) > 1) {
 		_speed = 0.1;
@@ -137,16 +161,29 @@ void PredatorBehaviour::update(float pStep)
 	}
 	InterPolateDirection(_owner->getWorldPosition() - _targetPos);
 	_ownerMat->speed = _speed;
-	_owner->translate(glm::vec3(0, 0, _speed * pStep * 100));
+	_owner->translate(glm::vec3(0, 0, _speed * pStep * 300));
 
 	float distanceToPlayer = glm::distance(mypos, _target->getWorldPosition());
-	if (distanceToPlayer < 5)
+	if (distanceToPlayer < 7)
 	{
-		Hud::getInstance()->isPlayerKilled = true;
+		if (!Hud::getInstance()->isPlayerKilled)
+		{
+			SoundManager::getInstance()->PlaySound("hit", "hit", false, true, false);
+			SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
+			Hud::getInstance()->isPlayerKilled = true;
+		}
+	}
+	_soundDelayTimer -= pStep;
+	if (distanceToPlayer < 200 && _soundDelayTimer <= 0)
+	{
+		SoundManager::getInstance()->PlaySound("environment_whale", "environment_whale", false, true, false);
+		_soundDelayTimer = Random::Range(5.0f, 10.0f);
 	}
 	float maxDistance = 400;
 	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;
 	_player->setAffraidness(affraidness * 100);
+	_owner->scale(glm::vec3(2, 2, 2));
+
 }
 
 
@@ -168,7 +205,7 @@ void PredatorBehaviour::InterPolateDirection(glm::vec3 pDirection)
 
 	//std::cout << _owner->getLocalPosition() << std::endl;
 
-	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.02f));
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.03f));
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);

@@ -33,6 +33,7 @@ class Hud
 		void addCoin(int pAmount);
 		void setCoinCount(int pAmount);
 		int getCoinCount();
+		bool getNoOxygenLeft();
 	private:
 		static Hud* _instance;
 

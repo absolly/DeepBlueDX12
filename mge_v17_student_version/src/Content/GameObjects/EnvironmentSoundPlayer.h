@@ -20,4 +20,9 @@ private:
 		"environment_sonar",
 		"environment_whale"
 	};
+	std::vector<int> _soundVolumes
+	{
+		100,
+		40
+	};
 };

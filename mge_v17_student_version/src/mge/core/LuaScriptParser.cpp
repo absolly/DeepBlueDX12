@@ -78,7 +78,10 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_setglobal(lua, "setInteractionText");
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setSubtitleText>);
-	lua_setglobal(lua, "setSubtitleText");
+	lua_setglobal(lua, "setSubtitleText"); 
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addItemToInventory>);
+	lua_setglobal(lua, "addItemToInventory"); 
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -203,6 +206,14 @@ void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 	lua_call(lua, 2, 0);
 
 	//std::cout << onCollisionArgs.collidingWith->getowner
+}
+
+int LuaScriptParser::addItemToInventory(lua_State * lua)
+{
+	int objectPointer = lua_tointeger(lua, -1);
+	GameObject* gameObject = (GameObject*)objectPointer;
+	Hud::getInstance()->getInventory().addItem(gameObject->getName() + ".png");
+	return 0;
 }
 
 int LuaScriptParser::setInteractionText(lua_State * lua)

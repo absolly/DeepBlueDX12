@@ -4,6 +4,7 @@
 #include "mge\core\SoundManager.hpp"
 #include "mge\core\Random.h"
 #include "mge\config.hpp"
+#include "Content\Hud\Hud.hpp"
 
 PlayerBreathingBehaviour::PlayerBreathingBehaviour(Player& player) :
 	_player(player)
@@ -20,7 +21,8 @@ void PlayerBreathingBehaviour::update(float deltaTime)
 {
 	if (_breatheDelay <= 0)
 	{
-		playBreatheSound();
+		if (!Hud::getInstance()->getNoOxygenLeft())
+			playBreatheSound();
 		_breatheDelay = Random::Range(getMinimumBreatheDelay(), getMaximumBreatheDelay());
 		_breathingIn = !_breathingIn;
 	}

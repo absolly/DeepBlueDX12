@@ -35,7 +35,7 @@ class TestScene: public AbstractGame
         TestScene(const TestScene&);
         TestScene& operator=(const TestScene&);
 
-		void onRelicCollision(struct OnCollisionArgs onCollisionArgs);
+		//void onRelicCollision(struct OnCollisionArgs onCollisionArgs);
 		void onTempleDoorCollision(struct OnCollisionArgs onCollisionArgs);
 		void onCollisionRemoveOther(struct OnCollisionArgs onCollisionArgs);
 };

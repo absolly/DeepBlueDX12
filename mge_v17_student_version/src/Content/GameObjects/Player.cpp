@@ -100,6 +100,7 @@ void Player::respawn()
 	temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
 	Hud::getInstance()->isPlayerKilled = false;
 	getBehaviour<DivingBehaviour>()->_airLeft = 100;
+	SoundManager::getInstance()->StopSoundChannel("suffocating");
 }
 
 int Player::getDepthInCM()
