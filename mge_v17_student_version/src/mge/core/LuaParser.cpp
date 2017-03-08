@@ -454,18 +454,18 @@ void LuaParser::SetGroupsInstanced()
 
 	for (std::map<std::string, std::vector<GameObject*>>::iterator it = groups.begin(); it != groups.end(); ++it)
 	{
-		if (it->first == "Kelp")
+		if (it->first == "Kelp" || it->first == "door1")
 		{
-			GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
+			//GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
 			for (int i = 0; i < it->second.size(); i++)
 			{
 				_world->remove(it->second[i]);
 			}
 
 			GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second);
-			object->setMesh(it->second[0]->getMesh());
-			object->setMaterial(gpuMat);
-			_world->add(object);
+			it->second[0]->setMesh(it->second[0]->getMesh());
+			it->second[0]->setMaterial(gpuMat);
+			_world->add(it->second[0]);
 		}
 
 		if (it->first == "SeaGrass")

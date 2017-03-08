@@ -33,12 +33,15 @@ class AbstractGame
         //run the actual process of updating all objects, rendering them and processing events
         virtual void run();
 
+		sf::RenderWindow * getRenderWindow();
+
+		virtual void _initializeWindow();
+
     protected:
 
         //methods above delegate behaviour to the methods below so that you can override it in a subclass
 
         //initialize sfml rendering context
-        virtual void _initializeWindow();
         //print info about the current driver version etc
         virtual void _printVersionInfo();
         //initialize the extension wrangler

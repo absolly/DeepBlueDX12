@@ -32,14 +32,20 @@ AbstractGame::~AbstractGame() {
     delete _world;
 }
 
+sf::RenderWindow * AbstractGame::getRenderWindow()
+{
+	return _window;
+}
+
 void AbstractGame::initialize() {
     cout << "Initializing engine..." << endl << endl;
-    _initializeWindow();
+
     _printVersionInfo();
     _initializeGlew();
      _initializeRenderer();
     _initializeWorld();
     _initializeScene();
+
     cout << endl << "Engine initialized." << endl << endl;
 }
 
@@ -50,7 +56,7 @@ void AbstractGame::_initializeWindow() {
     _window = new sf::RenderWindow(sf::VideoMode((int)Config::SCREEN_RESOLUTION.x, (int)Config::SCREEN_RESOLUTION.y), "My Game!", Config::FULL_SCREEN ? sf::Style::Fullscreen : sf::Style::None, sf::ContextSettings(24,8,0,3,3));
 
 	//_window->setMouseCursorGrabbed(true);
-	_window->setMouseCursorVisible(false);
+	//_window->setMouseCursorVisible(false);
     //_window->setVerticalSyncEnabled(true); 
 	SetCursorPos(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2);
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2));
@@ -205,6 +211,7 @@ void AbstractGame::run() {
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     sf::Time timePerFrame = sf::seconds(1.0f / 120.0f);
 	_timeSinceStart = sf::Time::Zero;
+
 
     while (_window->isOpen()) {
         timeSinceLastUpdate += updateClock.restart();
