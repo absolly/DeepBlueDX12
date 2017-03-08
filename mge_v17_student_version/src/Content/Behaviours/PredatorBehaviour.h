@@ -38,6 +38,7 @@ private:
 	Mesh* cubeMeshF;
 	AbstractMaterial* colorMaterial2;
 	LitWaveMaterial* _ownerMat = nullptr;
-	float _soundDelayTimer = 0;
+	float _soundAttackDelayTimer = 0;
+	float _soundNearbyDelayTimer = 0;
 };
 

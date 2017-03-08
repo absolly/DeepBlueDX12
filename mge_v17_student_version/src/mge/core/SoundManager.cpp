@@ -7,6 +7,7 @@
 #include <vector>
 #include "Content\Hud\Hud.hpp"
 //#include "mge\core\SoundManager.hpp"
+#include "mge\core\Random.h"
 
 SoundManager* SoundManager::_instance;
 
@@ -61,6 +62,8 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "Be careful out there");
 	fileNames->push_back(path + "The current");
 	fileNames->push_back(path + "Careful with the air");
+	fileNames->push_back(path + "Monster_Roar_Growl_009");
+	fileNames->push_back(path + "Monster 31");
 
 	fileNames->push_back(path + "(1) Alright its a beautiful day");
 	fileNames->push_back(path + "(2) But what is this");
@@ -88,7 +91,7 @@ void SoundManager::PlayMusic(std::string pSoundName, float volume, bool loop)
 	music.play();
 }
 
-void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume, std::string subtitle)
+void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume, std::string subtitle, float pitch)
 {
 	if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped || !repeatedSong)
 	{
@@ -105,6 +108,8 @@ void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundCha
 			sounds[pSoundChannel].setBuffer(soundBuffers[path + pSoundBufferName]);
 			sounds[pSoundChannel].setLoop(pLoop);
 			sounds[pSoundChannel].setVolume(pVolume);
+			sounds[pSoundChannel].setPitch(pitch);
+
 			sounds[pSoundChannel].play();
 			if (subtitle != "")
 				Hud::getInstance()->setSubtitleText(subtitle, soundBuffers[path + pSoundBufferName].getDuration().asSeconds());

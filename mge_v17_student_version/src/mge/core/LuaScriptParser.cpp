@@ -91,17 +91,18 @@ void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
 
 int LuaScriptParser::playSound(lua_State * lua)
 {
-	std::string song = lua_tostring(lua, -6);
-	std::string channel = lua_tostring(lua, -5);
-	bool loop = lua_toboolean(lua, -4);
-	bool interrupt = lua_toboolean(lua, -3);
-	int volume = lua_tonumber(lua, -2);
+	std::string song = lua_tostring(lua, -8);
+	std::string channel = lua_tostring(lua, -7);
+	bool loop = lua_toboolean(lua, -6);
+	bool interrupt = lua_toboolean(lua, -5);
+	int volume = lua_tonumber(lua, -4);
+	float minPitch = lua_tonumber(lua, -3);
+	float maxPitch = lua_tonumber(lua, -2);
 	std::string subtitle = lua_tostring(lua, -1);
-
 
 	bool repeatedSong = (_lastSong == song);
 	std::cout << "Lua called play sound" << std::endl;
-	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume, subtitle);
+	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume, subtitle, Random::Range(minPitch, maxPitch));
 
 
 	//std::string soundToPlay = song;
