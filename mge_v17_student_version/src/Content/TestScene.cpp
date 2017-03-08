@@ -217,6 +217,7 @@ void TestScene::_initializeScene() {
 	luaparser2->setPlayerRigidBody(*player);
 	luaparser2->scriptParser = _scriptParser;
 	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
+	luaparser2->SetGroupsInstanced();
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
@@ -321,7 +322,7 @@ void TestScene::_render() {
 	AbstractGame::_renderToQuad();
 	_updateHud();
 
-	_scriptParser->step();
+	//_scriptParser->step();
 
 	//AbstractGame::DrawQuad();
 }

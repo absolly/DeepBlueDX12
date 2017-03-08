@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <mge/core/GameObject.hpp>
 #include <fstream>
 #include "btBulletDynamicsCommon.h"
 
@@ -66,7 +67,7 @@ Mesh::~Mesh() {
  *
  * Note that loading this mesh isn't cached like we do with texturing, this is an exercise left for the students.
  */
-Mesh* Mesh::load(string pFileName) {
+Mesh* Mesh::load(string pFileName, bool pDoBuffer) {
 	//cout << "Loading " << pFileName << "...";
 
 	Mesh* mesh = new Mesh(pFileName);
@@ -230,7 +231,9 @@ Mesh* Mesh::load(string pFileName) {
 		}
 
 		file.close();
-		mesh->_buffer();
+
+		if(pDoBuffer)
+			mesh->_buffer();
 
 		//cout << "Mesh loaded and buffered:" << (mesh->_indices.size() / 3.0f) << " triangles." << endl;
 		return mesh;
@@ -240,6 +243,51 @@ Mesh* Mesh::load(string pFileName) {
 		delete mesh;
 		return NULL;
 	}
+}
+
+void Mesh::_sendDataToOpenGL(glm::mat4 pProjectionMatrix, glm::mat4 pViewMatrix, std::vector<GameObject*> pGameObjects)
+{
+	glGenBuffers(1, &_vertexBufferId);
+	glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
+	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3), &_vertices[0], GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (char*)(sizeof(float) * 3));
+	
+	glGenBuffers(1, &_indexBufferId);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
+
+	GLuint transformationMatrixBufferID;
+	glGenBuffers(1, &transformationMatrixBufferID);
+	glBindBuffer(GL_ARRAY_BUFFER, transformationMatrixBufferID);
+
+
+	glm::mat4 fullTransforms[] =
+	{
+		pProjectionMatrix * pViewMatrix * pGameObjects.at(0)->getTransform(),
+		pProjectionMatrix * pViewMatrix * pGameObjects.at(1)->getTransform(),
+		pProjectionMatrix * pViewMatrix * pGameObjects.at(2)->getTransform()
+	};
+
+	//const int fulltransformSize = pGameObjects.size();
+	
+	//glm::mat4 fullTransforms[fulltransformSize] = {};
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(fullTransforms), fullTransforms, GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(float) * 0));
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(float) * 4));
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(float) * 8));
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(float) * 12));
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(5);
+	glVertexAttribDivisor(2, 1);
+	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
+	glVertexAttribDivisor(5, 1);
 }
 
 void Mesh::_buffer() {
@@ -325,17 +373,19 @@ void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint p
 		glVertexAttribPointer(pVerticesAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	}
 
-	//if (pNormalsAttrib != -1) {
-	//	glBindBuffer(GL_ARRAY_BUFFER, _normalBufferId);
-	//	glEnableVertexAttribArray(pNormalsAttrib);
-	//	glVertexAttribPointer(pNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, 0);
-	//}
+	if (pNormalsAttrib != -1) {
+		glBindBuffer(GL_ARRAY_BUFFER, _normalBufferId);
+		glEnableVertexAttribArray(pNormalsAttrib);
+		glVertexAttribPointer(pNormalsAttrib, 3, GL_FLOAT, GL_TRUE, 0, 0);
+	}
 
-	//if (pUVsAttrib != -1) {
-	//	glBindBuffer(GL_ARRAY_BUFFER, _uvBufferId);
-	//	glEnableVertexAttribArray(pUVsAttrib);
-	//	glVertexAttribPointer(pUVsAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	//}
+	if (pUVsAttrib != -1) {
+		glBindBuffer(GL_ARRAY_BUFFER, _uvBufferId);
+		glEnableVertexAttribArray(pUVsAttrib);
+		glVertexAttribPointer(pUVsAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
 
 	//if (pTangentAttrib != -1) {
 	//	glBindBuffer(GL_ARRAY_BUFFER, _tangentBufferId);
@@ -349,7 +399,7 @@ void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint p
 	//	glVertexAttribPointer(pBitangentAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	//}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
 
 	//glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, (GLvoid*)0);
 

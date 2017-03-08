@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <glm.hpp>
 
+
+class GameObject;
 class World;
 
 /**
@@ -22,7 +24,8 @@ class Mesh
          * vertexes, uvs, normals and face indexes. See load source
          * for more format information.
          */
-		static Mesh* load(std::string pFileName);
+		static Mesh* load(std::string pFileName, bool pDoBuffer = true);
+		void _sendDataToOpenGL(glm::mat4 pProjectionMatrix, glm::mat4 pViewMatrix, std::vector<GameObject*> pGameObjects);
 
         /**
          * Streams the mesh to opengl using the given indexes for the different attributes
