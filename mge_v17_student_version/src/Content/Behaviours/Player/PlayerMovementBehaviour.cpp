@@ -28,7 +28,7 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	_diveScooter->setMaterial(_diveScooterMaterial);
 	_scooterOffsetMat = glm::scale(_scooterOffsetMat, glm::vec3(0.025f));
 
-	Light* spotlight = new Light(Light::lightType::SPOT, "spotlight", glm::vec3(0), glm::vec3(0.964706, 0.917647, 0.827451), 70, glm::vec3(0, 0, 1));
+	spotlight = new Light(Light::lightType::SPOT, "spotlight", glm::vec3(0), glm::vec3(0.964706, 0.917647, 0.827451), 70, glm::vec3(0, 0, 1));
 	_diveScooter->add(spotlight);
 	spotlight->setTransform(glm::mat4(1.0f));
 	spotlight->translate(glm::vec3(-30, 0, 0));
@@ -284,6 +284,8 @@ void PlayerMovementBehaviour::unEquipScooter()
 	_diveScooter->setParent(_owner->getParent()->getParent()); // Get world
 	_diveScooter->setTransform(temp);
 	_scooterEquiped = false;
+	spotlight->setParent(_owner);
+	spotlight->setTransform(glm::mat4(1.0f));
 	//_owner->getBehaviour<btRigidBody>()->getCollisionShape()->setLocalScaling(btVector3(1, 1, 1));
 }
 
@@ -295,6 +297,12 @@ void PlayerMovementBehaviour::equipScooter()
 		_diveScooter->setParent(_owner);
 		_diveScooter->setTransform(_scooterOffsetMat);
 		_scooterEquiped = true;
+
+		spotlight->setParent(_diveScooter);
+
+		spotlight->setTransform(glm::mat4(1.0f));
+		spotlight->translate(glm::vec3(-30, 0, 0));
+		spotlight->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
 		//_owner->getBehaviour<btRigidBody>()->getCollisionShape()->setLocalScaling(btVector3(4, 4, 4));
 	}
 }
