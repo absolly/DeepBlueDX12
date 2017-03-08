@@ -31,7 +31,7 @@ private:
 	float startScaleSize = 1.0f;
 	float endScaleSize = 1.0f;
 	glm::vec3 _startPosition;
-	float duration = 2;
+	float duration = 5;
 	void update(float pStep);
 	bool loop = true;
 	int EmitLeft = 0;

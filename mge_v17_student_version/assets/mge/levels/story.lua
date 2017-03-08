@@ -25,37 +25,43 @@ end
 
 --------------RELICS--------------
 function onRelic_tabletCollision(self, ePressed)
-	if (ePressed) then
-		RelicTabletPickedUp = true;
-		playSound("(2) But what is this", "Voice line", false, true, 100, "But what is this! I've never seen anything like it! \n It doesn't look humanmade.");
-		destroyGroup("door1");
-		destroy(self);
-	else
-		setInteractionText("Press E to pick up the relic");
+	if not (RelicTabletPickedUp) then
+		if (ePressed) then
+			RelicTabletPickedUp = true;
+			playSound("(2) But what is this", "Voice line", false, true, 100, "But what is this! I've never seen anything like it! \n It doesn't look humanmade.");
+			destroyGroup("door1");
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the relic");
+		end
 	end
 end
 
 function onRelic_discCollision(self, ePressed)
-	if (ePressed) then
-		RelicDiscPickedUp = true;
-		if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
-			onThreeRelicsPickedUp();
+	if not (RelicDiscPickedUp) then
+		if (ePressed) then
+			RelicDiscPickedUp = true;
+			if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
+				onThreeRelicsPickedUp();
+			end
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the relic");
 		end
-		destroy(self);
-	else
-		setInteractionText("Press E to pick up the relic");
 	end
 end
 
 function onRelic_statueCollision(self, ePressed)
-	if (ePressed) then
-		RelicStatuePickedUp = true;
-		if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
-			onThreeRelicsPickedUp();
+	if not (RelicStatuePickedUp) then
+		if (ePressed) then
+			RelicStatuePickedUp = true;
+			if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
+				onThreeRelicsPickedUp();
+			end
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the relic");
 		end
-		destroy(self);
-	else
-		setInteractionText("Press E to pick up the relic");
 	end
 end
 	
@@ -65,11 +71,13 @@ function onThreeRelicsPickedUp()
 end
 
 function onTempleKeyCollision(self, ePressed)
-	if (ePressed) then
-		playSound("(10) Nice that should do the trick", "Voice line", false, true, 100 , "Nice, that should do the trick!");
-		destroy(self);
-	else
-		setInteractionText("Press E to pick up the relic");
+	if not (RelicTabletPickedUp) then
+		if (ePressed) then
+			playSound("(10) Nice that should do the trick", "Voice line", false, true, 100 , "Nice, that should do the trick!");
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the relic");
+		end
 	end
 end
 --------------RELICS--------------

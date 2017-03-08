@@ -9,15 +9,14 @@
 #include "mge/materials/ColorMaterial.hpp"
 #include "mge/materials/TextureMaterial.hpp"
 #include "mge/behaviours/KeysBehaviour.hpp"
+#include "Content\GameObjects\ParticleSystem.hpp"
 #include "mge/core/Camera.hpp"
 #include "mge/behaviours/CameraOrbitBehaviour.hpp"
 #include "mge/core/LuaScriptParser.hpp"
-
 #include "mge/core/world.hpp"
 #include "mge/core/Mesh.hpp"
 #include "mge\core\Physics\RigidBody.hpp"
 #include <string>
-
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser
@@ -33,7 +32,6 @@ class LuaParser {
 		void SetGroupsInstanced();
 		LuaScriptParser * scriptParser;
 		void setPlayerRigidBody(class Player& pRigidBody);
-
 
 		static std::map<std::string, std::vector<GameObject*>> groups;
 
@@ -62,6 +60,7 @@ class LuaParser {
 		int createTrigger(lua_State * lua);
 		int createLight(lua_State * lua);
 		int createFish(lua_State * lua);
+		int addParticles(lua_State * lua);
 		int addLightAttributes(lua_State * lua);
         int destoryLuaObject(lua_State * lua);
 		int addPredator(lua_State * lua);

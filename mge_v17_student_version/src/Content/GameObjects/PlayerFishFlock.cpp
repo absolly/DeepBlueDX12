@@ -63,7 +63,6 @@ void PlayerFishFlock::update(float pStep)
 		_IsProtected = false;
 		if (glm::distance(goalPosition, _placedPos) < 40.0f && _coolDown <= 0)
 		{
-			std::cout << "your fishie delivery has arrived" << std::endl;
 			goalPosition = _player->getWorldPosition();
 			_IsProtected = true;
 		}

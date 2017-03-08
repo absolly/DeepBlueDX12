@@ -47,6 +47,7 @@
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "mge\core\Physics\RigidBody.hpp"
 #include "Content\GameObjects\EnvironmentSoundPlayer.h"
+#include "Content\Core\Input.h"
 
 EventNoArgs& TestScene::resetEvent = *new EventNoArgs();
 
@@ -98,18 +99,6 @@ void TestScene::_initializeScene() {
 	_world->setMainCamera(player->getCamera());
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
-	glm::vec3 ParticlePosition = player->getChildAt(0)->getWorldPosition();
-	ParticlePosition.y -= 20;
-	ParticleSystem * particleSystem = new ParticleSystem(ParticlePosition, "name");
-	particleSystem->SetStartEndScale(0.001f, 1.0f);
-
-	particleSystem->setMesh(planeMeshDefault);
-	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
-	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
-	particleSystem->setMaterial(billboardMat);
-	_world->add(particleSystem);
-
-	ParticlePosition += 2;
 
 	//ParticleSystem * particleSystem2 = new ParticleSystem(ParticlePosition, "name");
 
@@ -352,8 +341,11 @@ void TestScene::_updateHud() {
 
 void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
 {
-	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
-	Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
+	if (Input::getKeyDown(sf::Keyboard::E))
+	{
+		AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
+		Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
+	}
 	_scriptParser->printTest(onCollisionArgs);
 }
 
