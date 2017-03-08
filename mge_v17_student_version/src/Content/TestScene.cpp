@@ -216,7 +216,7 @@ void TestScene::_initializeScene() {
 	LuaParser * luaparser2 = new LuaParser(_world);
 	luaparser2->setPlayerRigidBody(*player);
 	luaparser2->scriptParser = _scriptParser;
-	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "playTestLua.lua").c_str());
+	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "LevelPerformanceTest.lua").c_str());
 	luaparser2->SetGroupsInstanced();
 
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
