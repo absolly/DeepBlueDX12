@@ -1,26 +1,19 @@
 function main()
+	reset();
+end
+
+function reset()
 	RelicTabletPickedUp = false;
 	RelicDiscPickedUp = false;
 	RelicStatuePickedUp = false;
---	message("Welcome to our playtest, please proceed to the objective and have fun!", 500);
+	TempleRelicOnePickedUp = false;
+	TempleRelicTwoPickedUp = false;
 end
-
---function act1_1()
---	showObjectiveDistance(0);
---end
-
---function act1_2()
---	showObjectiveDistance(1);
---end
-
---function act2_1()
---	showObjectiveDistance(2);
---end
 
 --------------TREASURE--------------
 function onTreasureCollision(self, ePressed)
 	if (ePressed) then
-		playSound("environment_whale", "Coin", false, true, 100, "");
+		playSound("treasure_grab", "treasure_grab", false, true, 100, "");
 		addCoin();
 		destroy(self);
 		setInteractionText("");
@@ -32,22 +25,52 @@ end
 
 --------------RELICS--------------
 function onRelic_tabletCollision(self, ePressed)
-	RelicTabletPickedUp = true;
-	playSound("(2) But what is this", "Voice line", false, true, 100, "But what is this! I've never seen anything like it! \n It doesn't look humanmade.");
-	destroyGroup("door1");
-	destroy(self);
+	if (ePressed) then
+		RelicTabletPickedUp = true;
+		playSound("(2) But what is this", "Voice line", false, true, 100, "But what is this! I've never seen anything like it! \n It doesn't look humanmade.");
+		destroyGroup("door1");
+		destroy(self);
+	else
+		setInteractionText("Press E to pick up the relic");
+	end
 end
 
 function onRelic_discCollision(self, ePressed)
-	RelicDiscPickedUp = true;
-	print("onRelic_discCollision");
-	destroy(self);
+	if (ePressed) then
+		RelicDiscPickedUp = true;
+		if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
+			onThreeRelicsPickedUp();
+		end
+		destroy(self);
+	else
+		setInteractionText("Press E to pick up the relic");
+	end
 end
 
 function onRelic_statueCollision(self, ePressed)
-	RelicStatuePickedUp = true;
-	print("onRelic_statueCollision");
-	destroy(self);
+	if (ePressed) then
+		RelicStatuePickedUp = true;
+		if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
+			onThreeRelicsPickedUp();
+		end
+		destroy(self);
+	else
+		setInteractionText("Press E to pick up the relic");
+	end
+end
+	
+function onThreeRelicsPickedUp()
+	playSound("(7) These artifacts combined", "Voice line", false, true, 100, "These artifacts combined apparently form a key.\nThere must be a structure nearby where we can use them.");
+	destroyGroup("door2");
+end
+
+function onTempleKeyCollision(self, ePressed)
+	if (ePressed) then
+		playSound("(10) Nice that should do the trick", "Voice line", false, true, 100 , "Nice, that should do the trick!");
+		destroy(self);
+	else
+		setInteractionText("Press E to pick up the relic");
+	end
 end
 --------------RELICS--------------
 
@@ -109,3 +132,16 @@ function onTrigger11Collision(self, ePressed)
 	playSound("The current", "Voice line", false, true, 100, "The current is getting too strong, \n I suggest you head back.");
 	destroy(self);
 end
+
+
+--function act1_1()
+--	showObjectiveDistance(0);
+--end
+
+--function act1_2()
+--	showObjectiveDistance(1);
+--end
+
+--function act2_1()
+--	showObjectiveDistance(2);
+--end
