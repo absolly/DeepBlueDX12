@@ -20,9 +20,9 @@ playerSpecular black.png
 _sensitivity 0.050000
 _minimumBreatheDelayWhenNotAffraid 2.000000
 _maximumBreatheDelayWhenNotAffraid 2.500000
-_minimumBreatheDelayWhenAffraid 0.500000
-_maximumBreatheDelayWhenAffraid 0.700000
-_breatheInVolume 100
+_minimumBreatheDelayWhenAffraid 0.300000
+_maximumBreatheDelayWhenAffraid 0.500000
+_breatheInVolume 80
 _breatheOutVolume 50
 
 [PLAYER MOVEMENT SETTINGS]

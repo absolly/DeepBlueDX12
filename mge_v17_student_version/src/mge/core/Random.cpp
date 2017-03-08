@@ -5,7 +5,7 @@ std::mt19937 Random::randomNumberGenerator = std::mt19937(randomDevice());
 
 int Random::Range(int min, int max)
 {
-	std::uniform_int_distribution<int> dis(min, max-1);
+	std::uniform_int_distribution<int> dis(min, max);
 	return dis(randomNumberGenerator);
 }
 

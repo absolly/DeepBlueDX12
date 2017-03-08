@@ -5,6 +5,7 @@
 #include "mge\materials\TextureMaterial.hpp" 
 class GameObject;
 class Player;
+class Light;
 
 class PlayerMovementBehaviour : public AbstractBehaviour
 {
@@ -84,6 +85,7 @@ private:
 
 	AbstractMaterial* _diveScooterMaterial;
 	GameObject* _diveScooter;
+	Light* spotlight;
 	bool _scooterEquiped = true;
 	void unEquipScooter();
 	void equipScooter();

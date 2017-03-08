@@ -304,7 +304,7 @@ void TestScene::_initializeScene() {
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}*/
 
-	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.905882, 0.807843, 0.572549), 700, glm::vec3(0, 0, 1));
+	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.905882, 0.807843, 0.572549), 600, glm::vec3(0, 0, 1));
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0)));
 	_world->add(light3);

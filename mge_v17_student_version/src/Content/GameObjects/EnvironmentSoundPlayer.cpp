@@ -4,7 +4,7 @@
 EnvironmentSoundPlayer::EnvironmentSoundPlayer(SoundManager& soundManager) :
 	_soundManager(soundManager)
 {
-	_randomSoundTimer = Random::Range(45.0f, 120.0f);
+	_randomSoundTimer = 5;
 }
 
 EnvironmentSoundPlayer::~EnvironmentSoundPlayer()
@@ -18,9 +18,19 @@ void EnvironmentSoundPlayer::update(float deltaTime)
 	_randomSoundTimer -= deltaTime;
 	if (_randomSoundTimer <= 0)
 	{
-		int soundIndex = Random::Range(0, _sounds.size());
-		std::cout << soundIndex << std::endl;
-		_soundManager.PlaySound(_sounds[soundIndex], "Environment sound", false, true, false, Random::Range(_soundVolumes[soundIndex]-10, _soundVolumes[soundIndex]), "");
-		_randomSoundTimer = Random::Range(45.0f, 120.0f);
+		int soundIndex;
+		while ((soundIndex = Random::Range(0, _sounds.size() - 1)) == _previousSound && _sounds.size() > 1);
+		_soundManager.PlaySound(_sounds[soundIndex], 
+								_sounds[soundIndex],
+								false, 
+								true, 
+								false, 
+								Random::Range(_soundVolumeRanges[soundIndex].x, _soundVolumeRanges[soundIndex].y), 
+								"",
+								Random::Range(_soundPitchRanges[soundIndex].x, _soundPitchRanges[soundIndex].y)
+								);
+		std::cout << "Playing sound: " << _sounds[soundIndex] << std::endl;
+		_randomSoundTimer = Random::Range(10.0f, 15.0f);
+		_previousSound = soundIndex;
 	}
 }
