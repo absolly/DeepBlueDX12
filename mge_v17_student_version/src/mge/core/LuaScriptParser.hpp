@@ -27,10 +27,12 @@ public:
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);
 	int setInteractionText(lua_State * lua);
+	int setSubtitleText(lua_State * lua);
 	void setSoundManager(SoundManager * pSoundManager);
 
 	void clearPrintTest(OnCollisionArgs onCollisionArgs);
 private:
+	void resetLevel();
 	lua_State * lua;
 	const char * currentFunction = "";
 	MessageBoxManager * _messageBoxManager;
@@ -38,6 +40,8 @@ private:
 	GameObject * _player;
 	std::string _currentText = "";
 	std::vector<GameObject*> * _objectives;
+	std::vector<GameObject*> _destoyedObjects;
+	std::vector<std::string> _destroyedGroups;
 	std::string _lastSong;
 	bool _BreathingIn = true;
 	SoundManager * _soundManager;

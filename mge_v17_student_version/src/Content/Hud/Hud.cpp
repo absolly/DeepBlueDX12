@@ -8,6 +8,7 @@
 #include "mge/config.hpp"
 #include "mge\core\Time.h"
 #include "Content\Core\Input.h"
+#include "mge\core\LuaParser.hpp"
 
 Hud* Hud::_instance;
 Hud* Hud::getInstance()
@@ -61,8 +62,9 @@ void Hud::setInteractionText(std::string text)
 	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
 }
 
-void Hud::setSubtitleText(std::string text)
+void Hud::setSubtitleText(std::string text, float timer)
 {
+	_subtitleTextTimer = timer;
 	_subtitleText.setString(text);
 	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
 }
@@ -83,12 +85,12 @@ void Hud::_createDebugHud() {
 	_depthText.setCharacterSize(37);
 	_depthText.setFillColor(sf::Color::White);
 
-	_interactionText.setString("Press E to do something magical!");
+	_interactionText.setString("");
 	_interactionText.setFont(_font);
 	_interactionText.setCharacterSize(37);
 	_interactionText.setFillColor(sf::Color::White);
 
-	_subtitleText.setString("Look at these awesome subtitles!");
+	_subtitleText.setString("");
 	_subtitleText.setFont(_font);
 	_subtitleText.setCharacterSize(25);
 	_subtitleText.setFillColor(sf::Color::White);
@@ -139,6 +141,11 @@ void Hud::addCoin(int pAmount)
 	_coins += pAmount;
 }
 
+void Hud::setCoinCount(int pAmount) {
+	_coinsDisplayed = pAmount;
+	_coins = pAmount;
+}
+
 int Hud::getCoinCount()
 {
 	return _coins;
@@ -148,6 +155,37 @@ void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))
 		addCoin(100);
+	if (Input::getKey(sf::Keyboard::R))
+	{
+		if (LuaParser::groups.find("door1") != LuaParser::groups.end())
+		{
+			for each (GameObject* gameObject in LuaParser::groups["door1"])
+			{
+				delete gameObject;
+			}
+			LuaParser::groups.erase("door1");
+			std::cout << "Destroyed group: " << "door1" << std::endl;
+		}
+		if (LuaParser::groups.find("door2") != LuaParser::groups.end())
+		{
+			for each (GameObject* gameObject in LuaParser::groups["door2"])
+			{
+				delete gameObject;
+			}
+			LuaParser::groups.erase("door2");
+			std::cout << "Destroyed group: " << "door2" << std::endl;
+		}
+	}
+
+	if (_subtitleTextTimer > 0)
+	{
+		_subtitleTextTimer -= Time::RenderDeltaTime;
+		if (_subtitleTextTimer <= 0)
+		{
+			_subtitleTextTimer = 0;
+			_subtitleText.setString("");
+		}
+	}
 
 	if (_coinsDisplayed < _coins)
 		_coinsDisplayed++;
@@ -192,7 +230,7 @@ void Hud::draw()
 		_window->draw(deathScreen);
 
 		sf::Text _deathText;
-		_deathText.setString("You Died");
+		_deathText.setString("You Died, Press E to respawn");
 		_deathText.setFont(_font);
 		_deathText.setCharacterSize(24);
 		_deathText.setFillColor(sf::Color(255, 255, 255, _deathSpriteOpacity));

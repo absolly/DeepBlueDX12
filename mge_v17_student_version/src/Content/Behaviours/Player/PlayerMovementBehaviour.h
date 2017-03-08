@@ -48,24 +48,24 @@ private:
 	float _maxMoveUpSpeed = 10;
 	float _moveUpAcceleration = 40;
 	float _moveUpDecceleration = 40;
-	float _currentMoveUpSpeed;
+	float _currentMoveUpSpeed = 0;
 
 	//[Header("Pitch rotation")]
 	float _minPitchRotationSpeed = 50;
 	float _maxPitchRotationSpeed = 150;
-	float _currentPitch;
+	float _currentPitch = 0;
 
 	//[Header("Yaw rotation")]
 	float _minYawRotationSpeed = 50;
 	float _maxYawRotationSpeed = 150;
-	float _currentYaw;
+	float _currentYaw = 0;
 
 	//[Header("Roll rotation")]
 	float _minRollRotationSpeed = 10;
 	float _maxRollRotationSpeed = 50;
 	float _maxRollRotation = 10;
 	float _rollRotationSpeedMultiplier = 20;
-	float _currentRoll;
+	float _currentRoll = 0;
 
 	float _diverSensitivity = 0.05f;
 	float _scooterSensitivity = 0.02f;

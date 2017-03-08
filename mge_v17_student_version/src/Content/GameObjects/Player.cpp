@@ -14,6 +14,9 @@
 #include "Content\Behaviours\Player\PlayerBreathingBehaviour.h"
 #include "Content\Behaviours\Player\DivingAnimationBehaviour.h"
 #include "Content/Hud/Hud.hpp"
+#include "mge/core/LuaScriptParser.hpp"
+#include "Content/TestScene.hpp"
+
 Player::Player() : GameObject("Player")
 {
 	//Add a camera
@@ -32,7 +35,7 @@ Player::Player() : GameObject("Player")
 	//Add behaviours
 
 	//Set the position
-	_spawnPosition = glm::vec3(-2068, 300, 541);
+	_spawnPosition = glm::vec3(-2068, 705, 541);
 	temp->setLocalPosition(_spawnPosition);
 	//Set the position
 
@@ -55,14 +58,11 @@ Player::~Player()
 void Player::update(float deltaTime)
 {
 	GameObject::update(deltaTime);
-	if (Input::getKeyDown(sf::Keyboard::F4)) {
-		GameObject* temp = getChildAt(0);
-		temp->setLocalPosition(_spawnPosition);
-		temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
-		Hud::getInstance()->isPlayerKilled = false;
-		getBehaviour<DivingBehaviour>()->_airLeft = 100;
-		//getChildAt(0)->getBehaviour<RigidBody>()->setWorldTransform()
-	}
+	if (Input::getKeyDown(sf::Keyboard::F4) || (Hud::getInstance()->isPlayerKilled && Input::getKeyDown(sf::Keyboard::E)))
+		respawn();
+	
+	if (Input::getKeyDown(sf::Keyboard::F6))
+		resetLevel();
 }
 
 void Player::setAffraidness(float affraidness)
@@ -83,6 +83,23 @@ void Player::scare(float scareAmount)
 Camera * Player::getCamera()
 {
 	return _camera;
+}
+
+void Player::resetLevel()
+{
+	//respawn();
+	Hud::getInstance()->setCoinCount(0);
+	TestScene::resetEvent();
+}
+
+void Player::respawn()
+{
+	_deaths++;
+	GameObject* temp = getChildAt(0);
+	temp->setLocalPosition(_spawnPosition);
+	temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
+	Hud::getInstance()->isPlayerKilled = false;
+	getBehaviour<DivingBehaviour>()->_airLeft = 100;
 }
 
 int Player::getDepthInCM()

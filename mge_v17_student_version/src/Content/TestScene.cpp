@@ -47,6 +47,8 @@
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "mge\core\Physics\RigidBody.hpp"
 
+EventNoArgs& TestScene::resetEvent = *new EventNoArgs();
+
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 TestScene::TestScene() :AbstractGame(), _hud(0) {
 }
@@ -67,9 +69,6 @@ void TestScene::_initializeScene() {
 	Texture* fog = Texture::load(Config::MGE_TEXTURE_PATH + "fog2.png");
 	AbstractGame::_setFogGradient(fog);
 
-
-	
-
 	//add camera first (it will be updated last)
 	//Camera* camera = new Camera("camera", glm::vec3(0, 0, 0), glm::perspective(glm::radians(80.0f),(16.0f/9.0f),.5f,100000.0f));
 	//camera->rotate(glm::radians(180.0f), glm::vec3(0, 1, 0));
@@ -81,9 +80,10 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* templeMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1000);
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), 1, 0, Texture::load(Config::MGE_TEXTURE_PATH + "Black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"));
 	AbstractMaterial* textureMaterial2 = new SeaMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "seanormal.jpg"), 1);
+	textureMaterial2->isShadowCaster = false;
 	/*GameObject* plane = new GameObject("plane", glm::vec3(0, 727.386, 0));
 	plane->scale(glm::vec3(500, 500, 500 ));
-	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0)); 
+	plane->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));
 	plane->setMesh(planeMeshDefault);
 	plane->setMaterial(textureMaterial);
 	_world->add(plane);
@@ -152,7 +152,7 @@ void TestScene::_initializeScene() {
 
 	//ADDING BOAT FOLLOWING PLAYER
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
-	GameObject* boat = new GameObject("Boat", glm::vec3(-2068,720, 541));
+	GameObject* boat = new GameObject("Boat", glm::vec3(-2068, 720, 541));
 	boat->setMesh(boatMesh);
 	boat->setMaterial(textureMaterial);
 	//boat->scale(glm::vec3(0.1));
@@ -160,11 +160,11 @@ void TestScene::_initializeScene() {
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player->getChildAt(0)));
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
-	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0,-80,0));
+	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0, -80, 0));
 	boat->add(boatColliderContainer);
-	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15,60), true, false);
-	boatColliderContainer->rotate(glm::radians(90.0f), glm::vec3(1,0, 0));
-	
+	Collider& boatTriggerCollider = boatColliderContainer->addCollider(CapsuleColliderArgs(15, 60), true, false);
+	boatColliderContainer->rotate(glm::radians(90.0f), glm::vec3(1, 0, 0));
+
 	boatTriggerCollider.collisionEvents[playerRigidbody].bind(player->getBehaviour<DivingBehaviour>(), &DivingBehaviour::onCollisionAddAir);
 	boatTriggerCollider.collisionExitEvents[playerRigidbody].bind(player->getBehaviour<DivingBehaviour>(), &DivingBehaviour::onExitCollisionAddAir);
 
@@ -222,36 +222,46 @@ void TestScene::_initializeScene() {
 	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
 	{
-		glm::vec3(387.028, 189.747, -283.077),
-		glm::vec3(414.763, 144.757, -296.977),
+		glm::vec3(-2238.6, +12.7, +2198.9), //In Tutorial cave
+		glm::vec3(414.763, 144.757, -296.977), 
 		glm::vec3(306.804, 118.942, -82.5193)
+	};
+
+	std::vector<glm::vec3> relicScales
+	{	
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.3f, 0.3f, 0.3f)
 	};
 
 	std::string relicNames[] =
 	{
-		"relic_tablet",
-		"relic_disc",
-		"relic_statue"
+		"Relic_tablet",
+		"Relic_disc",
+		"Relic_statue"
 	};
-	for (int i = 0; i<relicLocations.size(); i++)
+	
+	for (int i = 0; i < relicLocations.size(); i++)
 	{
 		glm::vec3 relicLocation = relicLocations[i];
-		GameObject* teapot = new GameObject(relicNames[i], relicLocation);
-		teapot->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
-		teapot->setMaterial(relicAndTreasureMaterial);
-		teapot->scale(glm::vec3(0.3, 0.3, 0.3));
-		Collider& teapotTriggerCollider = teapot->addCollider(CapsuleColliderArgs(4, 8), true, true);
-		_world->add(teapot);
-		teapotTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
+		GameObject* relic = new GameObject(relicNames[i], relicLocation);
+		relic->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
+		relic->setMaterial(relicAndTreasureMaterial);
+		relic->scale(relicScales[i]);
+		relic->addBehaviour(new RotatingBehaviour());
+		Collider& relicTriggerCollider = relic->addCollider(CapsuleColliderArgs(12, 16), true, true);
+		_world->add(relic);
+		relicTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onRelicCollision);
 	}
 
+	/*
 	Mesh* templeMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleWODoors.obj");
 	Mesh* templeDoorsMesh = Mesh::load(Config::MGE_MODEL_PATH + "TempleDoors.obj");
 
 	GameObject* temple = new GameObject("Temple");
 	GameObject* templeDoors = new GameObject("TempleDoors");
 
-	temple->setMesh(templeMesh);
+	emple->setMesh(templeMesh);
 	templeDoors->setMesh(templeDoorsMesh);
 
 	temple->setMaterial(templeMaterial);
@@ -268,6 +278,7 @@ void TestScene::_initializeScene() {
 
 	_world->add(temple);
 	_world->add(templeDoors);
+	*/
 
 	/*std::vector<glm::vec3> treasureLocations
 	{
@@ -285,11 +296,10 @@ void TestScene::_initializeScene() {
 		teapotTriggerCollider.collisionEvents[&playerRigidbody].bind(this, &TestScene::onCollisionRemoveSelf);
 	}*/
 
-	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.905882, 0.807843, 0.572549), 700, glm::vec3(0,0,1));
+	Light* light3 = new Light(Light::lightType::DIRECTIONAL, "light3", glm::vec3(500, 0, 500), glm::vec3(0.905882, 0.807843, 0.572549), 700, glm::vec3(0, 0, 1));
 	light3->rotate(glm::radians(-75.f), glm::vec3(1, 0.05f, 0));
 	light3->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0)));
 	_world->add(light3);
-
 
 	GameObject* seaCollider = new GameObject("SeaCollider", glm::vec3(0, 720, 0));
 	seaCollider->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::bvec3(true, false, true)));
@@ -308,6 +318,7 @@ void TestScene::_initializeScene() {
 	GameObject* sea = new GameObject("sea", glm::vec3(0, 720, 0));
 	sea->setMesh(planeMeshDefault);
 	sea->setMaterial(textureMaterial2);
+
 	sea->scale(glm::vec3(5000, 1, 5000));
 	sea->addBehaviour(new CopyTargetPositionBehaviour(player->getChildAt(0), glm::bvec3(true, false, true)));
 	sea->rotate(glm::radians(180.f), glm::vec3(1, 0, 0));
@@ -334,15 +345,11 @@ void TestScene::_updateHud() {
 	_hud->draw();
 }
 
-void TestScene::onCollisionRemoveSelf(OnCollisionArgs onCollisionArgs)
+void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
 {
 	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
 	Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
-	std::cout << "SHIT HAPPENED" << std::endl;
-	_world->physics->removeCollisionObject(onCollisionArgs.sender);
-	_world->remove(abstractBehaviour->getOwner());
-	delete onCollisionArgs.sender;
-	std::cout << "TEAPOT COLLIDING WITH COLLISION OBJECT" << std::endl;
+	_scriptParser->printTest(onCollisionArgs);
 }
 
 void TestScene::onTempleDoorCollision(OnCollisionArgs onCollisionArgs)

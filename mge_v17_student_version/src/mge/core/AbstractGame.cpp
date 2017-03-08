@@ -224,6 +224,7 @@ void AbstractGame::run() {
 			_window->display();
 			
             float timeSinceLastRender = renderClock.restart().asSeconds();
+			Time::RenderDeltaTime = timeSinceLastRender;
             if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
         }
         _processEvents();

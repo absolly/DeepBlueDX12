@@ -13,7 +13,8 @@
 #include "Content\Hud\Hud.hpp"
 #include "mge\core\Random.h"
 #include "Content\Core\Input.h"
-
+#include "mge\core\Physics\Colliders\Collider.h"
+#include "Content/TestScene.hpp"
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
 //------------------------------------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ LuaScriptParser::LuaScriptParser(const char* pFileName, sf::RenderWindow * aWind
 {
 	_messageBoxManager = new MessageBoxManager(aWindow);
 	_soundManager = pSoundManager;
-
+	TestScene::resetEvent.bind(this, &LuaScriptParser::resetLevel);
 	inilua(pFileName);
 }
 
@@ -69,12 +70,15 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroy>);
 	lua_setglobal(lua, "destroy");
-	
+
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addCoin>);
 	lua_setglobal(lua, "addCoin");
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setInteractionText>);
 	lua_setglobal(lua, "setInteractionText");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setSubtitleText>);
+	lua_setglobal(lua, "setSubtitleText");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -84,16 +88,27 @@ void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
 
 int LuaScriptParser::playSound(lua_State * lua)
 {
-	std::string song = lua_tostring(lua, -5);
-	std::string channel = lua_tostring(lua, -4);
-	bool loop = lua_toboolean(lua, -3);
-	bool interrupt = lua_toboolean(lua, -2);
-	int volume = lua_tonumber(lua, -1);
-	
+	std::string song = lua_tostring(lua, -6);
+	std::string channel = lua_tostring(lua, -5);
+	bool loop = lua_toboolean(lua, -4);
+	bool interrupt = lua_toboolean(lua, -3);
+	int volume = lua_tonumber(lua, -2);
+	std::string subtitle = lua_tostring(lua, -1);
+
 
 	bool repeatedSong = (_lastSong == song);
+	std::cout << "Lua called play sound" << std::endl;
+	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume, subtitle);
 
-	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume);
+
+	//std::string soundToPlay = song;
+	//std::string soundChannel = song;
+	//bool interupt = true;
+	//int volume = 100;
+	//SoundManager::getInstance()->PlaySound(soundToPlay, soundChannel, false, interupt, false, volume);
+
+
+
 	_lastSong = song;
 
 	return 0;
@@ -102,7 +117,7 @@ int LuaScriptParser::playSound(lua_State * lua)
 int LuaScriptParser::addCoin(lua_State * lua)
 {
 	std::cout << "You've picked up a coin! " << std::endl;
-	Hud::getInstance()->addCoin(Random::Range(150,250));
+	Hud::getInstance()->addCoin(Random::Range(150, 250));
 	return 1;
 }
 
@@ -137,6 +152,39 @@ void LuaScriptParser::clearPrintTest(OnCollisionArgs onCollisionArgs)
 	Hud::getInstance()->setInteractionText("");
 }
 
+void LuaScriptParser::resetLevel()
+{
+	//std::cout << "reset objects1" << std::endl;
+	//if (LuaParser::groups.find("Treasure") != LuaParser::groups.end()) {
+	//	std::cout << "reset objects2" << std::endl;
+	//	for each(GameObject* gameObject in LuaParser::groups["Treasure"])
+	//	{
+	//		std::cout << "reset objects3" << std::endl;
+	//		gameObject->getMaterial()->allowedToRender = true;
+	//		World::physics->addCollisionObject(gameObject->getBehaviour<BoxCollider>());
+	//		World::physics->addCollisionObject(gameObject->getBehaviour<SphereCollider>());
+	//	}
+	//}
+
+	for each(GameObject* gameObject in _destoyedObjects) {
+		std::cout << "reset treasure" << std::endl;
+		gameObject->getMaterial()->allowedToRender = true;
+		for each(Collider* col in gameObject->getBehavioursOfType<Collider>())
+			World::physics->addCollisionObject(col);
+	}
+	for each(std::string group in _destroyedGroups)
+		for each(GameObject* gameObject in LuaParser::groups[group]) {
+			std::cout << "reset grouped object" << std::endl;
+			if (gameObject->getMaterial())
+				gameObject->getMaterial()->allowedToRender = true;
+			if (gameObject->getBehaviour<Collider>())
+				World::physics->addCollisionObject(gameObject->getBehaviour<Collider>());
+		}
+
+	_destoyedObjects.clear();
+	_destroyedGroups.clear();
+}
+
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
 {
 	//dynamic cast naar abstractbehaviour
@@ -162,6 +210,13 @@ int LuaScriptParser::setInteractionText(lua_State * lua)
 	Hud::getInstance()->setInteractionText(lua_tostring(lua, -1));
 	return 0;
 }
+
+int LuaScriptParser::setSubtitleText(lua_State * lua)
+{
+	Hud::getInstance()->setSubtitleText(lua_tostring(lua, -2), 2);
+	return 0;
+}
+
 
 int LuaScriptParser::showObjectiveDistance(lua_State * lua)
 {
@@ -206,7 +261,12 @@ int LuaScriptParser::destroy(lua_State *lua)
 	int objectPointer = lua_tointeger(lua, -1);
 	GameObject* gameObject = (GameObject*)objectPointer;
 	std::cout << "DESTROYING OBJECT: " << gameObject->getName() << std::endl;
-	delete gameObject;
+	//gameObject->setParent(NULL);
+	gameObject->getMaterial()->allowedToRender = false;
+	for each(Collider* col in gameObject->getBehavioursOfType<Collider>())
+		World::physics->removeCollisionObject(col);
+	_destoyedObjects.push_back(gameObject);
+	//delete gameObject;
 	return 1;
 }
 
@@ -225,9 +285,15 @@ int LuaScriptParser::destroyGroup(lua_State *lua)
 	}*/
 	for each (GameObject* gameObject in LuaParser::groups[groupName])
 	{
-		delete gameObject;
+		if (gameObject->getMaterial())
+			gameObject->getMaterial()->allowedToRender = false;
+		if (gameObject->getBehaviour<Collider>())
+			World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
+		//World::physics->removeCollisionObject(gameObject->getBehaviour<SphereCollider>());
+		//delete gameObject;
 	}
 	std::cout << "Destroyed group: " << groupName << std::endl;
-	LuaParser::groups.erase(groupName);
+	//LuaParser::groups.erase(groupName);
+	_destroyedGroups.push_back(groupName);
 	return 1;
 }
