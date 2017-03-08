@@ -179,8 +179,8 @@ void PredatorBehaviour::update(float pStep)
 	{
 		if (!Hud::getInstance()->isPlayerKilled)
 		{
-			SoundManager::getInstance()->PlaySound("Monster_Roar_Growl_009", "Monster1", false, false, false, 100, "", Random::Range(0.8f, 1.0f));
-			_soundAttackDelayTimer = Random::Range(5.0f, 10.0f);
+			SoundManager::getInstance()->PlaySound("Monster_Roar_Growl_009", std::to_string((int)this)+"1", false, false, false, 100, "", Random::Range(0.8f, 1.0f));
+			_soundAttackDelayTimer = Random::Range(8.0f, 10.0f);
 		}
 	}
 	float soundDistance = 750;
@@ -190,12 +190,12 @@ void PredatorBehaviour::update(float pStep)
 		{
 			float distanceFrom0To1 = distanceToPlayer / soundDistance; //1 is far, 0 is close
 			float smoothVolume = 0.5f + cosf(distanceFrom0To1 * glm::pi<float>()) / 2;
-			float reducedVolume = smoothVolume * 0.75f;
+			float reducedVolume = smoothVolume * 0.35f;
 			std::cout << "distanceFrom0To1: " << distanceFrom0To1 << std::endl;
 			std::cout << "SmoothVolume: " << smoothVolume << std::endl;
 
-			SoundManager::getInstance()->PlaySound("Monster 31", "Monster2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
-			_soundNearbyDelayTimer = Random::Range(3.0f, 6.0f);
+			SoundManager::getInstance()->PlaySound("Monster 31", std::to_string((int)this)+"2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
+			_soundNearbyDelayTimer = Random::Range(6.0f, 12.0f);
 		}
 		
 	}

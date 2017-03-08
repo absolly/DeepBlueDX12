@@ -36,7 +36,12 @@ void SoundManager::SetupFiles()
 
 	for (int i = 0; i < 6; i++)
 	{
-		fileNames->push_back(path + "air_in_" + std::to_string((i + 1)));
+		fileNames->push_back(path + "air_in_panic_" + std::to_string((i + 1)));
+	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		fileNames->push_back(path + "air_in_relaxed_" + std::to_string((i + 1)));
 	}
 
 	for (int i = 0; i < 6; i++)
@@ -64,6 +69,10 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "Careful with the air");
 	fileNames->push_back(path + "Monster_Roar_Growl_009");
 	fileNames->push_back(path + "Monster 31");
+	fileNames->push_back(path + "Whale Call High (echo) 14");
+	fileNames->push_back(path + "Whale Call Low (echo) 9");
+	fileNames->push_back(path + "Whale Call Mid (echo) 8");
+	fileNames->push_back(path + "Whale Call-Answer Close (echo) 7");
 
 	fileNames->push_back(path + "(1) Alright its a beautiful day");
 	fileNames->push_back(path + "(2) But what is this");
