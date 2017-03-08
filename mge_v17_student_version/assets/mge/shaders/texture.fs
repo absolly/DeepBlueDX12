@@ -117,7 +117,8 @@ vec3 calcDirectionalLight(float pFalloff, vec3 pLightColor, float pLightIntensit
 }
 
 void main( void ) {
-    FragNormal_tangentspace = vec3(texture(textureNormal,texCoord * tiling));
+    //FragNormal_tangentspace = vec3(texture(textureNormal,texCoord * tiling));
+	 FragNormal_tangentspace = normalize(texture( textureNormal, texCoord * tiling ).rgb*2.0 - 1.0) * 0.25;
 
     vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord * tiling));
     vec3 MaterialSpecularColor = vec3(texture(textureSpecular,texCoord * tiling));
