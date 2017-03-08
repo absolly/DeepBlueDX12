@@ -68,6 +68,7 @@ void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 		Hud::getInstance()->addCoin(-cost);
 		_airLeft = _tankSize;
 		_refillCooldownTimer = _refillCooldown;
+		SoundManager::getInstance()->PlaySound("treasure_grab", "treasure_grab", false, true, false);
 		SoundManager::getInstance()->StopSoundChannel("suffocating");
 	}
 }
