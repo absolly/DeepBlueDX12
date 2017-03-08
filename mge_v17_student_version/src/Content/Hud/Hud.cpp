@@ -92,14 +92,14 @@ void Hud::_createDebugHud() {
 	_interactionText.setFont(_font);
 	_interactionText.setCharacterSize(37);
 	_interactionText.setFillColor(sf::Color::White);
-	_interactionText.setOutlineColor(sf::Color::Black);
-	_interactionText.setOutlineThickness(2);
+	_interactionText.setOutlineColor(sf::Color(12, 19, 28));
+	_interactionText.setOutlineThickness(1);
 
 	_subtitleText.setString("");
 	_subtitleText.setFont(_font);
 	_subtitleText.setCharacterSize(25);
 	_subtitleText.setFillColor(sf::Color::White);
-	_subtitleText.setOutlineColor(sf::Color::Black);
+	_subtitleText.setOutlineColor(sf::Color(12, 19, 28));
 	_subtitleText.setOutlineThickness(1);
 
 	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
