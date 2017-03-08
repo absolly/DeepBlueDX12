@@ -211,19 +211,25 @@ void TestScene::_initializeScene() {
 	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "LevelPerformanceTest.lua").c_str());
 	luaparser2->SetGroupsInstanced();
 
-	AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 	std::vector<glm::vec3> relicLocations
 	{
 		glm::vec3(-2238.6, +12.7, +2198.9), //In Tutorial cave
 		glm::vec3(414.763, 144.757, -296.977), 
-		glm::vec3(306.804, 118.942, -82.5193)
+		glm::vec3(+312.4, +127.7, -78.6)
 	};
 
 	std::vector<glm::vec3> relicScales
 	{	
 		glm::vec3(0.6f, 0.6f, 0.6f),
 		glm::vec3(0.6f, 0.6f, 0.6f),
-		glm::vec3(0.3f, 0.3f, 0.3f)
+		glm::vec3(0.2f, 0.2f, 0.2f)
+	};
+
+	std::vector<float> relicColliderSizes
+	{
+		25.0f,
+		25.0f,
+		80.0f
 	};
 
 	std::string relicNames[] =
@@ -235,15 +241,18 @@ void TestScene::_initializeScene() {
 	
 	for (int i = 0; i < relicLocations.size(); i++)
 	{
+		AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 		glm::vec3 relicLocation = relicLocations[i];
 		GameObject* relic = new GameObject(relicNames[i], relicLocation);
-		relic->setMesh(Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj"));
+		Mesh* mesh = Mesh::load(Config::MGE_MODEL_PATH + relicNames[i] + ".obj");
+		relic->setMesh(mesh);
 		relic->setMaterial(relicAndTreasureMaterial);
 		relic->scale(relicScales[i]);
 		relic->addBehaviour(new RotatingBehaviour());
-		Collider& relicTriggerCollider = relic->addCollider(CapsuleColliderArgs(12, 16), true, true);
+		 relic->addCollider(MeshColliderArgs(*mesh), false, false);
+		Collider& relicTriggerCollider = relic->addCollider(SphereColliderArgs(relicColliderSizes[i]), true, true);
 		_world->add(relic);
-		relicTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onRelicCollision);
+		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);
 		relicTriggerCollider.collisionExitEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::clearPrintTest);
 	}
 
@@ -339,15 +348,15 @@ void TestScene::_updateHud() {
 	_hud->draw();
 }
 
-void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
+/*void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
 {
-	if (Input::getKeyDown(sf::Keyboard::E))
+	/*if (Input::getKeyDown(sf::Keyboard::E))
 	{
 		AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
 		Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
 	}
-	_scriptParser->printTest(onCollisionArgs);
-}
+	//_scriptParser->printTest(onCollisionArgs);
+}*/
 
 void TestScene::onTempleDoorCollision(OnCollisionArgs onCollisionArgs)
 {

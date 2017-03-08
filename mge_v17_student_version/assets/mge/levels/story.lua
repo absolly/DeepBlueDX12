@@ -13,10 +13,9 @@ end
 --------------TREASURE--------------
 function onTreasureCollision(self, ePressed)
 	if (ePressed) then
-		playSound("treasure_grab", "treasure_grab", false, true, 100, "");
 		addCoin();
+		playSound("treasure_grab", "treasure_grab", false, true, 100, "");
 		destroy(self);
-		setInteractionText("");
 	else
 		setInteractionText("Press E to pick up the treasure");
 	end
@@ -27,6 +26,7 @@ end
 function onRelic_tabletCollision(self, ePressed)
 	if not (RelicTabletPickedUp) then
 		if (ePressed) then
+			addItemToInventory(self);
 			RelicTabletPickedUp = true;
 			playSound("(2) But what is this", "Voice line", false, true, 100, "But what is this! I've never seen anything like it! \n It doesn't look humanmade.");
 			destroyGroup("door1");
@@ -40,6 +40,7 @@ end
 function onRelic_discCollision(self, ePressed)
 	if not (RelicDiscPickedUp) then
 		if (ePressed) then
+			addItemToInventory(self);
 			RelicDiscPickedUp = true;
 			if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
 				onThreeRelicsPickedUp();
@@ -54,6 +55,7 @@ end
 function onRelic_statueCollision(self, ePressed)
 	if not (RelicStatuePickedUp) then
 		if (ePressed) then
+			addItemToInventory(self);
 			RelicStatuePickedUp = true;
 			if (RelicTabletPickedUp and RelicDiscPickedUp and RelicStatuePickedUp) then
 				onThreeRelicsPickedUp();
@@ -73,6 +75,7 @@ end
 function onTempleKeyCollision(self, ePressed)
 	if not (RelicTabletPickedUp) then
 		if (ePressed) then
+			addItemToInventory(self);
 			playSound("(10) Nice that should do the trick", "Voice line", false, true, 100 , "Nice, that should do the trick!");
 			destroy(self);
 		else

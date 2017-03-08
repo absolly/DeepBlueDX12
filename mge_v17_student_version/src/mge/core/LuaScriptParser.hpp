@@ -56,6 +56,7 @@ private:
 	int playSound(lua_State * lua);
 	int addCoin(lua_State * lua);
 	void inilua(const char* pFileName);
+	int addItemToInventory(lua_State * lua);
 };
 
 //------------------------------------------------------------------------------------------------------------
