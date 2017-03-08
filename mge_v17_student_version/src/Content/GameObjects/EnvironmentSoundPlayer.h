@@ -28,10 +28,10 @@ private:
 	std::vector<glm::vec2> _soundVolumeRanges
 	{
 		glm::vec2(90,100),
-		glm::vec2(5,50),
-		glm::vec2(5,75),
-		glm::vec2(5,75),
-		glm::vec2(5,75)
+		glm::vec2(5,40),
+		glm::vec2(5,70),
+		glm::vec2(5,70),
+		glm::vec2(5,70)
 	};
 
 	std::vector<glm::vec2> _soundPitchRanges

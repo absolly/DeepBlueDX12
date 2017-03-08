@@ -199,7 +199,7 @@ void PredatorBehaviour::update(float pStep)
 		}
 		
 	}
-	float maxDistance = 400;
+	float maxDistance = 750;
 	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;
 	_player->setAffraidness(affraidness * 100);
 	_owner->scale(glm::vec3(2, 2, 2));

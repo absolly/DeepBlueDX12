@@ -38,7 +38,7 @@ void PlayerBreathingBehaviour::playBreatheSound()
 	std::string soundChannel = getSoundToPlay();
 	bool interupt = true;
 	int volume = _breathingIn ? _breatheInVolume : _breatheOutVolume;
-	SoundManager::getInstance()->PlaySound(getSoundToPlay(), soundChannel, false, interupt, false, volume, "", Random::Range(0.7f, 1.3f));
+	SoundManager::getInstance()->PlaySound(getSoundToPlay(), soundChannel, false, interupt, false, volume, "", Random::Range(0.85f, 1.15f));
 
 }
 

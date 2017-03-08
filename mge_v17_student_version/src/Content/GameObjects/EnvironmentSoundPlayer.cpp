@@ -26,7 +26,7 @@ void EnvironmentSoundPlayer::update(float deltaTime)
 								true, 
 								false, 
 								Random::Range(_soundVolumeRanges[soundIndex].x, _soundVolumeRanges[soundIndex].y), 
-								_sounds[soundIndex],
+								"",
 								Random::Range(_soundPitchRanges[soundIndex].x, _soundPitchRanges[soundIndex].y)
 								);
 		std::cout << "Playing sound: " << _sounds[soundIndex] << std::endl;
