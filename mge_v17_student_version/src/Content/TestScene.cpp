@@ -99,6 +99,11 @@ void TestScene::_initializeScene() {
 	_world->setMainCamera(player->getCamera());
 	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
+	//FishTank* fishTank = new FishTank(glm::vec3(0, 0, 0), _world, player->getChildAt(0), "", 100, 150);
+	//fishTank->setMesh(smallFish);
+	//fishTank->setMaterial(gpuinstancing);
+	//_world->add(fishTank);
+
 
 	//ParticleSystem * particleSystem2 = new ParticleSystem(ParticlePosition, "name");
 

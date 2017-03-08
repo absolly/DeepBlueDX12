@@ -537,16 +537,41 @@ int LuaParser::createFish(lua_State * lua)
 {
 	std::cout << "Add Fish" << std::endl;
 
-	float x = lua_tonumber(lua, -3);
-	float y = lua_tonumber(lua, -2);
-	float z = lua_tonumber(lua, -1);
+	float x = lua_tonumber(lua, -6);
+	float y = lua_tonumber(lua, -5);
+	float z = lua_tonumber(lua, -4);
+	int FishType = lua_tonumber(lua, -3);
 
 	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
-	//FishTank* fishTank = new FishTank(glm::vec3(x, y, z), _world, "", 100, 150);
-	//fishTank->setMesh(smallFish);
-	//fishTank->setMaterial(gpuinstancing);
-	//_world->add(fishTank);
+	Texture * fishTexture;
+
+	if (FishType == 0)
+	{
+		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseBLU.png");
+	}
+	else if (FishType == 1)
+	{
+		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseRED.png");
+	}
+	else if (FishType == 2)
+	{
+		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseYEL.png");
+	}
+	else if (FishType == 3)
+	{
+		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BasePURP.png");
+	}
+	else if (FishType == 4)
+	{
+		fishTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Fish_BaseGRN.png");
+	}
+
+
+	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 80, 100, 10);
+	fishTank->setMesh(smallFish);
+	fishTank->setMaterial(new GPUinstancingMaterial(*fishTank->allFish, fishTexture));
+	_world->add(fishTank);
 
 	return 1;
 }

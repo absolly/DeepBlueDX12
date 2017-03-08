@@ -7191,3 +7191,4 @@ addMeshCollider("meshCollider",false);
 createObject("Sword","Sword", -0.2932552,0.6104308,3.457114,46.57098,3.346782,-0.9987407,0.4602458,31.69,1.059864,3.322673,-0.4967877,48.74259,0,0,0,1);
 addMaterial(1,"null","sword_base","sword_normal","baseboot_diffus",1);
 addMeshCollider("meshCollider",false);
+

@@ -53,7 +53,6 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, st
 
 		GameObject* fish = new GameObject("fish", glm::vec3(_parentPos.x + randomX, _parentPos.y + randomY, _parentPos.z + randomZ));
 		fish->addBehaviour(flock);
-		pWorld->add(fish);
 		allFish->push_back(fish);
 	}
 
