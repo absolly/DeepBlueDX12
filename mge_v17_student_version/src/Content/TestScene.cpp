@@ -47,6 +47,7 @@
 #include "mge\core\Physics\PhysicsWorld.h"
 #include "mge\core\Physics\RigidBody.hpp"
 #include "Content\GameObjects\EnvironmentSoundPlayer.h"
+#include "Content\Core\Input.h"
 
 EventNoArgs& TestScene::resetEvent = *new EventNoArgs();
 
@@ -352,8 +353,11 @@ void TestScene::_updateHud() {
 
 void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
 {
-	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
-	Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
+	if (Input::getKeyDown(sf::Keyboard::E))
+	{
+		AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
+		Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
+	}
 	_scriptParser->printTest(onCollisionArgs);
 }
 
