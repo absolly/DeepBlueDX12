@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "Content\Hud\Hud.hpp"
 //#include "mge\core\SoundManager.hpp"
 
 SoundManager* SoundManager::_instance;
@@ -52,11 +53,25 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "environment_whale");
 	fileNames->push_back(path + "suffocating");
 	fileNames->push_back(path + "ability");
-	fileNames->push_back(path + "Alright its a beautiful day");
-	fileNames->push_back(path + "But what is this");
-	fileNames->push_back(path + "Ive deciphered");
 
-	
+	fileNames->push_back(path + "Be careful out there");
+	fileNames->push_back(path + "The current");
+	fileNames->push_back(path + "Careful with the air");
+
+	fileNames->push_back(path + "(1) Alright its a beautiful day");
+	fileNames->push_back(path + "(2) But what is this");
+	fileNames->push_back(path + "(3) Ive deciphered");
+	fileNames->push_back(path + "(4) So if the artifact");
+	fileNames->push_back(path + "(5) Ive picked up");
+	fileNames->push_back(path + "(6) It appears");
+	fileNames->push_back(path + "(7) These artifacts combined");
+	fileNames->push_back(path + "(8) Wow look");
+	fileNames->push_back(path + "(9) Thats");
+	fileNames->push_back(path + "(10) Nice that should do the trick");
+	fileNames->push_back(path + "(11) Wow look at the");
+	fileNames->push_back(path + "(12) Judging from these");
+	fileNames->push_back(path + "(13) Alright thats the last");
+	fileNames->push_back(path + "(14) Wow its beautiful");
 }
 
 void SoundManager::PlayMusic(std::string pSoundName, float volume, bool loop)
@@ -69,7 +84,7 @@ void SoundManager::PlayMusic(std::string pSoundName, float volume, bool loop)
 	music.play();
 }
 
-void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume)
+void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume, std::string subtitle)
 {
 	if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped || !repeatedSong)
 	{
@@ -87,6 +102,8 @@ void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundCha
 			sounds[pSoundChannel].setLoop(pLoop);
 			sounds[pSoundChannel].setVolume(pVolume);
 			sounds[pSoundChannel].play();
+			if (subtitle != "")
+				Hud::getInstance()->setSubtitleText(subtitle, soundBuffers[path + pSoundBufferName].getDuration().asSeconds());
 		}
 	}
 }

@@ -88,16 +88,17 @@ void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
 
 int LuaScriptParser::playSound(lua_State * lua)
 {
-	std::string song = lua_tostring(lua, -5);
-	std::string channel = lua_tostring(lua, -4);
-	bool loop = lua_toboolean(lua, -3);
-	bool interrupt = lua_toboolean(lua, -2);
-	int volume = lua_tonumber(lua, -1);
+	std::string song = lua_tostring(lua, -6);
+	std::string channel = lua_tostring(lua, -5);
+	bool loop = lua_toboolean(lua, -4);
+	bool interrupt = lua_toboolean(lua, -3);
+	int volume = lua_tonumber(lua, -2);
+	std::string subtitle = lua_tostring(lua, -1);
 
 
 	bool repeatedSong = (_lastSong == song);
 	std::cout << "Lua called play sound" << std::endl;
-	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume);
+	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume, subtitle);
 
 
 	//std::string soundToPlay = song;
@@ -212,7 +213,7 @@ int LuaScriptParser::setInteractionText(lua_State * lua)
 
 int LuaScriptParser::setSubtitleText(lua_State * lua)
 {
-	Hud::getInstance()->setSubtitleText(lua_tostring(lua, -1));
+	Hud::getInstance()->setSubtitleText(lua_tostring(lua, -2), 2);
 	return 0;
 }
 

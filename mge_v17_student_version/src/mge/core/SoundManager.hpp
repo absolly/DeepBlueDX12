@@ -10,7 +10,7 @@ public:
 	SoundManager();
 	bool GetChannelState(std::string pChannelName);
 	~SoundManager();
-	void PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume = 100);
+	void PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume = 100, std::string subtitle = "");
 
 	static SoundManager* getInstance();
 private:

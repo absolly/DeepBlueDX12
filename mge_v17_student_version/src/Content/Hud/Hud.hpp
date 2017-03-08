@@ -16,7 +16,7 @@ class Hud
 		Hud( sf::RenderWindow * aWindow );
 		virtual ~Hud();
 		void setInteractionText(std::string text);
-		void setSubtitleText(std::string text);
+		void setSubtitleText(std::string text, float counter = 100);
 		void draw();
 
 		void drawImage(int x, int y, HudSprite& hudSprite);
@@ -54,6 +54,7 @@ class Hud
 		sf::Text _coinCounterText;
 
 		sf::Text _interactionText;
+		float _subtitleTextTimer;
 		sf::Text _subtitleText;
 
 		bool _noOxygenLeft;

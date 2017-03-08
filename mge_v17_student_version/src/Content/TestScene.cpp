@@ -250,7 +250,7 @@ void TestScene::_initializeScene() {
 		relic->addBehaviour(new RotatingBehaviour());
 		Collider& relicTriggerCollider = relic->addCollider(CapsuleColliderArgs(12, 16), true, true);
 		_world->add(relic);
-		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);
+		relicTriggerCollider.collisionEvents[playerRigidbody].bind(this, &TestScene::onRelicCollision);
 	}
 
 	/*
@@ -344,15 +344,11 @@ void TestScene::_updateHud() {
 	_hud->draw();
 }
 
-void TestScene::onCollisionRemoveSelf(OnCollisionArgs onCollisionArgs)
+void TestScene::onRelicCollision(OnCollisionArgs onCollisionArgs)
 {
 	AbstractBehaviour* abstractBehaviour = dynamic_cast<AbstractBehaviour*>(onCollisionArgs.sender);
 	Hud::getInstance()->getInventory().addItem(abstractBehaviour->getOwner()->getName() + ".png");
-	std::cout << "SHIT HAPPENED" << std::endl;
-	_world->physics->removeCollisionObject(onCollisionArgs.sender);
-	_world->remove(abstractBehaviour->getOwner());
-	delete onCollisionArgs.sender;
-	std::cout << "TEAPOT COLLIDING WITH COLLISION OBJECT" << std::endl;
+	_scriptParser->printTest(onCollisionArgs);
 }
 
 void TestScene::onTempleDoorCollision(OnCollisionArgs onCollisionArgs)

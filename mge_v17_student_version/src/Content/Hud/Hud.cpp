@@ -62,8 +62,9 @@ void Hud::setInteractionText(std::string text)
 	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
 }
 
-void Hud::setSubtitleText(std::string text)
+void Hud::setSubtitleText(std::string text, float timer)
 {
+	_subtitleTextTimer = timer;
 	_subtitleText.setString(text);
 	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
 }
@@ -173,6 +174,16 @@ void Hud::draw()
 			}
 			LuaParser::groups.erase("door2");
 			std::cout << "Destroyed group: " << "door2" << std::endl;
+		}
+	}
+
+	if (_subtitleTextTimer > 0)
+	{
+		_subtitleTextTimer -= Time::RenderDeltaTime;
+		if (_subtitleTextTimer <= 0)
+		{
+			_subtitleTextTimer = 0;
+			_subtitleText.setString("");
 		}
 	}
 

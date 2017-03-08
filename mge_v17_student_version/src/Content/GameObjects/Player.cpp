@@ -35,7 +35,7 @@ Player::Player() : GameObject("Player")
 	//Add behaviours
 
 	//Set the position
-	_spawnPosition = glm::vec3(-2068, 300, 541);
+	_spawnPosition = glm::vec3(-2068, 705, 541);
 	temp->setLocalPosition(_spawnPosition);
 	//Set the position
 
