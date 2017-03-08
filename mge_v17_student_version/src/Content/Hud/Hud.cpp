@@ -31,7 +31,7 @@ Hud::Hud(sf::RenderWindow * window) :
 	_instance = this;
 	assert(_window != NULL);
 
-	if (!_font.loadFromFile(Config::MGE_FONT_PATH + "arial.ttf")) {
+	if (!_font.loadFromFile(Config::MGE_FONT_PATH + "Simple-regular.ttf")) {
 		std::cout << "Could not load font, exiting..." << std::endl;
 		return;
 	}
@@ -80,25 +80,33 @@ void Hud::_createDebugHud() {
 	_oxygenText.setCharacterSize(38);
 	_oxygenText.setFillColor(sf::Color::White);
 
+
 	_depthText.setString("1");
 	_depthText.setFont(_font);
 	_depthText.setCharacterSize(37);
 	_depthText.setFillColor(sf::Color::White);
+	_subtitleText.setOutlineColor(sf::Color::Black);
+
 
 	_interactionText.setString("");
 	_interactionText.setFont(_font);
 	_interactionText.setCharacterSize(37);
 	_interactionText.setFillColor(sf::Color::White);
+	_interactionText.setOutlineColor(sf::Color::Black);
+	_interactionText.setOutlineThickness(2);
 
 	_subtitleText.setString("");
 	_subtitleText.setFont(_font);
 	_subtitleText.setCharacterSize(25);
 	_subtitleText.setFillColor(sf::Color::White);
+	_subtitleText.setOutlineColor(sf::Color::Black);
+	_subtitleText.setOutlineThickness(1);
 
 	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
 	_coinCounterText.setFont(_font);
 	_coinCounterText.setCharacterSize(37);
 	_coinCounterText.setFillColor(sf::Color::White);
+
 }
 
 void Hud::setDebugInfo(std::string pInfo) {

@@ -37,6 +37,7 @@ PredatorBehaviour::~PredatorBehaviour()
 
 void PredatorBehaviour::update(float pStep)
 {
+	_owner->scale(glm::vec3(0.5f, 0.5f, 0.5f));
 	if (_ownerMat == nullptr)
 		_ownerMat = dynamic_cast<LitWaveMaterial*>(_owner->getMaterial());
 
@@ -147,12 +148,14 @@ void PredatorBehaviour::update(float pStep)
 	float maxDistance = 400;
 	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;
 	_player->setAffraidness(affraidness * 100);
+	_owner->scale(glm::vec3(2, 2, 2));
+
 }
 
 
 void PredatorBehaviour::InterPolateDirection(glm::vec3 pDirection)
 {
-	glm::vec3 LocalPos = _owner->getLocalPosition();
+	glm::vec3 LocalPos = _owner->getLocalPosition(); 
 
 	glm::quat currentDir = glm::quat_cast(_owner->getTransform());
 

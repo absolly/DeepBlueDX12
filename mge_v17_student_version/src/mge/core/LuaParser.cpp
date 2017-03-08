@@ -637,8 +637,8 @@ int LuaParser::addPredator(lua_State * lua)
 	for each (glm::vec3 waypoint in waypoints)
 		std::cout << "waypoint: " << waypoint << std::endl;
 
-	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "MantaRay.obj");
-	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "BricksNormal.png"));
+	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "Creature.OBJ");
+	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Base.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Anim.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Emis.png"));
 
 	GameObject* predator = new GameObject("", waypoints[0]);
 	predator->addBehaviour(new PredatorBehaviour(_player, waypoints, _world));

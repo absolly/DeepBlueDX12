@@ -10,8 +10,8 @@
 
 ShaderProgram* LitWaveMaterial::_shader = NULL;
 
-LitWaveMaterial::LitWaveMaterial(Texture* pDiffuseTexture, Texture* pWaveMask, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture) :
-_diffuseTexture(pDiffuseTexture), _waveMask(pWaveMask), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture) {
+LitWaveMaterial::LitWaveMaterial(Texture* pDiffuseTexture, Texture* pWaveMask, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture, Texture* pEmissionMap) :
+_diffuseTexture(pDiffuseTexture), _waveMask(pWaveMask), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap) {
     _lazyInitializeShader();
 	start = clock();
 }
@@ -62,7 +62,10 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 	glBindTexture(GL_TEXTURE_2D, Renderer::shadowDepthTexture);
 	glUniform1i(_shader->getUniformLocation("shadowMap"), 4);
 
-
+	//setup texture slot 5
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, _emissionMap->getId());
+	glUniform1i(_shader->getUniformLocation("emissionMap"), 5);
 
 
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
