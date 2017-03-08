@@ -12,7 +12,7 @@ void main()
 {
     color = texture( myTextureSampler, texCoord );
 	
-	if (color.a < 0.2)
+	if (color.a < 0.9)
 	{
 		discard;
 	}
