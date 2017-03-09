@@ -24,6 +24,9 @@ public:
 	void step();
 	int destroy(lua_State * lua);
 	int destroyGroup(lua_State * lua);
+	void destroyGroup(std::string groupName, bool registerDestroy);
+	int spawnGroup(lua_State * lua);
+	void spawnGroup(std::string name, bool registerSpawn);
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);
 	int setInteractionText(lua_State * lua);
@@ -42,6 +45,8 @@ private:
 	std::vector<GameObject*> * _objectives;
 	std::vector<GameObject*> _destoyedObjects;
 	std::vector<std::string> _destroyedGroups;
+	std::vector<GameObject*> _spawnedObjects;
+	std::vector<std::string> _spawnedGroups;
 	std::string _lastSong;
 	bool _BreathingIn = true;
 	SoundManager * _soundManager;

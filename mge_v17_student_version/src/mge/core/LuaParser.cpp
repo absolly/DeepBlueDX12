@@ -96,6 +96,8 @@ void LuaParser::loadFile(const char* pFileName) {
 		lua_pop(lua, 1);
 	}
 
+	scriptParser->destroyGroup("Relics", false);
+
 	//get the start function and execute it
 	////lua_getglobal(lua, "start");
 	//if(lua_isnil(lua,-1)) {

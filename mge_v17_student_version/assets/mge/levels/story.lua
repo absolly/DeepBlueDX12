@@ -31,7 +31,7 @@ function onRelic_tabletCollision(self, ePressed)
 			RelicTabletPickedUp = true;
 			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
 			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
-			destroyGroup("door1");
+			destroyGroup("door1", true);
 			destroy(self);
 		else
 			setInteractionText("Press E to pick up the relic");
@@ -115,7 +115,7 @@ end
 	
 function onThreeRelicsPickedUp()
 	playSound("(7) These artifacts combined", "Voice line", false, true, 100, 1, 1, "These artifacts combined apparently form a key.\nThere must be a structure nearby where we can use them.");
-	destroyGroup("door2");
+	destroyGroup("door2", true);
 end
 
 function onTempleKeyCollision(self, ePressed)
@@ -140,7 +140,7 @@ end
 function onTrigger2Collision(self, ePressed)
 	--playSound("(2) But what is this", "Voice line", false, true, 100);
 	--setSubtitleText("But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
-	--destroyGroup("door1");
+	--destroyGroup("door1", true);
 	--destroy(self);
 end
 
@@ -169,7 +169,7 @@ end
 function onTrigger7Collision(self, ePressed)
 	if (ePressed) then
 		if (TempleKeyPickedUp) then
-			destroyGroup("door3");
+			destroyGroup("door3", true);
 			removeItemFromInventory("Temple_key.png");
 			destroy(self);
 		else
@@ -189,8 +189,8 @@ function onTrigger9Collision(self, ePressed)
 	if (RelicMirrorPickedUp and RelicKruikPickedUp) then
 		playSound("(13) Alright thats the last", "Voice line", false, false, 100, 1, 1, "That's the last of them. Let's place them in the pedestal and see what happens.");
 		if (ePressed) then
-			destroyGroup("door4");
-			destroyGroup("Relics");
+			destroyGroup("door4", true);
+			spawnGroup("Relics", true);
 			destroy(self);
 		else
 			setInteractionText("Press E to place the relics in the pedestals.");
