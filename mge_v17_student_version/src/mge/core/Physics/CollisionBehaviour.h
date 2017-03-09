@@ -29,7 +29,7 @@ public:
 	void updateScale();
 	void updatePositon();
 	virtual void update(float pStep);
-	class RigidBody & makeRigidBody(float mass, btVector3 & inertia, btDefaultMotionState & defaultMotionState);
+	//class RigidBody & makeRigidBody(float mass, btVector3 & inertia, btDefaultMotionState & defaultMotionState);
 	void checkForCollisions();
 
 	void debugDrawContacts();

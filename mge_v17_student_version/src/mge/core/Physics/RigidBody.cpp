@@ -8,16 +8,14 @@ RigidBody::RigidBody(Collider& collider, float pMass, btDefaultMotionState * pMo
 	btRigidBody(btRigidBody::btRigidBodyConstructionInfo(pMass, pMotionState, collider.getCollisionShape(), calculateIntertia(pMass, collider.getCollisionShape(), pInertia))),
 	_collider (collider)
 {
-	std::cout << "Create rigidbody" << std::endl;
-	World::physics->addRigidBody(this);// , btCollisionObject::CO_RIGID_BODY, btCollisionObject::CO_RIGID_BODY | btCollisionObject::CO_COLLISION_OBJECT);
+	World::physics->addRigidBody(this , btCollisionObject::CO_RIGID_BODY, btCollisionObject::CO_RIGID_BODY | btCollisionObject::CO_COLLISION_OBJECT);
 }
 
 RigidBody::RigidBody(Collider& collider, btRigidBody::btRigidBodyConstructionInfo& pConstructionInfo) : 
 	btRigidBody(pConstructionInfo),
 	_collider(collider)
 {
-	std::cout << "Create rigidbody" << std::endl;
-	World::physics->addRigidBody(this);// , btCollisionObject::CO_RIGID_BODY, btCollisionObject::CO_RIGID_BODY | btCollisionObject::CO_COLLISION_OBJECT);
+	World::physics->addRigidBody(this, btCollisionObject::CO_RIGID_BODY, btCollisionObject::CO_RIGID_BODY | btCollisionObject::CO_COLLISION_OBJECT);
 }
 
 RigidBody::~RigidBody()
