@@ -219,32 +219,44 @@ void TestScene::_initializeScene() {
 	std::vector<glm::vec3> relicLocations
 	{
 		glm::vec3(-2238.6, +12.7, +2198.9), //In Tutorial cave
-		glm::vec3(414.763, 144.757, -296.977), 
+		glm::vec3(+414.763, +144.757, -296.977),
+		glm::vec3(+312.4, +127.7, -78.6),
+		glm::vec3(+165.24,-26.7, -381.56),
+		glm::vec3(-234.4, -23.1, -287.5),
 		glm::vec3(+312.4, +127.7, -78.6)
 	};
 
 	std::vector<glm::vec3> relicScales
-	{	
+	{
 		glm::vec3(0.6f, 0.6f, 0.6f),
 		glm::vec3(0.6f, 0.6f, 0.6f),
-		glm::vec3(0.2f, 0.2f, 0.2f)
+		glm::vec3(0.2f, 0.2f, 0.2f),
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.6f, 0.6f, 0.6f)
 	};
 
 	std::vector<float> relicColliderSizes
 	{
 		25.0f,
 		25.0f,
-		80.0f
+		80.0f,
+		25.0f,
+		25.0f,
+		25.0f
 	};
 
 	std::string relicNames[] =
 	{
 		"Relic_tablet",
 		"Relic_disc",
-		"Relic_statue"
+		"Relic_statue",
+		"Relic_kruik",
+		"Relic_mirror",
+		"Temple_key"
 	};
-	
-	for (int i = 0; i < relicLocations.size(); i++)
+
+	for (int i = 0; i < relicLocations.size()-1; i++) //IGNORING LAST KEY
 	{
 		AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
 		glm::vec3 relicLocation = relicLocations[i];
@@ -254,7 +266,7 @@ void TestScene::_initializeScene() {
 		relic->setMaterial(relicAndTreasureMaterial);
 		relic->scale(relicScales[i]);
 		relic->addBehaviour(new RotatingBehaviour());
-		 relic->addCollider(MeshColliderArgs(*mesh), false, false);
+		relic->addCollider(MeshColliderArgs(*mesh), false, false);
 		Collider& relicTriggerCollider = relic->addCollider(SphereColliderArgs(relicColliderSizes[i]), true, true);
 		_world->add(relic);
 		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);
