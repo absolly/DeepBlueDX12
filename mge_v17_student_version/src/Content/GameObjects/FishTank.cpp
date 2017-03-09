@@ -68,6 +68,16 @@ int FishTank::getFishCount()
 	return _fishCount;
 }
 
+void FishTank::setDistanceAndAvoid(float pAvoid, float pNeighBourDistance)
+{
+	for (int i = 0; i < allFish->size(); i++)
+	{
+		GameObject * object = allFish->at(i);
+		//dynamic_cast<FlockingBehaviour>()
+	
+	}
+}
+
 void FishTank::SetRenderDistance(int pDistance)
 {
 	renderDistance += renderDistance + _tankSize;

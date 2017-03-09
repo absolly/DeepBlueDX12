@@ -24,6 +24,7 @@ class FlockingBehaviour : public AbstractBehaviour
 		glm::vec3 averagePosition;
 		float _speed = 1;
 		float neighbourDistance = 6.0f;
+		float avoidDistance = 4.0f;
 
     private:
 		int _updateRate = 0;

@@ -105,7 +105,7 @@ void FlockingBehaviour::ApplyRules()
 				vcentre += curObject->getWorldPosition();
 				groupSize++;
 
-				if (dist < 4.0f)
+				if (dist < avoidDistance)
 				{
 					vavoid = vavoid + (ownerPosition - curObject->getWorldPosition());
 				}

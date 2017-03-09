@@ -19,6 +19,7 @@ public:
 	virtual ~FishTank();
 	int getTankSize();
 	int getFishCount();
+	void setDistanceAndAvoid(float pAvoid, float pNeighBourDistance);
 	void SetNewGoal();
 	void SetRenderDistance(int pDistance);
 

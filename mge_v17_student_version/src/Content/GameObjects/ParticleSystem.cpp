@@ -78,8 +78,8 @@ void ParticleSystem::update(float pStep)
 
 		if (object->getDuration() < 0.1f)
 		{
-			DeadParticles.push_back(object);
-			particles.erase(it);
+			DeadParticles.push_back(object);	
+			it = particles.erase(it);
 		}
 		else
 		{
