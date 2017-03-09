@@ -17,7 +17,7 @@ class GPUinstancingMaterial : public AbstractMaterial
 {
     public:
 		//GPUinstancingMaterial(std::vector<GameObject*> gameObjects);
-		GPUinstancingMaterial(std::vector<GameObject*> pGameObjects, Texture * pTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Kelpp.png"));
+		GPUinstancingMaterial(std::vector<GameObject*> pGameObjects, Texture * pTexture = Texture::load(Config::MGE_TEXTURE_PATH + "Kelpp2.png"));
         virtual ~GPUinstancingMaterial();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;

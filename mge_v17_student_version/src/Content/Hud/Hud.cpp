@@ -26,7 +26,10 @@ Hud::Hud(sf::RenderWindow * window) :
 	_visor("Visor.png"),
 	_depthBar(),
 	_oxygenBar(),
-	_coinCounterBar()
+	_coinCounterBar(),
+	_abilityFish("fish_hud.png"),
+	_abilityInactive("InventorySlotBackground.png"),
+	_abilityActive("bubble_active.png")
 {
 	_instance = this;
 	assert(_window != NULL);
@@ -41,6 +44,13 @@ Hud::Hud(sf::RenderWindow * window) :
 	_depthBar.setScale(Config::HUD_SCALE_FACTOR);
 	_oxygenBar.setScale(Config::HUD_SCALE_FACTOR);
 	_coinCounterBar.setScale(Config::HUD_SCALE_FACTOR);
+	_abilityFish.setScale(Config::HUD_SCALE_FACTOR);
+	_abilityInactive.setScale(Config::HUD_SCALE_FACTOR);
+	_abilityActive.setScale(Config::HUD_SCALE_FACTOR);
+
+	_abilityFish.setPosition(70, window->getSize().y - 300);
+	_abilityInactive.setPosition(70, window->getSize().y - 300);
+	_abilityActive.setPosition(70, window->getSize().y - 300);
 
 	_depthBar.setPosition(50, window->getSize().y - 200);
 	_depthText.setPosition(50, window->getSize().y - 200);
@@ -49,7 +59,7 @@ Hud::Hud(sf::RenderWindow * window) :
 	_coinCounterText.setPosition(50, window->getSize().y - 400);
 	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
 	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
-	
+
 
 	Config::onConfigUpdated.bind(this, &Hud::reloadHUD);
 	reloadHUD();
@@ -64,6 +74,12 @@ void Hud::setInteractionText(std::string text)
 {
 	_interactionText.setString(text);
 	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
+}
+
+void Hud::setHintText(std::string text)
+{
+	_hintText.setString(text);
+	_hintText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_hintText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_hintText.getGlobalBounds().height / 2)));
 }
 
 void Hud::setSubtitleText(std::string text, float timer)
@@ -91,13 +107,19 @@ void Hud::_createDebugHud() {
 	_depthText.setFillColor(sf::Color::White);
 	_subtitleText.setOutlineColor(sf::Color::Black);
 
-
 	_interactionText.setString("");
 	_interactionText.setFont(_font);
 	_interactionText.setCharacterSize(37);
 	_interactionText.setFillColor(sf::Color::White);
 	_interactionText.setOutlineColor(sf::Color(12, 19, 28));
 	_interactionText.setOutlineThickness(1);
+
+	_hintText.setString("");
+	_hintText.setFont(_font);
+	_hintText.setCharacterSize(37);
+	_hintText.setFillColor(sf::Color::White);
+	_hintText.setOutlineColor(sf::Color(12, 19, 28));
+	_hintText.setOutlineThickness(1);
 
 	_subtitleText.setString("");
 	_subtitleText.setFont(_font);
@@ -111,7 +133,7 @@ void Hud::_createDebugHud() {
 	_coinCounterText.setCharacterSize(37);
 	_coinCounterText.setFillColor(sf::Color::White);
 
-	
+
 }
 
 void Hud::setDebugInfo(std::string pInfo) {
@@ -167,6 +189,11 @@ int Hud::getCoinCount()
 bool Hud::getNoOxygenLeft()
 {
 	return _noOxygenLeft;
+}
+
+void Hud::setAbilityStatus(int pStatus)
+{
+	_abilityStatus = pStatus;
 }
 
 
@@ -241,8 +268,8 @@ void Hud::draw()
 		}
 	}
 
-	if (_coinsDisplayed < _coins) 
-		_coinsDisplayed += glm::min(Time::RenderDeltaTime * 20, (float)_coins - _coinsDisplayed);	
+	if (_coinsDisplayed < _coins)
+		_coinsDisplayed += glm::min(Time::RenderDeltaTime * 20, (float)_coins - _coinsDisplayed);
 	else if (_coinsDisplayed > _coins)
 		_coinsDisplayed -= glm::min(Time::RenderDeltaTime * 20, (float)_coinsDisplayed - _coins);
 	_coinCounterText.setString(to_string(_coinsDisplayed));
@@ -260,10 +287,24 @@ void Hud::draw()
 	_window->draw(_coinCounterBar);
 	_window->draw(_coinCounterText);
 	_window->draw(_interactionText);
+	_window->draw(_hintText);
 	_window->draw(_subtitleText);
 	sf::RectangleShape s;
 	_inventory.draw();
-
+	switch (_abilityStatus)
+	{
+	case 0:
+		_window->draw(_abilityFish);
+		_window->draw(_abilityActive);
+		break;
+	case 1:
+		_window->draw(_abilityFish);
+		_window->draw(_abilityInactive);
+		break;
+	case 2:
+		_window->draw(_abilityInactive);
+		break;
+	}
 	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))
 	{
 		_deathSpriteOpacity += (_noOxygenLeft ? 96 : -128) * Time::DeltaTime;

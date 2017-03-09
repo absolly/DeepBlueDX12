@@ -7,6 +7,7 @@
 #include "mge\core\Random.h"
 #include "Content\Core\Input.h"
 #include "mge\config.hpp"
+#include "Content/Hud/Hud.hpp"
 
 PlayerFishAbilityBehaviour::PlayerFishAbilityBehaviour(World * pWorld, GameObject * pOwner) : _world(pWorld)
 {
@@ -25,11 +26,22 @@ PlayerFishAbilityBehaviour::PlayerFishAbilityBehaviour(World * pWorld, GameObjec
 
 void PlayerFishAbilityBehaviour::update(float deltaTime)
 {
-	if (Input::getKeyDown(sf::Keyboard::Q))
+	_coolDown -= deltaTime;
+	if (getIsProtected())
+		Hud::getInstance()->setAbilityStatus(0);
+	else if(_coolDown <= 0)
+		Hud::getInstance()->setAbilityStatus(1);
+	else 
+		Hud::getInstance()->setAbilityStatus(2);
+
+	if (Input::getKeyDown(sf::Keyboard::Q) && _coolDown <= 0)
 	{
 		std::cout << "CALLL THE FIESH" << std::endl;
 		SoundManager::getInstance()->PlaySound("ability", "ability", false, true, false, 50, "", Random::Range(0.9f, 1.1f));
+		Hud::getInstance()->setHintText("");
+
 		_playerFishFlock->CallFish();
+		_coolDown = 15;
 	}
 }
 

@@ -267,7 +267,7 @@ void TestScene::_initializeScene() {
 		relic->setMaterial(relicAndTreasureMaterial);
 		relic->scale(relicScales[i]);
 		relic->addBehaviour(new RotatingBehaviour());
-		relic->addCollider(MeshColliderArgs(*mesh), false, false);
+		relic->addCollider(MeshColliderArgs(*mesh), false, true);
 		Collider& relicTriggerCollider = relic->addCollider(SphereColliderArgs(relicColliderSizes[i]), true, true);
 		_world->add(relic);
 		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);

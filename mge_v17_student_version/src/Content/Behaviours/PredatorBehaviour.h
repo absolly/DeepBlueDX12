@@ -32,7 +32,7 @@ private:
 	std::stack<glm::vec3> _returnPath;
 	int crumbHead = 0;
 	int _crumbCooldown = 0;
-	void InterPolateDirection(glm::vec3 pDirection);
+	void InterPolateDirection(glm::vec3 pDirection, float pDeltaTime);
 	bool debug = false;
 	World* _world;
 	Mesh* cubeMeshF;
