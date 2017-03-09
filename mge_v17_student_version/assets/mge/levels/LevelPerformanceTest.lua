@@ -1804,7 +1804,7 @@ createObject("Mountain","Mountain", 0.1702953,0,0,-706,0,0.1649845,0,-248,0,0,0.
 addMaterial(3,"null","Rocks_basecolor","Rocks_normal","null",0.026);
 addMeshCollider("meshCollider",false);
 createObject("Platform1","Platform1", 0.1702953,0,0,-706,0,0.1649845,0,-248,0,0,0.1441967,106,0,0,0,1);
-addMaterial(3,"null","Rocks_basecolor","Rocks_normal","null",0.026);
+addMaterial(10,"null","Rocks_basecolor","Rocks_normal","null",0.026);
 addMeshCollider("meshCollider",false);
 createObject("Platform2","Platform2", 0.1702953,0,0,-706,0,0.1649845,0,-248,0,0,0.1441967,106,0,0,0,1);
 addMaterial(3,"null","Rocks_basecolor","Rocks_normal","null",0.026);

@@ -15,13 +15,14 @@ public:
 	void setAffraidness(float affraidness);
 	float getAffraidness();
 	void scare(float affraidnessIncrease);
-
+	void setSpawnBoat(GameObject* pBoat);
 	Camera* getCamera();
 private:
 	void resetLevel();
 	glm::vec3 _spawnPosition;
 	Camera* _camera;
-	void respawn();
+	GameObject* _spawnBoat = nullptr;
+	void respawn(bool reset = false);
 	int getDepthInCM();
 
 	float _depth = 0;

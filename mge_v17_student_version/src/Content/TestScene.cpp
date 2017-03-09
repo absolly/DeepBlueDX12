@@ -154,6 +154,7 @@ void TestScene::_initializeScene() {
 	//boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player->getChildAt(0)));
+	player->setSpawnBoat(boat);
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
 	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0, -80, 0));
 	boat->add(boatColliderContainer);
