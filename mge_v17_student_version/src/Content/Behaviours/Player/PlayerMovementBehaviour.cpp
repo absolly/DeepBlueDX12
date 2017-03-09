@@ -1,6 +1,7 @@
 #include "PlayerMovementBehaviour.h"
 #include <iostream>
 #include "mge\core\GameObject.hpp"
+#include "mge\materials\BillBoardMaterial.hpp"
 #include "Content\Core\Input.h"
 #include "Content\GameObjects\Player.h"
 #include "mge\Config.hpp"
@@ -16,6 +17,8 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	updateFromConfig();
 	Config::onConfigUpdated.bind(this, &PlayerMovementBehaviour::updateFromConfig);
+
+	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
 
 	Mesh* scooterMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooterv2.OBJ");
@@ -39,6 +42,20 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	player.getChildAt(0)->add(_diveScooter);
 	_diveScooter->setTransform(_scooterOffsetMat);
+
+	particleSystem = new ParticleSystem(glm::vec3(0,0,0), "name");
+	particleSystem->SetStartEndScale(0.5f, 1.0f);
+	particleSystem->setDirection(glm::vec3(0, 6, 0));
+	particleSystem->intSetSpawnRate(20);
+	particleSystem->setDuration(7);
+	particleSystem->setSpeedMultiplier(0.005f);
+	particleSystem->setLoop(false);
+
+	particleSystem->setMesh(smallFish);
+	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
+	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
+	particleSystem->setMaterial(billboardMat);
+	_diveScooter->add(particleSystem);
 }
 
 void PlayerMovementBehaviour::updateFromConfig()
@@ -140,8 +157,11 @@ void PlayerMovementBehaviour::update(float deltaTime)
 	//Moving forward
 	float forwardInput = (sf::Keyboard::isKeyPressed(sf::Keyboard::W) ? 1 : 0) - (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ? 1 : 0);
 
+	particleSystem->setLoop(false);
 	if (forwardInput > 0)
 	{
+		if(_scooterEquiped)
+			particleSystem->setLoop(true);
 		//If pressing forward
 		if (_currentMoveSpeed < maxMoveSpeed)
 		{

@@ -40,6 +40,8 @@ void ParticleSystem::update(float pStep)
 		
 	if (fmod(_time , (1.0f / _spawnRate)) <= 0.04f)
 	{
+		_startPosition = getWorldPosition();
+
 		if(EmitLeft > 0 || loop)
 		{
 			if (DeadParticles.size() > 0)
@@ -52,7 +54,7 @@ void ParticleSystem::update(float pStep)
 			}
 			else
 			{
-				Particle * particle = new Particle(glm::vec3(_startPosition.x, _startPosition.y, _startPosition.z), "particle", glm::vec3((dis(gen) + direction.x) * _speedMultiplier , direction.y * _speedMultiplier, (dis(gen) + direction.z) * _speedMultiplier), duration, this, _currentIndex);
+				Particle * particle = new Particle(glm::vec3(_startPosition.x, _startPosition.y, _startPosition.z), "particle", glm::vec3((dis(gen) + direction.x) * _speedMultiplier , (dis(gen) + direction.y) * _speedMultiplier, (dis(gen) + direction.z) * _speedMultiplier), duration, this, _currentIndex);
 				particle->SetStartEndScale(startScaleSize, endScaleSize);
 				particles.push_back(particle);
 				_currentIndex++;
@@ -85,9 +87,19 @@ void ParticleSystem::update(float pStep)
 			++it;
 		}
 
-
 	}
 }
+
+void ParticleSystem::intSetSpawnRate(int pSpawnRate)
+{
+	_spawnRate = pSpawnRate;
+}
+
+void ParticleSystem::setDuration(float pDuration)
+{
+	duration = pDuration;
+}
+
 
 void ParticleSystem::Emit(int pAmount)
 {
@@ -99,6 +111,10 @@ void ParticleSystem::setSpeedMultiplier(float pMultiplier)
 	_speedMultiplier = pMultiplier;
 }
 
+void ParticleSystem::setLoop(bool pLoop)
+{
+	loop = pLoop;
+}
 
 void ParticleSystem::setDirection(glm::vec3 pDirection)
 {

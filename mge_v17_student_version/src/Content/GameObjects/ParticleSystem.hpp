@@ -19,9 +19,12 @@ public:
 	std::vector<Particle *> DeadParticles;
 	std::vector<Particle *> GetParticles();
 	void setDirection(glm::vec3 pDirection);
+	void setDuration(float pDuration);
 	void SetStartEndScale(float pStartscale, float pEndScale);
 	void setSpeedMultiplier(float pMultiplier);
+	void setLoop(bool pLoop);
 	void Emit(int pAmount);
+	void intSetSpawnRate(int pSpawnRate);
 
 private:
 	int _spawnRate = 0;

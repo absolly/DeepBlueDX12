@@ -208,14 +208,14 @@ void TestScene::_initializeScene() {
 	EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
 	_world->add(environmentSoundPlayer);
 
-	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
+	//_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
+	//_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
-	LuaParser * luaparser2 = new LuaParser(_world);
-	luaparser2->setPlayerRigidBody(*player);
-	luaparser2->scriptParser = _scriptParser;
-	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "LevelPerformanceTest.lua").c_str());
-	luaparser2->SetGroupsInstanced();
+	//LuaParser * luaparser2 = new LuaParser(_world);
+	//luaparser2->setPlayerRigidBody(*player);
+	//luaparser2->scriptParser = _scriptParser;
+	//luaparser2->loadFile((Config::MGE_LEVEL_PATH + "LevelPerformanceTest.lua").c_str());
+	//luaparser2->SetGroupsInstanced();
 
 	std::vector<glm::vec3> relicLocations
 	{
@@ -267,7 +267,7 @@ void TestScene::_initializeScene() {
 		relic->setMaterial(relicAndTreasureMaterial);
 		relic->scale(relicScales[i]);
 		relic->addBehaviour(new RotatingBehaviour());
-		relic->addCollider(MeshColliderArgs(*mesh), false, false);
+		relic->addCollider(MeshColliderArgs(*mesh), false, true);
 		Collider& relicTriggerCollider = relic->addCollider(SphereColliderArgs(relicColliderSizes[i]), true, true);
 		_world->add(relic);
 		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);
@@ -348,12 +348,15 @@ void TestScene::_initializeScene() {
 
 void TestScene::_render() {
 	AbstractGame::_render();
+
 	_world->debugDraw();
 	//_world->debugDraw();
 
 	AbstractGame::_renderToQuad();
-	_updateHud();
 
+	if(!_GamePaused)
+		_updateHud();
+	
 	//_scriptParser->step();
 
 	//AbstractGame::DrawQuad();

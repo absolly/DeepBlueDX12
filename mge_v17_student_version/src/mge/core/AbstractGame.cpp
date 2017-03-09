@@ -47,7 +47,7 @@ void AbstractGame::initialize() {
     _initializeWorld();
     _initializeScene();
 	//
-	//_menu = new Menu(_window);
+	_menu = new Menu(_window);
 
 
     cout << endl << "Engine initialized." << endl << endl;
@@ -225,18 +225,19 @@ void AbstractGame::run() {
 
 			while (timeSinceLastUpdate > timePerFrame) {
 				timeSinceLastUpdate -= timePerFrame;
-				
+				if (!_GamePaused)
+				{
 					_update(timePerFrame.asSeconds());
 					_world->updatePhysics(timePerFrame.asSeconds());
-				
+				}
 				Time::DeltaTime = timePerFrame.asSeconds();
 				Input::updateInput();
 			}
 
 			_render();
 
-			/*if (_GamePaused)
-				_GamePaused = _menu->RenderMenu();*/
+			if (_GamePaused)
+				_GamePaused = _menu->RenderMenu();
 			
 			_window->display();
 			

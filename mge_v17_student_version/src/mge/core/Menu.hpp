@@ -19,14 +19,14 @@ private:
 	sf::RenderWindow * _window;
 
 	sf::Texture texture;
-	sf::Texture texture2;
 	sf::Texture texture3;
 	sf::Texture texture4;
+	sf::Texture texture5;
 
 	sf::Sprite sprite;
-	sf::Sprite sprite2;
 	sf::Sprite sprite3;
 	sf::Sprite sprite4;
+	sf::Sprite sprite5;
 };
 
 #endif

@@ -72,10 +72,11 @@ class AbstractGame
 		float _fps;                 //stores the real fps
 		void DrawQuad();
 		void ToggleGamePaused(bool pPaused);
+		bool _GamePaused = true;
+
     private:
         AbstractGame(const AbstractGame&);
         AbstractGame& operator=(const AbstractGame&);
-		bool _GamePaused = true;
 		Menu * _menu;
 		
 		void onCloseWindowEvent(sf::Event& event);
