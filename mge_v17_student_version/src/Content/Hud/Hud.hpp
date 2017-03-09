@@ -35,6 +35,7 @@ class Hud
 		int getCoinCount();
 		bool getNoOxygenLeft();
 	private:
+		void reloadHUD();
 		static Hud* _instance;
 
 		sf::RenderWindow * _window;

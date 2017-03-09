@@ -60,3 +60,12 @@ MaxRollRotation 10.000000
 RollRotationSpeedMultiplier 20.000000
 DiverSensitivity 0.070000
 ScooterSensitivity 0.060000
+oxigenx 50.000000
+oxigeny 130.000000
+oxigenSize 44.000000
+coinx 70.000000
+coiny 190.000000
+coinSize 38.000000
+depthx 100.000000
+depthy 65.000000
+depthSize 46.000000
