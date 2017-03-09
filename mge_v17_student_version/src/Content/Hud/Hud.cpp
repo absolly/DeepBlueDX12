@@ -241,11 +241,19 @@ void Hud::draw()
 		}
 	}
 
-	if (_coinsDisplayed < _coins) 
-		_coinsDisplayed += glm::min(Time::RenderDeltaTime * 20, (float)_coins - _coinsDisplayed);	
+	if (_coinsDisplayed < _coins)
+	{
+		_coinsDisplayed += Time::RenderDeltaTime * 20;
+		if (_coinsDisplayed > _coins)
+			_coinsDisplayed = _coins;
+	}
 	else if (_coinsDisplayed > _coins)
-		_coinsDisplayed -= glm::min(Time::RenderDeltaTime * 20, (float)_coinsDisplayed - _coins);
-	_coinCounterText.setString(to_string(_coinsDisplayed));
+	{
+		_coinsDisplayed -= Time::RenderDeltaTime * 20;
+		if (_coinsDisplayed < _coins)
+			_coinsDisplayed = _coins;
+	}
+	_coinCounterText.setString(to_string((int)round(_coinsDisplayed)));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
