@@ -39,7 +39,7 @@ sf::RenderWindow * AbstractGame::getRenderWindow()
 
 void AbstractGame::initialize() {
     cout << "Initializing engine..." << endl << endl;
-
+	_menu = new Menu(_window);
     _printVersionInfo();
     _initializeGlew();
      _initializeRenderer();
@@ -221,14 +221,25 @@ void AbstractGame::run() {
 
 			while (timeSinceLastUpdate > timePerFrame) {
 				timeSinceLastUpdate -= timePerFrame;
-				_update(timePerFrame.asSeconds());
-				_world->updatePhysics(timePerFrame.asSeconds());
+				if (!_GamePaused)
+				{
+					_update(timePerFrame.asSeconds());
+					_world->updatePhysics(timePerFrame.asSeconds());
+				}
 				Time::DeltaTime = timePerFrame.asSeconds();
 				Input::updateInput();
 			}
 
-			_render();
-			_window->display();
+			if (!_GamePaused)
+			{
+				_render();
+				_window->display();
+			}
+			else
+			{
+				_menu->RenderMenu();
+			}			
+
 			
             float timeSinceLastRender = renderClock.restart().asSeconds();
 			Time::RenderDeltaTime = timeSinceLastRender;
@@ -240,6 +251,10 @@ void AbstractGame::run() {
 
 void AbstractGame::_update(float pStep) {
     _world->update(pStep);
+}
+
+void AbstractGame::ToggleGamePaused(bool pPaused) {
+	_GamePaused = pPaused;
 }
 
 void AbstractGame::_render () {

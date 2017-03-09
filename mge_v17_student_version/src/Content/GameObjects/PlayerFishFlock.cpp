@@ -78,7 +78,7 @@ void PlayerFishFlock::CallFish()
 {
 	_coolDown = _coolDownMaximum;
 	_placedPos = _player->getWorldPosition();
-	glm::vec3 spawnPoint = _player->getTransform() * glm::vec4(0,0,-20,1);
+	glm::vec3 spawnPoint = _player->getTransform() * glm::vec4(0,0,-15,1);
 	setLocalPosition(_player->getWorldPosition());
 
 	goalPosition = _player->getWorldPosition();

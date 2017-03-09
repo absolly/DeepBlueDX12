@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <string>
 #include "mge/core/ShaderProgram.hpp"
+#include <mge/core/Menu.h>
 #include "mge/core/Texture.hpp"
 
 using namespace std;
@@ -70,9 +71,12 @@ class AbstractGame
 		World* _world;              //the root game object that represents our scene
 		float _fps;                 //stores the real fps
 		void DrawQuad();
+		void ToggleGamePaused(bool pPaused);
     private:
         AbstractGame(const AbstractGame&);
         AbstractGame& operator=(const AbstractGame&);
+		bool _GamePaused = true;
+		Menu * _menu;
 		
 		void onCloseWindowEvent(sf::Event& event);
 		void onEscapePressedEvent(sf::Event::KeyEvent & event);
