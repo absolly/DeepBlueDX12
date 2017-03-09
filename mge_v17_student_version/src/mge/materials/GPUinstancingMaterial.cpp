@@ -66,7 +66,8 @@ GPUinstancingMaterial::~GPUinstancingMaterial()
 //
 void GPUinstancingMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
 	_shader->use();
-
+	if (isDoubleSided)
+		glDisable(GL_CULL_FACE);
 	pMesh->instanceToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
 
 	glActiveTexture(GL_TEXTURE0);
@@ -86,7 +87,8 @@ void GPUinstancingMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, c
 
 	pMesh->DisableVertexAttribArrays();
 	
-
+	if (isDoubleSided)
+		glEnable(GL_CULL_FACE);
 
     ////now inform mesh of where to stream its 
 }
