@@ -24,9 +24,9 @@ Hud::Hud(sf::RenderWindow * window) :
 	_inventory(*new Inventory(*window)),
 	_hudMaterial(new HUDMaterial()),
 	_visor("Visor.png"),
-	_depthBar("DepthBar.png"),
-	_oxygenBar("OxygenBar.png"),
-	_coinCounterBar("TransparantBar.png")
+	_depthBar(),
+	_oxygenBar(),
+	_coinCounterBar()
 {
 	_instance = this;
 	assert(_window != NULL);
@@ -49,6 +49,10 @@ Hud::Hud(sf::RenderWindow * window) :
 	_coinCounterText.setPosition(50, window->getSize().y - 400);
 	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
 	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
+	
+
+	Config::onConfigUpdated.bind(this, &Hud::reloadHUD);
+	reloadHUD();
 }
 
 Hud::~Hud()
@@ -102,11 +106,12 @@ void Hud::_createDebugHud() {
 	_subtitleText.setOutlineColor(sf::Color(12, 19, 28));
 	_subtitleText.setOutlineThickness(1);
 
-	_coinCounterText.setString("Gold: " + to_string(_coins) + "");
+	_coinCounterText.setString(to_string(_coins));
 	_coinCounterText.setFont(_font);
 	_coinCounterText.setCharacterSize(37);
 	_coinCounterText.setFillColor(sf::Color::White);
 
+	
 }
 
 void Hud::setDebugInfo(std::string pInfo) {
@@ -164,10 +169,46 @@ bool Hud::getNoOxygenLeft()
 	return _noOxygenLeft;
 }
 
+
+void Hud::reloadHUD()
+{
+	float coinx = 50;
+	Config::updateValue("coinx", coinx);
+	float coiny = 300;
+	Config::updateValue("coiny", coiny);
+	_coinCounterText.setPosition(coinx, _window->getSize().y - coiny);
+
+	float coinSize = 38;
+	Config::updateValue("coinSize", coinSize);
+	_coinCounterText.setCharacterSize(coinSize);
+
+	float oxigenx = 50;
+	Config::updateValue("oxigenx", oxigenx);
+	float oxigeny = 300;
+	Config::updateValue("oxigeny", oxigeny);
+	_oxygenBar.setPosition(oxigenx, _window->getSize().y - oxigeny);
+
+	float oxigenSize = 38;
+	Config::updateValue("oxigenSize", oxigenSize);
+	_oxygenText.setCharacterSize(oxigenSize);
+
+	float depthx = 50;
+	Config::updateValue("depthx", depthx);
+	float depthy = 200;
+	Config::updateValue("depthy", depthy);
+	_depthBar.setPosition(depthx, _window->getSize().y - depthy);
+
+	float depthSize = 38;
+	Config::updateValue("depthSize", depthSize);
+	_depthText.setCharacterSize(depthSize);
+}
+
 void Hud::draw()
 {
 	if (Input::getKey(sf::Keyboard::P))
 		addCoin(100);
+	if (Input::getKey(sf::Keyboard::F7))
+		reloadHUD();
 	if (Input::getKey(sf::Keyboard::R))
 	{
 		if (LuaParser::groups.find("door1") != LuaParser::groups.end())
@@ -200,11 +241,11 @@ void Hud::draw()
 		}
 	}
 
-	if (_coinsDisplayed < _coins)
-		_coinsDisplayed++;
+	if (_coinsDisplayed < _coins) 
+		_coinsDisplayed += glm::min(Time::RenderDeltaTime * 20, (float)_coins - _coinsDisplayed);	
 	else if (_coinsDisplayed > _coins)
-		_coinsDisplayed--;
-	_coinCounterText.setString("Gold: " + to_string(_coinsDisplayed) + "");
+		_coinsDisplayed -= glm::min(Time::RenderDeltaTime * 20, (float)_coinsDisplayed - _coins);
+	_coinCounterText.setString(to_string(_coinsDisplayed));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);

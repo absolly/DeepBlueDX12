@@ -57,6 +57,7 @@ private:
 	int addCoin(lua_State * lua);
 	void inilua(const char* pFileName);
 	int addItemToInventory(lua_State * lua);
+	int removeItemFromInventory(lua_State * lua);
 };
 
 //------------------------------------------------------------------------------------------------------------

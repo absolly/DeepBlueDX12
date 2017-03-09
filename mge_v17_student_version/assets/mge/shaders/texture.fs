@@ -168,9 +168,9 @@ void main( void ) {
             // Normal of the computed fragment, in camera space
             n = normalize( FragNormal_tangentspace );
             // Direction of the light (from the fragment to the light)
-            l = normalize( abs(LightDirection_tangentspace[activeLight]));
+            l = normalize( LightDirection_tangentspace[activeLight]);
 
-            cosTheta = max( dot( n,l ), 0.0);
+            cosTheta = max( dot( n,abs(l) ), 0.0);
 
             // Eye vector (towards the camera)
             E = normalize(EyeDirection_tangentspace);

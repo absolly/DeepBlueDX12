@@ -81,7 +81,10 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_setglobal(lua, "setSubtitleText"); 
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addItemToInventory>);
-	lua_setglobal(lua, "addItemToInventory"); 
+	lua_setglobal(lua, "addItemToInventory");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::removeItemFromInventory>);
+	lua_setglobal(lua, "removeItemFromInventory");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -121,7 +124,7 @@ int LuaScriptParser::playSound(lua_State * lua)
 int LuaScriptParser::addCoin(lua_State * lua)
 {
 	std::cout << "You've picked up a coin! " << std::endl;
-	Hud::getInstance()->addCoin(Random::Range(150, 250));
+	Hud::getInstance()->addCoin(Random::Range(40, 60));
 	return 1;
 }
 
@@ -217,6 +220,13 @@ int LuaScriptParser::addItemToInventory(lua_State * lua)
 	return 0;
 }
 
+int LuaScriptParser::removeItemFromInventory(lua_State * lua)
+{
+	std::string objectName = lua_tostring(lua, -1);
+	Hud::getInstance()->getInventory().removeItem(objectName);
+	return 0;
+}
+
 int LuaScriptParser::setInteractionText(lua_State * lua)
 {
 	Hud::getInstance()->setInteractionText(lua_tostring(lua, -1));
@@ -285,27 +295,31 @@ int LuaScriptParser::destroy(lua_State *lua)
 int LuaScriptParser::destroyGroup(lua_State *lua)
 {
 	std::string groupName = lua_tostring(lua, -1);
-	if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	if (LuaParser::groups.find(groupName) != LuaParser::groups.end())
 	{
-		return 1;
+		std::cout << "Attempting to destroy group: " << groupName << std::endl;
+		for each (GameObject* gameObject in LuaParser::groups[groupName])
+		{
+			if (gameObject->getMaterial())
+				gameObject->getMaterial()->allowedToRender = false;
+			if (gameObject->getBehaviour<Collider>())
+				World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
+		}
+		std::cout << "Destroyed group: " << groupName << std::endl;
+		_destroyedGroups.push_back(groupName);
 	}
-	std::cout << "Attempting to destroy group: " << groupName << std::endl;
-	/*if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	if (LuaParser::groups.find(groupName+"collider") != LuaParser::groups.end())
 	{
-		std::cout << "GROUP CANNOT BE FOUND: " << groupName << std::endl;
-		return 1;
-	}*/
-	for each (GameObject* gameObject in LuaParser::groups[groupName])
-	{
-		if (gameObject->getMaterial())
-			gameObject->getMaterial()->allowedToRender = false;
-		if (gameObject->getBehaviour<Collider>())
-			World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
-		//World::physics->removeCollisionObject(gameObject->getBehaviour<SphereCollider>());
-		//delete gameObject;
+		std::cout << "Attempting to destroy group: " << groupName + "collider" << std::endl;
+		for each (GameObject* gameObject in LuaParser::groups[groupName + "collider"])
+		{
+			if (gameObject->getMaterial())
+				gameObject->getMaterial()->allowedToRender = false;
+			if (gameObject->getBehaviour<Collider>())
+				World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
+		}
+		std::cout << "Destroyed group: " << groupName + "collider" << std::endl;
+		_destroyedGroups.push_back(groupName + "collider");
 	}
-	std::cout << "Destroyed group: " << groupName << std::endl;
-	//LuaParser::groups.erase(groupName);
-	_destroyedGroups.push_back(groupName);
-	return 1;
+	return 0;
 }

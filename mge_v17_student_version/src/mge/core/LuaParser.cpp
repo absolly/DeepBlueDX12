@@ -454,7 +454,7 @@ void LuaParser::SetGroupsInstanced()
 
 	for (std::map<std::string, std::vector<GameObject*>>::iterator it = groups.begin(); it != groups.end(); ++it)
 	{
-		if (it->first == "Kelp" || it->first == "door1")
+		if (it->first == "Kelp" || it->first == "door1" || it->first == "door2")
 		{
 			//GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
 			for (int i = 0; i < it->second.size(); i++)
@@ -513,7 +513,7 @@ int LuaParser::addToGroup(lua_State * lua)
 			groups[groupName] = std::vector<GameObject*>();
 		groups[groupName].push_back(_currentGameObject);
 
-		std::cout << std::endl << "Object added to group: " << groupName << std::endl;
+		//std::cout << std::endl << "Object added to group: " << groupName << std::endl;
 	}
 	return 1;
 }
@@ -714,8 +714,8 @@ int LuaParser::addPredator(lua_State * lua)
 		waypoints.push_back(pos);
 	}
 	std::reverse(waypoints.begin(), waypoints.end());
-	for each (glm::vec3 waypoint in waypoints)
-		std::cout << "waypoint: " << waypoint << std::endl;
+	//for each (glm::vec3 waypoint in waypoints)
+		//std::cout << "waypoint: " << waypoint << std::endl;
 
 	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "Creature.OBJ");
 	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Base.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Anim.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Emis.png"));
