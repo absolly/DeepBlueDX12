@@ -145,7 +145,7 @@
     <ClInclude Include="src\Content\GameObjects\Particle.hpp" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.h" />
     <ClInclude Include="src\Content\GameObjects\EnvironmentSoundPlayer.h" />
-    <ClInclude Include="..\src\mge\core\Menu.h" />
+    <ClInclude Include="..\src\mge\core\Menu.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

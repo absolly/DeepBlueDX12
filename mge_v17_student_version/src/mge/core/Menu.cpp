@@ -1,7 +1,5 @@
-#include "Menu.h"
+#include "mge/core/Menu.hpp"
 #include "mge\config.hpp"
-
-
 
 
 Menu::Menu(sf::RenderWindow * pWindow)
@@ -47,7 +45,7 @@ Menu::~Menu()
 {
 }
 
-void Menu::RenderMenu()
+bool Menu::RenderMenu()
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
@@ -57,8 +55,8 @@ void Menu::RenderMenu()
 
 		if (sprite3.getGlobalBounds().contains(position.x, position.y))
 		{
-			std::cout << "enter Game" << std::endl;
 			_window->setMouseCursorVisible(false);
+			return 0;
 		}
 
 
@@ -68,13 +66,15 @@ void Menu::RenderMenu()
 		}
 	}
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(0);
+
+	_window->pushGLStates();
 	_window->draw(sprite);
-
 	_window->draw(sprite2);
-
 	_window->draw(sprite3);
-
 	_window->draw(sprite4);
+	_window->popGLStates();
 
-	_window->display();
+	return 1;
 }

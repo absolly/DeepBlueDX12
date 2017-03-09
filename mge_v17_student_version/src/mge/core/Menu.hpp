@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MENU_H
+#define MENU_H
 
 #include <vector>
 #include <string>
@@ -13,7 +14,7 @@ class Menu
 public:
 	Menu(sf::RenderWindow * pWindow);
 	~Menu();
-	void RenderMenu();
+	bool RenderMenu();
 private:
 	sf::RenderWindow * _window;
 
@@ -27,4 +28,6 @@ private:
 	sf::Sprite sprite3;
 	sf::Sprite sprite4;
 };
+
+#endif
 

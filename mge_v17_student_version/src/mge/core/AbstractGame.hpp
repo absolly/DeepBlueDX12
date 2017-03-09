@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
 #include <string>
+#include "mge/core/Menu.hpp"
 #include "mge/core/ShaderProgram.hpp"
-#include <mge/core/Menu.h>
 #include "mge/core/Texture.hpp"
 
 using namespace std;
