@@ -68,6 +68,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroyGroup>);
 	lua_setglobal(lua, "destroyGroup");
 
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::spawnGroup>);
+	lua_setglobal(lua, "spawnGroup");
+
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::destroy>);
 	lua_setglobal(lua, "destroy");
 
@@ -81,7 +84,10 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_setglobal(lua, "setSubtitleText"); 
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::addItemToInventory>);
-	lua_setglobal(lua, "addItemToInventory"); 
+	lua_setglobal(lua, "addItemToInventory");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::removeItemFromInventory>);
+	lua_setglobal(lua, "removeItemFromInventory");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -121,7 +127,7 @@ int LuaScriptParser::playSound(lua_State * lua)
 int LuaScriptParser::addCoin(lua_State * lua)
 {
 	std::cout << "You've picked up a coin! " << std::endl;
-	Hud::getInstance()->addCoin(Random::Range(150, 250));
+	Hud::getInstance()->addCoin(Random::Range(40, 60));
 	return 1;
 }
 
@@ -185,8 +191,27 @@ void LuaScriptParser::resetLevel()
 				World::physics->addCollisionObject(gameObject->getBehaviour<Collider>());
 		}
 
+	//DISABLE SPAWNED OBJECTS
+	for each(GameObject* gameObject in _spawnedObjects) {
+		std::cout << "reset treasure" << std::endl;
+		gameObject->getMaterial()->allowedToRender = false;
+		for each(Collider* col in gameObject->getBehavioursOfType<Collider>())
+			World::physics->removeCollisionObject(col);
+	}
+	for each(std::string group in _spawnedGroups)
+		for each(GameObject* gameObject in LuaParser::groups[group]) {
+			std::cout << "reset grouped object" << std::endl;
+			if (gameObject->getMaterial())
+				gameObject->getMaterial()->allowedToRender = false;
+			if (gameObject->getBehaviour<Collider>())
+				World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
+		}
+	//DISABLE SPAWNED OBJECTS
+
 	_destoyedObjects.clear();
 	_destroyedGroups.clear();
+	_spawnedObjects.clear();
+	_spawnedGroups.clear();
 }
 
 void LuaScriptParser::printTest(OnCollisionArgs onCollisionArgs)
@@ -214,6 +239,13 @@ int LuaScriptParser::addItemToInventory(lua_State * lua)
 	int objectPointer = lua_tointeger(lua, -1);
 	GameObject* gameObject = (GameObject*)objectPointer;
 	Hud::getInstance()->getInventory().addItem(gameObject->getName() + ".png");
+	return 0;
+}
+
+int LuaScriptParser::removeItemFromInventory(lua_State * lua)
+{
+	std::string objectName = lua_tostring(lua, -1);
+	Hud::getInstance()->getInventory().removeItem(objectName);
 	return 0;
 }
 
@@ -284,28 +316,54 @@ int LuaScriptParser::destroy(lua_State *lua)
 
 int LuaScriptParser::destroyGroup(lua_State *lua)
 {
-	std::string groupName = lua_tostring(lua, -1);
-	if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+	std::string groupName = lua_tostring(lua, -2);
+	bool registerDestroy = lua_tostring(lua, -1);
+	destroyGroup(groupName, registerDestroy);
+	destroyGroup(groupName + "collider", registerDestroy);
+	return 0;
+}
+
+void LuaScriptParser::destroyGroup(std::string groupName, bool registerDestroy)
+{
+	if (LuaParser::groups.find(groupName) != LuaParser::groups.end())
 	{
-		return 1;
+		std::cout << "Attempting to destroy group: " << groupName << std::endl;
+		for each (GameObject* gameObject in LuaParser::groups[groupName])
+		{
+			if (gameObject->getMaterial())
+				gameObject->getMaterial()->allowedToRender = false;
+			if (gameObject->getBehaviour<Collider>())
+				World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
+		}
+		std::cout << "Destroyed group: " << groupName << std::endl;
+		if (registerDestroy)
+			_destroyedGroups.push_back(groupName);
 	}
-	std::cout << "Attempting to destroy group: " << groupName << std::endl;
-	/*if (LuaParser::groups.find(groupName) == LuaParser::groups.end())
+}
+
+int LuaScriptParser::spawnGroup(lua_State *lua)
+{
+	std::string groupName = lua_tostring(lua, -2);
+	bool registerSpawn = lua_tostring(lua, -1);
+	spawnGroup(groupName, registerSpawn);
+	spawnGroup(groupName + "collider", registerSpawn);
+	return 0;
+}
+
+void LuaScriptParser::spawnGroup(std::string groupName, bool registerSpawn)
+{
+	if (LuaParser::groups.find(groupName) != LuaParser::groups.end())
 	{
-		std::cout << "GROUP CANNOT BE FOUND: " << groupName << std::endl;
-		return 1;
-	}*/
-	for each (GameObject* gameObject in LuaParser::groups[groupName])
-	{
-		if (gameObject->getMaterial())
-			gameObject->getMaterial()->allowedToRender = false;
-		if (gameObject->getBehaviour<Collider>())
-			World::physics->removeCollisionObject(gameObject->getBehaviour<Collider>());
-		//World::physics->removeCollisionObject(gameObject->getBehaviour<SphereCollider>());
-		//delete gameObject;
+		std::cout << "Attempting to spawn group: " << groupName << std::endl;
+		for each (GameObject* gameObject in LuaParser::groups[groupName])
+		{
+			if (gameObject->getMaterial())
+				gameObject->getMaterial()->allowedToRender = true;
+			if (gameObject->getBehaviour<Collider>())
+				World::physics->addCollisionObject(gameObject->getBehaviour<Collider>());
+		}
+		std::cout << "Spawned group: " << groupName << std::endl;
+		if (registerSpawn)
+			_spawnedGroups.push_back(groupName);
 	}
-	std::cout << "Destroyed group: " << groupName << std::endl;
-	//LuaParser::groups.erase(groupName);
-	_destroyedGroups.push_back(groupName);
-	return 1;
 }

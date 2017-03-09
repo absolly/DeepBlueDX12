@@ -209,7 +209,7 @@ void AbstractGame::run() {
     sf::Clock updateClock;
     sf::Clock renderClock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    sf::Time timePerFrame = sf::seconds(1.0f / 120.0f);
+    sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	_timeSinceStart = sf::Time::Zero;
 
 
@@ -245,7 +245,7 @@ void AbstractGame::_update(float pStep) {
 void AbstractGame::_render () {
 	//return;
 	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-600, 600, -600, 600, -800, 800);
 	glm::mat4 depthViewMatrix;
 	for (Light* light : World::activeLights) { 
 	  if (light->type == Light::DIRECTIONAL) { 

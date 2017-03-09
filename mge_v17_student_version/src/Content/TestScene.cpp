@@ -154,6 +154,7 @@ void TestScene::_initializeScene() {
 	//boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	//float surfaceHeight = 750;
 	boat->addBehaviour(new BoatFollowBehaviour(player->getChildAt(0)));
+	player->setSpawnBoat(boat);
 	//boat->addCollider(MeshColliderArgs(*boatMesh), false, false);
 	GameObject* boatColliderContainer = new GameObject("ColliderContainer", glm::vec3(0, -80, 0));
 	boat->add(boatColliderContainer);
@@ -219,31 +220,43 @@ void TestScene::_initializeScene() {
 	std::vector<glm::vec3> relicLocations
 	{
 		glm::vec3(-2238.6, +12.7, +2198.9), //In Tutorial cave
-		glm::vec3(414.763, 144.757, -296.977), 
-		glm::vec3(+312.4, +127.7, -78.6)
+		glm::vec3(+414.763, +144.757, -296.977),
+		glm::vec3(+312.4, +127.7, -78.6),
+		glm::vec3(-1300.279, 10.9, 614.8346),
+		glm::vec3(-1364.085, 7.299999, 1020.406),
+		glm::vec3(-1121.604, 7.85 , 1043.827)
 	};
 
 	std::vector<glm::vec3> relicScales
-	{	
+	{
 		glm::vec3(0.6f, 0.6f, 0.6f),
 		glm::vec3(0.6f, 0.6f, 0.6f),
-		glm::vec3(0.2f, 0.2f, 0.2f)
+		glm::vec3(0.2f, 0.2f, 0.2f),
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.6f, 0.6f, 0.6f),
+		glm::vec3(0.6f, 0.6f, 0.6f)
 	};
 
 	std::vector<float> relicColliderSizes
 	{
 		25.0f,
 		25.0f,
-		80.0f
+		80.0f,
+		25.0f,
+		25.0f,
+		25.0f
 	};
 
 	std::string relicNames[] =
 	{
 		"Relic_tablet",
 		"Relic_disc",
-		"Relic_statue"
+		"Relic_statue",
+		"Relic_mirror",
+		"Relic_kruik",
+		"Temple_key"
 	};
-	
+
 	for (int i = 0; i < relicLocations.size(); i++)
 	{
 		AbstractMaterial* relicAndTreasureMaterial = new ColorMaterial(glm::vec3(10, 7, 0.5));
@@ -254,7 +267,7 @@ void TestScene::_initializeScene() {
 		relic->setMaterial(relicAndTreasureMaterial);
 		relic->scale(relicScales[i]);
 		relic->addBehaviour(new RotatingBehaviour());
-		 relic->addCollider(MeshColliderArgs(*mesh), false, false);
+		relic->addCollider(MeshColliderArgs(*mesh), false, false);
 		Collider& relicTriggerCollider = relic->addCollider(SphereColliderArgs(relicColliderSizes[i]), true, true);
 		_world->add(relic);
 		relicTriggerCollider.collisionEvents[playerRigidbody].bind(_scriptParser, &LuaScriptParser::printTest);

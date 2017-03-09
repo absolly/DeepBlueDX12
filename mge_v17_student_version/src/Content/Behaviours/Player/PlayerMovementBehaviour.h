@@ -43,7 +43,7 @@ private:
 	float _maxSideMoveSpeed = 10;
 	float _moveSideAcceleration = 40;
 	float _moveSideDecceleration = 40;
-	float _currentMoveSideSpeed;
+	float _currentMoveSideSpeed = 0;
 	//[Header("Movement Floating Up")]
 	float _minMoveUpSpeed = -4;
 	float _maxMoveUpSpeed = 10;

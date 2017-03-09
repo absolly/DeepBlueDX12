@@ -34,7 +34,7 @@ class GameObject
 		void setWorldTransform_TEST(const glm::mat4 & pTransform);
         const glm::mat4& getTransform() const;
 
-		const btTransform & getBulletPhysicsTransform() const;
+		btTransform getBulletPhysicsTransform() const;
 
 		glm::vec3 getLocalScale();
 		btVector3 getBulletPhysicsLocalScale();

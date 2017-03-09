@@ -73,11 +73,12 @@ const glm::mat4& GameObject::getTransform() const
 	return _transform;
 }
 
-const btTransform& GameObject::getBulletPhysicsTransform() const
+btTransform GameObject::getBulletPhysicsTransform() const
 {
 	btTransform btTransform;
 	glm::mat4 transform = getWorldTransform();
 	glm::vec3 scale = glm::vec3(glm::length(transform[0]), glm::length(transform[1]), glm::length(transform[2]));
+	//std::cout << "[Gameobject->getBulletPhysicsTransform()->transform] " << transform << std::endl;
 	transform = glm::scale(transform, glm::vec3(1 / scale.x, 1 / scale.y, 1 / scale.z));
 	glm::quat rotation = glm::quat_cast(transform);
 	glm::vec3 position = transform[3];

@@ -20,10 +20,12 @@ public:
 	std::vector<Particle *> GetParticles();
 	void setDirection(glm::vec3 pDirection);
 	void SetStartEndScale(float pStartscale, float pEndScale);
+	void setSpeedMultiplier(float pMultiplier);
 	void Emit(int pAmount);
 
 private:
 	int _spawnRate = 0;
+	float _speedMultiplier = 1.0;
 	float _time = 0;
 	int _currentIndex = 0;
 	std::vector<Particle*> particles;

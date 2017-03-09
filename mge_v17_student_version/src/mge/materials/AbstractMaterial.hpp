@@ -23,6 +23,7 @@ class AbstractMaterial
         virtual ~AbstractMaterial();
 		bool isShadowCaster = true;
 		bool allowedToRender = true;
+		bool isDoubleSided = false;
         /**
          * Render the given mesh.
          */

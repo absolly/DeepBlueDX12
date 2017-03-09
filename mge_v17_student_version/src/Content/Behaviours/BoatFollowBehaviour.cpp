@@ -1,8 +1,10 @@
 #include "BoatFollowBehaviour.h"
 #include "Content\Core\Input.h"
+#include "Content/TestScene.hpp"
 
 BoatFollowBehaviour::BoatFollowBehaviour(GameObject * pTarget) : _target(pTarget)
 {
+	TestScene::resetEvent.bind(this, &BoatFollowBehaviour::reset);
 }
 
 
@@ -56,4 +58,11 @@ float BoatFollowBehaviour::clip(float n, float lower, float upper)
 {
 	n = (n > lower) * n + !(n > lower) * lower;
 	return (n < upper) * n + !(n < upper) * upper;
+}
+
+void BoatFollowBehaviour::reset()
+{
+	std::cout << std::endl << "Reset boat" << std::endl;
+
+	_owner->setLocalPosition(glm::vec3(-2068, 720, 541));
 }

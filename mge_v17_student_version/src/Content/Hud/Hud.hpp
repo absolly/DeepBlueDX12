@@ -35,11 +35,12 @@ class Hud
 		int getCoinCount();
 		bool getNoOxygenLeft();
 	private:
+		void reloadHUD();
 		static Hud* _instance;
 
 		sf::RenderWindow * _window;
 		int _coins = 0;
-		int _coinsDisplayed = 0;
+		float _coinsDisplayed = 0;
 
 		HUDMaterial* _hudMaterial;
         std::string _debugInfo;

@@ -14,6 +14,7 @@ public:
 private:
 	void InterPolateDirection(glm::vec3 pDirection, float pSpeed);
 	float clip(float n, float lower, float upper);
+	void reset();
 	GameObject* _target;
 };
 

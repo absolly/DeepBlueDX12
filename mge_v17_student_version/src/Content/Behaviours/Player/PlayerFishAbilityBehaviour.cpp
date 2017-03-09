@@ -28,6 +28,7 @@ void PlayerFishAbilityBehaviour::update(float deltaTime)
 	if (Input::getKeyDown(sf::Keyboard::Q))
 	{
 		std::cout << "CALLL THE FIESH" << std::endl;
+		SoundManager::getInstance()->PlaySound("ability", "ability", false, true, false, 50, "", Random::Range(0.9f, 1.1f));
 		_playerFishFlock->CallFish();
 	}
 }

@@ -17,7 +17,8 @@ using namespace std;
 ParticleSystem::ParticleSystem(glm::vec3 pPosition, std::string pName) : GameObject(pName ,pPosition)
 {	
 	_startPosition = pPosition;
-	_spawnRate = 20;
+	_spawnRate = 4;
+	duration = 15;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -33,11 +34,11 @@ void ParticleSystem::update(float pStep)
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
-	uniform_int_distribution<> dis(0, 1000);
+	uniform_int_distribution<> dis(-5, 5);
 
 		//if (_time % (1 / _spawnRate) < 0.01)
 		
-	if (fmod(_time , (1.0f / _spawnRate)) <= 0.05f)
+	if (fmod(_time , (1.0f / _spawnRate)) <= 0.04f)
 	{
 		if(EmitLeft > 0 || loop)
 		{
@@ -51,7 +52,7 @@ void ParticleSystem::update(float pStep)
 			}
 			else
 			{
-				Particle * particle = new Particle(glm::vec3(_startPosition.x, _startPosition.y, _startPosition.z), "particle", glm::vec3(dis(gen) / 100000.0f, 0.1f, dis(gen) / 100000.0f), duration, this, _currentIndex);
+				Particle * particle = new Particle(glm::vec3(_startPosition.x, _startPosition.y, _startPosition.z), "particle", glm::vec3((dis(gen) + direction.x) * _speedMultiplier , direction.y * _speedMultiplier, (dis(gen) + direction.z) * _speedMultiplier), duration, this, _currentIndex);
 				particle->SetStartEndScale(startScaleSize, endScaleSize);
 				particles.push_back(particle);
 				_currentIndex++;
@@ -91,6 +92,11 @@ void ParticleSystem::update(float pStep)
 void ParticleSystem::Emit(int pAmount)
 {
 	EmitLeft += pAmount;
+}
+
+void ParticleSystem::setSpeedMultiplier(float pMultiplier)
+{
+	_speedMultiplier = pMultiplier;
 }
 
 

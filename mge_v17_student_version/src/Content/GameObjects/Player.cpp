@@ -41,9 +41,8 @@ Player::Player() : GameObject("Player")
 
 
 	//Add rigidbody and collider
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(getBulletPhysicsTransform());
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(temp->getBulletPhysicsTransform());
 	temp->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
-	temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
 	temp->getBehaviour<RigidBody>()->setGravity(btVector3(0, 0, 0));
 	temp->addBehaviour(new PlayerMovementBehaviour(*this));
 	//Add rigidbody and collider
@@ -80,6 +79,11 @@ void Player::scare(float scareAmount)
 	_affraidness = glm::clamp(_affraidness + scareAmount, 0.0f, 100.0f);
 }
 
+void Player::setSpawnBoat(GameObject * pBoat)
+{
+	_spawnBoat = pBoat;
+}
+
 Camera * Player::getCamera()
 {
 	return _camera;
@@ -87,16 +91,19 @@ Camera * Player::getCamera()
 
 void Player::resetLevel()
 {
-	//respawn();
+	respawn(true);
 	Hud::getInstance()->setCoinCount(0);
 	TestScene::resetEvent();
 }
 
-void Player::respawn()
+void Player::respawn(bool reset)
 {
 	_deaths++;
 	GameObject* temp = getChildAt(0);
-	temp->setLocalPosition(_spawnPosition);
+	if(_spawnBoat && !reset)
+		temp->setLocalPosition(_spawnBoat->getWorldPosition() - glm::vec3(0,15,0));
+	else
+		temp->setLocalPosition(_spawnPosition);
 	temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
 	Hud::getInstance()->isPlayerKilled = false;
 	getBehaviour<DivingBehaviour>()->_airLeft = 100;

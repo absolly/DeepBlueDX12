@@ -96,6 +96,8 @@ void LuaParser::loadFile(const char* pFileName) {
 		lua_pop(lua, 1);
 	}
 
+	scriptParser->destroyGroup("Relics", false);
+
 	//get the start function and execute it
 	////lua_getglobal(lua, "start");
 	//if(lua_isnil(lua,-1)) {
@@ -454,7 +456,7 @@ void LuaParser::SetGroupsInstanced()
 
 	for (std::map<std::string, std::vector<GameObject*>>::iterator it = groups.begin(); it != groups.end(); ++it)
 	{
-		if (it->first == "Kelp" || it->first == "door1")
+		if (it->first == "Kelp" || it->first == "door1" || it->first == "door2")
 		{
 			//GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
 			for (int i = 0; i < it->second.size(); i++)
@@ -463,6 +465,7 @@ void LuaParser::SetGroupsInstanced()
 			}
 
 			GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second);
+			gpuMat->isDoubleSided = true;
 			it->second[0]->setMesh(it->second[0]->getMesh());
 			it->second[0]->setMaterial(gpuMat);
 			_world->add(it->second[0]);
@@ -512,7 +515,7 @@ int LuaParser::addToGroup(lua_State * lua)
 			groups[groupName] = std::vector<GameObject*>();
 		groups[groupName].push_back(_currentGameObject);
 
-		std::cout << std::endl << "Object added to group: " << groupName << std::endl;
+		//std::cout << std::endl << "Object added to group: " << groupName << std::endl;
 	}
 	return 1;
 }
@@ -568,7 +571,7 @@ int LuaParser::createFish(lua_State * lua)
 	}
 
 
-	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 80, 100, 10);
+	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 90, 100, 10);
 	fishTank->setMesh(smallFish);
 	fishTank->setMaterial(new GPUinstancingMaterial(*fishTank->allFish, fishTexture));
 	_world->add(fishTank);
@@ -591,7 +594,9 @@ int LuaParser::addParticles(lua_State * lua)
 	//_world->add(fishTank);
 
 	ParticleSystem * particleSystem = new ParticleSystem(glm::vec3(x, y, -z), "name");
-	particleSystem->SetStartEndScale(0.001f, 2.0f);
+	particleSystem->SetStartEndScale(0.5f, 4.0f);
+	particleSystem->setDirection(glm::vec3(0,100.0f,0));
+	particleSystem->setSpeedMultiplier(0.005f);
 
 	particleSystem->setMesh(smallFish);
 	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
@@ -711,8 +716,8 @@ int LuaParser::addPredator(lua_State * lua)
 		waypoints.push_back(pos);
 	}
 	std::reverse(waypoints.begin(), waypoints.end());
-	for each (glm::vec3 waypoint in waypoints)
-		std::cout << "waypoint: " << waypoint << std::endl;
+	//for each (glm::vec3 waypoint in waypoints)
+		//std::cout << "waypoint: " << waypoint << std::endl;
 
 	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + "Creature.OBJ");
 	AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Base.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Anim.png"), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "Creature_Emis.png"));

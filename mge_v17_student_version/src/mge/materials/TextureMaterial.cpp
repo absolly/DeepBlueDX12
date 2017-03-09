@@ -79,7 +79,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 		0.5, 0.5, 0.5, 1.0
 	);
 	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-300, 300, -300, 300, -800, 800);
+	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-600, 600, -600, 600, -800, 800);
 	glm::mat4 depthViewMatrix;
 
     int i = 0;
