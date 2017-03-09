@@ -66,7 +66,7 @@ void PredatorBehaviour::update(float pStep)
 		}
 	}
 	_crumbCooldown--;
-	if (_crumbCooldown <= 0) {
+	if (_crumbCooldown <= 0 && !Hud::getInstance()->isPlayerKilled) {
 		_crumbs[crumbHead] = _target->getWorldPosition();
 		_crumbObjects[crumbHead]->setLocalPosition(_target->getWorldPosition());
 		crumbHead = (crumbHead + 1) % 16;
@@ -77,7 +77,7 @@ void PredatorBehaviour::update(float pStep)
 	glm::vec3 mypos = _owner->getWorldPosition();
 	float clostestDist = -1;
 	bool followingCrumbs = false;
-	if (!_target->getBehaviour<PlayerFishAbilityBehaviour>()->getIsProtected()) {
+	if (!_target->getBehaviour<PlayerFishAbilityBehaviour>()->getIsProtected() && !Hud::getInstance()->isPlayerKilled) {
 		for (int i = 0; i < 16; i++) {
 
 			if (glm::distance(mypos, _crumbs[(i + crumbHead) % 16]) < 10)
@@ -92,7 +92,7 @@ void PredatorBehaviour::update(float pStep)
 
 				// Perform raycast
 				World::physics->rayTest(Start, End, RayCallback);
-				if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
+				if (!RayCallback.hasHit() || !RayCallback.m_collisionObject->isStaticObject()) {
 					//std::cout << "no hit!" << std::endl;
 					closest = _crumbs[(i + crumbHead) % 16];
 
@@ -126,7 +126,7 @@ void PredatorBehaviour::update(float pStep)
 
 		// Perform raycast
 		World::physics->rayTest(Start, End, RayCallback);
-		if (!RayCallback.hasHit() || RayCallback.m_collisionFilterMask == BIT(0)) {
+		if (!RayCallback.hasHit() || !RayCallback.m_collisionObject->isStaticObject()) {
 			std::cout << "clear return path" << std::endl;
 			while (!_returnPath.empty())
 			{
@@ -137,7 +137,8 @@ void PredatorBehaviour::update(float pStep)
 			_returnPathMarkers.clear();
 
 			// Do some clever stuff here
-		} else if (glm::distance(_returnPath.top(), _owner->getWorldPosition()) < 5) {
+		}
+		else if (glm::distance(_returnPath.top(), _owner->getWorldPosition()) < 10) {
 			_returnPath.pop();
 			delete _returnPathMarkers.back();
 			_returnPathMarkers.pop_back();
@@ -159,7 +160,7 @@ void PredatorBehaviour::update(float pStep)
 		_currentWaypoint = _currentWaypoint % _waypoints.size();
 		_targetPos = _waypoints[_currentWaypoint];
 	}
-	InterPolateDirection(_owner->getWorldPosition() - _targetPos);
+	InterPolateDirection(_owner->getWorldPosition() - _targetPos, pStep);
 	_ownerMat->speed = _speed;
 	_owner->translate(glm::vec3(0, 0, _speed * pStep * 300));
 
@@ -171,6 +172,8 @@ void PredatorBehaviour::update(float pStep)
 			SoundManager::getInstance()->PlaySound("hit", "hit", false, true, false);
 			SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
 			Hud::getInstance()->isPlayerKilled = true;
+			for (int i = 0; i < _crumbs->length(); i++)
+				_crumbs[i] = glm::vec3(0);
 		}
 	}
 	_soundAttackDelayTimer -= pStep;
@@ -179,7 +182,7 @@ void PredatorBehaviour::update(float pStep)
 	{
 		if (!Hud::getInstance()->isPlayerKilled)
 		{
-			SoundManager::getInstance()->PlaySound("Monster_Roar_Growl_009", std::to_string((int)this)+"1", false, false, false, 100, "", Random::Range(0.8f, 1.0f));
+			SoundManager::getInstance()->PlaySound("Monster_Roar_Growl_009", std::to_string((int)this) + "1", false, false, false, 100, "", Random::Range(0.8f, 1.0f));
 			_soundAttackDelayTimer = Random::Range(8.0f, 10.0f);
 		}
 	}
@@ -192,10 +195,10 @@ void PredatorBehaviour::update(float pStep)
 			float smoothVolume = 0.5f + cosf(distanceFrom0To1 * glm::pi<float>()) / 2;
 			float reducedVolume = smoothVolume * 0.35f;
 
-			SoundManager::getInstance()->PlaySound("Monster 31", std::to_string((int)this)+"2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
+			SoundManager::getInstance()->PlaySound("Monster 31", std::to_string((int)this) + "2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
 			_soundNearbyDelayTimer = Random::Range(6.0f, 12.0f);
 		}
-		
+
 	}
 	float maxDistance = 750;
 	float affraidness = (maxDistance - distanceToPlayer) / maxDistance;
@@ -205,7 +208,7 @@ void PredatorBehaviour::update(float pStep)
 }
 
 
-void PredatorBehaviour::InterPolateDirection(glm::vec3 pDirection)
+void PredatorBehaviour::InterPolateDirection(glm::vec3 pDirection, float pDeltaTime)
 {
 	glm::vec3 LocalPos = _owner->getLocalPosition();
 
@@ -223,7 +226,7 @@ void PredatorBehaviour::InterPolateDirection(glm::vec3 pDirection)
 
 	//std::cout << _owner->getLocalPosition() << std::endl;
 
-	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.03f));
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, pDeltaTime * 2));
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);

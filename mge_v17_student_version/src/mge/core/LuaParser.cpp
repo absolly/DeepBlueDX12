@@ -471,7 +471,7 @@ void LuaParser::SetGroupsInstanced()
 
 		if (it->first == "SeaGrass")
 		{
-			Texture * grassTexture = Texture::load(Config::MGE_TEXTURE_PATH + "SeaGrass2_UV.png");
+			Texture * grassTexture = Texture::load(Config::MGE_TEXTURE_PATH + "SeaGrass3_UV.png");
 			GameObject * object = new GameObject("gpuInstancing", glm::vec3(0, 0, 0));
 			for (int i = 0; i < it->second.size(); i++)
 			{

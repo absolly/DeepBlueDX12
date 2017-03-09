@@ -147,6 +147,7 @@ end
 function onTrigger3Collision(self, ePressed)
 	if (RelicTabletPickedUp) then
 		playSound("(3) Ive deciphered", "Voice line", false, true, 100, 1, 1, "I've deciphered the strange singal coming from the artifact. \nIt has something to do with fish. Try and find some fish and  \nsee what the artifact does.");
+		setFishHintText("Press Q to call for fish to protect you");
 		destroy(self);
 	end
 end
