@@ -17,7 +17,6 @@ class World : public GameObject
 		void setMainCamera (Camera* pCamera);
 		Camera* getMainCamera();
         static std::set<Light*> activeLights;
-        static void addRigidBody(btRigidBody* pBody);
         static void removeRigidBody(btRigidBody* pBody);
         void updatePhysics(float pDelta);
 		void debugDraw();

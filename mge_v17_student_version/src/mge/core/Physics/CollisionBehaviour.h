@@ -13,6 +13,13 @@ struct OnCollisionArgs
 	OnCollisionArgs(btCollisionObject* sender, btCollisionObject* collidingWith) : sender(sender), collidingWith(collidingWith) {}
 };
 
+#define BIT(x) (1<<(x))
+enum Collisiontypes {
+	COL_NOTHING = 0,
+	COL_NONRIGIDBODY = BIT(0),
+	COL_RIGIDBODY = BIT(1), 
+};
+
 class CollisionBehaviour : public AbstractBehaviour, public btPairCachingGhostObject
 {
 public:

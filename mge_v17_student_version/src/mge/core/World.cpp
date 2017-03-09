@@ -63,10 +63,6 @@ Camera* World::getMainCamera () {
     return _mainCamera;
 }
 
-void World::addRigidBody(btRigidBody* pBody) {
-    physics->addRigidBody(pBody);
-}
-
 void World::removeRigidBody(btRigidBody* pBody) {
     physics->removeRigidBody(pBody);
 }

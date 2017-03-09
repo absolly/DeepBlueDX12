@@ -41,9 +41,8 @@ Player::Player() : GameObject("Player")
 
 
 	//Add rigidbody and collider
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(getBulletPhysicsTransform());
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(temp->getBulletPhysicsTransform());
 	temp->addCollider(SphereColliderArgs(3), false, false).makeRigidBody(1, btVector3(), *fallMotionState);
-	temp->getBehaviour<RigidBody>()->setWorldTransform(temp->getBulletPhysicsTransform());
 	temp->getBehaviour<RigidBody>()->setGravity(btVector3(0, 0, 0));
 	temp->addBehaviour(new PlayerMovementBehaviour(*this));
 	//Add rigidbody and collider

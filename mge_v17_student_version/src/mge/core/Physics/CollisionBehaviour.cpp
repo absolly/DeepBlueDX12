@@ -3,7 +3,6 @@
 #include "glm.hpp"
 #include "mge\core\GameObject.hpp"
 #include "mge\core\World.hpp"
-#include "mge\core\Physics\RigidBody.hpp"
 
 /*Trigger::Trigger() : 
 	_ghostObject(*new btPairCachingGhostObject()),
@@ -11,12 +10,6 @@
 {
 }*/
 
-#define BIT(x) (1<<(x))
-enum collisiontypes {
-	COL_NOTHING = 0, //<Collide with nothing
-	COL_DYNAMIC = BIT(0), //<Collide with ships
-	COL_STATIC = BIT(1), //<Collide with walls
-};
 
 
 CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shape, bool isTrigger, bool usePhysicsPosition, bool isStatic) : AbstractBehaviour(), btPairCachingGhostObject(),
@@ -31,8 +24,15 @@ CollisionBehaviour::CollisionBehaviour(GameObject& owner, btCollisionShape* shap
 	{
 		setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	}
+	#define dynamic !isStatic
+	#define static isStatic
+	#define trigger isTrigger
+	#define solid !isTrigger
 	
-	_physicsWorld->addCollisionObject(this, isStatic ? COL_STATIC : COL_DYNAMIC, isStatic ? COL_DYNAMIC : (COL_STATIC | COL_DYNAMIC));
+	int collisionFilterMask = 0;
+	int collisionFilterGroup = 0;
+	
+	_physicsWorld->addCollisionObject(this, btCollisionObject::CO_COLLISION_OBJECT, btCollisionObject::CO_RIGID_BODY);
 	_owner = &owner;
 	updatePositon();
 	updateScale();

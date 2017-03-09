@@ -73,7 +73,7 @@ const glm::mat4& GameObject::getTransform() const
 	return _transform;
 }
 
-const btTransform& GameObject::getBulletPhysicsTransform() const
+btTransform GameObject::getBulletPhysicsTransform() const
 {
 	btTransform btTransform;
 	glm::mat4 transform = getWorldTransform();
