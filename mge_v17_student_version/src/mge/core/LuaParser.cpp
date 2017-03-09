@@ -569,7 +569,7 @@ int LuaParser::createFish(lua_State * lua)
 	}
 
 
-	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 80, 100, 8);
+	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 90, 100, 10);
 	fishTank->setMesh(smallFish);
 	fishTank->setMaterial(new GPUinstancingMaterial(*fishTank->allFish, fishTexture));
 	_world->add(fishTank);
@@ -592,7 +592,9 @@ int LuaParser::addParticles(lua_State * lua)
 	//_world->add(fishTank);
 
 	ParticleSystem * particleSystem = new ParticleSystem(glm::vec3(x, y, -z), "name");
-	particleSystem->SetStartEndScale(0.001f, 2.0f);
+	particleSystem->SetStartEndScale(0.5f, 4.0f);
+	particleSystem->setDirection(glm::vec3(0,100.0f,0));
+	particleSystem->setSpeedMultiplier(0.005f);
 
 	particleSystem->setMesh(smallFish);
 	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");

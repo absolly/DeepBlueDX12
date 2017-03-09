@@ -155,7 +155,7 @@ void FlockingBehaviour::InterPolateDirection(glm::vec3 pDirection)
 
 	//std::cout << _owner->getLocalPosition() << std::endl;
 
-	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.045f));
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.095f));
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);
@@ -180,7 +180,7 @@ void FlockingBehaviour::InverseDirection()
 
 	//std::cout << _owner->getLocalPosition() << std::endl;
 
-	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.02f));
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.095f));
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);

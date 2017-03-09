@@ -13,7 +13,7 @@ void main()
 {
     color = texture( myTextureSampler, UV );
 	
-	if (color.a < 0.2)
+	if (color.a < 0.15)
 	{
 		discard;
 	}
