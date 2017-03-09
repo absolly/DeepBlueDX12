@@ -208,14 +208,14 @@ void TestScene::_initializeScene() {
 	EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
 	_world->add(environmentSoundPlayer);
 
-	//_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
-	//_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
+	_scriptParser = new LuaScriptParser((Config::MGE_LEVEL_PATH + "story.lua").c_str(), _window, soundmng);
+	_scriptParser->SetPlayerAndObjectives(player->getChildAt(0), objectives);
 
-	//LuaParser * luaparser2 = new LuaParser(_world);
-	//luaparser2->setPlayerRigidBody(*player);
-	//luaparser2->scriptParser = _scriptParser;
-	//luaparser2->loadFile((Config::MGE_LEVEL_PATH + "LevelPerformanceTest.lua").c_str());
-	//luaparser2->SetGroupsInstanced();
+	LuaParser * luaparser2 = new LuaParser(_world);
+	luaparser2->setPlayerRigidBody(*player);
+	luaparser2->scriptParser = _scriptParser;
+	luaparser2->loadFile((Config::MGE_LEVEL_PATH + "LevelPerformanceTest.lua").c_str());
+	luaparser2->SetGroupsInstanced();
 
 	std::vector<glm::vec3> relicLocations
 	{
