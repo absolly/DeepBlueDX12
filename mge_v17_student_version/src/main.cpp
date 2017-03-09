@@ -87,7 +87,6 @@ int main()
 			// get global mouse position
 			sf::Vector2i position = sf::Mouse::getPosition(*game->getRenderWindow());
 			// set mouse position relative to a window
-			std::cout << position.x << std::endl;
 
 			if (sprite3.getGlobalBounds().contains(position.x,position.y))
 			{

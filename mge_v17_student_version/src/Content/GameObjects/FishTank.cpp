@@ -39,7 +39,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, st
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
-	uniform_int_distribution<> dis(1, pTankSize / 4);
+	uniform_int_distribution<> dis((-pTankSize / 4), pTankSize / 4);
 
 	goalPosition = glm::vec3(dis(gen), dis(gen), dis(gen)) + getLocalPosition();
 

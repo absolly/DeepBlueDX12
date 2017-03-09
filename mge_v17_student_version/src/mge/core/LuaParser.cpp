@@ -568,7 +568,7 @@ int LuaParser::createFish(lua_State * lua)
 	}
 
 
-	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 80, 100, 10);
+	FishTank* fishTank = new FishTank(glm::vec3(x,y,-z), _world, _player->getChildAt(0), "", 80, 100, 8);
 	fishTank->setMesh(smallFish);
 	fishTank->setMaterial(new GPUinstancingMaterial(*fishTank->allFish, fishTexture));
 	_world->add(fishTank);
