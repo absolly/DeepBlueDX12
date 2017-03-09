@@ -32,7 +32,7 @@ DiverMaxMoveSpeed 250.000000
 DiverMaxMoveSpeedBoost 37.500000
 DiverAcceleration 40.000000
 DiverAccelerationBoost 50.000000
-DiverDecceleration 40.000000
+DiverDecceleration 400.000000
 DiverDecelerationBoost 50.000000
 ScooterMinMoveSpeed -25.000000
 ScooterMinMoveSpeedBoost -37.500000

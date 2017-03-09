@@ -6,8 +6,9 @@ function reset()
 	RelicTabletPickedUp = false;
 	RelicDiscPickedUp = false;
 	RelicStatuePickedUp = false;
-	TempleRelicOnePickedUp = false;
-	TempleRelicTwoPickedUp = false;
+	RelicMirrorPickedUp = false;
+	RelicKruikPickedUp = false;
+	TempleKeyPickedUp = false;
 end
 
 --------------TREASURE--------------
@@ -34,6 +35,48 @@ function onRelic_tabletCollision(self, ePressed)
 			destroy(self);
 		else
 			setInteractionText("Press E to pick up the relic");
+		end
+	end
+end
+
+function onRelic_kruikCollision(self, ePressed)
+	if not (RelicKruikPickedUp) then
+		if (ePressed) then
+			addItemToInventory(self);
+			RelicKruikPickedUp = true;
+			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
+			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the relic");
+		end
+	end
+end
+
+function onRelic_mirrorCollision(self, ePressed)
+	if not (RelicMirrorPickedUp) then
+		if (ePressed) then
+			addItemToInventory(self);
+			RelicMirrorPickedUp = true;
+			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
+			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the relic");
+		end
+	end
+end
+
+function onTemple_keyCollision(self, ePressed)
+	if not (TempleKeyPickedUp) then
+		if (ePressed) then
+			addItemToInventory(self);
+			TempleKeyPickedUp = true;
+			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
+			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
+			destroy(self);
+		else
+			setInteractionText("Press E to pick up the key");
 		end
 	end
 end
@@ -124,8 +167,17 @@ function onTrigger6Collision(self, ePressed)
 end
 
 function onTrigger7Collision(self, ePressed)
-	playSound("(9) Thats", "Voice line", false, true, 100, 1, 1 ,"That's weird, none of these relics fit in the slot on the door, \nmaybe look around and see if you can find something that fits.");
-	destroy(self);
+	if (ePressed) then
+		if (TempleKeyPickedUp) then
+			destroyGroup("door3");
+			removeItemFromInventory("Temple_key.png");
+			destroy(self);
+		else
+			playSound("(9) Thats", "Voice line", false, false, 100, 1, 1 ,"That's weird, none of these relics fit in the slot on the door, \nmaybe look around and see if you can find something that fits.");
+		end
+	else
+		setInteractionText("Press E to open the door.");
+	end
 end
 
 function onTrigger8Collision(self, ePressed)
@@ -134,8 +186,22 @@ function onTrigger8Collision(self, ePressed)
 end
 
 function onTrigger9Collision(self, ePressed)
-	playSound("(12) Judging from these", "Voice line", false, true, 100, 1, 1, "Judging from these 5 pedestals, we need to find 2 more relics! \nI'd suggest you search the temple.");
-	destroy(self);
+	if (RelicMirrorPickedUp and RelicKruikPickedUp) then
+		playSound("(13) Alright thats the last", "Voice line", false, false, 100, 1, 1, "That's the last of them. Let's place them in the pedestal and see what happens.");
+		if (ePressed) then
+			destroyGroup("door4");
+			destroyGroup("Relics");
+			destroy(self);
+		else
+			setInteractionText("Press E to place the relics in the pedestals.");
+		end
+	elseif (RelicMirrorPickedUp) then
+		playSound("(12) Judging from these", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find ONE MORE RELIC! \nI'd suggest you search the temple.");
+	elseif (RelicKruikPickedUp) then
+		playSound("(12) Judging from these", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find ONE MORE RELIC! \nI'd suggest you search the temple.");
+	else
+		playSound("(12) Judging from these", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find 2 more relics! \nI'd suggest you search the temple.");
+	end
 end
 
 function onTrigger10Collision(self, ePressed)
