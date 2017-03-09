@@ -60,6 +60,7 @@ private:
 	int playContiniousSound(lua_State * lua);
 	int playSound(lua_State * lua);
 	int addCoin(lua_State * lua);
+	int setFishHintText(lua_State * lua);
 	void inilua(const char* pFileName);
 	int addItemToInventory(lua_State * lua);
 	int removeItemFromInventory(lua_State * lua);

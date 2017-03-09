@@ -3,6 +3,9 @@
 #include "mge\behaviours\AbstractBehaviour.hpp"
 #include "SFML\Window.hpp"
 #include "mge\materials\TextureMaterial.hpp" 
+#include "Content\GameObjects\ParticleSystem.hpp"
+
+class BillBoard;
 class GameObject;
 class Player;
 class Light;
@@ -89,6 +92,7 @@ private:
 	bool _scooterEquiped = true;
 	void unEquipScooter();
 	void equipScooter();
+	ParticleSystem * particleSystem;
 
 	float moveTowards(float current, float target, float speed);
 };

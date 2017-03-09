@@ -19,4 +19,5 @@ public:
 private:
 	World * _world;
 	PlayerFishFlock * _playerFishFlock;
+	float _coolDown = 0;
 };

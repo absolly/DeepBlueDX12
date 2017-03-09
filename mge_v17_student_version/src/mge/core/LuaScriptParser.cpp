@@ -88,6 +88,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::removeItemFromInventory>);
 	lua_setglobal(lua, "removeItemFromInventory");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setFishHintText>);
+	lua_setglobal(lua, "setFishHintText");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -129,6 +132,12 @@ int LuaScriptParser::addCoin(lua_State * lua)
 	std::cout << "You've picked up a coin! " << std::endl;
 	Hud::getInstance()->addCoin(Random::Range(40, 60));
 	return 1;
+}
+
+int LuaScriptParser::setFishHintText(lua_State * lua)
+{
+	Hud::getInstance()->setHintText(lua_tostring(lua, -1));
+	return 0;
 }
 
 int LuaScriptParser::message(lua_State * lua) {

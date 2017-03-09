@@ -69,6 +69,7 @@
     <ClCompile Include="src\Content\GameObjects\Particle.cpp" />
     <ClCompile Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.cpp" />
     <ClCompile Include="src\Content\GameObjects\EnvironmentSoundPlayer.cpp" />
+    <ClCompile Include="..\src\mge\core\Menu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="src\Content\GameObjects\Particle.hpp" />
     <ClInclude Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.h" />
     <ClInclude Include="src\Content\GameObjects\EnvironmentSoundPlayer.h" />
+    <ClInclude Include="..\src\mge\core\Menu.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

@@ -16,6 +16,7 @@ class Hud
 		Hud( sf::RenderWindow * aWindow );
 		virtual ~Hud();
 		void setInteractionText(std::string text);
+		void setHintText(std::string text);
 		void setSubtitleText(std::string text, float counter = 100);
 		void draw();
 
@@ -34,6 +35,7 @@ class Hud
 		void setCoinCount(int pAmount);
 		int getCoinCount();
 		bool getNoOxygenLeft();
+		void setAbilityStatus(int pStatus);
 	private:
 		void reloadHUD();
 		static Hud* _instance;
@@ -54,15 +56,17 @@ class Hud
 		sf::Text _oxygenText;
 		HudSprite _coinCounterBar;
 		sf::Text _coinCounterText;
-
+		HudSprite _abilityFish;
+		HudSprite _abilityInactive;
+		HudSprite _abilityActive;
 		sf::Text _interactionText;
 		float _subtitleTextTimer;
 		sf::Text _subtitleText;
-
+		sf::Text _hintText;
 		bool _noOxygenLeft;
 		float _deathSpriteOpacity = 0;
 		HudSprite _deathSprite;
-
+		int _abilityStatus = 1;
         sf::Font _font;
         sf::Text _debugText;
 
