@@ -463,6 +463,7 @@ void LuaParser::SetGroupsInstanced()
 			}
 
 			GPUinstancingMaterial * gpuMat = new GPUinstancingMaterial(it->second);
+			gpuMat->isDoubleSided = true;
 			it->second[0]->setMesh(it->second[0]->getMesh());
 			it->second[0]->setMaterial(gpuMat);
 			_world->add(it->second[0]);
