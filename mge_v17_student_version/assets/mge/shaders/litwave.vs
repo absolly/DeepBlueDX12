@@ -11,6 +11,7 @@ uniform int     lightType[2];
 uniform	int     lightCount;
 uniform float	_time;
 uniform float	speed;
+uniform float	waveMultiplier;	
 in vec3			vertex;
 in vec3			normal;
 in vec2			uv;
@@ -32,7 +33,7 @@ vec3 EyeDirection_cameraspace;
 void main( void ) {
 	vec3 waveSize = vec3(texture(textureWaveMask, uv));
 
-	vec3 newvertex = vertex + vec3(waveSize.r * cos((_time * speed *0.02)  + (vertex.z * 0.3) + (vertex.y * 0.5)), waveSize.g * cos((_time * speed*0.02) + (vertex.z * 0.0001)),waveSize.b * cos((_time * speed *0.02) + (vertex.z * 0.001)));
+	vec3 newvertex = vertex + vec3((waveSize.r * waveMultiplier) * cos((_time * speed * 0.02)  + (vertex.z * 0.3) + (vertex.y * 0.5)), (waveSize.g * waveMultiplier) * cos((_time * speed*0.02) + (vertex.z * 0.0001)),(waveSize.b * waveMultiplier) * cos((_time * speed *0.02) + (vertex.z * 0.001)));
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(newvertex, 1.f);
 	ShadowCoord = depthBiasMVP * vec4(newvertex,1);
     texCoord = uv;
