@@ -39,7 +39,7 @@ ScooterMinMoveSpeedBoost -37.500000
 ScooterMaxMoveSpeed 50.000000
 ScooterMaxMoveSpeedBoost 750.000000
 ScooterAcceleration 40.000000
-ScooterAccelerationBoost 600.000000
+ScooterAccelerationBoost 60.000000
 ScooterDecceleration 40.000000
 ScooterDecelerationBoost 600.000000
 MinSideMoveSpeed -10.000000
