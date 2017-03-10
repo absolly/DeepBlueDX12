@@ -31,6 +31,11 @@ void LitWaveMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
     _diffuseTexture = pDiffuseTexture;
 }
 
+void LitWaveMaterial::setSpeed(float pSpeed)
+{
+	speed = pSpeed;
+}
+
 void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     if (!_diffuseTexture) return;
 
