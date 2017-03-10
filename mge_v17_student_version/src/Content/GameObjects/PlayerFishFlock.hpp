@@ -28,7 +28,7 @@ private:
 	glm::vec3 _placedPos;
 	GameObject * _player;
 	float _coolDown = 0;
-	float _coolDownMaximum = 1.5;
+	float _coolDownMaximum = 1;
 	bool _AllowedToExist = true;
 
 	int _tankSize = 50;

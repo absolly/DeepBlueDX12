@@ -63,6 +63,7 @@ void PlayerFishFlock::update(float pStep)
 		_IsProtected = false;
 		if (glm::distance(goalPosition, _placedPos) < 40.0f && _coolDown <= 0)
 		{
+			std::cout << "protected m8" << std::endl;
 			goalPosition = _player->getWorldPosition();
 			_IsProtected = true;
 		}
@@ -78,7 +79,7 @@ void PlayerFishFlock::CallFish()
 {
 	_coolDown = _coolDownMaximum;
 	_placedPos = _player->getWorldPosition();
-	glm::vec3 spawnPoint = _player->getTransform() * glm::vec4(0,0,-15,1);
+	glm::vec3 spawnPoint = _player->getTransform() * glm::vec4(0,0,-5,1);
 	setLocalPosition(_player->getWorldPosition());
 
 	goalPosition = _player->getWorldPosition();

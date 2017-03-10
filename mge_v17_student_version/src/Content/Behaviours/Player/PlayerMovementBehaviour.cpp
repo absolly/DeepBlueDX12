@@ -45,10 +45,10 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 
 	particleSystem = new ParticleSystem(glm::vec3(0,0,0), "name");
 	particleSystem->SetStartEndScale(0.5f, 1.0f);
-	particleSystem->setDirection(glm::vec3(0, 6, 0));
+	particleSystem->setDirection(glm::vec3(0, 12, 0));
 	particleSystem->intSetSpawnRate(20);
 	particleSystem->setDuration(7);
-	particleSystem->setSpeedMultiplier(0.005f);
+	particleSystem->setSpeedMultiplier(0.009f);
 	particleSystem->setLoop(false);
 
 	particleSystem->setMesh(smallFish);
