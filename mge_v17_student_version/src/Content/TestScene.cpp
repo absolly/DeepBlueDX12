@@ -131,18 +131,27 @@ void TestScene::_initializeScene() {
 
 	Texture * MantaTexture = Texture::load(Config::MGE_TEXTURE_PATH + "MantaRay_Base.png");
 	Texture * animTexture = Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png");
+	LitWaveMaterial * litwav = new LitWaveMaterial(MantaTexture, animTexture);
+	litwav->setSpeed(0.2f);
 	Mesh * Manta = Mesh::load(Config::MGE_MODEL_PATH + "MantaRay.obj");
 
 	//FishTank * _fishTank = new FishTank(player->getChildAt(0)->getWorldPosition() , _world, player->getChildAt(0), "Mana", 90, 1, 10);
 
 	std::vector<glm::vec3> mantarRays;
+	mantarRays.push_back(glm::vec3(-1581, 368, 739));
+	mantarRays.push_back(glm::vec3(-1110,462, -1096));
+	mantarRays.push_back(glm::vec3(248, 370, -771));
+	mantarRays.push_back(glm::vec3(-854, 368, -561));
+	mantarRays.push_back(glm::vec3(-355, 521, 179));
+
+
 
 	for (int i = 0; i < mantarRays.size(); i++)
 	{
 		GameObject * manta = new GameObject("Manta", mantarRays[i]);
 		manta->setMesh(Manta);
 		manta->addBehaviour(new MantaBehaviour(manta));
-		manta->setMaterial(new LitWaveMaterial(MantaTexture, animTexture));
+		manta->setMaterial(litwav);
 		_world->add(manta);
 	}
 
@@ -172,7 +181,7 @@ void TestScene::_initializeScene() {
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
 	GameObject* boat = new GameObject("Boat", glm::vec3(-2068, 720, 541));
 	boat->setMesh(boatMesh);
-	boat->setMaterial(new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "baseboot_diffuse.png"), 1,1, Texture::load(Config::MGE_TEXTURE_PATH + "baseboot_roughness.png"), Texture::load(Config::MGE_TEXTURE_PATH + "baseboot_normal.png")));
+	boat->setMaterial(new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "boatbase_baseColor.png"), 1,1, Texture::load(Config::MGE_TEXTURE_PATH + "boatbase_roughness.png"), Texture::load(Config::MGE_TEXTURE_PATH + "boatbase_normal.png")));
 	//boat->scale(glm::vec3(0.1));
 	//boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	//float surfaceHeight = 750;

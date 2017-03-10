@@ -21,6 +21,9 @@ class LitWaveMaterial : public AbstractMaterial
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
 
         void setDiffuseTexture (Texture* pDiffuseTexture);
+
+		void setSpeed(float pSpeed);
+
 		float speed = 0.1;
     protected:
     private:
