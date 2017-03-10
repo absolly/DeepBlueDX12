@@ -15,7 +15,7 @@
 class LitWaveMaterial : public AbstractMaterial
 {
     public:
-		LitWaveMaterial(Texture* pDiffuseTexture, Texture* pWaveMask, float pTiling = 1, float pSpecularMultiplier = 1, Texture* pSpecularTexture = Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture* pNormalTexture = Texture::load(Config::MGE_TEXTURE_PATH + "BricksNormal.png"), Texture* pEmissionMap = Texture::load(Config::MGE_TEXTURE_PATH + "Black.png"));
+		LitWaveMaterial(Texture* pDiffuseTexture, Texture* pWaveMask, float pTiling = 1, float pSpecularMultiplier = 1, Texture* pSpecularTexture = Texture::load(Config::MGE_TEXTURE_PATH + "white.png"), Texture* pNormalTexture = Texture::load(Config::MGE_TEXTURE_PATH + "NormalNormalMap.png"), Texture* pEmissionMap = Texture::load(Config::MGE_TEXTURE_PATH + "Black.png"));
         virtual ~LitWaveMaterial();
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;

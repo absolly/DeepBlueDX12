@@ -70,6 +70,7 @@
     <ClCompile Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.cpp" />
     <ClCompile Include="src\Content\GameObjects\EnvironmentSoundPlayer.cpp" />
     <ClCompile Include="..\src\mge\core\Menu.cpp" />
+    <ClCompile Include="..\src\mge\behaviours\MantaBehaviour.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Content\GameObjects\Player.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="src\Content\Behaviours\Player\PlayerFishAbilityBehaviour.h" />
     <ClInclude Include="src\Content\GameObjects\EnvironmentSoundPlayer.h" />
     <ClInclude Include="..\src\mge\core\Menu.hpp" />
+    <ClInclude Include="..\src\mge\behaviours\MantaBehaviour.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">

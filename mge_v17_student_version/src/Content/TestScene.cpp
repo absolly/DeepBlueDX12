@@ -42,6 +42,7 @@
 #include <time.h>       /* time */
 #include "Content\GameObjects\Player.h"
 #include "Content/Behaviours/DivingBehaviour.h"
+#include "mge/behaviours/MantaBehaviour.hpp"
 
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\PhysicsWorld.h"
@@ -128,6 +129,22 @@ void TestScene::_initializeScene() {
 	//	_world->add(tank);
 	//}
 
+	Texture * MantaTexture = Texture::load(Config::MGE_TEXTURE_PATH + "MantaRay_Base.png");
+	Texture * animTexture = Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png");
+	Mesh * Manta = Mesh::load(Config::MGE_MODEL_PATH + "MantaRay.obj");
+
+	//FishTank * _fishTank = new FishTank(player->getChildAt(0)->getWorldPosition() , _world, player->getChildAt(0), "Mana", 90, 1, 10);
+
+	std::vector<glm::vec3> mantarRays;
+
+	for (int i = 0; i < mantarRays.size(); i++)
+	{
+		GameObject * manta = new GameObject("Manta", mantarRays[i]);
+		manta->setMesh(Manta);
+		manta->addBehaviour(new MantaBehaviour(manta));
+		manta->setMaterial(new LitWaveMaterial(MantaTexture, animTexture));
+		_world->add(manta);
+	}
 
 
 	/*
@@ -155,7 +172,7 @@ void TestScene::_initializeScene() {
 	Mesh* boatMesh = Mesh::load(Config::MGE_MODEL_PATH + "boat_baseTank9.obj");
 	GameObject* boat = new GameObject("Boat", glm::vec3(-2068, 720, 541));
 	boat->setMesh(boatMesh);
-	boat->setMaterial(textureMaterial);
+	boat->setMaterial(new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "baseboot_diffuse.png"), 1,1, Texture::load(Config::MGE_TEXTURE_PATH + "baseboot_roughness.png"), Texture::load(Config::MGE_TEXTURE_PATH + "baseboot_normal.png")));
 	//boat->scale(glm::vec3(0.1));
 	//boat->scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	//float surfaceHeight = 750;
