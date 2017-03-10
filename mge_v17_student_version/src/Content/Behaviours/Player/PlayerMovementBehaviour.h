@@ -93,6 +93,6 @@ private:
 	void unEquipScooter();
 	void equipScooter();
 	ParticleSystem * particleSystem;
-
+	bool _previouslyInScooterRange = false;
 	float moveTowards(float current, float target, float speed);
 };

@@ -222,6 +222,10 @@ function onTrigger11Collision(self, ePressed)
 	destroy(self);
 end
 
+function onTrigger12Collision(self, ePressed)
+	onCollisionWithTrigger12(self);
+end
+
 
 --function act1_1()
 --	showObjectiveDistance(0);

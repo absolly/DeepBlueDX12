@@ -95,6 +95,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::moveDown>);
 	lua_setglobal(lua, "moveDown");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::onCollisionWithTrigger12>);
+	lua_setglobal(lua, "onCollisionWithTrigger12");  
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -430,5 +433,26 @@ int LuaScriptParser::moveDown(lua_State * lua)
 			}
 		}
 	}
+	return 0;
+}
+
+int LuaScriptParser::onCollisionWithTrigger12(lua_State * lua)
+{
+	if (!Input::getKey(sf::Keyboard::F))
+	{
+		Hud::getInstance()->setInteractionText("Press F to equip/unequip your diving scooter.");
+		return 0;
+	}
+
+	Hud::getInstance()->setInteractionText("");
+	
+	int objectPointer = lua_tointeger(lua, -1);
+	GameObject* gameObject = (GameObject*)objectPointer;
+	std::cout << "DESTROYING OBJECT: " << gameObject->getName() << std::endl;
+	//gameObject->setParent(NULL);
+	gameObject->getMaterial()->allowedToRender = false;
+	for each(Collider* col in gameObject->getBehavioursOfType<Collider>())
+		World::physics->removeCollisionObject(col);
+	_destoyedObjects.push_back(gameObject);
 	return 0;
 }

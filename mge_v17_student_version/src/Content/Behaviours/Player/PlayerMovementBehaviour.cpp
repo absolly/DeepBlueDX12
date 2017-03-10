@@ -6,6 +6,7 @@
 #include "Content\GameObjects\Player.h"
 #include "mge\Config.hpp"
 #include "mge/core/Light.hpp"
+#include "Content\Hud\Hud.hpp"
 
 PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 {
@@ -289,7 +290,7 @@ void PlayerMovementBehaviour::update(float deltaTime)
 
 	if (_scooterEquiped && Input::getKeyDown(sf::Keyboard::F))
 		unEquipScooter();
-	else if (!_scooterEquiped && Input::getKeyDown(sf::Keyboard::F))
+	else if (!_scooterEquiped)
 		equipScooter();
 
 }
@@ -313,17 +314,33 @@ void PlayerMovementBehaviour::equipScooter()
 {
 	if (_scooterEquiped) return;
 	glm::vec3 distance = (_owner->getWorldPosition() - _diveScooter->getWorldPosition());
-	if (length(distance) < 5) {
-		_diveScooter->setParent(_owner);
-		_diveScooter->setTransform(_scooterOffsetMat);
-		_scooterEquiped = true;
+	if (length(distance) < 15) 
+	{
+		_previouslyInScooterRange = true;
+		if (Input::getKeyDown(sf::Keyboard::F))
+		{
+			Hud::getInstance()->setInteractionText("");
+		
+			_diveScooter->setParent(_owner);
+			_diveScooter->setTransform(_scooterOffsetMat);
+			_scooterEquiped = true;
 
-		spotlight->setParent(_diveScooter);
+			spotlight->setParent(_diveScooter);
 
-		spotlight->setTransform(glm::mat4(1.0f));
-		spotlight->translate(glm::vec3(-30, 0, 0));
-		spotlight->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
-		//_owner->getBehaviour<btRigidBody>()->getCollisionShape()->setLocalScaling(btVector3(4, 4, 4));
+			spotlight->setTransform(glm::mat4(1.0f));
+			spotlight->translate(glm::vec3(-30, 0, 0));
+			spotlight->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
+			//_owner->getBehaviour<btRigidBody>()->getCollisionShape()->setLocalScaling(btVector3(4, 4, 4));
+		}
+		else
+		{
+			Hud::getInstance()->setInteractionText("Press F to equip your diving scooter.");
+		}
+	}
+	else if (_previouslyInScooterRange)
+	{
+		Hud::getInstance()->setInteractionText("");
+		_previouslyInScooterRange = false;
 	}
 }
 
