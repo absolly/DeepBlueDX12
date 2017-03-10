@@ -27,7 +27,7 @@ void MantaBehaviour::update(float pStep)
 
 	InterPolateDirection(direction);
 
-	_owner->translate(glm::vec3(0, 0, -12  * pStep));
+	_owner->translate(glm::vec3(0, 0, -24  * pStep));
 }
 
 void MantaBehaviour::setGoal()
@@ -38,9 +38,9 @@ void MantaBehaviour::setGoal()
 	// Initialize Mersenne Twister pseudo-random number generator
 	mt19937 gen(rd());
 
-	uniform_int_distribution<> dis(-200, 200);
+	uniform_int_distribution<> dis(-120, 120);
 
-	goal = glm::vec3(dis(gen), dis(gen), dis(gen)) + startPos;
+	goal = glm::vec3(dis(gen), 0, dis(gen)) + startPos;
 }
 
 void MantaBehaviour::InterPolateDirection(glm::vec3 pDirection)
@@ -61,7 +61,7 @@ void MantaBehaviour::InterPolateDirection(glm::vec3 pDirection)
 
 	//std::cout << _owner->getLocalPosition() << std::endl;
 
-	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.01f));
+	glm::mat4 RotationMatrix = glm::mat4_cast(glm::slerp(currentDir, newDir, 0.002f));
 
 	_owner->setTransform(RotationMatrix);
 	_owner->setLocalPosition(LocalPos);
