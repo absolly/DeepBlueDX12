@@ -204,9 +204,9 @@ function onTrigger9Collision(self, ePressed)
 			setInteractionText("Press E to place the relics in the pedestals.");
 		end
 	elseif (RelicMirrorPickedUp) then
-		playSound("(12) Judging from these", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find ONE MORE RELIC! \nI'd suggest you search the temple.");
+		playSound("(12) Judging from these - 1 left", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find one more relic! \nI'd suggest you search the temple.");
 	elseif (RelicKruikPickedUp) then
-		playSound("(12) Judging from these", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find ONE MORE RELIC! \nI'd suggest you search the temple.");
+		playSound("(12) Judging from these - 1 left", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find one more relic! \nI'd suggest you search the temple.");
 	else
 		playSound("(12) Judging from these", "Voice line", false, false, 100, 1, 1, "Judging from these 5 pedestals, we need to find 2 more relics! \nI'd suggest you search the temple.");
 	end
