@@ -36,6 +36,11 @@ void LitWaveMaterial::setSpeed(float pSpeed)
 	speed = pSpeed;
 }
 
+void LitWaveMaterial::setWaveMultiplier(float pWaveMultiplier)
+{
+	waveMultiplier = pWaveMultiplier;
+}
+
 void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     if (!_diffuseTexture) return;
 
@@ -123,6 +128,7 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
 	glUniform1f(_shader->getUniformLocation("_time"), _time);
 	glUniform1f(_shader->getUniformLocation("speed"), speed);
+	glUniform1f(_shader->getUniformLocation("waveMultiplier"), waveMultiplier);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("projectionMatrix"),   1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),         1, GL_FALSE, glm::value_ptr(pViewMatrix));

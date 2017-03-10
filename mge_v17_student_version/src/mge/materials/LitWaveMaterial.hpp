@@ -23,6 +23,7 @@ class LitWaveMaterial : public AbstractMaterial
         void setDiffuseTexture (Texture* pDiffuseTexture);
 
 		void setSpeed(float pSpeed);
+		void setWaveMultiplier(float pWaveMultiplier);
 
 		float speed = 0.1;
     protected:
@@ -38,6 +39,7 @@ class LitWaveMaterial : public AbstractMaterial
         float _specularMultiplier;
         float _tiling;
 		float _time;
+		float waveMultiplier = 1;
 		time_t start;
 
 		LitWaveMaterial(const LitWaveMaterial&);

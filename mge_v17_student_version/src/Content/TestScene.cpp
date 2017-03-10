@@ -132,7 +132,8 @@ void TestScene::_initializeScene() {
 	Texture * MantaTexture = Texture::load(Config::MGE_TEXTURE_PATH + "MantaRay_Base.png");
 	Texture * animTexture = Texture::load(Config::MGE_TEXTURE_PATH + "RayAnimUV.png");
 	LitWaveMaterial * litwav = new LitWaveMaterial(MantaTexture, animTexture);
-	litwav->setSpeed(0.2f);
+	litwav->setWaveMultiplier(10.0f);
+	litwav->setSpeed(0.1f);
 	Mesh * Manta = Mesh::load(Config::MGE_MODEL_PATH + "MantaRay.obj");
 
 	//FishTank * _fishTank = new FishTank(player->getChildAt(0)->getWorldPosition() , _world, player->getChildAt(0), "Mana", 90, 1, 10);
