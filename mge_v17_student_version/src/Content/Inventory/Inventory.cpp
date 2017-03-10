@@ -57,8 +57,6 @@ int Inventory::getItemIndex(std::string itemName)
 {
 	for (int i = _inventory.size() - 1; i >= 0; i--)
 	{
-		std::cout << _inventory[i].getSpriteName() << std::endl;
-		std::cout << itemName << std::endl;
 		if (_inventory[i].getSpriteName() == itemName)
 		{
 			return i;

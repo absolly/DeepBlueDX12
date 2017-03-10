@@ -34,7 +34,7 @@ void PlayerFishAbilityBehaviour::update(float deltaTime)
 	else 
 		Hud::getInstance()->setAbilityStatus(2);
 
-	if (Input::getKeyDown(sf::Keyboard::Q) && _coolDown <= 0)
+	if (Input::getKeyDown(sf::Keyboard::Q) && _coolDown <= 0 && Hud::getInstance()->getInventory().hasItem("Relic_tablet.png"))
 	{
 		std::cout << "CALLL THE FIESH" << std::endl;
 		SoundManager::getInstance()->PlaySound("ability", "ability", false, true, false, 50, "", Random::Range(0.9f, 1.1f));

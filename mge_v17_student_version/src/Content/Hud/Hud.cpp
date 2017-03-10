@@ -284,7 +284,7 @@ void Hud::draw()
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(0);
-
+	
 	_window->pushGLStates();
 
 	_window->draw(_visor);
@@ -299,20 +299,24 @@ void Hud::draw()
 	_window->draw(_subtitleText);
 	sf::RectangleShape s;
 	_inventory.draw();
-	switch (_abilityStatus)
+	if (_inventory.hasItem("Relic_tablet.png"))
 	{
-	case 0:
-		_window->draw(_abilityFish);
-		_window->draw(_abilityActive);
-		break;
-	case 1:
-		_window->draw(_abilityFish);
-		_window->draw(_abilityInactive);
-		break;
-	case 2:
-		_window->draw(_abilityInactive);
-		break;
+		switch (_abilityStatus)
+		{
+		case 0:
+			_window->draw(_abilityFish);
+			_window->draw(_abilityActive);
+			break;
+		case 1:
+			_window->draw(_abilityFish);
+			_window->draw(_abilityInactive);
+			break;
+		case 2:
+			_window->draw(_abilityInactive);
+			break;
+		}
 	}
+	
 	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))
 	{
 		_deathSpriteOpacity += (_noOxygenLeft ? 96 : -128) * Time::DeltaTime;
