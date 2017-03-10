@@ -193,7 +193,7 @@ void PredatorBehaviour::update(float pStep)
 		{
 			float distanceFrom0To1 = distanceToPlayer / soundDistance; //1 is far, 0 is close
 			float smoothVolume = 0.5f + cosf(distanceFrom0To1 * glm::pi<float>()) / 2;
-			float reducedVolume = smoothVolume * 0.35f;
+			float reducedVolume = smoothVolume * 0.25f;
 
 			SoundManager::getInstance()->PlaySound("Monster 31", std::to_string((int)this) + "2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
 			_soundNearbyDelayTimer = Random::Range(6.0f, 12.0f);

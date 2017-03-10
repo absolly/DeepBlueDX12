@@ -15,6 +15,8 @@ end
 function onTreasureCollision(self, ePressed)
 	if (ePressed) then
 		addCoin();
+		--destroyGroup("door1", true);
+		--destroyGroup("door2", true);
 		playSound("treasure_grab", "treasure_grab", false, true, 100, 0.8, 1.2, "");
 		destroy(self);
 	else
