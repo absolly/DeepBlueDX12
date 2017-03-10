@@ -36,6 +36,8 @@ class Hud
 		int getCoinCount();
 		bool getNoOxygenLeft();
 		void setAbilityStatus(int pStatus);
+
+		void setGameCompleted();
 	private:
 		void reloadHUD();
 		static Hud* _instance;
@@ -65,6 +67,8 @@ class Hud
 		sf::Text _hintText;
 		bool _noOxygenLeft;
 		float _deathSpriteOpacity = 0;
+		float _gameCompletedOpacity = -100;
+		bool _gameCompleted = false;
 		HudSprite _deathSprite;
 		int _abilityStatus = 1;
         sf::Font _font;

@@ -97,7 +97,10 @@ void LuaScriptParser::setup(lua_State * lua) {
 	lua_setglobal(lua, "moveDown");
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::onCollisionWithTrigger12>);
-	lua_setglobal(lua, "onCollisionWithTrigger12");  
+	lua_setglobal(lua, "onCollisionWithTrigger12");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setGameCompleted>);
+	lua_setglobal(lua, "setGameCompleted");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -454,5 +457,11 @@ int LuaScriptParser::onCollisionWithTrigger12(lua_State * lua)
 	for each(Collider* col in gameObject->getBehavioursOfType<Collider>())
 		World::physics->removeCollisionObject(col);
 	_destoyedObjects.push_back(gameObject);
+	return 0;
+}
+
+int LuaScriptParser::setGameCompleted(lua_State * lua)
+{
+	Hud::getInstance()->setGameCompleted();
 	return 0;
 }

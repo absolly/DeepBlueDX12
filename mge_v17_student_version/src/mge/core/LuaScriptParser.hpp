@@ -29,6 +29,7 @@ public:
 	void spawnGroup(std::string name, bool registerSpawn);
 	int moveDown(lua_State * lua);
 	int onCollisionWithTrigger12(lua_State * lua);
+	int setGameCompleted(lua_State * lua);
 	bool resetclick = false;
 	void printTest(OnCollisionArgs onCollisionArgs);
 	int setInteractionText(lua_State * lua);

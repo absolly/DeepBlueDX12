@@ -196,6 +196,11 @@ void Hud::setAbilityStatus(int pStatus)
 	_abilityStatus = pStatus;
 }
 
+void Hud::setGameCompleted()
+{
+	_gameCompleted = true;
+}
+
 
 void Hud::reloadHUD()
 {
@@ -317,6 +322,7 @@ void Hud::draw()
 		}
 	}
 	
+
 	if (!isPlayerKilled && (_noOxygenLeft || _deathSpriteOpacity != 0))
 	{
 		_deathSpriteOpacity += (_noOxygenLeft ? 96 : -128) * Time::DeltaTime;
@@ -345,6 +351,26 @@ void Hud::draw()
 		_window->draw(_deathText);
 	}
 
+	if (_gameCompleted)
+	{
+		_gameCompletedOpacity += 128.0f * Time::DeltaTime;
+
+		sf::RectangleShape deathScreen = sf::RectangleShape(sf::Vector2f(_window->getSize()));
+		deathScreen.setFillColor(sf::Color(0, 0, 0, min(255.0f, _gameCompletedOpacity)));
+		_window->draw(deathScreen);
+		if (_gameCompletedOpacity >= 400)
+		{
+			isPlayerKilled = true;
+		}
+
+		sf::Text _deathText;
+		_deathText.setString("The relics are back at the temple, revealing the treasure! Now we're rich! (Press Q to exit)");
+		_deathText.setFont(_font);
+		_deathText.setCharacterSize(24);
+		_deathText.setColor(sf::Color(255, 255, 255, max(0.0f, min(255.0f, _gameCompletedOpacity))));
+		_deathText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_deathText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_deathText.getGlobalBounds().height / 2)));
+		_window->draw(_deathText);
+	}
 
 	_window->draw(_debugText);
 	_window->popGLStates();

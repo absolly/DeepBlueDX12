@@ -199,6 +199,7 @@ function onTrigger9Collision(self, ePressed)
 			removeItemFromInventory("Relic_mirror.png");
 			removeItemFromInventory("Relic_statue.png");
 			playSound("door_opening", "door opening", false, false, 100, 1, 1, "");
+			setGameCompleted();
 			destroy(self);
 		else
 			setInteractionText("Press E to place the relics in the pedestals.");
