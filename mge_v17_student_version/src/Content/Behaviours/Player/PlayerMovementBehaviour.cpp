@@ -55,7 +55,7 @@ PlayerMovementBehaviour::PlayerMovementBehaviour(Player& player)
 	Texture* bubble = Texture::load(Config::MGE_TEXTURE_PATH + "bubble.png");
 	BillBoardMaterial * billboardMat = new BillBoardMaterial(particleSystem, bubble);
 	particleSystem->setMaterial(billboardMat);
-	_diveScooter->add(particleSystem);
+	player.getChildAt(0)->add(particleSystem);
 }
 
 void PlayerMovementBehaviour::updateFromConfig()
