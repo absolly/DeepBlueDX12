@@ -236,7 +236,7 @@ void Hud::draw()
 		addCoin(100);
 	if (Input::getKey(sf::Keyboard::F7))
 		reloadHUD();
-	if (Input::getKey(sf::Keyboard::R))
+	/*if (Input::getKey(sf::Keyboard::R))
 	{
 		if (LuaParser::groups.find("door1") != LuaParser::groups.end())
 		{
@@ -256,7 +256,7 @@ void Hud::draw()
 			LuaParser::groups.erase("door2");
 			std::cout << "Destroyed group: " << "door2" << std::endl;
 		}
-	}
+	}*/
 
 	if (_subtitleTextTimer > 0)
 	{
