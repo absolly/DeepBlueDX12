@@ -64,6 +64,8 @@ void SoundManager::SetupFiles()
 	fileNames->push_back(path + "door_opening");
 	fileNames->push_back(path + "relic_grab"); 
 
+	fileNames->push_back(path + "door_opening");
+
 	fileNames->push_back(path + "Be careful out there");
 	fileNames->push_back(path + "The current");
 	fileNames->push_back(path + "Careful with the air");

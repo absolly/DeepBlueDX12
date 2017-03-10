@@ -18,11 +18,16 @@
 #include "mge\core\Physics\RigidBody.hpp"
 #include <string>
 
+struct MoveInfo
+{
+	float amountToMove;
+	float moveSpeed;
+};
+
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser
 //------------------------------------------------------------------------------------------------------------
 class LuaParser {
-
 
     public:
         LuaParser(World* pWorld);
@@ -34,7 +39,7 @@ class LuaParser {
 		void setPlayerRigidBody(class Player& pRigidBody);
 
 		static std::map<std::string, std::vector<GameObject*>> groups;
-
+		static std::map<std::string, MoveInfo> movement;
     private:
         struct collisionListener {
             //constructor
@@ -65,6 +70,7 @@ class LuaParser {
         int destoryLuaObject(lua_State * lua);
 		int addPredator(lua_State * lua);
 
+
 		Player * _player;
 		RigidBody * _playerRigidBody;
 		Mesh* smallFish;
@@ -74,6 +80,7 @@ class LuaParser {
         Mesh* cubeMeshF;
         AbstractMaterial* textureMaterial2;
         map<std::string, glm::vec3> colors;
+
 };
 
 //------------------------------------------------------------------------------------------------------------
@@ -86,3 +93,4 @@ int dispatch(lua_State * L) {
 }
 
 #endif /* LuaParser_hpp */
+

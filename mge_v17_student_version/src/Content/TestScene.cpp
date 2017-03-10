@@ -65,6 +65,12 @@ void TestScene::initialize() {
 	cout << "HUD initialized." << endl << endl;
 }
 
+void TestScene::_update(float deltaTime)
+{
+	AbstractGame::_update(deltaTime);
+	_scriptParser->step();
+}
+
 //build the game _world
 void TestScene::_initializeScene() {
 	_renderer->setClearColor(0, 0, 0);

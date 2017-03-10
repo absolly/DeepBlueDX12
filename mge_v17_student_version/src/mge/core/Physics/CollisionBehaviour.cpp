@@ -50,6 +50,12 @@ void CollisionBehaviour::updatePositon()
 {
 	setWorldTransform(_owner->getBulletPhysicsTransform());
 }
+
+void CollisionBehaviour::makeDynamic()
+{
+	_isStatic = false;
+}
+
 void CollisionBehaviour::update(float pStep)
 {
 	if (!_isStatic && !_hasRigidbody)

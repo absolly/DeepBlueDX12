@@ -16,6 +16,8 @@
 #include <vector>
 
 std::map<std::string, std::vector<GameObject*>> LuaParser::groups;
+std::map<std::string, MoveInfo> LuaParser::movement;
+
 
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
@@ -60,7 +62,7 @@ LuaParser::LuaParser(World* pWorld) {
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addToGroup>);
 	lua_setglobal(lua, "addToGroup");
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addToGroup>);
-	lua_setglobal(lua, "addToGroup");
+	lua_setglobal(lua, "addToGroup"); 
 	lua_pushcfunction(lua, &dispatch<&LuaParser::addParticles>);
 	lua_setglobal(lua, "addParticles");
 	//load the cube mesh and texture for later use.
@@ -137,6 +139,7 @@ void LuaParser::loadFile(const char* pFileName) {
 //                                  Checks for collisions in the list and fires the lua events
 //------------------------------------------------------------------------------------------------------------
 void LuaParser::update(float pStep) {
+
 	//for-each listener in the collisionListeners
 	for (collisionListener listener : collisionListeners) {
 		//check if both are still valid(have a parent) and then check if they collide

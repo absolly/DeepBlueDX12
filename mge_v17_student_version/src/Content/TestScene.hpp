@@ -22,6 +22,7 @@ class TestScene: public AbstractGame
 		static EventNoArgs& resetEvent;
 
 	protected:
+		virtual void _update(float deltaTime);
         virtual void _initializeScene();
 
 	    //override render to render the hud as well.

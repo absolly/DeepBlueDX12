@@ -28,7 +28,7 @@ _breatheOutVolume 50
 [PLAYER MOVEMENT SETTINGS]
 DiverMinMoveSpeed -12.500000
 DiverMinMoveSpeedBoost -15.625000
-DiverMaxMoveSpeed 250.000000
+DiverMaxMoveSpeed 25.000000
 DiverMaxMoveSpeedBoost 37.500000
 DiverAcceleration 40.000000
 DiverAccelerationBoost 50.000000
@@ -36,12 +36,12 @@ DiverDecceleration 400.000000
 DiverDecelerationBoost 50.000000
 ScooterMinMoveSpeed -25.000000
 ScooterMinMoveSpeedBoost -37.500000
-ScooterMaxMoveSpeed 50.000000
+ScooterMaxMoveSpeed 500.000000
 ScooterMaxMoveSpeedBoost 75.000000
 ScooterAcceleration 40.000000
-ScooterAccelerationBoost 60.000000
+ScooterAccelerationBoost 600.000000
 ScooterDecceleration 40.000000
-ScooterDecelerationBoost 60.000000
+ScooterDecelerationBoost 600.000000
 MinSideMoveSpeed -10.000000
 MaxSideMoveSpeed 10.000000
 MoveSideAcceleration 40.000000

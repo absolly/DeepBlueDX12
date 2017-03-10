@@ -28,6 +28,7 @@ public:
 	~CollisionBehaviour();
 	void updateScale();
 	void updatePositon();
+	void makeDynamic();
 	virtual void update(float pStep);
 	//class RigidBody & makeRigidBody(float mass, btVector3 & inertia, btDefaultMotionState & defaultMotionState);
 	void checkForCollisions();

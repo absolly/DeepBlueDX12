@@ -15,6 +15,7 @@
 #include "Content\Core\Input.h"
 #include "mge\core\Physics\Colliders\Collider.h"
 #include "Content/TestScene.hpp"
+#include "mge\core\Time.h"
 //------------------------------------------------------------------------------------------------------------
 //                                                      LuaParser()
 //------------------------------------------------------------------------------------------------------------
@@ -91,6 +92,9 @@ void LuaScriptParser::setup(lua_State * lua) {
 
 	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::setFishHintText>);
 	lua_setglobal(lua, "setFishHintText");
+
+	lua_pushcfunction(lua, &dispatch<&LuaScriptParser::moveDown>);
+	lua_setglobal(lua, "moveDown");
 }
 
 void LuaScriptParser::setSoundManager(SoundManager * pSoundManager)
@@ -295,12 +299,36 @@ void LuaScriptParser::SetPlayerAndObjectives(GameObject* pGameobject, std::vecto
 
 void LuaScriptParser::step()
 {
+
+	//Move down
+	for (auto iterator = LuaParser::movement.begin(); iterator != LuaParser::movement.end(); ++iterator)
+	{
+		std::cout << "Updating mvoement " << std::endl;
+		std::string groupName = iterator->first;
+		float translation = iterator->second.moveSpeed*Time::DeltaTime;
+		if (translation > iterator->second.amountToMove)
+			translation = iterator->second.amountToMove;
+		iterator->second.amountToMove -= translation;
+		if (LuaParser::groups.find(groupName) != LuaParser::groups.end())
+		{
+			for each (GameObject* gameObject in  LuaParser::groups[groupName])
+			{
+				gameObject->translate(glm::vec3(0, -translation, 0));
+			}
+		}
+		if (iterator->second.amountToMove <= 0)
+		{
+			iterator = LuaParser::movement.erase(iterator);
+			std::cout << "DONE MOVING! " << std::endl;
+		}
+	}
+
 	lua_getglobal(lua, currentFunction);
 
-	_messageBoxManager->drawDirectly(_currentText);
-	_currentText = "";
-	_messageBoxManager->drawObjective(_objectiveText);
-	_objectiveText = "";
+	//_messageBoxManager->drawDirectly(_currentText);
+	//_currentText = "";
+	//_messageBoxManager->drawObjective(_objectiveText);
+	//_objectiveText = "";
 
 	if (lua_isnil(lua, -1)) { //if is doesn't exist, bail out
 		lua_settop(lua, 0);
@@ -308,6 +336,9 @@ void LuaScriptParser::step()
 	}
 
 	lua_call(lua, 0, 0);
+
+
+
 }
 int LuaScriptParser::destroy(lua_State *lua)
 {
@@ -375,4 +406,29 @@ void LuaScriptParser::spawnGroup(std::string groupName, bool registerSpawn)
 		if (registerSpawn)
 			_spawnedGroups.push_back(groupName);
 	}
+}
+
+int LuaScriptParser::moveDown(lua_State * lua)
+{
+	std::cout << "SHIT HAPPENEIND" << std::endl;
+	std::string groupName = lua_tostring(lua, -3);
+	float amountToMove = lua_tonumber(lua, -2);
+	float moveSpeed = lua_tonumber(lua, -1);
+	std::cout << "Attempting to move group: " << groupName << ", " << amountToMove << ", " << moveSpeed << std::endl;
+	if (LuaParser::movement.find(groupName) == LuaParser::movement.end())
+	{
+		LuaParser::movement[groupName] = MoveInfo();
+		LuaParser::movement[groupName].amountToMove = amountToMove;
+		LuaParser::movement[groupName].moveSpeed = moveSpeed;
+
+		for each (GameObject* gameObject in  LuaParser::groups[groupName])
+		{
+			Collider* collider = gameObject->getBehaviour<Collider>();
+			if (collider != nullptr)
+			{
+				collider->makeDynamic();
+			}
+		}
+	}
+	return 0;
 }

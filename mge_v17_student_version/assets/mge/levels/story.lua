@@ -45,7 +45,6 @@ function onRelic_kruikCollision(self, ePressed)
 			addItemToInventory(self);
 			RelicKruikPickedUp = true;
 			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
-			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
 			destroy(self);
 		else
 			setInteractionText("Press E to pick up the relic");
@@ -59,7 +58,6 @@ function onRelic_mirrorCollision(self, ePressed)
 			addItemToInventory(self);
 			RelicMirrorPickedUp = true;
 			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
-			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
 			destroy(self);
 		else
 			setInteractionText("Press E to pick up the relic");
@@ -73,7 +71,6 @@ function onTemple_keyCollision(self, ePressed)
 			addItemToInventory(self);
 			TempleKeyPickedUp = true;
 			playSound("relic_grab", "relic_grab", false, true, 100, 0.8, 1.2, "");
-			playSound("(2) But what is this", "Voice line", false, true, 100, 1, 1, "But what is this! I've never seen anything like it! \nIt doesn't look humanmade.");
 			destroy(self);
 		else
 			setInteractionText("Press E to pick up the key");
@@ -170,8 +167,10 @@ end
 function onTrigger7Collision(self, ePressed)
 	if (ePressed) then
 		if (TempleKeyPickedUp) then
-			destroyGroup("door3", true);
+			--destroyGroup("door3", true);
+			moveDown("door3", 700, 350);
 			removeItemFromInventory("Temple_key.png");
+			playSound("door_opening", "door opening", false, false, 100, 1, 1, "");
 			destroy(self);
 		else
 			playSound("(9) Thats", "Voice line", false, false, 100, 1, 1 ,"That's weird, none of these relics fit in the slot on the door, \nmaybe look around and see if you can find something that fits.");
@@ -190,8 +189,14 @@ function onTrigger9Collision(self, ePressed)
 	if (RelicMirrorPickedUp and RelicKruikPickedUp) then
 		playSound("(13) Alright thats the last", "Voice line", false, false, 100, 1, 1, "That's the last of them. Let's place them in the pedestal and see what happens.");
 		if (ePressed) then
-			destroyGroup("door4", true);
+			moveDown("door4", 800, 400);
 			spawnGroup("Relics", true);
+			removeItemFromInventory("Relic_tablet.png");
+			removeItemFromInventory("Relic_disc.png");
+			removeItemFromInventory("Relic_kruik.png");
+			removeItemFromInventory("Relic_mirror.png");
+			removeItemFromInventory("Relic_statue.png");
+			playSound("door_opening", "door opening", false, false, 100, 1, 1, "");
 			destroy(self);
 		else
 			setInteractionText("Press E to place the relics in the pedestals.");
