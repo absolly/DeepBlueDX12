@@ -5,9 +5,9 @@ uniform	mat4 	projectionMatrix;
 uniform	mat4 	viewMatrix;
 uniform	mat4 	modelMatrix;
 uniform mat4	depthBiasMVP;
-uniform vec3    lightPosition[5];
-uniform vec3    lightDirection[5];
-uniform int     lightType[5];
+uniform vec3    lightPosition[2];
+uniform vec3    lightDirection[2];
+uniform int     lightType[2];
 uniform	int     lightCount;
 uniform float	_time;
 uniform float	speed;
@@ -22,10 +22,10 @@ in vec3			bitangent;
 out vec2 texCoord; //make sure the texture coord is interpolated
 out vec3 Position_worldspace;
 mat3 TBN;
-out vec3 LightDirection_tangentspace[5];
+out vec3 LightDirection_tangentspace[2];
 out vec3 EyeDirection_tangentspace;
 out vec4 ShadowCoord;
-vec3 LightDirection_cameraspace[5];
+vec3 LightDirection_cameraspace[2];
 vec3 EyeDirection_cameraspace;
 
 

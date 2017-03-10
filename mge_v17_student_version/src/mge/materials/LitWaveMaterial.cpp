@@ -71,12 +71,12 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
     glUniform1i(_shader->getUniformLocation("activeLight"), 0);
 
-    glm::vec3 lightPosition[5] {};
-    glm::vec3 lightDirection[5] {};
-    glm::vec3 lightColor[5] {};
-    GLint lightType[5] {};
-    glm::vec3 lightFalloff[5]{};
-    GLfloat lightIntensity[5] {};
+    glm::vec3 lightPosition[2] {};
+    glm::vec3 lightDirection[2] {};
+    glm::vec3 lightColor[2] {};
+    GLint lightType[2] {};
+    glm::vec3 lightFalloff[2]{};
+    GLfloat lightIntensity[2] {};
 
 	glm::mat4 biasMatrix(
 		0.5, 0.0, 0.0, 0.0,
@@ -107,12 +107,12 @@ void LitWaveMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 	glm::mat4 depthBiasMVP = biasMatrix * depthProjectionMatrix * depthViewMatrix * pModelMatrix;
 
 
-    glUniform3fv(_shader->getUniformLocation("lightPosition"), 5, glm::value_ptr(lightPosition[0]));
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 5, glm::value_ptr(lightDirection[0]));
-    glUniform3fv(_shader->getUniformLocation("lightColor"), 5, glm::value_ptr(lightColor[0]));
-    glUniform1iv(_shader->getUniformLocation("lightType"), 5, lightType);
-    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 5, glm::value_ptr(lightFalloff[0]));
-    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 5, lightIntensity);
+    glUniform3fv(_shader->getUniformLocation("lightPosition"), 2, glm::value_ptr(lightPosition[0]));
+    glUniform3fv(_shader->getUniformLocation("lightDirection"), 2, glm::value_ptr(lightDirection[0]));
+    glUniform3fv(_shader->getUniformLocation("lightColor"), 2, glm::value_ptr(lightColor[0]));
+    glUniform1iv(_shader->getUniformLocation("lightType"), 2, lightType);
+    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 2, glm::value_ptr(lightFalloff[0]));
+    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 2, lightIntensity);
     glUniform1i(_shader->getUniformLocation("lightCount"), i);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
