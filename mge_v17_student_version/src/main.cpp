@@ -1,10 +1,12 @@
-#include <iostream>
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
+#endif
 
-#include "mge/core/AbstractGame.hpp"
-#include "Content/TestScene.hpp"
-#include "mge/config.hpp"
-#include <SFML\Graphics.hpp>
-#include <Windows.h>
+#include <iostream>
+#include <windows.h>
+
+#include "Content/DeferredTestScene.hpp"
+
 
 extern "C" {
 	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
@@ -24,19 +26,21 @@ extern "C" {
  * All documentation is contained within the HEADER files, not the CPP files in possible.
  *
  */
-int main()
-{
-    std::cout << "Starting Game" << std::endl;
 
 
-    AbstractGame* game = new TestScene();
-    game->initialize();
-    game->run();
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int nShowCmd) {
+	std::cout << "Starting Game" << std::endl;
+
+
+	AbstractGame* game = new DeferredTestScene();
+	game->initialize(hInstance, hPrevInstance, nShowCmd);
+	game->run();
 
 	//delete game;
 
-    return 0;
+	return 0;
 }
+
 
 
 

@@ -75,7 +75,7 @@ bool Menu::RenderMenu()
 
 		if (sprite4.getGlobalBounds().contains(position.x, position.y))
 		{
-			exit(EXIT_FAILURE);
+			exit(EXIT_SUCCESS);
 		}
 	}
 

@@ -14,7 +14,7 @@ class DeferredTestScene: public AbstractGame
 		DeferredTestScene();
 		virtual ~DeferredTestScene();
 
-        virtual void initialize();
+        virtual void initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd);
 
 	protected:
         virtual void _initializeScene();

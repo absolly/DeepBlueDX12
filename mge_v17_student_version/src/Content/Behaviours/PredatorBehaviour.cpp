@@ -169,8 +169,8 @@ void PredatorBehaviour::update(float pStep)
 	{
 		if (!Hud::getInstance()->isPlayerKilled)
 		{
-			SoundManager::getInstance()->PlaySound("hit", "hit", false, true, false);
-			SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
+			SoundManager::getInstance()->PlayAudio("hit", "hit", false, true, false);
+			SoundManager::getInstance()->PlayAudio("suffocating", "suffocating", false, true, false);
 			Hud::getInstance()->isPlayerKilled = true;
 			for (int i = 0; i < _crumbs->length(); i++)
 				_crumbs[i] = glm::vec3(0);
@@ -182,7 +182,7 @@ void PredatorBehaviour::update(float pStep)
 	{
 		if (!Hud::getInstance()->isPlayerKilled)
 		{
-			SoundManager::getInstance()->PlaySound("Monster_Roar_Growl_009", std::to_string((int)this) + "1", false, false, false, 100, "", Random::Range(0.8f, 1.0f));
+			SoundManager::getInstance()->PlayAudio("Monster_Roar_Growl_009", std::to_string((int)this) + "1", false, false, false, 100, "", Random::Range(0.8f, 1.0f));
 			_soundAttackDelayTimer = Random::Range(8.0f, 10.0f);
 		}
 	}
@@ -195,7 +195,7 @@ void PredatorBehaviour::update(float pStep)
 			float smoothVolume = 0.5f + cosf(distanceFrom0To1 * glm::pi<float>()) / 2;
 			float reducedVolume = smoothVolume * 0.25f;
 
-			SoundManager::getInstance()->PlaySound("Monster 31", std::to_string((int)this) + "2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
+			SoundManager::getInstance()->PlayAudio("Monster 31", std::to_string((int)this) + "2", false, false, false, reducedVolume * 100, "", Random::Range(0.8f, 1.2f));
 			_soundNearbyDelayTimer = Random::Range(6.0f, 12.0f);
 		}
 

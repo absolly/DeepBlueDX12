@@ -18,7 +18,7 @@ class TestScene: public AbstractGame
 		TestScene();
 		virtual ~TestScene();
 
-        virtual void initialize();
+        virtual void initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd);
 		static EventNoArgs& resetEvent;
 
 	protected:

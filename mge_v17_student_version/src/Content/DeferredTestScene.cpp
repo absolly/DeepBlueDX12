@@ -36,9 +36,9 @@ using namespace std;
 DeferredTestScene::DeferredTestScene():AbstractGame (),_hud(0) {
 }
 
-void DeferredTestScene::initialize() {
+void DeferredTestScene::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd) {
     //setup the core part
-    AbstractGame::initialize();
+    AbstractGame::initialize(pHinstance,  pPrevInstance, pShowCmd);
 
     //setup the custom part
     cout << "Initializing HUD" << endl;
@@ -68,7 +68,7 @@ void DeferredTestScene::_initializeScene() {
 	string fishSpecular = "black.png";
 	Config::updateValue("fishSpecular", fishSpecular);
 
-	string groundModel = "plane.obj";
+	string groundModel = "Terrain_Plane.obj";
 	Config::updateValue("groundModel", groundModel);
 	string groundTexture = "beachsand.jpg";
 	Config::updateValue("groundTexture", groundTexture);
@@ -102,76 +102,78 @@ void DeferredTestScene::_initializeScene() {
     AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+ fishTexture), Texture::load(Config::MGE_TEXTURE_PATH + fishMovementMap), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + fishSpecular), Texture::load(Config::MGE_TEXTURE_PATH + fishNormal));
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
-
-    //SCENE SETUP
-    GameObject* plane = new GameObject("plane", glm::vec3(0,-2,0));
-    plane->scale(glm::vec3(10,10,10));
-    plane->setMesh(planeMeshDefault);
+	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
+	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
+	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
+	AbstractMaterial* textureMaterial2 = new ColorMaterial(glm::vec3(0, .4, .5));
+	
+	//SCENE SETUP
+    GameObject* plane = new GameObject("plane", glm::vec3(0,-50,0));
+    plane->scale(glm::vec3(50, 50, 50));
+    plane->setMesh(cubeMeshF);
     plane->setMaterial(textureMaterial);
 	//plane->addBehaviour(new KeysBehaviour());
     _world->add(plane);
 
 	GameObject* player = new GameObject("player", glm::vec3(0, 1, 0));
 	player->setMesh(cubeMeshF);
-	player->setMaterial(textureMaterial);
+	player->setMaterial(textureMaterial2);
 	player->addBehaviour(new KeysBehaviour(10,90));
 	_world->add(player);
+	camera->addBehaviour(new CameraOrbitBehaviour(30, 30, 150, 1, player));
 
-	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+	//Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
-	//FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, "", 50, 150);
-	//fishTank->setMesh(smallFish);
-	//AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
-	//fishTank->setMaterial(gpuinstancing);
-	//_world->add(fishTank);
+	////FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, "", 50, 150);
+	////fishTank->setMesh(smallFish);
+	////AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
+	////fishTank->setMaterial(gpuinstancing);
+	////_world->add(fishTank);
 
-	GameObject* teapot = new GameObject("teapot", glm::vec3(11, 1, 11));
-	std::vector<glm::vec3> _waypoints;
+	//GameObject* teapot = new GameObject("teapot", glm::vec3(11, 1, 11));
+	//std::vector<glm::vec3> _waypoints;
 
 
-	float random = 9;
-	std:: cout << "random seed: " << random << std::endl;
-	srand (random);
-	for(int i = 0; i < 4; i++) {
-	    glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
-		glm::vec3 pos = glm::vec3(rand() % 100 - 50, 5, rand() % 100 - 50);
-	    Light* light = new Light (Light::lightType::POINT, "light1", pos, *lightColor, 20, glm::vec3(0,0,1));
-		_waypoints.push_back(pos);
-	    light->setMesh (cubeMeshF);
-	    AbstractMaterial* colorMaterial2 = new ColorMaterial ((*lightColor));
-	    //light->setBehaviour(new LookAt(teapot));
-	    light->setMaterial(colorMaterial2);
-	    _world->add(light);
-	}
+	//float random = 9;
+	//std:: cout << "random seed: " << random << std::endl;
+	//srand (random);
+	//for(int i = 0; i < 4; i++) {
+	//    glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
+	//	glm::vec3 pos = glm::vec3(rand() % 100 - 50, 5, rand() % 100 - 50);
+	//    Light* light = new Light (Light::lightType::POINT, "light1", pos, *lightColor, 20, glm::vec3(0,0,1));
+	//	_waypoints.push_back(pos);
+	//    light->setMesh (cubeMeshF);
+	//    AbstractMaterial* colorMaterial2 = new ColorMaterial ((*lightColor));
+	//    //light->setBehaviour(new LookAt(teapot));
+	//    light->setMaterial(colorMaterial2);
+	//    _world->add(light);
+	//}
 
 	//teapot->addBehaviour(new PredatorBehaviour(player,_waypoints, _world));
-	teapot->setMesh(teapotMeshS);
+	/*teapot->setMesh(teapotMeshS);
 	teapot->setMaterial(waveMaterial);
 	_world->add(teapot);
-	//for (int i = 0; i < 5; i++) {
-	//	for (int j = 0; j < 5; j++) {
-	//		GameObject* teapot = new GameObject("teapot", glm::vec3(i*2, 1, j*2));
-	//		teapot->setMesh(teapotMeshS);
-	//		teapot->setMaterial(textureMaterial2);
-	//		teapot->addBehaviour(new KeysBehaviour());
-	//		_world->add(teapot);
-	//	}
-	//}
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			GameObject* teapot = new GameObject("teapot", glm::vec3(i*2, 1, j*2));
+			teapot->setMesh(teapotMeshS);
+			teapot->setMaterial(textureMaterial2);
+			teapot->addBehaviour(new KeysBehaviour());
+			_world->add(teapot);
+		}
+	}*/
 	//FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
 
 
-    camera->addBehaviour(new CameraOrbitBehaviour (2, 30, 150, 1, player));
 
-	glm::vec3* lightColor = new glm::vec3(127,239,217);
-	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,10,0), *lightColor, 1, glm::vec3(0, 0, 1));
-	light->setMesh(cubeMeshF);
-	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
-	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
-	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,-1.00001f,0.0001f)));
-	light->setMaterial(colorMaterial2);
-	_world->add(light);
+	//glm::vec3* lightColor = new glm::vec3(127,239,217);
+	//Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,10,0), *lightColor, 1, glm::vec3(0, 0, 1));
+	//light->setMesh(cubeMeshF);
+	//AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
+	//light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
+	////light->addBehaviour(new LookAt(glm::vec3(0.0001f,-1.00001f,0.0001f)));
+	//light->setMaterial(colorMaterial2);
+	//_world->add(light);
 
 ////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 ////    light3->setMesh (cubeMeshF);

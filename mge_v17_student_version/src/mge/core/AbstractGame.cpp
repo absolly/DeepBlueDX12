@@ -37,16 +37,16 @@ sf::RenderWindow * AbstractGame::getRenderWindow()
 	return _window;
 }
 
-void AbstractGame::initialize() {
+void AbstractGame::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd) {
     cout << "Initializing engine..." << endl << endl;
 
-	_initializeWindow();
+	_initializeWindow(pHinstance, pShowCmd, false);
     _printVersionInfo();
-    _initializeGlew();
+    _initializeAPI();
     _initializeRenderer();
     _initializeWorld();
     _initializeScene();
-	//
+
 	_menu = new Menu(_window);
 
 
@@ -54,8 +54,8 @@ void AbstractGame::initialize() {
 }
 
 ///SETUP
-
-void AbstractGame::_initializeWindow() {
+#ifdef API_OPENGL
+bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool fullscreen) {
     cout << "Initializing window..." << endl;
     _window = new sf::RenderWindow(sf::VideoMode((int)Config::SCREEN_RESOLUTION.x, (int)Config::SCREEN_RESOLUTION.y), "My Game!", Config::FULL_SCREEN ? sf::Style::Fullscreen : sf::Style::None, sf::ContextSettings(24,8,0,3,3));
 
@@ -66,6 +66,65 @@ void AbstractGame::_initializeWindow() {
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2));
     cout << "Window initialized." << endl << endl;
 }
+#elif defined(API_DIRECTX12)
+bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool fullscreen) {
+	if (fullscreen) {
+		HMONITOR hmon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+		MONITORINFO mi = { sizeof(mi) };
+		GetMonitorInfo(hmon, &mi);
+
+		Config::SCREEN_RESOLUTION.x = mi.rcMonitor.right - mi.rcMonitor.left;
+		Config::SCREEN_RESOLUTION.y = mi.rcMonitor.bottom - mi.rcMonitor.top;
+	}
+
+	WNDCLASSEX windowClass;
+
+	windowClass.cbSize = sizeof(WNDCLASSEX);
+	windowClass.style = CS_HREDRAW | CS_VREDRAW;
+	windowClass.lpfnWndProc = WndProc;
+	windowClass.cbClsExtra = NULL;
+	windowClass.cbWndExtra = NULL;
+	windowClass.hInstance = hInstance;
+	windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW);
+	windowClass.lpszMenuName = NULL;
+	windowClass.lpszClassName = WindowName;
+	windowClass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+
+	if (!RegisterClassEx(&windowClass)) {
+		MessageBox(NULL, L"Failed to register window class", L"Error", MB_OK | MB_ICONERROR);
+		return false;
+	}
+
+	hwnd = CreateWindowEx(
+		NULL,
+		WindowName,
+		WindowTitle,
+		WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		(int)Config::SCREEN_RESOLUTION.x, (int)Config::SCREEN_RESOLUTION.y,
+		NULL,
+		NULL,
+		hInstance,
+		NULL
+	);
+
+	if (!hwnd) {
+		MessageBox(NULL, L"Error creating window", L"Error", MB_OK | MB_ICONERROR);
+		return false;
+	}
+
+	if (fullscreen) {
+		SetWindowLong(hwnd, GWL_STYLE, 0);
+	}
+
+	ShowWindow(hwnd, ShowCmd);
+	UpdateWindow(hwnd);
+
+	return true;
+}
+#endif
 
 void AbstractGame::_printVersionInfo() {
     cout << "Context info:" << endl;
@@ -89,7 +148,7 @@ void AbstractGame::_printVersionInfo() {
     cout << "----------------------------------" << endl << endl;
 }
 
-void AbstractGame::_initializeGlew() {
+void AbstractGame::_initializeAPI() {
     cout << "Initializing GLEW..." << endl;
     //initialize the opengl extension wrangler
     GLint glewStatus = glewInit();
@@ -506,4 +565,23 @@ void AbstractGame::setMouseLockEnabled(bool enabled)
 	{
 		sf::Mouse::setPosition(windowCenter);
 	}
+}
+
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	switch (msg)
+	{
+	case WM_KEYDOWN:
+		if (wParam == VK_ESCAPE) {
+			if (MessageBox(0, L"Are you sure you want to exit?", L"Really?", MB_YESNO | MB_ICONQUESTION) == IDYES)
+				DestroyWindow(hwnd);
+		}
+		return 0;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	default:
+		return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
 }

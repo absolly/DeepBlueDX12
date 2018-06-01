@@ -20,7 +20,7 @@ void EnvironmentSoundPlayer::update(float deltaTime)
 	{
 		int soundIndex;
 		while ((soundIndex = Random::Range(0, _sounds.size() - 1)) == _previousSound && _sounds.size() > 1);
-		_soundManager.PlaySound(_sounds[soundIndex], 
+		_soundManager.PlayAudio(_sounds[soundIndex], 
 								_sounds[soundIndex],
 								false, 
 								true, 

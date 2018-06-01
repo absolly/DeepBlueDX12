@@ -56,9 +56,9 @@ EventNoArgs& TestScene::resetEvent = *new EventNoArgs();
 TestScene::TestScene() :AbstractGame(), _hud(0) {
 }
 
-void TestScene::initialize() {
+void TestScene::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd) {
 	//setup the core part
-	AbstractGame::initialize();
+	AbstractGame::initialize(pHinstance, pPrevInstance, pShowCmd);
 
 	//setup the custom part
 	cout << "Initializing HUD" << endl;
