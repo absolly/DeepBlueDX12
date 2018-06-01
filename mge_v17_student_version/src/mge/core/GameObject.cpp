@@ -10,11 +10,13 @@ using namespace std;
 #include "mge\core\Physics\CollisionBehaviour.h"
 #include "mge\core\Physics\RigidBody.hpp"
 #include "mge\core\Physics\PhysicsWorld.h"
+int GameObject::_gameobjects = 0;
 
 GameObject::GameObject(std::string pName, glm::vec3 pPosition)
 	: _name(pName), _transform(glm::translate(pPosition)),
-	_parent(NULL), _children(), _mesh(NULL), _behaviours(vector<AbstractBehaviour*>()), _material(NULL), colliders(std::vector<Collider*>())
+	_parent(NULL), _children(), _mesh(NULL), _behaviours(vector<AbstractBehaviour*>()), _material(NULL), colliders(std::vector<Collider*>()), constantBufferID(_gameobjects)
 {
+	_gameobjects++;
 }
 
 GameObject::~GameObject()

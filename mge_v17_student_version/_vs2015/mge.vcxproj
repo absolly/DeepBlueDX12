@@ -247,7 +247,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32sd.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;Bullet3\bin\BulletDynamics_vs2010_debug.lib;Bullet3\bin\BulletCollision_vs2010_debug.lib;Bullet3\bin\LinearMath_vs2010_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -289,7 +289,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glew32sd.lib;sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;jpeg.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;ws2_32.lib;Bullet3\bin\BulletDynamics_vs2010_debug.lib;Bullet3\bin\BulletCollision_vs2010_debug.lib;Bullet3\bin\LinearMath_vs2010_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -332,7 +332,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
       <AdditionalIncludeDirectories>src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -387,7 +387,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -438,12 +438,12 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>API_DIRECTX12;_CRT_SECURE_NO_WARNINGS;SFML_STATIC;GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>API_DIRECTX;_CRT_SECURE_NO_WARNINGS;SFML_STATIC;GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
@@ -489,8 +489,6 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\mge\behaviours\MantaBehaviour.hpp" />
-    <ClInclude Include="..\src\mge\core\Menu.hpp" />
     <ClInclude Include="src\Content\GameObjects\EnvironmentSoundPlayer.h" />
     <ClInclude Include="src\Content\GameObjects\PlayerFishFlock.hpp" />
     <ClInclude Include="src\Content\Behaviours\BoatFollowBehaviour.h" />
@@ -515,6 +513,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\Content\Hud\HudSprite.h" />
     <ClInclude Include="src\Content\Inventory\Inventory.h" />
     <ClInclude Include="src\Content\TestScene.hpp" />
+    <ClInclude Include="src\d3dx12.h" />
     <ClInclude Include="src\glm.hpp" />
     <ClInclude Include="src\mge\behaviours\AbstractBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\BoatFollowingBehaviour.hpp" />
@@ -523,6 +522,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\behaviours\CopyTargetPositionBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\KeysBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\LookAt.hpp" />
+    <ClInclude Include="src\mge\behaviours\MantaBehaviour.hpp" />
     <ClInclude Include="src\mge\behaviours\RotatingBehaviour.hpp" />
     <ClInclude Include="src\mge\Config.hpp" />
     <ClInclude Include="src\mge\core\AbstractGame.hpp" />
@@ -531,6 +531,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\core\Light.hpp" />
     <ClInclude Include="src\mge\core\LuaParser.hpp" />
     <ClInclude Include="src\mge\core\LuaScriptParser.hpp" />
+    <ClInclude Include="src\mge\core\Menu.hpp" />
     <ClInclude Include="src\mge\core\Mesh.hpp" />
     <ClInclude Include="src\mge\core\PhysicsObject.hpp" />
     <ClInclude Include="src\mge\core\Physics\Colliders\BoxCollider.h" />
@@ -565,8 +566,6 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\mge\behaviours\MantaBehaviour.cpp" />
-    <ClCompile Include="..\src\mge\core\Menu.cpp" />
     <ClCompile Include="src\Content\GameObjects\EnvironmentSoundPlayer.cpp" />
     <ClCompile Include="src\Content\GameObjects\PlayerFishFlock.cpp" />
     <ClCompile Include="src\Content\Behaviours\BoatFollowBehaviour.cpp" />
@@ -595,6 +594,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\behaviours\CopyTargetPositionBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\KeysBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\LookAt.cpp" />
+    <ClCompile Include="src\mge\behaviours\MantaBehaviour.cpp" />
     <ClCompile Include="src\mge\behaviours\RotatingBehaviour.cpp" />
     <ClCompile Include="src\mge\Config.cpp" />
     <ClCompile Include="src\mge\core\AbstractGame.cpp" />
@@ -603,6 +603,7 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\core\Light.cpp" />
     <ClCompile Include="src\mge\core\LuaParser.cpp" />
     <ClCompile Include="src\mge\core\LuaScriptParser.cpp" />
+    <ClCompile Include="src\mge\core\Menu.cpp" />
     <ClCompile Include="src\mge\core\Mesh.cpp" />
     <ClCompile Include="src\mge\core\PhysicsObject.cpp" />
     <ClCompile Include="src\mge\core\Physics\Colliders\BoxCollider.cpp" />

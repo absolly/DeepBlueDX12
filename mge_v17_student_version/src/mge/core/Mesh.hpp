@@ -4,10 +4,22 @@
 #include <vector>
 #include <GL/glew.h>
 #include <glm.hpp>
-
+#include "mge/core/Renderer.hpp"
 
 class GameObject;
 class World;
+
+struct Vertex
+{
+	Vertex(glm::vec3 pPos, glm::vec2 pTexCoord, glm::vec3 pNormal, glm::vec3 pTangent, glm::vec3 pBitangent)
+		: pos(pPos), texCoord(pTexCoord), normal(pNormal), tangent(pTangent), bitangent(pBitangent) {}
+
+	glm::vec3 pos;
+	glm::vec2 texCoord;
+	glm::vec3 normal;
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
+};
 
 /**
  * A mesh represents an .OBJ file. It knows how it is constructed, how its data should be buffered to OpenGL
@@ -31,6 +43,7 @@ class Mesh
          * Streams the mesh to opengl using the given indexes for the different attributes
          */
         void streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib);
+		void streamToDirectX();
 
 		void instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib);
 
@@ -70,9 +83,20 @@ class Mesh
 		std::vector<glm::vec3> _tangents;        //vec3 with 3d tangent data
 		std::vector<glm::vec3> _bitangents;        //vec3 with 3d bitangent data
 		std::vector<glm::vec2> _uvs;            //vec2 for uv
-
+		std::vector<Vertex> _vertexData;
 		//references to the vertices/normals & uvs in previous vectors
 		std::vector<unsigned> _indices;
+
+		int numIndices;
+
+		ID3D12Resource* vertexBuffer; //a default buffer in gpu memory that we will load the vertex data into
+
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView; //a structure containing a pointer to the vertex data in gpu memory (to be used by the driver), 
+												   //the total size of the buffer, and the size of each element
+
+		ID3D12Resource* indexBuffer; //a default buffer in gpu memory that we will load index data into
+
+		D3D12_INDEX_BUFFER_VIEW indexBufferView; //a stucture holding info about the index buffer
 
         //buffer vertices, normals, and uv's
 		void _buffer();
@@ -101,6 +125,14 @@ class Mesh
 				}
 		};
 
+		//upload data to constant buffer
+		static ID3D12Resource* CreateDefaultBuffer(
+			ID3D12Device* device,
+			ID3D12GraphicsCommandList* cmdList,
+			const void* initData,
+			UINT64 byteSize,
+			ID3D12Resource*& uploadBuffer
+		);
 };
 
 #endif // MESH_H

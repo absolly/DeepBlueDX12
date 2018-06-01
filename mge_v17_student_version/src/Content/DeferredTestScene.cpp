@@ -40,10 +40,12 @@ void DeferredTestScene::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance
     //setup the core part
     AbstractGame::initialize(pHinstance,  pPrevInstance, pShowCmd);
 
+#ifdef API_OPENGL
     //setup the custom part
     cout << "Initializing HUD" << endl;
     _hud = new DebugHud(_window);
     cout << "HUD initialized." << endl << endl;
+#endif
 }
 
 //build the game _world
@@ -51,8 +53,8 @@ void DeferredTestScene::_initializeScene() {
     _renderer->setClearColor(0,0,0);
 
     //add camera first (it will be updated last)
-    Camera* camera = new Camera ("camera", glm::vec3(0,0,0));
-    camera->rotate(glm::radians(180.0f), glm::vec3(0,1,0));
+    Camera* camera = new Camera ("camera", glm::vec3(0,-2,10));
+    //camera->rotate(glm::radians(180.0f), glm::vec3(0,1,0));
     _world->add(camera);
     _world->setMainCamera(camera);
 
@@ -99,7 +101,7 @@ void DeferredTestScene::_initializeScene() {
 
 
     //10 specular teapot material
-    AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+ fishTexture), Texture::load(Config::MGE_TEXTURE_PATH + fishMovementMap), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + fishSpecular), Texture::load(Config::MGE_TEXTURE_PATH + fishNormal));
+    //AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+ fishTexture), Texture::load(Config::MGE_TEXTURE_PATH + fishMovementMap), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + fishSpecular), Texture::load(Config::MGE_TEXTURE_PATH + fishNormal));
 	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
@@ -120,7 +122,7 @@ void DeferredTestScene::_initializeScene() {
 	player->setMaterial(textureMaterial2);
 	player->addBehaviour(new KeysBehaviour(10,90));
 	_world->add(player);
-	camera->addBehaviour(new CameraOrbitBehaviour(30, 30, 150, 1, player));
+	//camera->addBehaviour(new CameraOrbitBehaviour(30, 30, 150, 1, player));
 
 	//Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
@@ -183,8 +185,10 @@ void DeferredTestScene::_initializeScene() {
 
 void DeferredTestScene::_render() {
     AbstractGame::_render();
+#ifdef API_OPENGL
 	AbstractGame::_renderToQuad();
 	_updateHud();
+#endif
 }
 
 void DeferredTestScene::_updateHud() {

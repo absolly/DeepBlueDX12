@@ -18,6 +18,7 @@ _diffuseTexture(pDiffuseTexture), _waveMask(pWaveMask), _tiling(pTiling), _specu
 
 LitWaveMaterial::~LitWaveMaterial() {}
 
+#ifdef API_OPENGL
 void LitWaveMaterial::_lazyInitializeShader() {
     if (!_shader) {
         _shader = new ShaderProgram();
@@ -26,6 +27,11 @@ void LitWaveMaterial::_lazyInitializeShader() {
         _shader->finalize();
     }
 }
+#elif defined(API_DIRECTX)
+void LitWaveMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 void LitWaveMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
     _diffuseTexture = pDiffuseTexture;

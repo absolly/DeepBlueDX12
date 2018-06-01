@@ -15,6 +15,7 @@ WobbleMaterial::WobbleMaterial(Texture * pDiffuseTexture):_diffuseTexture(pDiffu
 
 WobbleMaterial::~WobbleMaterial() {}
 
+#ifdef API_OPENGL
 void WobbleMaterial::_lazyInitializeShader() {
     if (!_shader) {
         _shader = new ShaderProgram();
@@ -25,6 +26,11 @@ void WobbleMaterial::_lazyInitializeShader() {
     //start = clock();
 
 }
+#elif defined(API_DIRECTX)
+void WobbleMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 void WobbleMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
     _diffuseTexture = pDiffuseTexture;

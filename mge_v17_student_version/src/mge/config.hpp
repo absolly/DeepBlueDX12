@@ -1,5 +1,7 @@
 #pragma once
-
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
+#endif
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -7,13 +9,19 @@
 #include "Content\Core\EventHandler.h"
 #include "Content\Core\EventNoArgs.h"
 #include "glm.hpp"
-
+#ifdef API_DIRECTX
+#include <windows.h>
+#endif
 class Config 
 {
 public:
 	static std::string MGE_MODEL_PATH;// = "mge/models/";
 	static std::string MGE_TEXTURE_PATH; //= "mge/textures/";
+#ifdef API_OPENGL
 	static std::string MGE_SHADER_PATH;// = "mge/shaders/";
+#elif defined(API_DIRECTX)
+	static std::wstring MGE_SHADER_PATH;// = "mge/shaders/";
+#endif // API_OPENGL
 	static std::string MGE_FONT_PATH;// = "mge/fonts/";
 	static std::string MGE_LEVEL_PATH;// = "mge/levels/";
 	static std::string MGE_SOUNDS_PATH;// = "mge/sounds/";

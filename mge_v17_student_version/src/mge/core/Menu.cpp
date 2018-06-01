@@ -47,6 +47,8 @@ Menu::~Menu()
 
 bool Menu::RenderMenu()
 {
+#ifdef API_OPENGL
+
 	sprite5.setPosition(0, -20);
 	sf::Vector2i position = sf::Mouse::getPosition(*_window);
 	// set mouse position relative to a window
@@ -88,7 +90,7 @@ bool Menu::RenderMenu()
 	_window->draw(sprite4);
 	_window->draw(sprite5);
 	_window->popGLStates();
-
+#endif // API_OPENGL
 	return 1;
 
 

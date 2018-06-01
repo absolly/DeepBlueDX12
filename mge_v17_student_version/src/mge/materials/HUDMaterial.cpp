@@ -25,6 +25,7 @@ HUDMaterial::HUDMaterial(glm::vec3 pDiffuseColor):_diffuseColor (pDiffuseColor)
     _lazyInitializeShader();
 }
 
+#ifdef API_OPENGL
 void HUDMaterial::_lazyInitializeShader() {
 	
     //this shader contains everything the material can do (it can render something in 3d using a single color)
@@ -45,6 +46,11 @@ void HUDMaterial::_lazyInitializeShader() {
         _aBitangent = _shader->getAttribLocation("bitangent");
     }
 }
+#elif defined(API_DIRECTX)
+void HUDMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 HUDMaterial::~HUDMaterial()
 {

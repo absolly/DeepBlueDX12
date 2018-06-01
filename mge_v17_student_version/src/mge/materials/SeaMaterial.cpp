@@ -24,6 +24,7 @@ SeaMaterial::SeaMaterial(Texture* pDiffuseTexture, float pTiling) : _normalTextu
 	start = clock();
 }
 
+#ifdef API_OPENGL
 void SeaMaterial::_lazyInitializeShader() {
 	//this shader contains everything the material can do (it can render something in 3d using a single color)
 	if (!_shader) {
@@ -43,6 +44,11 @@ void SeaMaterial::_lazyInitializeShader() {
 		_aBitangent = _shader->getAttribLocation("bitangent");
 	}
 }
+#elif defined(API_DIRECTX)
+void SeaMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 SeaMaterial::~SeaMaterial()
 {

@@ -6,7 +6,11 @@
 
 std::string Config::MGE_MODEL_PATH = "mge/models/";
 std::string Config::MGE_TEXTURE_PATH = "mge/textures/";
-std::string Config::MGE_SHADER_PATH = "mge/shaders/";
+#ifdef API_OPENGL
+std::string Config::MGE_SHADER_PATH = "mge/shaders/glsl/";
+#elif defined(API_DIRECTX)
+std::wstring Config::MGE_SHADER_PATH = L"mge/shaders/hlsl/";
+#endif // API_OPENGL
 std::string Config::MGE_FONT_PATH = "mge/fonts/";
 std::string Config::MGE_LEVEL_PATH = "mge/levels/";
 std::string Config::MGE_SETTINGS_PATH = "mge/settings/";

@@ -16,6 +16,7 @@ _diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTe
 
 TextureMaterial::~TextureMaterial() {}
 
+#ifdef API_OPENGL
 void TextureMaterial::_lazyInitializeShader() {
     if (!_shader) {
         _shader = new ShaderProgram();
@@ -24,6 +25,11 @@ void TextureMaterial::_lazyInitializeShader() {
         _shader->finalize();
     }
 }
+#elif defined(API_DIRECTX)
+void TextureMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 void TextureMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
     _diffuseTexture = pDiffuseTexture;

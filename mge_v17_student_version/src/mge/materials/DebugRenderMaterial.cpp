@@ -25,6 +25,7 @@ DebugRenderMaterial::DebugRenderMaterial(glm::vec3 pDiffuseColor):_diffuseColor 
     _lazyInitializeShader();
 }
 
+#ifdef API_OPENGL
 void DebugRenderMaterial::_lazyInitializeShader() {
 	
     //this shader contains everything the material can do (it can render something in 3d using a single color)
@@ -45,6 +46,11 @@ void DebugRenderMaterial::_lazyInitializeShader() {
         _aBitangent = _shader->getAttribLocation("bitangent");
     }
 }
+#elif defined(API_DIRECTX)
+void DebugRenderMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 DebugRenderMaterial::~DebugRenderMaterial()
 {

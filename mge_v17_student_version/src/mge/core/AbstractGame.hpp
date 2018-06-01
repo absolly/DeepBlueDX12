@@ -8,6 +8,13 @@
 #include "mge/core/ShaderProgram.hpp"
 #include "mge/core/Texture.hpp"
 #include <windows.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <D3Dcompiler.h>
+#include "d3dx12.h"
+
+// this will only call release if an object exists (prevents exceptions calling release on non existant objects)
+#define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
 
 using namespace std;
 
@@ -99,7 +106,7 @@ class AbstractGame
 		GLuint cubemapTexture;
 		sf::Time _timeSinceStart;
 
-#ifdef API_DIRECTX12
+#ifdef API_DIRECTX
 		// Handle to the window
 		HWND hwnd = NULL;
 		// name of the window
@@ -108,20 +115,29 @@ class AbstractGame
 		// title of the window
 		LPCTSTR WindowTitle = L"DX12TestRenderWindow";
 
-		// width and height of the window 
-		int Width = 1280;
-		int Height = 720;
-
 		// fullscreen setting
 		bool FullScreen = false;
+
+		//direct3d api setup
+		/*
+		Render Targets:     Number of frame buffers
+		Command Allocators: Number of frame buffers * number of threads
+		Fences:             (Number of frame buffers * ??) Number of threads
+		Fence Values:       Number of threads
+		Fence Events:       Number of threads
+		Command Lists:      Number of threads
+		*/
+		IDXGIFactory4* dxgiFactory;
+
+#endif // API_DIRECTX
 		bool Running = true;
 
-		//Callback function for windows messages (e.g. window close)
-#endif // API_DIRECTX12
 
 };
 
-#ifdef API_DIRECTX12
+#ifdef API_DIRECTX
+//Callback function for windows messages (e.g. window close)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-#endif //api directx12
+#endif // API_DIRECTX
+
 #endif // ABSTRACTGAME_H

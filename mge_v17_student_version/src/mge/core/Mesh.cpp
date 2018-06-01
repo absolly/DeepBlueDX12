@@ -211,6 +211,7 @@ Mesh* Mesh::load(string pFileName, bool pDoBuffer) {
 							mesh->_tangents.push_back(tangent);
 							mesh->_bitangents.push_back(bitangent);
 							mesh->_uvs.push_back(uvs[uvIndex[newIndex] - 1]);
+							mesh->_vertexData.push_back(Vertex(vertices[vertexIndex[newIndex] - 1], uvs[uvIndex[newIndex] - 1], normals[normalIndex[newIndex] - 1], tangent, bitangent));
 						}
 						else {
 							//if the key was already present, get the index value for it
@@ -232,7 +233,7 @@ Mesh* Mesh::load(string pFileName, bool pDoBuffer) {
 
 		file.close();
 
-		if(pDoBuffer)
+		if (pDoBuffer)
 			mesh->_buffer();
 
 		//cout << "Mesh loaded and buffered:" << (mesh->_indices.size() / 3.0f) << " triangles." << endl;
@@ -254,7 +255,7 @@ void Mesh::_sendDataToOpenGL(glm::mat4 pProjectionMatrix, glm::mat4 pViewMatrix,
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (char*)(sizeof(float) * 3));
-	
+
 	glGenBuffers(1, &_indexBufferId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
@@ -272,7 +273,7 @@ void Mesh::_sendDataToOpenGL(glm::mat4 pProjectionMatrix, glm::mat4 pViewMatrix,
 	};
 
 	//const int fulltransformSize = pGameObjects.size();
-	
+
 	//glm::mat4 fullTransforms[fulltransformSize] = {};
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(fullTransforms), fullTransforms, GL_STATIC_DRAW);
@@ -290,6 +291,7 @@ void Mesh::_sendDataToOpenGL(glm::mat4 pProjectionMatrix, glm::mat4 pViewMatrix,
 	glVertexAttribDivisor(5, 1);
 }
 
+#ifdef API_OPENGL
 void Mesh::_buffer() {
 	glGenBuffers(1, &_indexBufferId);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBufferId);
@@ -317,9 +319,46 @@ void Mesh::_buffer() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+#elif defined(API_DIRECTX)
+void Mesh::_buffer() {
+	//std::vector<Vertex> vList = _vertexData;
+
+	int vBufferSize = _vertexData.size() * sizeof(Vertex);
+	ID3D12Resource* vBufferUploadHeap;
+
+	//create the default buffer for the vertex data and upload the data using an upload buffer.
+	vertexBuffer = CreateDefaultBuffer(Renderer::device, Renderer::commandList, &_vertexData[0], vBufferSize, vBufferUploadHeap);
+
+	////transition the vertex buffer data from copy destination state to vertex buffer state
+	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(vertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
+
+	//create index buffer
+	//std::vector <DWORD> iList = _indices;
+
+	int iBufferSize = sizeof(DWORD) * _indices.size();
+
+	numIndices = _indices.size(); //the number of indeces we want to draw (size of the (iList)/(size of one float3) i think)
+
+	ID3D12Resource* iBufferUploadHeap;
+	indexBuffer = CreateDefaultBuffer(Renderer::device, Renderer::commandList, &_indices[0], iBufferSize, iBufferUploadHeap);
+
+	//transition index buffer data from copy to index buffer state
+	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(indexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));
+
+	//create a vertex buffer view for the triangle. we get the gpu memory address to the vertex pointer using the GetGPUVirtualAddress() method
+	vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
+	vertexBufferView.StrideInBytes = sizeof(Vertex);
+	vertexBufferView.SizeInBytes = vBufferSize;
+
+	//create a index buffer view for the triangle. gets the gpu memory address to the pointer.
+	indexBufferView.BufferLocation = indexBuffer->GetGPUVirtualAddress();
+	indexBufferView.Format = DXGI_FORMAT_R32_UINT;
+	indexBufferView.SizeInBytes = iBufferSize;
+}
+#endif // API_OPENGL
 
 void Mesh::streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib) {
-	
+
 	if (pVerticesAttrib != -1) {
 		glBindBuffer(GL_ARRAY_BUFFER, _vertexBufferId);
 		glEnableVertexAttribArray(pVerticesAttrib);
@@ -364,6 +403,15 @@ void Mesh::streamToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUV
 	if (pVerticesAttrib != -1) glDisableVertexAttribArray(pVerticesAttrib);
 	if (pTangentAttrib != -1) glDisableVertexAttribArray(pTangentAttrib);
 	if (pBitangentAttrib != -1) glDisableVertexAttribArray(pBitangentAttrib);
+}
+
+void Mesh::streamToDirectX()
+{
+#ifdef API_DIRECTX
+	Renderer::commandList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	Renderer::commandList->IASetIndexBuffer(&indexBufferView);
+	Renderer::commandList->DrawIndexedInstanced(numIndices, 1, 0, 0, 0);
+#endif
 }
 
 void Mesh::instanceToOpenGL(GLint pVerticesAttrib, GLint pNormalsAttrib, GLint pUVsAttrib, GLint pTangentAttrib, GLint pBitangentAttrib) {
@@ -453,7 +501,7 @@ void Mesh::drawDebugInfo(const glm::mat4& pModelMatrix, const glm::mat4& pViewMa
 
 			glm::vec3 normalStart = _vertices[_indices[i]];
 			glVertex3fv(glm::value_ptr(normalStart));
-			glm::vec3 normalEnd = normalStart + normal*0.2f;
+			glm::vec3 normalEnd = normalStart + normal * 0.2f;
 			glVertex3fv(glm::value_ptr(normalEnd));
 		}
 
@@ -495,5 +543,55 @@ std::vector<unsigned>* Mesh::getVertextIndices()
 	return &_indices;
 }
 
+ID3D12Resource* Mesh::CreateDefaultBuffer(
+	ID3D12Device* device,
+	ID3D12GraphicsCommandList* cmdList,
+	const void* initData,
+	UINT64 byteSize,
+	ID3D12Resource*& uploadBuffer)
+{
+	ID3D12Resource* defaultBuffer;
 
+	// Create the actual default buffer resource.
+	ThrowIfFailed(device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(byteSize),
+		D3D12_RESOURCE_STATE_COMMON,
+		nullptr,
+		IID_PPV_ARGS(&defaultBuffer)));
+
+	// In order to copy CPU memory data into our default buffer, we need to create
+	// an intermediate upload heap. 
+	ThrowIfFailed(device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(byteSize),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&uploadBuffer)));
+
+
+	// Describe the data we want to copy into the default buffer.
+	D3D12_SUBRESOURCE_DATA subResourceData = {};
+	subResourceData.pData = initData;
+	subResourceData.RowPitch = byteSize;
+	subResourceData.SlicePitch = subResourceData.RowPitch;
+
+	// Schedule to copy the data to the default buffer resource.  At a high level, the helper function UpdateSubresources
+	// will copy the CPU memory into the intermediate upload heap.  Then, using ID3D12CommandList::CopySubresourceRegion,
+	// the intermediate upload heap data will be copied to mBuffer.
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer,
+		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST));
+	UpdateSubresources<1>(cmdList, defaultBuffer, uploadBuffer, 0, 0, 1, &subResourceData);
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer,
+		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ));
+
+	// Note: uploadBuffer has to be kept alive after the above function calls because
+	// the command list has not been executed yet that performs the actual copy.
+	// The caller can Release the uploadBuffer after it knows the copy has been executed.
+
+
+	return defaultBuffer;
+}
 

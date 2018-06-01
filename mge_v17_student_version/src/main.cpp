@@ -1,9 +1,9 @@
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
 #endif
-
-#include <iostream>
 #include <windows.h>
+#include <iostream>
+
 
 #include "Content/DeferredTestScene.hpp"
 
@@ -27,10 +27,15 @@ extern "C" {
  *
  */
 
+int main() {
+	WinMain(GetModuleHandle(NULL), NULL, NULL, 1);
+	return 0;
+}
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int nShowCmd) {
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 	std::cout << "Starting Game" << std::endl;
 
+	//printf("Starting Game!");
 
 	AbstractGame* game = new DeferredTestScene();
 	game->initialize(hInstance, hPrevInstance, nShowCmd);

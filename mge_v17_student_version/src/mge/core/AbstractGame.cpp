@@ -2,18 +2,17 @@
 
 #include <iostream>
 using namespace std;
-
 #include "mge/core/Renderer.hpp"
 #include "mge/core/World.hpp"
 #include <btBulletDynamicsCommon.h>
 #include "Content\Core\Input.h"
 #include "SFML\Window.hpp"
-#include <Windows.h>
 #include "Content\Core\EventHandler.h"
 #include "mge/config.hpp"
 #include "mge/core/Camera.hpp"
 #include "mge/core/Light.hpp"
 #include "Time.h"
+
 
 AbstractGame::AbstractGame():_window(NULL),_renderer(NULL),_world(NULL), _fps(0) {
     //ctor
@@ -43,10 +42,12 @@ void AbstractGame::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int
 	_initializeWindow(pHinstance, pShowCmd, false);
     _printVersionInfo();
     _initializeAPI();
-    _initializeRenderer();
+	_initializeRenderer();
     _initializeWorld();
     _initializeScene();
-
+#ifdef API_DIRECTX
+	_renderer->CloseCommandList();
+#endif
 	_menu = new Menu(_window);
 
 
@@ -66,7 +67,7 @@ bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool full
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2));
     cout << "Window initialized." << endl << endl;
 }
-#elif defined(API_DIRECTX12)
+#elif defined(API_DIRECTX)
 bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool fullscreen) {
 	if (fullscreen) {
 		HMONITOR hmon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
@@ -126,6 +127,7 @@ bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool full
 }
 #endif
 
+#ifdef API_OPENGL
 void AbstractGame::_printVersionInfo() {
     cout << "Context info:" << endl;
     cout << "----------------------------------" << endl;
@@ -147,16 +149,95 @@ void AbstractGame::_printVersionInfo() {
 
     cout << "----------------------------------" << endl << endl;
 }
+#elif defined(API_DIRECTX)
+void AbstractGame::_printVersionInfo() {
+	cout << "Context info:" << endl;
+	cout << "----------------------------------" << endl;
+	
+	ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory)));
 
+	HRESULT hr;
+	IDXGIAdapter1* adapter; //adapters are the graphics card (including embedded graphcis on the motherboard)
+
+	int adapterIndex = 0; //start looking at the first device index
+
+	bool adapterFound = false; //we will keep looking until this is true or there are no more adapters
+
+	//print hardware info
+	DXGI_ADAPTER_DESC adapterDesc;
+	while (dxgiFactory->EnumAdapters1(adapterIndex, &adapter) != DXGI_ERROR_NOT_FOUND) {
+		DXGI_ADAPTER_DESC1 desc;
+		adapter->GetDesc1(&desc);
+
+		////skip software devices
+		//if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) {
+		//	adapterIndex++;
+		//	continue;
+		//}
+		//check if the device is directx 12 compatible (feature level 11 or higher)
+		ThrowIfFailed(adapter->GetDesc(&adapterDesc));
+		if (adapterIndex != 0)
+			std::cout << std::endl;
+	
+		std::cout << "Device ID : " << adapterDesc.DeviceId << std::endl;
+		std::wcout << L"Vendor : " << adapterDesc.Description << std::endl;
+		std::cout << "Video Memory : " << adapterDesc.DedicatedVideoMemory / (1024 * 1024) << "MB" << std::endl;
+
+		hr = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
+		std::cout << "Compatible : " << ((!(desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) && SUCCEEDED(hr))?"True":"False") << std::endl;
+		adapterIndex++;
+
+	}
+	cout << "----------------------------------" << endl << endl;
+}
+#endif
+#ifdef API_OPENGL
 void AbstractGame::_initializeAPI() {
     cout << "Initializing GLEW..." << endl;
     //initialize the opengl extension wrangler
     GLint glewStatus = glewInit();
     cout << "Initialized GLEW, status (1 == OK, 0 == FAILED):" << (glewStatus == GLEW_OK) << endl << endl;
 }
+#elif defined(API_DIRECTX)
+void AbstractGame::_initializeAPI() {
 
+	HRESULT hr;
+	IDXGIAdapter1* adapter; //adapters are the graphics card (including embedded graphcis on the motherboard)
+
+	int adapterIndex = 0; //start looking at the first device index
+
+	bool adapterFound = false; //we will keep looking until this is true or there are no more adapters
+
+	while (dxgiFactory->EnumAdapters1(adapterIndex, &adapter) != DXGI_ERROR_NOT_FOUND) {
+		DXGI_ADAPTER_DESC1 desc;
+		adapter->GetDesc1(&desc);
+
+		//skip software devices
+		if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) {
+			adapterIndex++;
+			continue;
+		}
+		//check if the device is directx 12 compatible (feature level 11 or higher)
+		hr = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
+		if (SUCCEEDED(hr)) {
+			adapterFound = true;
+			break;
+		}
+		adapterIndex++;
+
+	}
+
+	if (!adapterFound)
+		return;
+
+	//create the device
+	ThrowIfFailed(D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&_renderer->device)));
+	//TODO: Add debug interface for better errors
+}
+#endif
+
+#ifdef API_OPENGL
 void AbstractGame::_initializeRenderer() {
-	//return;
     //setup our own renderer
     cout << "Initializing renderer..." << endl;
     _renderer = new Renderer();
@@ -258,6 +339,13 @@ void AbstractGame::_initializeRenderer() {
 	if (_fogTexure == nullptr)
 		_fogTexure = Texture::load(Config::MGE_TEXTURE_PATH + "fog.png");
 }
+#elif defined(API_DIRECTX)
+void AbstractGame::_initializeRenderer() {
+	cout << "Initializing renderer..." << endl;
+	_renderer = new Renderer(hwnd);
+	cout << "Renderer done." << endl << endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 void AbstractGame::_initializeWorld() {
     //setup the world
@@ -276,7 +364,7 @@ void AbstractGame::run() {
 	_timeSinceStart = sf::Time::Zero;
 
 
-    while (_window->isOpen()) {
+    while (Running) {
         timeSinceLastUpdate += updateClock.restart();
 		_timeSinceStart += updateClock.restart();
 
@@ -287,23 +375,25 @@ void AbstractGame::run() {
 				if (!_GamePaused)
 				{
 					_update(timePerFrame.asSeconds());
-					_world->updatePhysics(timePerFrame.asSeconds());
+					//_world->updatePhysics(timePerFrame.asSeconds());
 				}
 				Time::DeltaTime = timePerFrame.asSeconds();
-				Input::updateInput();
+				//Input::updateInput();
 			}
 
 			_render();
 
+#ifdef API_OPENGL
 			if (_GamePaused)
 				_GamePaused = _menu->RenderMenu();
 			
 			_window->display();
-			
+#endif
             float timeSinceLastRender = renderClock.restart().asSeconds();
 			Time::RenderDeltaTime = timeSinceLastRender;
             if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
         }
+
         _processEvents();
     }
 }
@@ -316,6 +406,7 @@ void AbstractGame::ToggleGamePaused(bool pPaused) {
 	_GamePaused = pPaused;
 }
 
+#ifdef API_OPENGL
 void AbstractGame::_render () {
 	//return;
 	// Compute the MVP matrix from the light's point of view
@@ -370,6 +461,11 @@ void AbstractGame::_render () {
 	// ... Draw rest of the scene
     _renderer->render(_world);
 }
+#elif defined(API_DIRECTX)
+void AbstractGame::_render() {
+	_renderer->render(_world);
+}
+#endif // API_OPENGL
 
 void AbstractGame::_renderToQuad() {
 	//return;
@@ -487,10 +583,11 @@ GLuint AbstractGame::loadCubemap(vector<std::string> faces)
 	return textureID;
 }
 
+#ifdef API_OPENGL
 void AbstractGame::_processEvents() {
 	EventHandler::handleEvents(*_window); 
 
-	/*sf::Event event;
+	sf::Event event;
     bool exit = false;
 
 	Input::updateInput();
@@ -518,8 +615,21 @@ void AbstractGame::_processEvents() {
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x/2, _window->getPosition().y + _window->getSize().y/2));
     if (exit) {
         _window->close();
-    }*/
+    }
 }
+#elif defined(API_DIRECTX)
+void AbstractGame::_processEvents() {
+	MSG msg;
+	ZeroMemory(&msg, sizeof(MSG));
+
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+		if (msg.message == WM_QUIT)
+			Running = false;
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+#endif
 
 void AbstractGame::_setFogGradient(Texture * pGradientFogTexture)
 {
