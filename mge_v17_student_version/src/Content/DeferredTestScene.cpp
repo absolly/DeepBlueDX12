@@ -120,7 +120,6 @@ void DeferredTestScene::_initializeScene() {
 	GameObject* player = new GameObject("player", glm::vec3(5, 1, -4));
 	player->setMesh(teapotMeshS);
 	player->scale(glm::vec3(0.05));
-	player->rotate(45, glm::vec3(1, 0, 0));
 	player->setMaterial(textureMaterial2);
 	player->addBehaviour(new KeysBehaviour(10,90));
 	_world->add(player);

@@ -363,6 +363,9 @@ void AbstractGame::run() {
     sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
 	_timeSinceStart = sf::Time::Zero;
 
+#ifdef API_DIRECTX
+	_GamePaused = false;
+#endif // API_DIRECTX
 
     while (Running) {
         timeSinceLastUpdate += updateClock.restart();
@@ -378,7 +381,7 @@ void AbstractGame::run() {
 					//_world->updatePhysics(timePerFrame.asSeconds());
 				}
 				Time::DeltaTime = timePerFrame.asSeconds();
-				//Input::updateInput();
+				Input::updateInput();
 			}
 
 			_render();
