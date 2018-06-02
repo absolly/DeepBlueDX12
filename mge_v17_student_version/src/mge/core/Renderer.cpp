@@ -401,7 +401,7 @@ void Renderer::render(World* pWorld) {
 
 	renderShadow = false;
 	Camera* camera = pWorld->getMainCamera();
-	render(pWorld, pWorld->getTransform(), camera->getWorldTransform(), camera->getProjection(), true);
+	render(pWorld, pWorld->getTransform(), glm::inverse(glm::scale(camera->getWorldTransform(), glm::vec3(1, 1, -1))), camera->getProjection(), true);
 	////first cube
 	//mat1->Render(diveScooterMesh, constantBufferUploadHeaps[frameIndex]->GetGPUVirtualAddress() + ConstantBufferPerObjectAlignedSize * go1->_constantBufferID);
 

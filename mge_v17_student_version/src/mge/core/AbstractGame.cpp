@@ -585,6 +585,11 @@ GLuint AbstractGame::loadCubemap(vector<std::string> faces)
 
 #ifdef API_OPENGL
 void AbstractGame::_processEvents() {
+	if (!_window->isOpen())
+	{
+		Running = false;
+		return;
+	}
 	EventHandler::handleEvents(*_window); 
 
 	sf::Event event;
@@ -615,6 +620,7 @@ void AbstractGame::_processEvents() {
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x/2, _window->getPosition().y + _window->getSize().y/2));
     if (exit) {
         _window->close();
+		Running = false;
     }
 }
 #elif defined(API_DIRECTX)

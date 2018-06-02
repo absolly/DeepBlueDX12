@@ -53,7 +53,7 @@ void DeferredTestScene::_initializeScene() {
     _renderer->setClearColor(0,0,0);
 
     //add camera first (it will be updated last)
-    Camera* camera = new Camera ("camera", glm::vec3(0,-2,10));
+    Camera* camera = new Camera ("camera", glm::vec3(0,2,10));
     //camera->rotate(glm::radians(180.0f), glm::vec3(0,1,0));
     _world->add(camera);
     _world->setMainCamera(camera);
@@ -117,8 +117,10 @@ void DeferredTestScene::_initializeScene() {
 	//plane->addBehaviour(new KeysBehaviour());
     _world->add(plane);
 
-	GameObject* player = new GameObject("player", glm::vec3(0, 1, 0));
-	player->setMesh(cubeMeshF);
+	GameObject* player = new GameObject("player", glm::vec3(5, 1, -4));
+	player->setMesh(teapotMeshS);
+	player->scale(glm::vec3(0.05));
+	player->rotate(45, glm::vec3(1, 0, 0));
 	player->setMaterial(textureMaterial2);
 	player->addBehaviour(new KeysBehaviour(10,90));
 	_world->add(player);

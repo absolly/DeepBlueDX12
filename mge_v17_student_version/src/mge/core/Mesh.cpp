@@ -168,6 +168,7 @@ Mesh* Mesh::load(string pFileName, bool pDoBuffer) {
 
 					for (int i = 0; i < vertCount; ++i) {
 						int newIndex = i;
+#ifdef API_OPENGL
 						switch (newIndex) {
 						case 3:
 							newIndex = 0;
@@ -179,6 +180,26 @@ Mesh* Mesh::load(string pFileName, bool pDoBuffer) {
 							newIndex = 3;
 							break;
 						}
+#elif defined(API_DIRECTX)
+						//change order so the system traverses them clockwise from the front https://msdn.microsoft.com/en-us/library/windows/desktop/bb204853(v=vs.85).aspx
+						switch (newIndex) {
+						case 1:
+							newIndex = 2;
+							break;
+						case 2:
+							newIndex = 1;
+							break;
+						case 3:
+							newIndex = 0;
+							break;
+						case 4:
+							newIndex = 3;
+							break;
+						case 5:
+							newIndex = 2;
+							break;
+						}
+#endif
 
 						vertexIndex[newIndex] = (vertexIndex[newIndex] < 0) ? vertices.size() + vertexIndex[newIndex] + 1 : vertexIndex[newIndex];
 						uvIndex[newIndex] = (uvIndex[newIndex] < 0) ? uvs.size() + uvIndex[newIndex] + 1 : uvIndex[newIndex];
