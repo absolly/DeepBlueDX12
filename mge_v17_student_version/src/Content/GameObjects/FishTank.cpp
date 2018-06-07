@@ -9,7 +9,7 @@ using namespace std;
 #include "mge/core/Mesh.hpp"
 #include "Content/GameObjects/FishTank.hpp"
 #include "mge/core/GameObject.hpp"
-#include "mge/materials/TextureMaterial.hpp"
+#include "mge/materials/ColorMaterial.hpp"
 #include "Content/Behaviours/FlockingBehaviour.hpp"
 #include "mge/materials//GPUinstancingMaterial.hpp"
 
@@ -32,7 +32,8 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, st
 
 	
 	Mesh* cubeMeshF = Mesh::load(Config::MGE_MODEL_PATH + "small_fish.OBJ");
-	AbstractMaterial* colormat = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "bricks.jpg"), 1, 10);
+	AbstractMaterial* colormat = new ColorMaterial(glm::vec3(.7f, 0, 0.5f));
+		Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
 	random_device rd;
 
@@ -41,7 +42,7 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, st
 
 	uniform_int_distribution<> dis((-pTankSize / 4), pTankSize / 4);
 
-	goalPosition = glm::vec3(dis(gen), dis(gen), dis(gen)) + getLocalPosition();
+	goalPosition = pPlayer->getWorldPosition();
 
 
 	for (int i = 0; i < _fishCount; i++)
@@ -49,10 +50,13 @@ FishTank::FishTank(glm::vec3 pPosition, World * pWorld, GameObject * pPlayer, st
 		int randomX = dis(gen);
 		int randomY = dis(gen);
 		int randomZ = dis(gen);
-		AbstractBehaviour* flock = new FlockingBehaviour(this, allFish, updateRate, goalPosition, _tankSize, _fishCount);
+		AbstractBehaviour* flock = new FlockingBehaviour(this, allFish, updateRate, goalPosition, _tankSize, _fishCount, true);
 
 		GameObject* fish = new GameObject("fish", glm::vec3(_parentPos.x + randomX, _parentPos.y + randomY, _parentPos.z + randomZ));
+		fish->setMesh(cubeMeshF);
+		fish->setMaterial(colormat);
 		fish->addBehaviour(flock);
+		add(fish);
 		allFish->push_back(fish);
 	}
 

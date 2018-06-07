@@ -41,9 +41,11 @@ BillBoardMaterial::BillBoardMaterial(ParticleSystem * pParticleSystem, Texture *
 		0.5f,  0.5f, 0.0f,
 	};
 
+#ifdef API_OPENGL
 	glGenBuffers(1, &billboard_vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_DYNAMIC_DRAW);
+#endif
 }
 
 #ifdef API_OPENGL

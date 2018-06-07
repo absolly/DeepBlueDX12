@@ -31,6 +31,10 @@ using namespace std;
 #include "Content/DeferredTestScene.hpp"
 #include <time.h>       /* time */
 #include "mge\Config.hpp"
+#include "Content\GameObjects\PlayerFishFlock.hpp"
+#include "Content\GameObjects\Player.h"
+#include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
+#include "Content\GameObjects\EnvironmentSoundPlayer.h"
 
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 DeferredTestScene::DeferredTestScene():AbstractGame (),_hud(0) {
@@ -40,12 +44,10 @@ void DeferredTestScene::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance
     //setup the core part
     AbstractGame::initialize(pHinstance,  pPrevInstance, pShowCmd);
 
-#ifdef API_OPENGL
     //setup the custom part
     cout << "Initializing HUD" << endl;
-    _hud = new DebugHud(_window);
+    _hud = new Hud(_window);
     cout << "HUD initialized." << endl << endl;
-#endif
 }
 
 //build the game _world
@@ -107,31 +109,31 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
-	AbstractMaterial* textureMaterial2 = new ColorMaterial(glm::vec3(0, .4, .5));
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"));
 	
 	//SCENE SETUP
     GameObject* plane = new GameObject("plane", glm::vec3(0,-50,0));
     plane->scale(glm::vec3(50, 50, 50));
     plane->setMesh(cubeMeshF);
-    plane->setMaterial(textureMaterial);
+    plane->setMaterial(textureMaterial2);
 	//plane->addBehaviour(new KeysBehaviour());
     _world->add(plane);
 
-	GameObject* player = new GameObject("player", glm::vec3(5, 1, -4));
-	player->setMesh(teapotMeshS);
-	player->scale(glm::vec3(0.05));
-	player->setMaterial(textureMaterial2);
-	player->addBehaviour(new KeysBehaviour(10,90));
+
+	Player* player = new Player();
+	//AbstractBehaviour * playerap = new PlayerFishAbilityBehaviour(_world, player->getChildAt(0));
+	//player->getChildAt(0)->addBehaviour(playerap);
 	_world->add(player);
-	//camera->addBehaviour(new CameraOrbitBehaviour(30, 30, 150, 1, player));
+	_world->setMainCamera(player->getCamera());
+	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
-	//Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
-	////FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, "", 50, 150);
-	////fishTank->setMesh(smallFish);
-	////AbstractMaterial * gpuinstancing = new GPUinstancingMaterial(*fishTank->allFish);
-	////fishTank->setMaterial(gpuinstancing);
-	////_world->add(fishTank);
+	//FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, player, "", 50, 150);
+	//fishTank->setMesh(smallFish);
+	//AbstractMaterial * gpuinstancing = new ColorMaterial(glm::vec3(.7f,0,0.5f));
+	//fishTank->setMaterial(gpuinstancing);
+	//_world->add(fishTank);
 
 	//GameObject* teapot = new GameObject("teapot", glm::vec3(11, 1, 11));
 	//std::vector<glm::vec3> _waypoints;
@@ -182,6 +184,9 @@ void DeferredTestScene::_initializeScene() {
 ////    light3->setMesh (cubeMeshF);
 ////    light3->setMaterial(colorMaterial2);
 ////    _world->add(light3);
+	SoundManager * soundmng = new SoundManager();
+	EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
+	_world->add(environmentSoundPlayer);
 }
 
 void DeferredTestScene::_render() {

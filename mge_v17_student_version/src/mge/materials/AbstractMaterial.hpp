@@ -50,7 +50,7 @@ class AbstractMaterial
 			_In_ UINT Flags2,
 			_Out_ ID3DBlob** ppCode,
 			_Always_(_Outptr_opt_result_maybenull_) ID3DBlob** ppErrorMsgs) {
-			D3DCompileFromFile((Config::MGE_SHADER_PATH + pFileName).c_str(), pDefines, pInclude, pEntrypoint, pTarget, Flags1, Flags2, ppCode, ppErrorMsgs);
+			return D3DCompileFromFile((Config::MGE_SHADER_PATH + pFileName).c_str(), pDefines, pInclude, pEntrypoint, pTarget, Flags1, Flags2, ppCode, ppErrorMsgs);
 		};
 #endif
 };

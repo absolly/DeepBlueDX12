@@ -48,7 +48,7 @@ Hud::Hud(sf::RenderWindow * window) :
 	_abilityInactive.setScale(Config::HUD_SCALE_FACTOR);
 	_abilityActive.setScale(Config::HUD_SCALE_FACTOR);
 
-	_abilityFish.setPosition(70, window->getSize().y - 300);
+	/*_abilityFish.setPosition(70, window->getSize().y - 300);
 	_abilityInactive.setPosition(70, window->getSize().y - 300);
 	_abilityActive.setPosition(70, window->getSize().y - 300);
 
@@ -60,7 +60,7 @@ Hud::Hud(sf::RenderWindow * window) :
 	_interactionText.setPosition(sf::Vector2f((_window->getSize().x / 2) - (_interactionText.getGlobalBounds().width / 2), (_window->getSize().y / 2) - (_interactionText.getGlobalBounds().height / 2)));
 	_subtitleText.setPosition((_window->getSize().x / 2) - (_subtitleText.getGlobalBounds().width / 2), _window->getSize().y - 200);
 
-
+*/
 	Config::onConfigUpdated.bind(this, &Hud::reloadHUD);
 	reloadHUD();
 }
@@ -208,7 +208,7 @@ void Hud::reloadHUD()
 	Config::updateValue("coinx", coinx);
 	float coiny = 300;
 	Config::updateValue("coiny", coiny);
-	_coinCounterText.setPosition(coinx, _window->getSize().y - coiny);
+	//_coinCounterText.setPosition(coinx, _window->getSize().y - coiny);
 
 	float coinSize = 38;
 	Config::updateValue("coinSize", coinSize);
@@ -218,7 +218,7 @@ void Hud::reloadHUD()
 	Config::updateValue("oxigenx", oxigenx);
 	float oxigeny = 300;
 	Config::updateValue("oxigeny", oxigeny);
-	_oxygenBar.setPosition(oxigenx, _window->getSize().y - oxigeny);
+	//_oxygenBar.setPosition(oxigenx, _window->getSize().y - oxigeny);
 
 	float oxigenSize = 38;
 	Config::updateValue("oxigenSize", oxigenSize);
@@ -228,7 +228,7 @@ void Hud::reloadHUD()
 	Config::updateValue("depthx", depthx);
 	float depthy = 200;
 	Config::updateValue("depthy", depthy);
-	_depthBar.setPosition(depthx, _window->getSize().y - depthy);
+	//_depthBar.setPosition(depthx, _window->getSize().y - depthy);
 
 	float depthSize = 38;
 	Config::updateValue("depthSize", depthSize);

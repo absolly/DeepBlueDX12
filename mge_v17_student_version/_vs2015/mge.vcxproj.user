@@ -31,7 +31,15 @@
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Debug Static OpenGL|Win32'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Resease Static|x64'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Debug Static OpenGL|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
@@ -39,7 +47,15 @@
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Debug Static DX12|Win32'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Release Static DX12|x64'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Debug Static DX12|x64'">
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>

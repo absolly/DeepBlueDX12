@@ -66,6 +66,7 @@ bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool full
 	SetCursorPos(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2);
 	//sf::Mouse::setPosition(sf::Vector2i(_window->getPosition().x + _window->getSize().x / 2, _window->getPosition().y + _window->getSize().y / 2));
     cout << "Window initialized." << endl << endl;
+	return true;
 }
 #elif defined(API_DIRECTX)
 bool AbstractGame::_initializeWindow(HINSTANCE hInstance, int ShowCmd, bool fullscreen) {
@@ -378,7 +379,7 @@ void AbstractGame::run() {
 				if (!_GamePaused)
 				{
 					_update(timePerFrame.asSeconds());
-					//_world->updatePhysics(timePerFrame.asSeconds());
+					_world->updatePhysics(timePerFrame.asSeconds());
 				}
 				Time::DeltaTime = timePerFrame.asSeconds();
 				Input::updateInput();

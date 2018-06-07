@@ -188,7 +188,6 @@ void ColorMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm
     pMesh->streamToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
 	
 }
-
 #ifdef API_DIRECTX
 void ColorMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
@@ -200,4 +199,4 @@ void ColorMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 	pMesh->streamToDirectX();
 
 }
-#endif
+#endif // API_DIRECTX

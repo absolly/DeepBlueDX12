@@ -18,7 +18,8 @@ class ColorMaterial : public AbstractMaterial
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) override;
 #ifdef API_DIRECTX
 		virtual void render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress) override;
-#endif
+#endif // API_DIRECTX
+
         //in rgb values
         void setDiffuseColor (glm::vec3 pDiffuseColor);
 

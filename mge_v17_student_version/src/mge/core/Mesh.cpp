@@ -122,6 +122,10 @@ Mesh* Mesh::load(string pFileName, bool pDoBuffer) {
 			else if (strcmp(cmd, "vt") == 0) {
 				glm::vec2 uv;
 				sscanf(line.c_str(), "%10s %f %f ", cmd, &uv.x, &uv.y);
+#ifdef API_DIRECTX
+				uv.y = 1 - uv.y;
+#endif // API_DIRECTX
+
 				uvs.push_back(uv);
 
 				//this is where it gets nasty. After having read all vertices, normals and uvs into
