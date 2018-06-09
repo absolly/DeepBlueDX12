@@ -24,7 +24,7 @@ class DeferredTestScene: public AbstractGame
 	    virtual void _render();
 
 	private:
-		Hud* _hud;                   //hud display
+		DebugHud* _hud;                   //hud display
         LuaParser* _parser;
         void _updateHud();
 

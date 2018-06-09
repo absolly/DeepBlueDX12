@@ -59,4 +59,8 @@
     <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Release Static OpenGL|Win32'">
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\assets</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>

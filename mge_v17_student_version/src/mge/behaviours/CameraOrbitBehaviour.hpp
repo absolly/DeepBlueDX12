@@ -24,7 +24,7 @@ class CameraOrbitBehaviour : public AbstractBehaviour
         float _minTiltAngle;
         float _maxTiltAngle;
         float _rotSpeed;
-
+		float radX;
         CameraOrbitBehaviour(const CameraOrbitBehaviour&);
         CameraOrbitBehaviour& operator=(const CameraOrbitBehaviour&);
 };

@@ -3,7 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include "mge/core/Texture.hpp"
-#include "mge/core/WICTextureLoader12.h"
 
 std::map<std::string, Texture*> Texture::_textures; // for static texturs var
 

@@ -18,6 +18,7 @@ std::string Config::MGE_SPRITES_PATH = "mge/sprites/";
 std::string Config::MGE_SOUNDS_PATH = "mge/sounds/";
 sf::Vector2f Config::HUD_SCALE_FACTOR;
 bool Config::FULL_SCREEN = false;
+bool Config::POST_FX = false;
 sf::Vector2i Config::SCREEN_RESOLUTION = sf::Vector2i(false ? 1920 : 1600, false ? 1080 : 900);
 EventNoArgs Config::onConfigUpdated;
 

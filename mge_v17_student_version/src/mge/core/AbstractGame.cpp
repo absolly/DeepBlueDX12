@@ -361,42 +361,43 @@ void AbstractGame::run() {
     sf::Clock updateClock;
     sf::Clock renderClock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    sf::Time timePerFrame = sf::seconds(1.0f / 60.0f);
+    sf::Time timePerFrame = sf::seconds(1.0f / 120.0f);
 	_timeSinceStart = sf::Time::Zero;
-
-#ifdef API_DIRECTX
+	float timeAsSeconds = 0;
 	_GamePaused = false;
+#ifdef API_DIRECTX
 #endif // API_DIRECTX
 
     while (Running) {
-        timeSinceLastUpdate += updateClock.restart();
+        timeSinceLastUpdate += updateClock.getElapsedTime();
 		_timeSinceStart += updateClock.restart();
 
-		if (timeSinceLastUpdate > timePerFrame) {
+		//if (timeSinceLastUpdate > timePerFrame) {
 
 			while (timeSinceLastUpdate > timePerFrame) {
 				timeSinceLastUpdate -= timePerFrame;
+				timeAsSeconds = timePerFrame.asSeconds();
 				if (!_GamePaused)
 				{
-					_update(timePerFrame.asSeconds());
-					_world->updatePhysics(timePerFrame.asSeconds());
+					_update(timeAsSeconds);
+					_world->updatePhysics(timeAsSeconds);
 				}
-				Time::DeltaTime = timePerFrame.asSeconds();
+				Time::DeltaTime = timeAsSeconds;
 				Input::updateInput();
 			}
 
 			_render();
 
 #ifdef API_OPENGL
-			if (_GamePaused)
+	/*		if (_GamePaused)
 				_GamePaused = _menu->RenderMenu();
-			
+			*/
 			_window->display();
 #endif
             float timeSinceLastRender = renderClock.restart().asSeconds();
 			Time::RenderDeltaTime = timeSinceLastRender;
             if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
-        }
+        //}
 
         _processEvents();
     }
@@ -412,7 +413,12 @@ void AbstractGame::ToggleGamePaused(bool pPaused) {
 
 #ifdef API_OPENGL
 void AbstractGame::_render () {
-	//return;
+	if (!Config::POST_FX) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		_renderer->render(_world);
+		return;
+	}
+
 	// Compute the MVP matrix from the light's point of view
 	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-600, 600, -600, 600, -800, 800);
 	glm::mat4 depthViewMatrix;
@@ -472,7 +478,7 @@ void AbstractGame::_render() {
 #endif // API_OPENGL
 
 void AbstractGame::_renderToQuad() {
-	//return;
+	return;
 	glActiveTexture(GL_TEXTURE0);
 
 	GLboolean horizontal = true, first_iteration = true;

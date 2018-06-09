@@ -37,7 +37,7 @@ class AbstractMaterial
 
         virtual void render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pPerspectiveMatrix) = 0;
 		virtual void render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress) {
-			std::cout << "directx version of material not implemented" << std::endl;
+			//std::cout << " directx version of material not implemented" << std::endl;
 		};
 
 #ifdef API_DIRECTX

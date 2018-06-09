@@ -30,6 +30,7 @@ public:
 	static sf::Vector2f HUD_SCALE_FACTOR;
 	static sf::Vector2i SCREEN_RESOLUTION;
 	static bool FULL_SCREEN;
+	static bool POST_FX;
 	static EventNoArgs onConfigUpdated;
 
 	static std::string tryGetValue(std::string key, std::string defaultValue);

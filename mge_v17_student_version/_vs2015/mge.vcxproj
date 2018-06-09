@@ -704,11 +704,11 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClInclude Include="src\mge\materials\SeaMaterial.hpp" />
     <ClInclude Include="src\mge\materials\TerrainMaterial.hpp" />
     <ClInclude Include="src\mge\materials\TextureMaterial.hpp" />
+    <ClInclude Include="src\mge\materials\UnlitTextureMaterial.hpp" />
     <ClInclude Include="src\mge\materials\WobbleMaterial.hpp" />
     <ClInclude Include="src\mge\MGEDemo.hpp" />
     <ClInclude Include="src\mge\util\DebugHud.hpp" />
     <ClInclude Include="src\mge\util\MessageBoxManager.hpp" />
-    <ClInclude Include="src\mge\core\WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Content\GameObjects\EnvironmentSoundPlayer.cpp" />
@@ -777,11 +777,11 @@ xcopy /y /d /s "$(ProjectDir)..\assets" "$(TargetDir)"</Command>
     <ClCompile Include="src\mge\materials\SeaMaterial.cpp" />
     <ClCompile Include="src\mge\materials\TerrainMaterial.cpp" />
     <ClCompile Include="src\mge\materials\TextureMaterial.cpp" />
+    <ClCompile Include="src\mge\materials\UnlitTextureMaterial.cpp" />
     <ClCompile Include="src\mge\materials\WobbleMaterial.cpp" />
     <ClCompile Include="src\mge\MGEDemo.cpp" />
     <ClCompile Include="src\mge\util\DebugHud.cpp" />
     <ClCompile Include="src\mge\util\MessageBoxManager.cpp" />
-    <ClCompile Include="src\mge\core\WICTextureLoader12.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />

@@ -35,7 +35,7 @@ using namespace std;
 #include "Content\GameObjects\Player.h"
 #include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
 #include "Content\GameObjects\EnvironmentSoundPlayer.h"
-
+#include "mge\materials\UnlitTextureMaterial.hpp"
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 DeferredTestScene::DeferredTestScene():AbstractGame (),_hud(0) {
 }
@@ -46,19 +46,22 @@ void DeferredTestScene::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance
 
     //setup the custom part
     cout << "Initializing HUD" << endl;
-    _hud = new Hud(_window);
+    _hud = new DebugHud(_window);
     cout << "HUD initialized." << endl << endl;
 }
 
 //build the game _world
 void DeferredTestScene::_initializeScene() {
-    _renderer->setClearColor(0,0,0);
+    _renderer->setClearColor(0, 51, 102);
 
     //add camera first (it will be updated last)
-    Camera* camera = new Camera ("camera", glm::vec3(0,2,10));
+    Camera* camera = new Camera ("camera", glm::vec3(0,0,0));
     //camera->rotate(glm::radians(180.0f), glm::vec3(0,1,0));
     _world->add(camera);
     _world->setMainCamera(camera);
+	GameObject* go = new GameObject();
+	_world->add(go);
+	camera->addBehaviour(new CameraOrbitBehaviour(250, 0, 0.5, 1, go));
 
     //MESHES
 	string fishModel = "MantaRay.obj";
@@ -109,25 +112,30 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"));
+	AbstractMaterial* textureMaterial2 = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 2);
 	
 	//SCENE SETUP
-    GameObject* plane = new GameObject("plane", glm::vec3(0,-50,0));
-    plane->scale(glm::vec3(50, 50, 50));
-    plane->setMesh(cubeMeshF);
-    plane->setMaterial(textureMaterial2);
-	//plane->addBehaviour(new KeysBehaviour());
-    _world->add(plane);
+
+	//seed random so results are the same every time
+	srand(9);
+	for (int i = 0; i < 1000; i++) {
+		GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
+		go->setMesh(cubeMeshF);
+		go->setMaterial(textureMaterial2);
+		_world->add(go);
+	}
+
+   
 
 
-	Player* player = new Player();
-	//AbstractBehaviour * playerap = new PlayerFishAbilityBehaviour(_world, player->getChildAt(0));
-	//player->getChildAt(0)->addBehaviour(playerap);
-	_world->add(player);
-	_world->setMainCamera(player->getCamera());
-	RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
+	//Player* player = new Player();
+	////AbstractBehaviour * playerap = new PlayerFishAbilityBehaviour(_world, player->getChildAt(0));
+	////player->getChildAt(0)->addBehaviour(playerap);
+	//_world->add(player);
+	//_world->setMainCamera(player->getCamera());
+	//RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
 
-	Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
+	//Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
 
 	//FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, player, "", 50, 150);
 	//fishTank->setMesh(smallFish);
@@ -172,11 +180,11 @@ void DeferredTestScene::_initializeScene() {
 
 
 	//glm::vec3* lightColor = new glm::vec3(127,239,217);
-	//Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,10,0), *lightColor, 1, glm::vec3(0, 0, 1));
+	//Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,150,0), *lightColor, 1, glm::vec3(0, 0, 1));
 	//light->setMesh(cubeMeshF);
 	//AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
 	//light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
-	////light->addBehaviour(new LookAt(glm::vec3(0.0001f,-1.00001f,0.0001f)));
+	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
 	//light->setMaterial(colorMaterial2);
 	//_world->add(light);
 
@@ -184,15 +192,18 @@ void DeferredTestScene::_initializeScene() {
 ////    light3->setMesh (cubeMeshF);
 ////    light3->setMaterial(colorMaterial2);
 ////    _world->add(light3);
-	SoundManager * soundmng = new SoundManager();
-	EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
-	_world->add(environmentSoundPlayer);
+
+	//SoundManager * soundmng = new SoundManager();
+	//EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
+	//_world->add(environmentSoundPlayer);
 }
 
 void DeferredTestScene::_render() {
     AbstractGame::_render();
 #ifdef API_OPENGL
-	AbstractGame::_renderToQuad();
+	if (Config::POST_FX)
+		AbstractGame::_renderToQuad();
+
 	_updateHud();
 #endif
 }

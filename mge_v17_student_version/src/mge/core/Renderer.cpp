@@ -22,6 +22,15 @@ ID3D12GraphicsCommandList*  Renderer::commandList = nullptr;
 
 #ifdef API_OPENGL
 Renderer::Renderer() {
+	if (!Config::POST_FX) {
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE); // default GL_BACK
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glClearColor((float)0x00 / 0xff, (float)0x00 / 0xff, (float)0x00 / 0xff, 1.0f);
+		return;
+	}
+
 	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
 	glGenFramebuffers(1, &ShadowBuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, ShadowBuffer);
@@ -308,7 +317,7 @@ Renderer::Renderer(HWND hwnd) {
 		ThrowIfFailed(device->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 * 4), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&constantBufferUploadHeaps[i])
@@ -392,8 +401,6 @@ void Renderer::render(World* pWorld) {
 	const float clearColor[] = { 0.0f,0.2f,0.4f,1.0f };
 	commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-	//set the root signature
 
 	//draw!
 	commandList->RSSetViewports(1, &viewport);
