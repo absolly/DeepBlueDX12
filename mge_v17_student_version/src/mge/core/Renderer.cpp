@@ -490,6 +490,9 @@ void Renderer::renderMesh (int pConstantBufferId, Mesh* pMesh, AbstractMaterial*
 #elif defined(API_DIRECTX)
 	ConstantBufferPerObject cb;
 	cb.wvpMat = glm::transpose(pProjectionMatrix * pViewMatrix * pModelMatrix);
+	cb.pMat = glm::transpose(pProjectionMatrix);
+	cb.vMat = glm::transpose(pViewMatrix);
+	cb.wMat = glm::transpose(pModelMatrix);
 	// copy our ConstantBuffer instance to the mapped constant buffer resource
 	memcpy(cbvGPUAddress[frameIndex] + ConstantBufferPerObjectAlignedSize * pConstantBufferId, &cb, sizeof(cb));
 	if (!renderShadow && pMesh != NULL && pMaterial != NULL && pMaterial->allowedToRender) pMaterial->render(pMesh, constantBufferUploadHeaps[frameIndex]->GetGPUVirtualAddress() + ConstantBufferPerObjectAlignedSize * pConstantBufferId);

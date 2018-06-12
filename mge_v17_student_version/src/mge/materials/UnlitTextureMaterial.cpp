@@ -34,9 +34,6 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 #elif defined(API_DIRECTX)
 void UnlitTextureMaterial::_lazyInitializeShader() {
 	if (!pipelineStateObject) {
-
-		//CD3DX12_DESCRIPTOR_RANGE cbvTable0;
-		//cbvTable0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, );
 		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 		rootCBVDescriptor.RegisterSpace = 0;
 		rootCBVDescriptor.ShaderRegister = 0;
@@ -75,7 +72,7 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 
 		rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //this is a constant buffer view
 		rootParameters[2].Descriptor = materialCBVDescriptor;
-		rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only the vertex shader will be able to access the parameter
+		rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only the pixel shader will be able to access the parameter
 
 
 		//create a static sampler
@@ -125,7 +122,7 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 		ID3DBlob* vertexShader; //d3d blob for holding shader bytecode
 		HRESULT hr;
 		//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-		hr = CompileShaderFromFile(L"VertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
+		hr = CompileShaderFromFile(L"UnlitVertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
 		if (FAILED(hr)) {
 			OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 			ThrowIfFailed(hr);
@@ -140,7 +137,7 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 		// compile pixel shader
 		ID3DBlob* pixelShader;
 		//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-		hr = CompileShaderFromFile(L"PixelShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
+		hr = CompileShaderFromFile(L"UnlitTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
 		if (FAILED(hr)) {
 			OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 			ThrowIfFailed(hr);
@@ -257,7 +254,8 @@ void UnlitTextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, co
 #ifdef API_DIRECTX
 void UnlitTextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
-	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //cube1's constant buffer data
+	//todo: do this outside of render loop
+	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
 
 	Renderer::commandList->SetGraphicsRootSignature(rootSignature);
 	Renderer::commandList->SetPipelineState(pipelineStateObject);

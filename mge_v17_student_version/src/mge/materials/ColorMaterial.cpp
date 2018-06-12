@@ -91,7 +91,7 @@ void ColorMaterial::_lazyInitializeShader() {
 	ID3DBlob* vertexShader; //d3d blob for holding shader bytecode
 	HRESULT hr;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-	hr = CompileShaderFromFile(L"VertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
+	hr = CompileShaderFromFile(L"UnlitVertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr); 

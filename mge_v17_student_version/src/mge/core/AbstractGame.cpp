@@ -367,40 +367,80 @@ void AbstractGame::run() {
 	_GamePaused = false;
 #ifdef API_DIRECTX
 #endif // API_DIRECTX
+	int frame = 0;
+	float averageFrameTime = 0;
 
-    while (Running) {
-        timeSinceLastUpdate += updateClock.getElapsedTime();
+//    while (Running && frame < 1000) {
+//		frame++;
+//        timeSinceLastUpdate += updateClock.getElapsedTime();
+//		_timeSinceStart += updateClock.restart();
+//
+//		//if (timeSinceLastUpdate > timePerFrame) {
+//
+//			//while (timeSinceLastUpdate > timePerFrame) {
+//				/*timeSinceLastUpdate -= timePerFrame;
+//				timeAsSeconds = timePerFrame.asSeconds();
+//				if (!_GamePaused)
+//				{*/
+//					_update(1/250.0f);
+//					_world->updatePhysics(1 / 250.0f);
+//				//}
+//				Time::DeltaTime = 1/60.f;
+//				Input::updateInput();
+//			//}
+//			renderClock.restart();
+//			_render();
+//
+//#ifdef API_OPENGL
+//	/*		if (_GamePaused)
+//				_GamePaused = _menu->RenderMenu();
+//			*/
+//			_window->display();
+//#endif
+//            float timeSinceLastRender = renderClock.restart().asSeconds();
+//			averageFrameTime += timeSinceLastRender;
+//			Time::RenderDeltaTime = timeSinceLastRender;
+//            if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
+//        //}
+//
+//        _processEvents();
+//    }
+	//std::cout << "total time: " << averageFrameTime << "ms" << std::endl;
+	//while (Running)
+	//{
+
+	//}
+	while (Running) {
+		timeSinceLastUpdate += updateClock.getElapsedTime();
 		_timeSinceStart += updateClock.restart();
 
-		//if (timeSinceLastUpdate > timePerFrame) {
+		while (timeSinceLastUpdate > timePerFrame) {
+			timeSinceLastUpdate -= timePerFrame;
+			timeAsSeconds = timePerFrame.asSeconds();
 
-			while (timeSinceLastUpdate > timePerFrame) {
-				timeSinceLastUpdate -= timePerFrame;
-				timeAsSeconds = timePerFrame.asSeconds();
-				if (!_GamePaused)
-				{
-					_update(timeAsSeconds);
-					_world->updatePhysics(timeAsSeconds);
-				}
-				Time::DeltaTime = timeAsSeconds;
-				Input::updateInput();
-			}
+			_update(timeAsSeconds);
+			_world->updatePhysics(timeAsSeconds);
+			
+			Time::DeltaTime = timeAsSeconds;
+			Input::updateInput();
+		}
 
-			_render();
+		_render();
 
 #ifdef API_OPENGL
-	/*		if (_GamePaused)
-				_GamePaused = _menu->RenderMenu();
-			*/
-			_window->display();
+		/*		if (_GamePaused)
+		_GamePaused = _menu->RenderMenu();
+		*/
+		_window->display();
 #endif
-            float timeSinceLastRender = renderClock.restart().asSeconds();
-			Time::RenderDeltaTime = timeSinceLastRender;
-            if (timeSinceLastRender != 0) _fps = 1.0f/timeSinceLastRender;
-        //}
+		float timeSinceLastRender = renderClock.restart().asSeconds();
+		Time::RenderDeltaTime = timeSinceLastRender;
+		if (timeSinceLastRender != 0) _fps = 1.0f / timeSinceLastRender;
+		
 
-        _processEvents();
-    }
+		_processEvents();
+	}
+	
 }
 
 void AbstractGame::_update(float pStep) {

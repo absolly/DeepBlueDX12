@@ -12,10 +12,12 @@ ShaderProgram* TextureMaterial::_shader = NULL;
 #ifdef API_DIRECTX
 ID3D12PipelineState* TextureMaterial::pipelineStateObject = nullptr;
 ID3D12RootSignature* TextureMaterial::rootSignature = nullptr;
+ID3D12Resource* TextureMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
+UINT8* TextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
 #endif // API_DIRECTX
 
 TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture, Texture* pEmissionMap):
-_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap) {
+_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap), cbPerMaterial(pSpecularMultiplier, pTiling) {
     _lazyInitializeShader();
 }
 
@@ -36,6 +38,11 @@ void TextureMaterial::_lazyInitializeShader() {
 	rootCBVDescriptor.RegisterSpace = 0;
 	rootCBVDescriptor.ShaderRegister = 0;
 
+
+	D3D12_ROOT_DESCRIPTOR materialCBVDescriptor;
+	materialCBVDescriptor.RegisterSpace = 0;
+	materialCBVDescriptor.ShaderRegister = 1;
+
 	//create the descriptor range and fill it out
 	D3D12_DESCRIPTOR_RANGE descriptorTableRanges[1];
 	descriptorTableRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; //this is the range of shader resource views
@@ -50,7 +57,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	descriptorTable.pDescriptorRanges = &descriptorTableRanges[0]; //pointer to the start of the ranges array
 
 																   //create a root parameter
-	D3D12_ROOT_PARAMETER rootParameters[2];
+	D3D12_ROOT_PARAMETER rootParameters[3];
 	//its a good idea to sort the root parameters by frequency of change.
 	//the constant buffer will change multiple times per frame but the descriptor table won't change in this case
 
@@ -64,12 +71,16 @@ void TextureMaterial::_lazyInitializeShader() {
 	rootParameters[1].DescriptorTable = descriptorTable;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only visible to pixel since this should contain the texture.
 
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //this is a constant buffer view
+	rootParameters[2].Descriptor = materialCBVDescriptor;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only the vertex shader will be able to access the parameter
+
 																		//create a static sampler
 	D3D12_STATIC_SAMPLER_DESC sampler = {};
 	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
-	sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	sampler.MipLODBias = 0;
 	sampler.MaxAnisotropy = 0;
 	sampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS; //used for more advanced effects like shadow mapping. leave on always for now.
@@ -112,7 +123,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	ID3DBlob* vertexShader; //d3d blob for holding shader bytecode
 	HRESULT hr;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-	hr = CompileShaderFromFile(L"VertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
+	hr = CompileShaderFromFile(L"LitVertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr);
@@ -127,7 +138,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	// compile pixel shader
 	ID3DBlob* pixelShader;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-	hr = CompileShaderFromFile(L"PixelShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
+	hr = CompileShaderFromFile(L"LitTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr);
@@ -145,8 +156,16 @@ void TextureMaterial::_lazyInitializeShader() {
 
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
+	//_shader->getAttribLocation("vertex"),
+	//	_shader->getAttribLocation("normal"),
+	//	_shader->getAttribLocation("uv"),
+	//	_shader->getAttribLocation("tangent"),
+	//	_shader->getAttribLocation("bitangent")
 
 	//fill out an input layout description struct
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
@@ -184,6 +203,27 @@ void TextureMaterial::_lazyInitializeShader() {
 	// create the pso
 	ThrowIfFailed(Renderer::device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pipelineStateObject)));
 
+	//create a resource heap, descriptor heap, and pointer to cbv for every framebuffer
+	for (int i = 0; i < Renderer::frameBufferCount; i++)
+	{
+		ThrowIfFailed(Renderer::device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constantBufferUploadHeaps[i])
+		));
+
+
+		constantBufferUploadHeaps[i]->SetName(L"Material Constant Buffer Upload Resource Heap");
+
+		CD3DX12_RANGE readRange(0, 0); //read range is less then 0, indicates that we will not be reading this resource from the cpu
+
+									   //map the resource heap to get a gpu virtual address to the beginning of the heap
+		ThrowIfFailed(constantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&cbvGPUAddress[i])));
+
+	}
 }
 #endif // API_OPENGL / API_DIRECTX
 
@@ -228,11 +268,11 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
 
     glm::vec3 lightPosition[2] {};
-    glm::vec3 lightDirection[2] {};
-    glm::vec3 lightColor[2] {};
+    GLfloat lightIntensity[2] {}; //radius
+    glm::vec3 lightColor[2] {}; // color + intensity?
+    glm::vec3 lightFalloff[2]{}; 
     GLint lightType[2] {};
-    glm::vec3 lightFalloff[2]{};
-    GLfloat lightIntensity[2] {};
+    glm::vec3 lightDirection[2] {}; //direction + angle?
 
 	glm::mat4 biasMatrix(
 		0.5, 0.0, 0.0, 0.0,
@@ -294,10 +334,15 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 #ifdef API_DIRECTX
 void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
+	//todo: do this outside of render loop
+	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
+
 	Renderer::commandList->SetGraphicsRootSignature(rootSignature);
 	Renderer::commandList->SetPipelineState(pipelineStateObject);
 
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
+	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
+
 
 	Renderer::commandList->SetGraphicsRootDescriptorTable(1, _diffuseTexture->GetGPUDescriptorHandle());
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.

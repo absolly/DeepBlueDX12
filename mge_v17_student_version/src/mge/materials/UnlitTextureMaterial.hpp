@@ -49,13 +49,10 @@ class UnlitTextureMaterial : public AbstractMaterial
 
 		const int ConstantBufferPerMaterialAlignedSize = (sizeof(ConstantBufferPerMaterial) + 255) & ~255;
 
-
-		static ID3D12DescriptorHeap* mainDescriptorHeap[Renderer::frameBufferCount]; // this heap will store the descripor to our constant buffer
-
 		static ID3D12Resource* constantBufferUploadHeaps[Renderer::frameBufferCount]; //this is the memory where the constant buffer will be placed TODO
 
 		static UINT8* cbvGPUAddress[Renderer::frameBufferCount]; // pointers to the memory locations we get when we map the constant buffers
-														  // constant buffers must be 256 byte aligned
+																 // constant buffers must be 256 byte aligned
 
 #endif // API_DIRECTX
 

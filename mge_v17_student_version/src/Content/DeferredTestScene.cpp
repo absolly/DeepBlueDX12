@@ -99,7 +99,7 @@ void DeferredTestScene::_initializeScene() {
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
     Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+ groundModel);
-    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+ playerModel);
+    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+ fishModel);
 	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + fishModel);
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
@@ -112,13 +112,13 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
-	AbstractMaterial* textureMaterial2 = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 2);
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 2);
 	
 	//SCENE SETUP
 
 	//seed random so results are the same every time
 	srand(9);
-	for (int i = 0; i < 10000; i++) {
+	for (int i = 0; i < 1000; i++) {
 		GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
 		go->setMesh(cubeMeshF);
 		go->setMaterial(textureMaterial2);
