@@ -118,7 +118,7 @@ void DeferredTestScene::_initializeScene() {
 
 	//seed random so results are the same every time
 	srand(9);
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 10000; i++) {
 		GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
 		go->setMesh(cubeMeshF);
 		go->setMaterial(textureMaterial2);

@@ -16,10 +16,10 @@ CameraOrbitBehaviour::~CameraOrbitBehaviour()
 }
 void CameraOrbitBehaviour::update(float pStep)
 {
-    //if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
-    //    _distance = 1 + (_distance/1.1f);
-    //if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
-    //    _distance = 1 + (_distance*1.1f);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
+        _distance = 1 + (_distance/1.1f);
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
+        _distance = 1 + (_distance*1.1f);
 	// _owner->setParent(_target);
 	//float radY = _rotSpeed * glm::clamp(((new sf::Mouse())->getPosition().y - (sf::VideoMode().height/2))/1000.f, _minTiltAngle/180.f, _maxTiltAngle/180.f);
 	//float radX = _rotSpeed * ((new sf::Mouse())->getPosition().x - (sf::VideoMode().width/2))/1000.f;

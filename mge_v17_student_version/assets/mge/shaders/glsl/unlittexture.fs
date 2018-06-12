@@ -4,7 +4,7 @@
 uniform sampler2D   textureDiffuse;
 
 uniform float         tiling;
-
+uniform vec3		  color;
 in vec2 texCoord;
 
 layout (location = 0) out vec4 fragment_color;
@@ -13,5 +13,5 @@ layout (location = 2) out vec4 watermask_color;
 
 
 void main( void ) {
-   fragment_color = texture(textureDiffuse, texCoord * tiling);
+   fragment_color = vec4(texture(textureDiffuse, texCoord * tiling).rgb * color,1);
 }

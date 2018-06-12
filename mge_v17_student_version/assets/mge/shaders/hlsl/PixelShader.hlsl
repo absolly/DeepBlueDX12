@@ -3,11 +3,17 @@ struct VS_OUTPUT{
 	float2 uv : TEXCOORD;
 };
 
+cbuffer ConstantBuffer : register(b1)
+{
+	float3 color;
+	float tiling;
+}
+
 Texture2D _MainTex : register(t0);
 SamplerState _SampleState :register(s0);
 
 float4 main(VS_OUTPUT i) : SV_TARGET
 {
     // return vertex color
-    return _MainTex.Sample(_SampleState, i.uv);
+    return float4(_MainTex.Sample(_SampleState, i.uv * tiling).rgb * color,1);
 }
