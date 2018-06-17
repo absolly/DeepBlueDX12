@@ -7,6 +7,7 @@
 #include "mge/core/World.hpp"
 #include "mge/config.hpp"
 #include "mge/core/Renderer.hpp"
+#include "mge/core/Camera.hpp"
 /**
  * Simple single texture material, this is a sample which doesn't cache anything upfront and
  * passes in separate matrices for the MVP calculation
@@ -38,21 +39,24 @@ class TextureMaterial : public AbstractMaterial
 
 		struct LightBase // 64 bytes, 1024 lights possible
 		{
+			LightBase() {
+				ZeroMemory(this, sizeof(LightBase));
+			}
 			glm::vec3 Position;
 			float Radius;
-			glm::vec4 Color; //color / intensity
-			glm::vec3 AttenuationParams;
-			UINT8 Type;
-			glm::vec4 SpotDirectionAndAngle;
+			glm::vec3 Color; //color / intensity
+			float AttenuationParams;
+			glm::vec3 SpotDirection;
+			float Angle;
 		};
 		struct ConstantBufferPerMaterial {
 			ConstantBufferPerMaterial(float pSpecularMultiplier, float pTiling) {
-				specularMultiplier = pSpecularMultiplier;
+				//specularMultiplier = pSpecularMultiplier;
 				tiling = pTiling;
 			}
-			float specularMultiplier;
+			glm::vec3 eyePosW;
 			float tiling;
-			LightBase* lights[1024];
+			LightBase lights;
 		};
 		ConstantBufferPerMaterial cbPerMaterial;
 

@@ -20,23 +20,24 @@ void CameraOrbitBehaviour::update(float pStep)
         _distance = 1 + (_distance/1.1f);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         _distance = 1 + (_distance*1.1f);
-	// _owner->setParent(_target);
-	//float radY = _rotSpeed * glm::clamp(((new sf::Mouse())->getPosition().y - (sf::VideoMode().height/2))/1000.f, _minTiltAngle/180.f, _maxTiltAngle/180.f);
-	//float radX = _rotSpeed * ((new sf::Mouse())->getPosition().x - (sf::VideoMode().width/2))/1000.f;
 
-	radX += _rotSpeed * pStep;
+	 _owner->setParent(_target);
+	float radY = _rotSpeed * ((new sf::Mouse())->getPosition().y - (sf::VideoMode().height/2))/1000.f;
+	float radX = _rotSpeed * ((new sf::Mouse())->getPosition().x - (sf::VideoMode().width/2))/1000.f;
+
+
+	float x = glm::sin(3.14f * radY) * glm::cos(3.14f * radX);
+	float z = glm::sin(3.14f * radX) * glm::sin(3.14f * radY);
+	float y = glm::cos(3.14f * radY);
+	_owner->setLocalPosition(_target->getLocalPosition() + _distance * glm::vec3(x,y,z));
+
+	/*radX += _rotSpeed * pStep;
 	float radY = glm::sin(radX) * _maxTiltAngle;
-
-	//float x = glm::sin(3.14f * radY) * glm::cos(3.14f * radX);
-	//float z = glm::sin(3.14f * radX) * glm::sin(3.14f * radY);
-	//float y = glm::cos(3.14f * radY);
-
 	_owner->setTransform(glm::translate(_target->getWorldPosition()));
 	_owner->rotate(radX, glm::vec3(0, 1, 0));
 	_owner->rotate(radY, glm::vec3(1, 0, 0));
 	_owner->translate(glm::vec3(0, 0, -_distance));
-
-	//_owner->setLocalPosition(_target->getLocalPosition() + _distance * glm::vec3(x,y,z));
+*/
 
 	//two ways of doing the same thing:
 

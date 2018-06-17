@@ -15,14 +15,14 @@ class World : public GameObject
         World();
 
 		void setMainCamera (Camera* pCamera);
-		Camera* getMainCamera();
+		static Camera* getMainCamera();
         static std::set<Light*> activeLights;
         static void removeRigidBody(btRigidBody* pBody);
         void updatePhysics(float pDelta);
 		void debugDraw();
 		static class PhysicsWorld* physics;
 	private:
-	    Camera* _mainCamera;
+	    static Camera* _mainCamera;
 
         World(const World&);
         World& operator=(const World&);

@@ -36,6 +36,7 @@ using namespace std;
 #include "Content/Behaviours/Player/PlayerFishAbilityBehaviour.h"
 #include "Content\GameObjects\EnvironmentSoundPlayer.h"
 #include "mge\materials\UnlitTextureMaterial.hpp"
+#include "mge\behaviours\RotatingBehaviour.hpp"
 //construct the game class into _window, _renderer and hud (other parts are initialized by build)
 DeferredTestScene::DeferredTestScene():AbstractGame (),_hud(0) {
 }
@@ -99,8 +100,8 @@ void DeferredTestScene::_initializeScene() {
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
     Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+ groundModel);
-    Mesh* cubeMeshF = Mesh::load (Config::MGE_MODEL_PATH+ fishModel);
-	Mesh* teapotMeshS = Mesh::load(Config::MGE_MODEL_PATH + fishModel);
+    Mesh* mantaMeshF = Mesh::load (Config::MGE_MODEL_PATH+ fishModel);
+	Mesh* lightMeshS = Mesh::load(Config::MGE_MODEL_PATH + playerModel);
     // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
     //MATERIALS
 
@@ -112,7 +113,7 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 2);
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "MantaRay_Base.png"), 1);
 	
 	//SCENE SETUP
 
@@ -120,7 +121,7 @@ void DeferredTestScene::_initializeScene() {
 	srand(9);
 	for (int i = 0; i < 1000; i++) {
 		GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
-		go->setMesh(cubeMeshF);
+		go->setMesh(mantaMeshF);
 		go->setMaterial(textureMaterial2);
 		_world->add(go);
 	}
@@ -179,14 +180,15 @@ void DeferredTestScene::_initializeScene() {
 
 
 
-	//glm::vec3* lightColor = new glm::vec3(127,239,217);
-	//Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,150,0), *lightColor, 1, glm::vec3(0, 0, 1));
-	//light->setMesh(cubeMeshF);
-	//AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
-	//light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
+	glm::vec3* lightColor = new glm::vec3(127,239,217);
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,150,0), *lightColor, 3000, glm::vec3(0, 0, 1));
+	light->setMesh(mantaMeshF);
+	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
+	light->rotate(glm::radians(-45.f), glm::vec3(1, 0, 0));
+	//light->addBehaviour(new RotatingBehaviour());
 	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
-	//light->setMaterial(colorMaterial2);
-	//_world->add(light);
+	light->setMaterial(colorMaterial2);
+	_world->add(light);
 
 ////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 ////    light3->setMesh (cubeMeshF);

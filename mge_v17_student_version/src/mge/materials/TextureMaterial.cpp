@@ -19,6 +19,7 @@ UINT8* TextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
 TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture, Texture* pEmissionMap):
 _diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap), cbPerMaterial(pSpecularMultiplier, pTiling) {
     _lazyInitializeShader();
+	//cbPerMaterial.lights = new LightBase[16];
 }
 
 TextureMaterial::~TextureMaterial() {}
@@ -56,8 +57,21 @@ void TextureMaterial::_lazyInitializeShader() {
 	descriptorTable.NumDescriptorRanges = _countof(descriptorTableRanges); //only one right now
 	descriptorTable.pDescriptorRanges = &descriptorTableRanges[0]; //pointer to the start of the ranges array
 
+																   //create the descriptor range and fill it out
+	D3D12_DESCRIPTOR_RANGE descriptorTableRanges2[1];
+	descriptorTableRanges2[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; //this is the range of shader resource views
+	descriptorTableRanges2[0].NumDescriptors = 1; //we only have 1 texture right now
+	descriptorTableRanges2[0].BaseShaderRegister = 1; //start index of the shader registers in the range
+	descriptorTableRanges2[0].RegisterSpace = 0; //space can usually be 0 according to msdn. don't know why
+	descriptorTableRanges2[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; //appends the range to the end of the root signature descriptor tables
+
+																									   //create the descriptor table
+	D3D12_ROOT_DESCRIPTOR_TABLE descriptorTable2;
+	descriptorTable2.NumDescriptorRanges = _countof(descriptorTableRanges2); //only one right now
+	descriptorTable2.pDescriptorRanges = &descriptorTableRanges2[0]; //pointer to the start of the ranges array
+
 																   //create a root parameter
-	D3D12_ROOT_PARAMETER rootParameters[3];
+	D3D12_ROOT_PARAMETER rootParameters[4];
 	//its a good idea to sort the root parameters by frequency of change.
 	//the constant buffer will change multiple times per frame but the descriptor table won't change in this case
 
@@ -73,9 +87,14 @@ void TextureMaterial::_lazyInitializeShader() {
 
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //this is a constant buffer view
 	rootParameters[2].Descriptor = materialCBVDescriptor;
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only the vertex shader will be able to access the parameter
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //visible to all stages (contains vertex and pixel data)
 
-																		//create a static sampler
+																	  //descriptor table
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[3].DescriptorTable = descriptorTable2;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only visible to pixel since this should contain the texture.
+
+	//create a static sampler
 	D3D12_STATIC_SAMPLER_DESC sampler = {};
 	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -123,7 +142,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	ID3DBlob* vertexShader; //d3d blob for holding shader bytecode
 	HRESULT hr;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-	hr = CompileShaderFromFile(L"LitVertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
+	hr = CompileShaderFromFile(L"LitVertexShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr);
@@ -138,7 +157,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	// compile pixel shader
 	ID3DBlob* pixelShader;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
-	hr = CompileShaderFromFile(L"LitTextureShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
+	hr = CompileShaderFromFile(L"LitTextureShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr);
@@ -335,6 +354,24 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
 	//todo: do this outside of render loop
+	cbPerMaterial.eyePosW = World::getMainCamera()->getWorldPosition();
+	int i = 0;
+
+	for (Light* light : World::activeLights) {
+
+		LightBase base;
+		cbPerMaterial.lights.Position = light->getWorldPosition();
+		if (light->type == Light::DIRECTIONAL) {
+			//depthViewMatrix = glm::inverse(light->getWorldTransform());
+			cbPerMaterial.lights.Position.y = 900;
+		}
+		cbPerMaterial.lights.SpotDirection = glm::vec3(light->getWorldTransform()[2]) * glm::vec3(1,1,-1);
+		cbPerMaterial.lights.Color = glm::vec3(light->getColor()) * light->intensity;
+		//base.Type = ((int)light->type);
+		cbPerMaterial.lights.AttenuationParams = 1;
+		//cbPerMaterial.lights = base;
+		i++;
+	}
 	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
 
 	Renderer::commandList->SetGraphicsRootSignature(rootSignature);
@@ -345,6 +382,8 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 
 
 	Renderer::commandList->SetGraphicsRootDescriptorTable(1, _diffuseTexture->GetGPUDescriptorHandle());
+	Renderer::commandList->SetGraphicsRootDescriptorTable(3, _normalTexture->GetGPUDescriptorHandle());
+
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.
 
 	pMesh->streamToDirectX();
