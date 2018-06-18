@@ -85,7 +85,7 @@ class Mesh
 		std::vector<glm::vec2> _uvs;            //vec2 for uv
 		std::vector<Vertex> _vertexData;
 		//references to the vertices/normals & uvs in previous vectors
-		std::vector<unsigned> _indices;
+		std::vector<unsigned int> _indices;
 
 		int numIndices;
 

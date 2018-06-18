@@ -180,11 +180,6 @@ void TextureMaterial::_lazyInitializeShader() {
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
-	//_shader->getAttribLocation("vertex"),
-	//	_shader->getAttribLocation("normal"),
-	//	_shader->getAttribLocation("uv"),
-	//	_shader->getAttribLocation("tangent"),
-	//	_shader->getAttribLocation("bitangent")
 
 	//fill out an input layout description struct
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};

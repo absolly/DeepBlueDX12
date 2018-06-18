@@ -185,7 +185,7 @@ void DeferredTestScene::_initializeScene() {
 	light->setMesh(mantaMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
 	light->rotate(glm::radians(-45.f), glm::vec3(1, 0, 0));
-	//light->addBehaviour(new RotatingBehaviour());
+	light->addBehaviour(new RotatingBehaviour());
 	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);

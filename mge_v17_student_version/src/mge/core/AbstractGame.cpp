@@ -230,7 +230,13 @@ void AbstractGame::_initializeAPI() {
 
 	if (!adapterFound)
 		return;
-
+#if defined(DEBUG) || defined(_DEBUG)
+	{
+		ID3D12Debug* debugController;
+		ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
+		debugController->EnableDebugLayer();
+	}
+#endif
 	//create the device
 	ThrowIfFailed(D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&_renderer->device)));
 	//TODO: Add debug interface for better errors
