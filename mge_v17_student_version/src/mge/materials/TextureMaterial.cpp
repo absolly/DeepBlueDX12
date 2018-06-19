@@ -14,12 +14,28 @@ ID3D12PipelineState* TextureMaterial::pipelineStateObject = nullptr;
 ID3D12RootSignature* TextureMaterial::rootSignature = nullptr;
 ID3D12Resource* TextureMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
 UINT8* TextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
+ID3D12DescriptorHeap* TextureMaterial::mainDescriptorHeap = nullptr;
+UINT TextureMaterial::mCbvSrvDescriptorSize = 0;
+
 #endif // API_DIRECTX
+unsigned int TextureMaterial::_materialCount = 0;
 
 TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture, Texture* pEmissionMap):
-_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap), cbPerMaterial(pSpecularMultiplier, pTiling) {
-    _lazyInitializeShader();
-	//cbPerMaterial.lights = new LightBase[16];
+_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap), cbPerMaterial(pSpecularMultiplier, pTiling), _id(_materialCount) {
+	_lazyInitializeShader();
+
+#ifdef API_DIRECTX
+	_materialCount += 2;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	
+	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
+	Renderer::device->CreateShaderResourceView(pDiffuseTexture->textureBuffer, &pDiffuseTexture->srvDesc, hDescriptor);
+	hDescriptor.Offset(1, mCbvSrvDescriptorSize);
+	Renderer::device->CreateShaderResourceView(pNormalTexture->textureBuffer, &pNormalTexture->srvDesc, hDescriptor);
+	hDescriptor.Offset(1, mCbvSrvDescriptorSize);
+	Renderer::device->CreateShaderResourceView(pSpecularTexture->textureBuffer, &pSpecularTexture->srvDesc, hDescriptor);
+#endif // API_DIRECTX
+
 }
 
 TextureMaterial::~TextureMaterial() {}
@@ -35,6 +51,17 @@ void TextureMaterial::_lazyInitializeShader() {
 }
 #elif defined(API_DIRECTX)
 void TextureMaterial::_lazyInitializeShader() {
+
+	//create the descriptor heap that will store our shader resource views
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+	heapDesc.NumDescriptors = 256; //max number of textures
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&mainDescriptorHeap)));
+
+	mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+
 	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 	rootCBVDescriptor.RegisterSpace = 0;
 	rootCBVDescriptor.ShaderRegister = 0;
@@ -47,7 +74,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	//create the descriptor range and fill it out
 	D3D12_DESCRIPTOR_RANGE descriptorTableRanges[1];
 	descriptorTableRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; //this is the range of shader resource views
-	descriptorTableRanges[0].NumDescriptors = 1; //we only have 1 texture right now
+	descriptorTableRanges[0].NumDescriptors = 3; //we only have 1 texture right now
 	descriptorTableRanges[0].BaseShaderRegister = 0; //start index of the shader registers in the range
 	descriptorTableRanges[0].RegisterSpace = 0; //space can usually be 0 according to msdn. don't know why
 	descriptorTableRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; //appends the range to the end of the root signature descriptor tables
@@ -57,21 +84,9 @@ void TextureMaterial::_lazyInitializeShader() {
 	descriptorTable.NumDescriptorRanges = _countof(descriptorTableRanges); //only one right now
 	descriptorTable.pDescriptorRanges = &descriptorTableRanges[0]; //pointer to the start of the ranges array
 
-																   //create the descriptor range and fill it out
-	D3D12_DESCRIPTOR_RANGE descriptorTableRanges2[1];
-	descriptorTableRanges2[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; //this is the range of shader resource views
-	descriptorTableRanges2[0].NumDescriptors = 1; //we only have 1 texture right now
-	descriptorTableRanges2[0].BaseShaderRegister = 1; //start index of the shader registers in the range
-	descriptorTableRanges2[0].RegisterSpace = 0; //space can usually be 0 according to msdn. don't know why
-	descriptorTableRanges2[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; //appends the range to the end of the root signature descriptor tables
-
-																									   //create the descriptor table
-	D3D12_ROOT_DESCRIPTOR_TABLE descriptorTable2;
-	descriptorTable2.NumDescriptorRanges = _countof(descriptorTableRanges2); //only one right now
-	descriptorTable2.pDescriptorRanges = &descriptorTableRanges2[0]; //pointer to the start of the ranges array
 
 																   //create a root parameter
-	D3D12_ROOT_PARAMETER rootParameters[4];
+	D3D12_ROOT_PARAMETER rootParameters[3];
 	//its a good idea to sort the root parameters by frequency of change.
 	//the constant buffer will change multiple times per frame but the descriptor table won't change in this case
 
@@ -88,11 +103,6 @@ void TextureMaterial::_lazyInitializeShader() {
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //this is a constant buffer view
 	rootParameters[2].Descriptor = materialCBVDescriptor;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //visible to all stages (contains vertex and pixel data)
-
-																	  //descriptor table
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParameters[3].DescriptorTable = descriptorTable2;
-	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only visible to pixel since this should contain the texture.
 
 	//create a static sampler
 	D3D12_STATIC_SAMPLER_DESC sampler = {};
@@ -176,9 +186,9 @@ void TextureMaterial::_lazyInitializeShader() {
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 48, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
 	//fill out an input layout description struct
@@ -316,9 +326,6 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 
 	glm::mat4 depthBiasMVP = biasMatrix * depthProjectionMatrix * depthViewMatrix * pModelMatrix;
 
-
-
-
     glUniform3fv(_shader->getUniformLocation("lightPosition"), 2, glm::value_ptr(lightPosition[0]));
     glUniform3fv(_shader->getUniformLocation("lightDirection"), 2, glm::value_ptr(lightDirection[0]));
     glUniform3fv(_shader->getUniformLocation("lightColor"), 2, glm::value_ptr(lightColor[0]));
@@ -348,6 +355,10 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 #ifdef API_DIRECTX
 void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
+	//set the descriptor heap
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mainDescriptorHeap };
+	Renderer::commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
 	//todo: do this outside of render loop
 	cbPerMaterial.eyePosW = World::getMainCamera()->getWorldPosition();
 	int i = 0;
@@ -355,15 +366,15 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 	for (Light* light : World::activeLights) {
 
 		LightBase base;
-		cbPerMaterial.lights.Position = light->getWorldPosition();
+		cbPerMaterial.lights[i].Position = light->getWorldPosition();
 		if (light->type == Light::DIRECTIONAL) {
 			//depthViewMatrix = glm::inverse(light->getWorldTransform());
-			cbPerMaterial.lights.Position.y = 900;
+			cbPerMaterial.lights[i].Position.y = 900;
 		}
-		cbPerMaterial.lights.SpotDirection = glm::vec3(light->getWorldTransform()[2]) * glm::vec3(1,1,-1);
-		cbPerMaterial.lights.Color = glm::vec3(light->getColor()) * light->intensity;
+		cbPerMaterial.lights[i].SpotDirection = glm::vec3(light->getWorldTransform()[2]) * glm::vec3(1,1,-1);
+		cbPerMaterial.lights[i].Color = glm::vec3(light->getColor()) * light->intensity;
 		//base.Type = ((int)light->type);
-		cbPerMaterial.lights.AttenuationParams = 1;
+		cbPerMaterial.lights[i].AttenuationParams = 1;
 		//cbPerMaterial.lights = base;
 		i++;
 	}
@@ -375,9 +386,9 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
 	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
 
-
-	Renderer::commandList->SetGraphicsRootDescriptorTable(1, _diffuseTexture->GetGPUDescriptorHandle());
-	Renderer::commandList->SetGraphicsRootDescriptorTable(3, _normalTexture->GetGPUDescriptorHandle());
+	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
+	Renderer::commandList->SetGraphicsRootDescriptorTable(1, hDescriptor);
 
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.
 

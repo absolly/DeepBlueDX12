@@ -17,9 +17,11 @@ class Texture
 
 		GLuint getId();
 
+
 #ifdef API_DIRECTX
-		D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle();
 		static ID3D12DescriptorHeap* GetDescriptorHeap();
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ID3D12Resource* textureBuffer; //the resource heap containing our texture
 
 #endif
 	protected:
@@ -41,7 +43,6 @@ class Texture
 
 		BYTE* imageData;
 
-		ID3D12Resource* textureBuffer; //the resource heap containing our texture
 
 		//load and decode image from file
 		static int LoadImageDataFromFile(BYTE** imageData, D3D12_RESOURCE_DESC& resourceDescription, LPCWSTR filename, int &bytesPerRow);

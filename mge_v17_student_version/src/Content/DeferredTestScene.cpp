@@ -76,7 +76,7 @@ void DeferredTestScene::_initializeScene() {
 	string fishSpecular = "black.png";
 	Config::updateValue("fishSpecular", fishSpecular);
 
-	string groundModel = "Terrain_Plane.obj";
+	string groundModel = "plane_8192.obj";
 	Config::updateValue("groundModel", groundModel);
 	string groundTexture = "beachsand.jpg";
 	Config::updateValue("groundTexture", groundTexture);
@@ -113,18 +113,22 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "MantaRay_Base.png"), 1);
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"));
 	
 	//SCENE SETUP
-
+	GameObject* go2 = new GameObject("go");
+	go2->setMesh(planeMeshDefault);
+	go2->setMaterial(textureMaterial2);
+	go2->scale(glm::vec3(0.01f));
+	_world->add(go2);
 	//seed random so results are the same every time
-	srand(9);
-	for (int i = 0; i < 1000; i++) {
-		GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
-		go->setMesh(mantaMeshF);
-		go->setMaterial(textureMaterial2);
-		_world->add(go);
-	}
+	//srand(9);
+	//for (int i = 0; i < 1000; i++) {
+	//	GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
+	//	go->setMesh(mantaMeshF);
+	//	go->setMaterial(textureMaterial2);
+	//	_world->add(go);
+	//}
 
    
 
@@ -184,11 +188,22 @@ void DeferredTestScene::_initializeScene() {
 	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,150,0), *lightColor, 3000, glm::vec3(0, 0, 1));
 	light->setMesh(mantaMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
-	light->rotate(glm::radians(-45.f), glm::vec3(1, 0, 0));
+	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
 	light->addBehaviour(new RotatingBehaviour());
 	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
+
+	glm::vec3* lightColor2 = new glm::vec3( 239, 127, 217);
+	Light* light2 = new Light(Light::lightType::DIRECTIONAL, "light2", glm::vec3(0, 150, 0), *lightColor, 3000, glm::vec3(0, 0, 1));
+	light2->setMesh(mantaMeshF);
+	AbstractMaterial* colorMaterial3 = new ColorMaterial(*lightColor);
+	light2->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
+	light2->addBehaviour(new RotatingBehaviour());
+	light2->addBehaviour(new RotatingBehaviour());
+	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
+	light2->setMaterial(colorMaterial3);
+	_world->add(light2);
 
 ////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
 ////    light3->setMesh (cubeMeshF);

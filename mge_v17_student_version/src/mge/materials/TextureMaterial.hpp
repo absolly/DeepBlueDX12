@@ -56,12 +56,14 @@ class TextureMaterial : public AbstractMaterial
 			}
 			glm::vec3 eyePosW;
 			float tiling;
-			LightBase lights;
+			LightBase lights[16];
 		};
 		ConstantBufferPerMaterial cbPerMaterial;
 
         TextureMaterial(const TextureMaterial&);
         TextureMaterial& operator=(const TextureMaterial&);
+		static unsigned int _materialCount;
+		unsigned int _id; 
 #ifdef API_DIRECTX
 		// drawing objects stuff //
 		static ID3D12PipelineState* pipelineStateObject; //pso containing a pipeline state (in this case the vertex data for 1 object)
@@ -71,6 +73,9 @@ class TextureMaterial : public AbstractMaterial
 
 		static UINT8* cbvGPUAddress[Renderer::frameBufferCount]; // pointers to the memory locations we get when we map the constant buffers
 																 // constant buffers must be 256 byte aligned
+		static ID3D12DescriptorHeap* mainDescriptorHeap;
+		static UINT mCbvSrvDescriptorSize;
+		
 #endif // API_DIRECTX
 
 

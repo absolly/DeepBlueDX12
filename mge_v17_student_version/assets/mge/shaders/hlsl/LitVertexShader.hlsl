@@ -29,10 +29,7 @@ VS_OUTPUT main(VS_INPUT i)
 	o.position = mul(float4(i.pos,1.0f),wvpMat);
 
 	o.uv = i.uv;
-	//float temp = i.normalU.x;
-	//i.normalU.x = i.normalU.y;
-	//i.normalU.y = temp;
-	o.normalW = mul(i.normalU,(float3x3)wMat);
+	o.normalW = i.normalU;
 	o.tangentW = mul(i.tangentU,(float3x3)wMat);
 	return o;
 }

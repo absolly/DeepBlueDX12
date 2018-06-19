@@ -59,7 +59,7 @@ class Mesh
 		class btCollisionShape* getMeshCollisionShape();
 
 		std::vector<glm::vec3>* getVerticies();
-		std::vector<unsigned>* getVertextIndices();
+		std::vector<unsigned long>* getVertextIndices();
 
 	protected:
 
@@ -85,7 +85,7 @@ class Mesh
 		std::vector<glm::vec2> _uvs;            //vec2 for uv
 		std::vector<Vertex> _vertexData;
 		//references to the vertices/normals & uvs in previous vectors
-		std::vector<unsigned int> _indices;
+		std::vector<unsigned long> _indices;
 
 		int numIndices;
 

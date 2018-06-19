@@ -23,7 +23,6 @@ in vec3 LightDirection_tangentspace[2];
 in vec3 EyeDirection_tangentspace;
 in vec3 LightDirection_cameraspace2;
 
-
 layout (location = 0) out vec4 fragment_color;
 layout (location = 1) out vec4 brightness_color;
 layout (location = 2) out vec4 watermask_color;
@@ -108,16 +107,15 @@ vec3 calcDirectionalLight(float pFalloff, vec3 pLightColor, float pLightIntensit
     //  - Looking into the reflection -> 1
     //  - Looking elsewhere -> < 1
     cosAlpha = clamp( dot( E,R ), 0,1 );
-
+    //return vec3(pow(cosAlpha,50),pow(cosAlpha,50),pow(cosAlpha,50));
     return pFalloff *( pMaterialAmbientColor +
                        // Diffuse : "color" of the object
                        visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
                        // Specular : reflective highlight, like a mirror
-                       +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity * pow(cosAlpha,50));
+                       +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity  * pow(cosAlpha,50));
 }
 
 void main( void ) {
-    //FragNormal_tangentspace = vec3(texture(textureNormal,texCoord * tiling));
 	 FragNormal_tangentspace = normalize(texture( textureNormal, texCoord * tiling ).rgb*2.0 - 1.0) * 0.25;
 
     vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord * tiling));
@@ -132,7 +130,7 @@ void main( void ) {
 
     for(int activeLight = 0; activeLight < lightCount; activeLight++) {
         visibility = 1.0;
-        MaterialAmbientColor = vec3(0.1,0.1,0.1) *lightColor[activeLight] * MaterialDiffuseColor;
+        MaterialAmbientColor = vec3(0.1,0.1,0.1) * lightColor[activeLight];
         MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
 
         distance = length(Position_worldspace - lightPosition[activeLight]);

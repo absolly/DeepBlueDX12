@@ -263,7 +263,7 @@ void UnlitTextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAdd
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
 	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
 
-	Renderer::commandList->SetGraphicsRootDescriptorTable(1, _diffuseTexture->GetGPUDescriptorHandle());
+	//Renderer::commandList->SetGraphicsRootDescriptorTable(1, _diffuseTexture->GetGPUDescriptorHandle());
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.
 
 	pMesh->streamToDirectX();

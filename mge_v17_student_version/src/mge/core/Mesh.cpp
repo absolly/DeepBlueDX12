@@ -346,8 +346,6 @@ void Mesh::_buffer() {
 }
 #elif defined(API_DIRECTX)
 void Mesh::_buffer() {
-	//std::vector<Vertex> vList = _vertexData;
-
 	int vBufferSize = _vertexData.size() * sizeof(Vertex);
 	ID3D12Resource* vBufferUploadHeap;
 
@@ -355,10 +353,7 @@ void Mesh::_buffer() {
 	vertexBuffer = CreateDefaultBuffer(Renderer::device, Renderer::commandList, &_vertexData[0], vBufferSize, vBufferUploadHeap);
 
 	////transition the vertex buffer data from copy destination state to vertex buffer state
-	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(vertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
-
-	//create index buffer
-	//std::vector <DWORD> iList = _indices;
+	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(vertexBuffer, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
 
 	int iBufferSize = sizeof(DWORD) * _indices.size();
 
@@ -368,7 +363,7 @@ void Mesh::_buffer() {
 	indexBuffer = CreateDefaultBuffer(Renderer::device, Renderer::commandList, &_indices[0], iBufferSize, iBufferUploadHeap);
 
 	//transition index buffer data from copy to index buffer state
-	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(indexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));
+	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(indexBuffer, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_INDEX_BUFFER));
 
 	//create a vertex buffer view for the triangle. we get the gpu memory address to the vertex pointer using the GetGPUVirtualAddress() method
 	vertexBufferView.BufferLocation = vertexBuffer->GetGPUVirtualAddress();
@@ -536,17 +531,17 @@ void Mesh::drawDebugInfo(const glm::mat4& pModelMatrix, const glm::mat4& pViewMa
 
 btCollisionShape* Mesh::getMeshCollisionShape()
 {
-	std::vector<unsigned>& indices2 = *getVertextIndices();
+	std::vector<unsigned long>& indices2 = *getVertextIndices();
 	std::vector<glm::vec3>& verticies = *getVerticies();
 
 	unsigned int index_count = indices2.size();
 	unsigned int vertex_count = verticies.size();
-	unsigned *indices = &indices2[0];
+	unsigned long *indices = &indices2[0];
 	glm::vec3 *vertices = &verticies[0];
 
 	unsigned int numFaces = index_count / 3;
 	int vertStride = sizeof(glm::vec3);
-	int indexStride = 3 * sizeof(unsigned);
+	int indexStride = 3 * sizeof(unsigned long);
 
 	btTriangleIndexVertexArray* va = new btTriangleIndexVertexArray(
 		numFaces,
@@ -563,7 +558,7 @@ std::vector<glm::vec3>* Mesh::getVerticies()
 	return &_vertices;
 }
 
-std::vector<unsigned>* Mesh::getVertextIndices()
+std::vector<unsigned long>* Mesh::getVertextIndices()
 {
 	return &_indices;
 }
@@ -595,7 +590,8 @@ ID3D12Resource* Mesh::CreateDefaultBuffer(
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&uploadBuffer)));
-
+	defaultBuffer->SetName(L"Mesh default Buffer");
+	uploadBuffer->SetName(L"Mesh upload Buffer");
 
 	// Describe the data we want to copy into the default buffer.
 	D3D12_SUBRESOURCE_DATA subResourceData = {};

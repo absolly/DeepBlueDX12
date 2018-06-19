@@ -407,10 +407,6 @@ void Renderer::render(World* pWorld) {
 	commandList->RSSetScissorRects(1, &scissorRect);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//set the descriptor heap
-	ID3D12DescriptorHeap* descriptorHeaps[] = { Texture::GetDescriptorHeap() };
-	Renderer::commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-
 	renderShadow = false;
 	Camera* camera = pWorld->getMainCamera();
 	render(pWorld, pWorld->getTransform(), glm::inverse(glm::scale(camera->getWorldTransform(), glm::vec3(1, 1, -1))), camera->getProjection(), true);

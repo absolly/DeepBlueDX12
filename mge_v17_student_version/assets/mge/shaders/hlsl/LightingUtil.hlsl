@@ -54,8 +54,20 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
     // Our spec formula goes outside [0,1] range, but we are 
     // doing LDR rendering.  So scale it down a bit.
     specAlbedo = specAlbedo / (specAlbedo + 1.0f);
+	// Eye vector (towards the camera)
+	float3 E;
+    float3 R;
+    E = normalize(toEye);
+    // Direction in which the triangle reflects the light
+    R = reflect(lightVec,normal);
+    // Cosine of the angle between the Eye vector and the Reflect vector,
+    // clamped to 0
+    //  - Looking into the reflection -> 1
+    //  - Looking elsewhere -> < 1
+    float cosAlpha = clamp( dot( E,R ), 0,1 );
+	//return float3( mat.Shininess * pow(cosAlpha,50), mat.Shininess * pow(cosAlpha,50), mat.Shininess * pow(cosAlpha,20));
 
-    return (mat.DiffuseAlbedo.rgb + specAlbedo) * lightStrength;
+    return mat.DiffuseAlbedo.rgb * lightStrength + mat.Shininess * 10 * lightStrength * pow(cosAlpha,20);
 }
 
 //---------------------------------------------------------------------------------------

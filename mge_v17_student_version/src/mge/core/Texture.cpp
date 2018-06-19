@@ -17,28 +17,13 @@ Texture::Texture(): _id() {
     glGenTextures (1, &_id);
 }
 #elif defined(API_DIRECTX)
-D3D12_GPU_DESCRIPTOR_HANDLE Texture::GetGPUDescriptorHandle()
-{
-	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
-	return hDescriptor;
-}
+
 ID3D12DescriptorHeap * Texture::GetDescriptorHeap()
 {
 	return mainDescriptorHeap;
 }
 Texture::Texture() : _id(texCount) {
 	texCount++;
-	if (mainDescriptorHeap == nullptr) {
-		//create the descriptor heap that will store our shader resource view
-		D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
-		heapDesc.NumDescriptors = 256;
-		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&mainDescriptorHeap)));
-
-		mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	}
 }
 #endif // API_OPENGL
 
@@ -104,7 +89,7 @@ Texture* Texture::_loadFromFile(std::string pName) {
 	D3D12_RESOURCE_DESC textureDesc;
 	int imageBytesPerRow;
 	int imageSize = texture->LoadImageDataFromFile(&texture->imageData, textureDesc, s2ws(pName).c_str(), imageBytesPerRow);
-	//DirectX::LoadWICTextureFromFile(Renderer::device, s2ws(pName).c_str(), &texture->textureBuffer, &texture->imageData, textureDesc)
+
 	//make sure we have data
 	if (imageSize <= 0) {
 		std::wstring wfn = AnsiToWString(__FILE__);
@@ -112,21 +97,15 @@ Texture* Texture::_loadFromFile(std::string pName) {
 	}
 
 	texture->textureBuffer = CreateTextureDefaultBuffer(&texture->imageData[0], imageBytesPerRow, textureDesc, texture->textureBufferUploadHeap);
-
 	//transition the texture default heap to a pixel shader resource
-	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texture->textureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+	Renderer::commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texture->textureBuffer, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	hDescriptor.Offset(texture->_id, mCbvSrvDescriptorSize);
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	//now we create a shader resource view descriptor (points to the texture and describes it)
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = textureDesc.Format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	Renderer::device->CreateShaderResourceView(texture->textureBuffer, &srvDesc, hDescriptor);
+	texture->srvDesc = {};
+	texture->srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	texture->srvDesc.Format = textureDesc.Format;
+	texture->srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	texture->srvDesc.Texture2D.MipLevels = 1;
 	return texture;
 }
 #endif // API_OPENGL
@@ -174,7 +153,7 @@ ID3D12Resource* Texture::CreateTextureDefaultBuffer(
 	subResourceData.pData = initData;
 	subResourceData.RowPitch = bytesPerRow;
 	subResourceData.SlicePitch = bytesPerRow * textureDesc.Height;
-
+	defaultBuffer->SetName(L"test");
 	// Schedule to copy the data to the default buffer resource.  At a high level, the helper function UpdateSubresources
 	// will copy the CPU memory into the intermediate upload heap.  Then, using ID3D12CommandList::CopySubresourceRegion,
 	// the intermediate upload heap data will be copied to mBuffer.
