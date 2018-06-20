@@ -4,210 +4,173 @@
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
-uniform sampler2DShadow shadowMap;
 uniform sampler2D	emissionMap;
-uniform	mat4 	    viewMatrix;
-uniform vec3        lightPosition[2];
-uniform vec3        lightColor[2];
-uniform float       lightIntensity[2];
-uniform int         lightType[2];
-uniform vec3        lightFalloff[2];
-uniform int         lightCount;
+
+uniform vec3        eyePosW;
 uniform int         tiling;
+//light
+uniform vec3        lightPosition[2];
+uniform float       falloffStart[2];
+uniform vec3        lightColor[2];
+uniform float       falloffEnd[2];
+uniform vec3        lightDirection[2];
+uniform float       spotPower[2];
+//
+uniform int         num_dir_light;
+uniform int         num_point_light;
+uniform int         num_spot_light;
 uniform int         specularMultiplier;
 
-in vec2 texCoord;
-in vec4 ShadowCoord;
 in vec3 Position_worldspace;
-in vec3 LightDirection_tangentspace[2];
-in vec3 EyeDirection_tangentspace;
-in vec3 LightDirection_cameraspace2;
+in vec2 texCoord;
+in vec3 normalW;
+in vec3 tangentW;
 
 layout (location = 0) out vec4 fragment_color;
-layout (location = 1) out vec4 brightness_color;
-layout (location = 2) out vec4 watermask_color;
 
-vec3 FragNormal_tangentspace;
-vec3 n;
-vec3 l;
-vec3 E;
-vec3 R;
-float cosTheta;
-float cosAlpha;
-float bias = 0.005;//use if shadow acne is a problem
-float visibility;
-
-vec2 poissonDisk[16] = vec2[](
-                           vec2( -0.94201624, -0.39906216 ),
-                           vec2( 0.94558609, -0.76890725 ),
-                           vec2( -0.094184101, -0.92938870 ),
-                           vec2( 0.34495938, 0.29387760 ),
-                           vec2( -0.91588581, 0.45771432 ),
-                           vec2( -0.81544232, -0.87912464 ),
-                           vec2( -0.38277543, 0.27676845 ),
-                           vec2( 0.97484398, 0.75648379 ),
-                           vec2( 0.44323325, -0.97511554 ),
-                           vec2( 0.53742981, -0.47373420 ),
-                           vec2( -0.26496911, -0.41893023 ),
-                           vec2( 0.79197514, 0.19090188 ),
-                           vec2( -0.24188840, 0.99706507 ),
-                           vec2( -0.81409955, 0.91437590 ),
-                           vec2( 0.19984126, 0.78641367 ),
-                           vec2( 0.14383161, -0.14100790 )
-                       );
-
-// Returns a random number based on a vec3 and an int.
-float random(vec3 seed, int i) {
-    vec4 seed4 = vec4(seed,i);
-    float dot_product = dot(seed4, vec4(12.9898,78.233,45.164,94.673));
-    return fract(sin(dot_product) * 43758.5453);
+float CalcAttenuation(float d, float falloffStart, float falloffEnd)
+{
+    // Linear falloff.
+    return clamp((falloffEnd-d) / (falloffEnd - falloffStart), 0.0, 1.0);
 }
 
-vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
-
-    // Normal of the computed fragment, in camera space
-    n = normalize( FragNormal_tangentspace );
-    // Direction of the light (from the fragment to the light)
-    l = normalize( pLightDirection_tangentspace );
-
-    cosTheta = clamp( dot( n,l ), 0,1 );
-
-    // Eye vector (towards the camera)
-    E = normalize(EyeDirection_tangentspace);
+vec3 BlinnPhong(vec3 lightStrength, vec3 lightVec, vec3 normal, vec3 toEye, vec4 diffuseColor, float shininess)
+{
+	// Eye vector (towards the camera)
+    vec3 E = normalize(toEye);
     // Direction in which the triangle reflects the light
-    R = reflect(-l,n);
+    vec3 R = reflect(lightVec,normal);
     // Cosine of the angle between the Eye vector and the Reflect vector,
     // clamped to 0
     //  - Looking into the reflection -> 1
     //  - Looking elsewhere -> < 1
-    cosAlpha = clamp( dot( E,R ), 0,1 );
+    float cosAlpha = clamp( dot( E,R ), 0,1 );
 
-    return pFalloff *(pMaterialAmbientColor +
-                      // Diffuse : "color" of the object
-                      visibility * pMaterialDiffuseColor * pLightColor * cosTheta
-                      // Specular : reflective highlight, like a mirror
-                      +  visibility * pMaterialSpecularColor * pLightColor * pow(cosAlpha,50));
+    return diffuseColor.rgb * lightStrength + shininess * lightStrength * pow(cosAlpha,50);
 }
 
-vec3 calcDirectionalLight(float pFalloff, vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
+//---------------------------------------------------------------------------------------
+// Evaluates the lighting equation for directional lights.
+//---------------------------------------------------------------------------------------
+vec3 ComputeDirectionalLight(vec3 lightPosition, float falloffStart, vec3 lightColor, float falloffEnd, vec3 lightDirection, float spotPower, vec4 diffuseColor, float shininess, vec3 normal, vec3 toEye)
+{
+    // The light vector aims opposite the direction the light rays travel.
+    vec3 lightVec = normalize(lightDirection);
 
-    // Normal of the computed fragment, in tangent space
-    n = ( FragNormal_tangentspace );
-    // Direction of the light (from the fragment to the light)
-    l = normalize( pLightDirection_tangentspace );
+    // Scale light down by Lambert's cosine law.
+    float ndotl = max(dot(normal, lightVec), 0.0f);
+    vec3 lightStrength = lightColor * ndotl;
+	
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, diffuseColor, shininess);
+}
 
-    cosTheta = clamp( dot( n,l ), 0,1 );
+//---------------------------------------------------------------------------------------
+// Evaluates the lighting equation for point lights.
+//---------------------------------------------------------------------------------------
+vec3 ComputePointLight(vec3 lightPosition, float falloffStart, vec3 lightColor, float falloffEnd, vec3 lightDirection, float spotPower, vec4 diffuseColor, float shininess, vec3 pos, vec3 normal, vec3 toEye)
+{
+    // The vector from the surface to the light.
+    vec3 lightVec = lightPosition - pos;
 
-    // Eye vector (towards the camera)
-    E = normalize(EyeDirection_tangentspace);
-    // Direction in which the triangle reflects the light
-    R = reflect(-l,n);
-    // radius? of the angle between the Eye vector and the Reflect vector,
-    // clamped to 0
-    //  - Looking into the reflection -> 1
-    //  - Looking elsewhere -> < 1
-    cosAlpha = clamp( dot( E,R ), 0,1 );
+    // The distance from surface to light.
+    float d = length(lightVec);
 
-    return pFalloff *( pMaterialAmbientColor +
-                       // Diffuse : "color" of the object
-                       visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
-                       // Specular : reflective highlight, like a mirror
-                       +  visibility * pMaterialSpecularColor.x * pLightColor * pLightIntensity  * pow(cosAlpha,50));
+    // Range test.
+    if(d > 1000)
+        return vec3(0.0f);
+
+    // Normalize the light vector.
+    lightVec /= d;
+
+    // Scale light down by Lambert's cosine law.
+    float ndotl = max(dot(lightVec, normal), 0.0f);
+    vec3 lightStrength = lightColor * ndotl;
+
+    // Attenuate light by distance.
+    float att = CalcAttenuation(d, 800, 1000); //TODO
+    lightStrength *= att;
+
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, diffuseColor, shininess);
+}
+
+//---------------------------------------------------------------------------------------
+// Evaluates the lighting equation for spot lights.
+//---------------------------------------------------------------------------------------
+vec3 ComputeSpotLight(vec3 lightPosition, float falloffStart, vec3 lightColor, float falloffEnd, vec3 lightDirection, float spotPower, vec4 diffuseColor, float shininess, vec3 pos, vec3 normal, vec3 toEye)
+{
+    // The vector from the surface to the light.
+    vec3 lightVec = lightPosition - pos;
+
+    // The distance from surface to light.
+    float d = length(lightVec);
+
+    // Range test.
+    if(d > falloffEnd)
+        return vec3(0.0f);
+
+    // Normalize the light vector.
+    lightVec /= d;
+
+    // Scale light down by Lambert's cosine law.
+    float ndotl = max(dot(lightVec, normal), 0.0f);
+    vec3 lightStrength = lightColor * ndotl;
+
+    // Attenuate light by distance.
+    float att = CalcAttenuation(d, falloffStart, falloffEnd);
+    lightStrength *= att;
+
+    // Scale by spotlight
+    float spotFactor = pow(max(dot(-lightVec, lightDirection), 0.0f), spotPower);
+    lightStrength *= spotFactor;
+
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, diffuseColor, shininess);
+}
+
+vec3 NormalSampleToWorldSpace(vec3 normalMapSample, vec3 unitNormalW, vec3 tangentW){
+	//[0,1] -> [-1,1]
+	vec3 normalT = 2.0f * normalMapSample - 1.0f;
+	normalT *= 0.25f;
+
+	//build orthonormal basis.
+	vec3 N = unitNormalW;
+	vec3 T = normalize(tangentW - dot(tangentW, N)* N);
+	vec3 B = cross(N,T);
+
+	mat3 TBN = mat3(T,B,N);
+
+	//transform from tangent to world space
+	return TBN * normalT;
 }
 
 void main( void ) {
-	 FragNormal_tangentspace = normalize(texture( textureNormal, texCoord * tiling ).rgb*2.0 - 1.0) * 0.25;
+    vec4 MaterialDiffuseColor = texture(textureDiffuse,texCoord * tiling);
 
-    vec3 MaterialDiffuseColor = vec3(texture(textureDiffuse,texCoord * tiling));
-    vec3 MaterialSpecularColor = vec3(texture(textureSpecular,texCoord * tiling));
+    vec3 normal = normalize(normalW);
+    vec3 normalMapSample = texture(textureNormal, texCoord * tiling).rgb;
+    vec3 bumpedNormalW = NormalSampleToWorldSpace(normalMapSample.rgb, normal, tangentW);
 
+    vec3 toEyeW = normalize(eyePosW - Position_worldspace);
+    vec4 ambient = vec4(.1,.1,.1,0) * MaterialDiffuseColor;
+    vec3 MaterialSpecularColor = vec3(texture(textureSpecular,texCoord * tiling)) * specularMultiplier;
+
+
+
+    vec4 MaterialAmbientColor = vec4(.1,.1,.1,0) * MaterialDiffuseColor;
     vec3 combinedColor;
-    vec3 MaterialAmbientColor;
-    float distance;
-    float falloff;
+    //loop through the 3 light types seperately
 
-
-
-    for(int activeLight = 0; activeLight < lightCount; activeLight++) {
-        visibility = 1.0;
-        MaterialAmbientColor = vec3(0.1,0.1,0.1) * lightColor[activeLight];
-        MaterialSpecularColor = MaterialSpecularColor * specularMultiplier * vec3(.5,.5,.5);
-
-        distance = length(Position_worldspace - lightPosition[activeLight]);
-
-        falloff = lightIntensity[activeLight]/(lightFalloff[activeLight].x + lightFalloff[activeLight].y * distance + lightFalloff[activeLight].z * distance * distance);
-        switch(lightType[activeLight]) {
-        case 0:
-            combinedColor += calcPointLight(falloff, lightColor[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
-            break;
-        case 1:
-            vec3 coord;
-            for (int i=0; i<4; i++) {
-                // use either :
-                //  - Always the same samples.
-                //    Gives a fixed pattern in the shadow, but no noise
-                int index = i;
-                //  - A random sample, based on the pixel's screen location.
-                //    No banding, but the shadow moves with the camera, which looks weird.
-                // int index = int(16.0*random(gl_FragCoord.xyy, i))%16;
-                //  - A random sample, based on the pixel's position in world space.
-                //    The position is rounded to the millimeter to avoid too much aliasing
-                //int index = int(16.0*random(floor(Position_worldspace.xyz*80.0), i))%16;
-
-                // being fully in the shadow will eat up 4*0.2 = 0.8
-                // 0.2 potentially remain, which is quite dark.
-                coord = vec3( ShadowCoord.xy + poissonDisk[index]/1200.0,  (ShadowCoord.z)/ShadowCoord.w );
-                if(coord.x > 0 && coord.x < 1 && coord.y > 0 && coord.y < 1 && coord.z > 0 && coord.z < 1)
-                    visibility -= 0.2*(1.0-texture( shadowMap, coord));
-            }
-            combinedColor += calcDirectionalLight(falloff, lightColor[activeLight], lightIntensity[activeLight], MaterialAmbientColor, MaterialDiffuseColor, MaterialSpecularColor, LightDirection_tangentspace[activeLight]);
-            break;
-        case  2:
-            // Normal of the computed fragment, in camera space
-            n = normalize( FragNormal_tangentspace );
-            // Direction of the light (from the fragment to the light)
-            l = normalize( LightDirection_tangentspace[activeLight]);
-
-            cosTheta = max( dot( n,abs(l) ), 0.0);
-
-            // Eye vector (towards the camera)
-            E = normalize(EyeDirection_tangentspace);
-            // Direction in which the triangle reflects the light
-            R = reflect(-l,n);
-            // Cosine of the angle between the Eye vector and the Reflect vector,
-            // clamped to 0
-            //  - Looking into the reflection -> 1
-            //  - Looking elsewhere -> < 1
-            cosAlpha = clamp( dot( E,R ), 0,1 );
-            // if(cosTheta > 0.0) {
-
-            float spotEffect = dot(normalize(lightPosition[activeLight] - Position_worldspace), normalize(-LightDirection_cameraspace2));
-
-            if (spotEffect > .85) {
-				float multiplier = clamp(pow((spotEffect - 0.85) * 10, 2), 0.0, 1.0);
-
-                vec3 color = clamp(falloff, 0.0, 0.02) *(MaterialAmbientColor +
-                                       // Diffuse : "color" of the object
-                                       multiplier * MaterialDiffuseColor * lightColor[activeLight] * lightIntensity[activeLight] * cosTheta
-                                       // Specular : reflective highlight, like a mirror
-                                       +  multiplier * MaterialSpecularColor * lightColor[activeLight] * lightIntensity[activeLight] * pow(cosAlpha,50));
-
-                combinedColor += (color);
-            }
-
-        }
+    for(int i = 0; i < num_dir_light; i++){
+        combinedColor += 0.5 * ComputeDirectionalLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x, bumpedNormalW, toEyeW);
+    }
+    for(int i = 0; i < num_point_light; i++){
+        combinedColor += ComputePointLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x,Position_worldspace, bumpedNormalW, toEyeW);
+    }
+    for(int i = 0; i < num_spot_light; i++){        
+        combinedColor += ComputeSpotLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x,Position_worldspace, bumpedNormalW, toEyeW);
     }
 
 
 	vec3 emissionColor = texture(emissionMap, texCoord * tiling).rgb;
-    fragment_color = vec4(combinedColor + (emissionColor * 2),texture(textureDiffuse,texCoord * tiling).a);
-	if(fragment_color.a <= 0.9)
-		discard;
-    float brightness = dot(fragment_color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 1)
-        brightness_color = vec4(fragment_color.rgb, 1.0);
-    else
-        brightness_color = vec4(0,0,0,1);
 
-    watermask_color = vec4(0,0,0,1);
+    fragment_color = vec4(combinedColor + emissionColor, MaterialDiffuseColor.a);
 }

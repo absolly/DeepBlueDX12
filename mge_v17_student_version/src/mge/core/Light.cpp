@@ -33,11 +33,8 @@ void Light::setColor(glm::vec3 pColor) {
 }
 
 glm::vec3 Light::getColor() {
-#ifdef API_OPENGL
-    return _color;
-#elif defined(API_DIRECTX)
+
 	return _color / 255.0f;
-#endif // API_OPENGL
 }
 
 void Light::setLightIntensity(float pIntensity)

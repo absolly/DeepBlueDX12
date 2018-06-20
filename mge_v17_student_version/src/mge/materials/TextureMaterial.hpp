@@ -43,10 +43,10 @@ class TextureMaterial : public AbstractMaterial
 				ZeroMemory(this, sizeof(LightBase));
 			}
 			glm::vec3 Position;
-			float Radius;
+			float falloffStart;
 			glm::vec3 Color; //color / intensity
-			float AttenuationParams;
-			glm::vec3 SpotDirection;
+			float falloffEnd;
+			glm::vec3 Direction;
 			float Angle;
 		};
 		struct ConstantBufferPerMaterial {
@@ -57,7 +57,10 @@ class TextureMaterial : public AbstractMaterial
 			glm::vec3 eyePosW;
 			float tiling;
 			LightBase lights[16];
-			float specularMultiplier; //not nice 4 float aligned.
+			float specularMultiplier;
+			int numDirLight;
+			int numPointLight;
+			int numSpotLight;
 		};
 		ConstantBufferPerMaterial cbPerMaterial;
 

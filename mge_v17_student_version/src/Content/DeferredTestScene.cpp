@@ -195,7 +195,7 @@ void DeferredTestScene::_initializeScene() {
 	_world->add(light);
 
 	glm::vec3* lightColor2 = new glm::vec3( 239, 127, 217);
-	Light* light2 = new Light(Light::lightType::DIRECTIONAL, "light2", glm::vec3(0, 150, 0), *lightColor, 3000, glm::vec3(0, 0, 1));
+	Light* light2 = new Light(Light::lightType::SPOT, "light2", glm::vec3(150, 150, 0), *lightColor, 100, glm::vec3(0, 0, 1));
 	light2->setMesh(mantaMeshF);
 	AbstractMaterial* colorMaterial3 = new ColorMaterial(*lightColor);
 	light2->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
@@ -205,7 +205,7 @@ void DeferredTestScene::_initializeScene() {
 	light2->setMaterial(colorMaterial3);
 	_world->add(light2);
 
-////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightFalloff::CONSTANT);
+////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightDirection::CONSTANT);
 ////    light3->setMesh (cubeMeshF);
 ////    light3->setMaterial(colorMaterial2);
 ////    _world->add(light3);

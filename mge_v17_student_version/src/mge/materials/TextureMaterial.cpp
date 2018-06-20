@@ -260,10 +260,6 @@ void TextureMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
 void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     if (!_diffuseTexture) return;
 
-	glm::mat3 MVMatrix;
-
-	MVMatrix = glm::mat3(pViewMatrix * pModelMatrix);
-
     _shader->use();
 
     //setup texture slot 0
@@ -282,67 +278,62 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i (_shader->getUniformLocation("textureNormal"), 2);
 
 	//setup texture slot 3
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, Renderer::shadowDepthTexture);
-	glUniform1i(_shader->getUniformLocation("shadowMap"), 3);
-
-	//setup texture slot 4
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, _emissionMap->getId());
-	glUniform1i(_shader->getUniformLocation("emissionMap"), 4);
+	glUniform1i(_shader->getUniformLocation("emissionMap"), 3);
 
-    glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
+    //glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
 
     glm::vec3 lightPosition[2] {};
-    GLfloat lightIntensity[2] {}; //radius
-    glm::vec3 lightColor[2] {}; // color + intensity?
-    glm::vec3 lightFalloff[2]{}; 
-    GLint lightType[2] {};
-    glm::vec3 lightDirection[2] {}; //direction + angle?
-
-	glm::mat4 biasMatrix(
-		0.5, 0.0, 0.0, 0.0,
-		0.0, 0.5, 0.0, 0.0,
-		0.0, 0.0, 0.5, 0.0,
-		0.5, 0.5, 0.5, 1.0
-	);
-	// Compute the MVP matrix from the light's point of view
-	glm::mat4 depthProjectionMatrix = glm::ortho<float>(-600, 600, -600, 600, -800, 800);
-	glm::mat4 depthViewMatrix;
-
+    GLfloat falloffStart[2] {}; //radius
+    glm::vec3 lightColor[2] {}; // color + intensity
+	GLfloat falloffEnd[2]{};
+    glm::vec3 lightDirection[2]{}; 
+    GLfloat lightSpotPower[2] {};
+	GLfloat numDirLight;
+	GLfloat numPointLight;
+	GLfloat numSpotLight;
+	
     int i = 0;
     for(Light* light : World::activeLights) {
 		
         lightPosition[i] = light->getWorldPosition();
-		if (light->type == Light::DIRECTIONAL) {
-			depthViewMatrix = glm::inverse(light->getWorldTransform());
-			lightPosition[i].y = 900;
-		}
+		falloffStart[i] = 10;
+        lightColor[i] = light->getColor() * light->intensity;
+		falloffEnd[i] = 800;
         lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
-        lightColor[i] = light->getColor();
-        lightType[i] = ((int)light->type);
-        lightFalloff[i] = light->falloff;
-        lightIntensity[i] = light->intensity;
+        lightSpotPower[i] = light->angle;
         i++;
+		switch (light->type)
+		{
+			case Light::lightType::DIRECTIONAL:
+				numDirLight++;
+				break;
+			case Light::lightType::POINT:
+				numPointLight++;
+				break;
+			case Light::lightType::SPOT:
+				numSpotLight++;
+				break;
+		}
     }
 
-	glm::mat4 depthBiasMVP = biasMatrix * depthProjectionMatrix * depthViewMatrix * pModelMatrix;
-
     glUniform3fv(_shader->getUniformLocation("lightPosition"), 2, glm::value_ptr(lightPosition[0]));
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 2, glm::value_ptr(lightDirection[0]));
+	glUniform1fv(_shader->getUniformLocation("falloffStart"), 2, falloffStart);
     glUniform3fv(_shader->getUniformLocation("lightColor"), 2, glm::value_ptr(lightColor[0]));
-    glUniform1iv(_shader->getUniformLocation("lightType"), 2, lightType);
-    glUniform3fv(_shader->getUniformLocation("lightFalloff"), 2, glm::value_ptr(lightFalloff[0]));
-    glUniform1fv(_shader->getUniformLocation("lightIntensity"), 2, lightIntensity);
-    glUniform1i(_shader->getUniformLocation("lightCount"), i);
+    glUniform1fv(_shader->getUniformLocation("falloffEnd"), 2, falloffEnd);
+    glUniform3fv(_shader->getUniformLocation("lightDirection"), 2, glm::value_ptr(lightDirection[0]));
+    glUniform1fv(_shader->getUniformLocation("spotPower"), 2, lightSpotPower);
+    glUniform1i(_shader->getUniformLocation("num_dir_light"), numDirLight);
+	glUniform1i(_shader->getUniformLocation("num_point_light"), numPointLight);
+	glUniform1i(_shader->getUniformLocation("num_spot_light"), numSpotLight);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
+	glUniform3fv(_shader->getUniformLocation("eyePosW"), 1, glm::value_ptr(World::getMainCamera()->getWorldPosition()));
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
     //pass in all MVP matrices separately
-	glUniformMatrix3fv(_shader->getUniformLocation("MVMatrix"),	1, GL_FALSE, glm::value_ptr(MVMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),1, GL_FALSE, glm::value_ptr(pViewMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("modelMatrix"), 1, GL_FALSE, glm::value_ptr(pModelMatrix));
 	glUniformMatrix4fv(_shader->getUniformLocation("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
-	glUniformMatrix4fv(_shader->getUniformLocation("depthBiasMVP"), 1, GL_FALSE, glm::value_ptr(depthBiasMVP));
 
 	//std::cout << "ID HERE FUADnwnow iawndI OawndI nawdi Nawdi Naw::::::::::" << _shader->getAttribLocation("tangent") << std::endl;
     //now inform mesh of where to stream its data
@@ -364,20 +355,26 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 	//todo: do this outside of render loop
 	cbPerMaterial.eyePosW = World::getMainCamera()->getWorldPosition();
 	int i = 0;
-
 	for (Light* light : World::activeLights) {
 
 		LightBase base;
 		cbPerMaterial.lights[i].Position = light->getWorldPosition();
-		if (light->type == Light::DIRECTIONAL) {
-			//depthViewMatrix = glm::inverse(light->getWorldTransform());
-			cbPerMaterial.lights[i].Position.y = 900;
-		}
-		cbPerMaterial.lights[i].SpotDirection = glm::vec3(light->getWorldTransform()[2]) * glm::vec3(1,1,-1);
+		cbPerMaterial.lights[i].falloffStart = 10;
+		cbPerMaterial.lights[i].Direction = glm::vec3(light->getWorldTransform()[2]) * glm::vec3(1,1,-1);
+		cbPerMaterial.lights[i].falloffEnd = 800;
 		cbPerMaterial.lights[i].Color = glm::vec3(light->getColor()) * light->intensity;
-		//base.Type = ((int)light->type);
-		cbPerMaterial.lights[i].AttenuationParams = 1;
-		//cbPerMaterial.lights = base;
+		cbPerMaterial.lights[i].Angle = light->angle;
+		switch (light->type){
+		case Light::lightType::DIRECTIONAL:
+			cbPerMaterial.numDirLight++;
+			break;
+		case Light::lightType::POINT:
+			cbPerMaterial.numPointLight++;
+			break;
+		case Light::lightType::SPOT:
+			cbPerMaterial.numSpotLight++;
+			break;
+		}
 		i++;
 	}
 	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
