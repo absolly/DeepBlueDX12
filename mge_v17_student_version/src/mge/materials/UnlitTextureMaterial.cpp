@@ -13,11 +13,22 @@ ID3D12PipelineState* UnlitTextureMaterial::pipelineStateObject = nullptr;
 ID3D12RootSignature* UnlitTextureMaterial::rootSignature = nullptr;
 ID3D12Resource* UnlitTextureMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
 UINT8* UnlitTextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
+ID3D12DescriptorHeap* UnlitTextureMaterial::mainDescriptorHeap = nullptr;
+UINT UnlitTextureMaterial::mCbvSrvDescriptorSize = 0;
 #endif // API_DIRECTX
+unsigned int UnlitTextureMaterial::_materialCount = 0;
 
 UnlitTextureMaterial::UnlitTextureMaterial(Texture* pDiffuseTexture, float pTiling, glm::vec3 pColor):
-_diffuseTexture(pDiffuseTexture), cbPerMaterial(pColor, pTiling) {
+_diffuseTexture(pDiffuseTexture), cbPerMaterial(pColor, pTiling), _id(_materialCount) {
     _lazyInitializeShader();
+
+#ifdef API_DIRECTX
+	_materialCount++;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
+	Renderer::device->CreateShaderResourceView(pDiffuseTexture->textureBuffer, &pDiffuseTexture->srvDesc, hDescriptor);
+#endif // API_DIRECTX
 }
 
 UnlitTextureMaterial::~UnlitTextureMaterial() {}
@@ -34,6 +45,15 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 #elif defined(API_DIRECTX)
 void UnlitTextureMaterial::_lazyInitializeShader() {
 	if (!pipelineStateObject) {
+		//create the descriptor heap that will store our shader resource views
+		D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+		heapDesc.NumDescriptors = 256; //max number of textures
+		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&mainDescriptorHeap)));
+
+		mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
 		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 		rootCBVDescriptor.RegisterSpace = 0;
 		rootCBVDescriptor.ShaderRegister = 0;
@@ -77,7 +97,7 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 
 		//create a static sampler
 		D3D12_STATIC_SAMPLER_DESC sampler = {};
-		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -254,6 +274,10 @@ void UnlitTextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, co
 #ifdef API_DIRECTX
 void UnlitTextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
+	//set the descriptor heap
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mainDescriptorHeap };
+	Renderer::commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
+
 	//todo: do this outside of render loop
 	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
 
@@ -263,7 +287,7 @@ void UnlitTextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAdd
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
 	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
 
-	//Renderer::commandList->SetGraphicsRootDescriptorTable(1, _diffuseTexture->GetGPUDescriptorHandle());
+	Renderer::commandList->SetGraphicsRootDescriptorTable(1, mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.
 
 	pMesh->streamToDirectX();

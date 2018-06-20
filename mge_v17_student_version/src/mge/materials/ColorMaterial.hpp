@@ -3,6 +3,7 @@
 
 #include "mge/materials/AbstractMaterial.hpp"
 #include "mge/core/ShaderProgram.hpp"
+#include "mge/core/Renderer.hpp"
 
 /**
  * Simple single color material.
@@ -40,9 +41,14 @@ class ColorMaterial : public AbstractMaterial
         static GLint _aTangent;
         static GLint _aBitangent;
 
-		// drawing objects stuff //
+#ifdef API_DIRECTX
 		static ID3D12PipelineState* pipelineStateObject; //pso containing a pipeline state (in this case the vertex data for 1 object)
 		static ID3D12RootSignature* rootSignature; //root signature defines data shaders will access
+		static ID3D12Resource* constantBufferUploadHeaps[Renderer::frameBufferCount]; //this is the memory where the constant buffer will be placed TODO
+
+		static UINT8* cbvGPUAddress[Renderer::frameBufferCount]; // pointers to the memory locations we get when we map the constant buffers
+																 // constant buffers must be 256 byte aligned
+#endif // API_DIRECTX
 
         //this one is unique per instance of color material
         glm::vec3 _diffuseColor;

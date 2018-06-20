@@ -4,14 +4,18 @@
 // Contains API for shader lighting.
 //***************************************************************************************
 
+#define NUM_DIR_LIGHTS 1
+#define NUM_POINT_LIGHTS 0
+#define NUM_SPOT_LIGHTS 1
+
 #define MaxLights 16
 
 struct Light
 {
     float3 Position;    // point light only
-    float FalloffEnd;   // point/spot light only
-    float3 Strength;
     float FalloffStart; // point/spot light only
+    float3 Strength;
+    float FalloffEnd;   // point/spot light only
     float3 Direction;   // directional/spot light only
     float SpotPower;    // spot light only
 };
@@ -28,6 +32,7 @@ float CalcAttenuation(float d, float falloffStart, float falloffEnd)
     return saturate((falloffEnd-d) / (falloffEnd - falloffStart));
 }
 
+//calculate specularity (this was orignially fresnel calculation)
 float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, Material mat)
 {
 	// Eye vector (towards the camera)
@@ -52,7 +57,7 @@ float3 ComputeDirectionalLight(Light L, Material mat, float3 normal, float3 toEy
     float3 lightVec = normalize(L.Direction);
 
     // Scale light down by Lambert's cosine law.
-    float ndotl = max(dot(normal, lightVec), 0.0f);
+    float ndotl = max(dot(normal, -lightVec), 0.0f);
     float3 lightStrength = L.Strength * ndotl;
 	
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
@@ -70,18 +75,18 @@ float3 ComputePointLight(Light L, Material mat, float3 pos, float3 normal, float
     float d = length(lightVec);
 
     // Range test.
-    if(d > 1000)
+    if(d > L.FalloffEnd)
         return 0.0f;
 
     // Normalize the light vector.
     lightVec /= d;
 
     // Scale light down by Lambert's cosine law.
-    float ndotl = max(dot(lightVec, normal), 0.0f);
+    float ndotl = max(dot(-lightVec, normal), 0.0f);
     float3 lightStrength = L.Strength * ndotl;
 
     // Attenuate light by distance.
-    float att = CalcAttenuation(d, 800, 1000); //TODO
+    float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd); //TODO
     lightStrength *= att;
 
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
@@ -128,20 +133,26 @@ float4 ComputeLighting(Light gLights[MaxLights], Material mat,
 
     int i = 0;
 
-    for(i = 0; i < num_dir_light; ++i)
+#if (NUM_DIR_LIGHTS > 0)
+	for(i = 0; i < NUM_DIR_LIGHTS; ++i)
     {
         result += ComputeDirectionalLight(gLights[i], mat, normal, toEye);
     }
+#endif
 
-    for(i = num_dir_light; i < num_dir_light+num_point_light; ++i)
+#if (NUM_POINT_LIGHTS > 0)
+    for(i = NUM_DIR_LIGHTS; i < NUM_DIR_LIGHTS+NUM_POINT_LIGHTS; ++i)
     {
         result += ComputePointLight(gLights[i], mat, pos, normal, toEye);
     }
+#endif
 
-    for(i = num_dir_light + num_point_light; i < num_dir_light + num_point_light + num_spot_light; ++i)
+#if (NUM_SPOT_LIGHTS > 0)
+    for(i = NUM_DIR_LIGHTS + NUM_POINT_LIGHTS; i < NUM_DIR_LIGHTS + NUM_POINT_LIGHTS + NUM_SPOT_LIGHTS; ++i)
     {
         result += ComputeSpotLight(gLights[i], mat, pos, normal, toEye);
     }
+#endif
 
     return float4(result, 0.0f);
 }

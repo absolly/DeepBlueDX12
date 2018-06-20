@@ -112,23 +112,43 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
-	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
+	AbstractMaterial* unlitTextureMaterial = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4);
+	AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(221,0,210));
+	
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Rocks_normal.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
 	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Rocks_normal.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
 	
 	//SCENE SETUP
-	GameObject* go2 = new GameObject("go");
-	go2->setMesh(planeMeshDefault);
-	go2->setMaterial(textureMaterial2);
-	go2->scale(glm::vec3(0.01f));
-	_world->add(go2);
+	//GameObject* go2 = new GameObject("go");
+	//go2->setMesh(planeMeshDefault);
+	//go2->setMaterial(unlitTextureMaterial);
+	//go2->scale(glm::vec3(0.01f));
+	//_world->add(go2);
 	//seed random so results are the same every time
-	//srand(9);
-	//for (int i = 0; i < 1000; i++) {
-	//	GameObject* go = new GameObject("go" + i, glm::vec3((rand() % 200) - 100, (rand() % 200) - 100, (rand() % 200) - 100));
-	//	go->setMesh(mantaMeshF);
-	//	go->setMaterial(textureMaterial2);
-	//	_world->add(go);
-	//}
+	srand(9);
+	const glm::ivec3 NUM_OBJECTS = glm::vec3(20,20,20);
+	const glm::ivec3 GRID_SIZE = glm::vec3(400, 400, 400);
+	for (int i = 0; i < NUM_OBJECTS.x * NUM_OBJECTS.y * NUM_OBJECTS.z; i++) {
+		GameObject* go = new GameObject("go" + i, glm::vec3(
+			(i % NUM_OBJECTS.x) * (GRID_SIZE.x / NUM_OBJECTS.x) - (GRID_SIZE.x/2),
+			(i/(NUM_OBJECTS.x * NUM_OBJECTS.z) % NUM_OBJECTS.y) * (GRID_SIZE.y / NUM_OBJECTS.y) - (GRID_SIZE.y / 2),
+			(i / NUM_OBJECTS.x % NUM_OBJECTS.z) * (GRID_SIZE.z / NUM_OBJECTS.z) - (GRID_SIZE.z / 2)
+		));
+		switch (i%4)
+		{
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		}
+		go->setMesh(lightMeshS);
+		go->setMaterial(textureMaterial2);
+		_world->add(go);
+	}
 
    
 
@@ -195,9 +215,9 @@ void DeferredTestScene::_initializeScene() {
 	_world->add(light);
 
 	glm::vec3* lightColor2 = new glm::vec3( 239, 127, 217);
-	Light* light2 = new Light(Light::lightType::SPOT, "light2", glm::vec3(150, 150, 0), *lightColor, 100, glm::vec3(0, 0, 1));
+	Light* light2 = new Light(Light::lightType::SPOT, "light2", glm::vec3(150, 150, 0), *lightColor2, 2000, glm::vec3(0, 0, 1));
 	light2->setMesh(mantaMeshF);
-	AbstractMaterial* colorMaterial3 = new ColorMaterial(*lightColor);
+	AbstractMaterial* colorMaterial3 = new ColorMaterial(*lightColor2);
 	light2->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
 	light2->addBehaviour(new RotatingBehaviour());
 	light2->addBehaviour(new RotatingBehaviour());

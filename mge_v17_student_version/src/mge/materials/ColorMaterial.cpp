@@ -15,9 +15,12 @@ GLint ColorMaterial::_aNormal = 0;
 GLint ColorMaterial::_aUV = 0;
 GLint ColorMaterial::_aTangent = 0;
 GLint ColorMaterial::_aBitangent = 0;
+#ifdef API_DIRECTX
 ID3D12PipelineState* ColorMaterial::pipelineStateObject = nullptr;
 ID3D12RootSignature* ColorMaterial::rootSignature = nullptr;
-
+ID3D12Resource* ColorMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
+UINT8* ColorMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
+#endif // API_DIRECTX
 ColorMaterial::ColorMaterial(glm::vec3 pDiffuseColor):_diffuseColor (pDiffuseColor)
 {
     //every time we create an instance of colormaterial we check if the corresponding shader has already been loaded
@@ -50,8 +53,12 @@ void ColorMaterial::_lazyInitializeShader() {
 	rootCBVDescriptor.RegisterSpace = 0;
 	rootCBVDescriptor.ShaderRegister = 0;
 
+	D3D12_ROOT_DESCRIPTOR materialCBVDescriptor;
+	materialCBVDescriptor.RegisterSpace = 0;
+	materialCBVDescriptor.ShaderRegister = 1;
+
 	//create a root parameter
-	D3D12_ROOT_PARAMETER rootParameters[1];
+	D3D12_ROOT_PARAMETER rootParameters[2];
 	//its a good idea to sort the root parameters by frequency of change.
 	//the constant buffer will change multiple times per frame but the descriptor table won't change in this case
 
@@ -60,12 +67,16 @@ void ColorMaterial::_lazyInitializeShader() {
 	rootParameters[0].Descriptor = rootCBVDescriptor;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; //only the vertex shader will be able to access the parameter
 
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //this is a constant buffer view
+	rootParameters[1].Descriptor = materialCBVDescriptor;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only the vertex shader will be able to access the parameter
+
 																		 //fill out the root signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init(
 		_countof(rootParameters), //we have 1 root parameter for now
 		rootParameters, //pointer to the start of the root parameters array
-		0, //we have one static sampler
+		0, //we have no static sampler
 		nullptr, //pointer to our static sampler (array)
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |       // we can deny shader stages here for better performance
@@ -162,6 +173,28 @@ void ColorMaterial::_lazyInitializeShader() {
 
 	// create the pso
 	ThrowIfFailed(Renderer::device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pipelineStateObject)));
+
+	//create a resource heap, descriptor heap, and pointer to cbv for every framebuffer
+	for (int i = 0; i < Renderer::frameBufferCount; i++)
+	{
+		ThrowIfFailed(Renderer::device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&constantBufferUploadHeaps[i])
+		));
+
+
+		constantBufferUploadHeaps[i]->SetName(L"Material Constant Buffer Upload Resource Heap");
+
+		CD3DX12_RANGE readRange(0, 0); //read range is less then 0, indicates that we will not be reading this resource from the cpu
+
+									   //map the resource heap to get a gpu virtual address to the beginning of the heap
+		ThrowIfFailed(constantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&cbvGPUAddress[i])));
+
+	}
 }
 #endif // API_OPENGL
 
@@ -182,7 +215,7 @@ void ColorMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm
     glUniformMatrix4fv ( _uMVPMatrix, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
 
     //set the material color
-    glUniform3fv (_uDiffuseColor, 1, glm::value_ptr(_diffuseColor));
+    glUniform3fv (_uDiffuseColor, 1, glm::value_ptr(_diffuseColor/255));
 
     //now inform mesh of where to stream its data
     pMesh->streamToOpenGL(_aVertex, _aNormal, _aUV, _aTangent, _aBitangent);
@@ -195,6 +228,10 @@ void ColorMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 	Renderer::commandList->SetPipelineState(pipelineStateObject);
 
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
+
+	memcpy(cbvGPUAddress[0], &(_diffuseColor/255), sizeof(_diffuseColor)); //constant buffer is only one vec3 in this case
+	Renderer::commandList->SetGraphicsRootConstantBufferView(1, constantBufferUploadHeaps[0]->GetGPUVirtualAddress() /*+ cbvsize * _id TODO!!!*/);
+
 
 	pMesh->streamToDirectX();
 

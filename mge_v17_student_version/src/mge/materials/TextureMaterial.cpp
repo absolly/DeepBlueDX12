@@ -353,6 +353,7 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 	Renderer::commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	//todo: do this outside of render loop
+	//lights could be passed once per frame instead of once per object.
 	cbPerMaterial.eyePosW = World::getMainCamera()->getWorldPosition();
 	int i = 0;
 	for (Light* light : World::activeLights) {
@@ -377,6 +378,7 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 		}
 		i++;
 	}
+	//could be done once per material instead of per object.
 	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
 
 	Renderer::commandList->SetGraphicsRootSignature(rootSignature);

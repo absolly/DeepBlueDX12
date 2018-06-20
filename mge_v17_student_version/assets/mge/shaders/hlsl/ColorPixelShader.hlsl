@@ -3,8 +3,11 @@ struct VS_OUTPUT{
 	float2 uv : TEXCOORD;
 };
 
+cbuffer ConstantBuffer : register(b1){
+	float3 color : COLOR;
+}
 
 float4 main(VS_OUTPUT i) : SV_TARGET
 {
-	return float4(i.uv, 1.0f, 1.0f);
+	return float4(color,1);
 }

@@ -1,6 +1,10 @@
 //DIFFUSE TEXTURE FRAGMENT SHADER
 #version 330 core// for glsl version (12 is for older versions , say opengl 2.1
 
+#define NUM_DIR_LIGHTS 1
+#define NUM_POINT_LIGHTS 0
+#define NUM_SPOT_LIGHTS 1
+
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
@@ -159,13 +163,13 @@ void main( void ) {
     vec3 combinedColor;
     //loop through the 3 light types seperately
 
-    for(int i = 0; i < num_dir_light; i++){
+    for(int i = 0; i < NUM_DIR_LIGHTS; i++){
         combinedColor += 0.5 * ComputeDirectionalLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x, bumpedNormalW, toEyeW);
     }
-    for(int i = 0; i < num_point_light; i++){
+    for(int i = NUM_DIR_LIGHTS; i < NUM_DIR_LIGHTS + NUM_POINT_LIGHTS; i++){
         combinedColor += ComputePointLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x,Position_worldspace, bumpedNormalW, toEyeW);
     }
-    for(int i = 0; i < num_spot_light; i++){        
+    for(int i = NUM_DIR_LIGHTS + NUM_POINT_LIGHTS; i < NUM_DIR_LIGHTS + NUM_POINT_LIGHTS + NUM_SPOT_LIGHTS; i++){        
         combinedColor += ComputeSpotLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x,Position_worldspace, bumpedNormalW, toEyeW);
     }
 

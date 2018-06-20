@@ -21,7 +21,8 @@ class UnlitTextureMaterial : public AbstractMaterial
 #ifdef API_DIRECTX
 		virtual void render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress) override;
 #endif // API_DIRECTX
-
+		static unsigned int _materialCount;
+		unsigned int _id;
         void setDiffuseTexture (Texture* pDiffuseTexture);
 
     protected:
@@ -53,7 +54,8 @@ class UnlitTextureMaterial : public AbstractMaterial
 
 		static UINT8* cbvGPUAddress[Renderer::frameBufferCount]; // pointers to the memory locations we get when we map the constant buffers
 																 // constant buffers must be 256 byte aligned
-
+		static ID3D12DescriptorHeap* mainDescriptorHeap;
+		static UINT mCbvSrvDescriptorSize;
 #endif // API_DIRECTX
 
 
