@@ -51,12 +51,13 @@ class TextureMaterial : public AbstractMaterial
 		};
 		struct ConstantBufferPerMaterial {
 			ConstantBufferPerMaterial(float pSpecularMultiplier, float pTiling) {
-				//specularMultiplier = pSpecularMultiplier;
+				specularMultiplier = pSpecularMultiplier;
 				tiling = pTiling;
 			}
 			glm::vec3 eyePosW;
 			float tiling;
 			LightBase lights[16];
+			float specularMultiplier; //not nice 4 float aligned.
 		};
 		ConstantBufferPerMaterial cbPerMaterial;
 

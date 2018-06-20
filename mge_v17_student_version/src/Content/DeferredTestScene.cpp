@@ -113,7 +113,7 @@ void DeferredTestScene::_initializeScene() {
 	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
 	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
 	AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(0,1,.5));
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"));
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Rocks_normal.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
 	
 	//SCENE SETUP
 	GameObject* go2 = new GameObject("go");

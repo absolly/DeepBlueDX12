@@ -65,9 +65,8 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
     //  - Looking into the reflection -> 1
     //  - Looking elsewhere -> < 1
     float cosAlpha = clamp( dot( E,R ), 0,1 );
-	//return float3( mat.Shininess * pow(cosAlpha,50), mat.Shininess * pow(cosAlpha,50), mat.Shininess * pow(cosAlpha,20));
 
-    return mat.DiffuseAlbedo.rgb * lightStrength + mat.Shininess * 10 * lightStrength * pow(cosAlpha,20);
+    return mat.DiffuseAlbedo.rgb * lightStrength + mat.Shininess * lightStrength * pow(cosAlpha,50);
 }
 
 //---------------------------------------------------------------------------------------
@@ -97,7 +96,7 @@ float3 ComputePointLight(Light L, Material mat, float3 pos, float3 normal, float
     float d = length(lightVec);
 
     // Range test.
-    if(d > L.FalloffEnd)
+    if(d > 1000)
         return 0.0f;
 
     // Normalize the light vector.
@@ -108,7 +107,7 @@ float3 ComputePointLight(Light L, Material mat, float3 pos, float3 normal, float
     float3 lightStrength = L.Strength * ndotl;
 
     // Attenuate light by distance.
-    float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
+    float att = CalcAttenuation(d, 800, 1000); //TODO
     lightStrength *= att;
 
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);

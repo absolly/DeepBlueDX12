@@ -6,7 +6,7 @@ uniform sampler2D   textureSpecular;
 uniform sampler2D   textureNormal;
 uniform sampler2DShadow shadowMap;
 uniform sampler2D	emissionMap;
-uniform	mat4 	viewMatrix;
+uniform	mat4 	    viewMatrix;
 uniform vec3        lightPosition[2];
 uniform vec3        lightColor[2];
 uniform float       lightIntensity[2];
@@ -91,8 +91,8 @@ vec3 calcPointLight(float pFalloff, vec3 pLightColor, vec3 pMaterialAmbientColor
 
 vec3 calcDirectionalLight(float pFalloff, vec3 pLightColor, float pLightIntensity, vec3 pMaterialAmbientColor, vec3 pMaterialDiffuseColor, vec3 pMaterialSpecularColor, vec3 pLightDirection_tangentspace ) {
 
-    // Normal of the computed fragment, in camera space
-    n = normalize( FragNormal_tangentspace );
+    // Normal of the computed fragment, in tangent space
+    n = ( FragNormal_tangentspace );
     // Direction of the light (from the fragment to the light)
     l = normalize( pLightDirection_tangentspace );
 
@@ -102,17 +102,17 @@ vec3 calcDirectionalLight(float pFalloff, vec3 pLightColor, float pLightIntensit
     E = normalize(EyeDirection_tangentspace);
     // Direction in which the triangle reflects the light
     R = reflect(-l,n);
-    // Cosine of the angle between the Eye vector and the Reflect vector,
+    // radius? of the angle between the Eye vector and the Reflect vector,
     // clamped to 0
     //  - Looking into the reflection -> 1
     //  - Looking elsewhere -> < 1
     cosAlpha = clamp( dot( E,R ), 0,1 );
-    //return vec3(pow(cosAlpha,50),pow(cosAlpha,50),pow(cosAlpha,50));
+
     return pFalloff *( pMaterialAmbientColor +
                        // Diffuse : "color" of the object
                        visibility * pMaterialDiffuseColor * pLightColor * pLightIntensity * cosTheta
                        // Specular : reflective highlight, like a mirror
-                       +  visibility * pMaterialSpecularColor * pLightColor * pLightIntensity  * pow(cosAlpha,50));
+                       +  visibility * pMaterialSpecularColor.x * pLightColor * pLightIntensity  * pow(cosAlpha,50));
 }
 
 void main( void ) {

@@ -25,7 +25,7 @@ _diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTe
 	_lazyInitializeShader();
 
 #ifdef API_DIRECTX
-	_materialCount += 2;
+	_materialCount += 4;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 	
 	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
@@ -34,6 +34,8 @@ _diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTe
 	Renderer::device->CreateShaderResourceView(pNormalTexture->textureBuffer, &pNormalTexture->srvDesc, hDescriptor);
 	hDescriptor.Offset(1, mCbvSrvDescriptorSize);
 	Renderer::device->CreateShaderResourceView(pSpecularTexture->textureBuffer, &pSpecularTexture->srvDesc, hDescriptor);
+	hDescriptor.Offset(1, mCbvSrvDescriptorSize);
+	Renderer::device->CreateShaderResourceView(pEmissionMap->textureBuffer, &pEmissionMap->srvDesc, hDescriptor);
 #endif // API_DIRECTX
 
 }
@@ -74,7 +76,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	//create the descriptor range and fill it out
 	D3D12_DESCRIPTOR_RANGE descriptorTableRanges[1];
 	descriptorTableRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; //this is the range of shader resource views
-	descriptorTableRanges[0].NumDescriptors = 3; //we only have 1 texture right now
+	descriptorTableRanges[0].NumDescriptors = 4; //we only have 1 texture right now
 	descriptorTableRanges[0].BaseShaderRegister = 0; //start index of the shader registers in the range
 	descriptorTableRanges[0].RegisterSpace = 0; //space can usually be 0 according to msdn. don't know why
 	descriptorTableRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; //appends the range to the end of the root signature descriptor tables
@@ -106,7 +108,7 @@ void TextureMaterial::_lazyInitializeShader() {
 
 	//create a static sampler
 	D3D12_STATIC_SAMPLER_DESC sampler = {};
-	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+	sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -123,7 +125,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	//fill out the root signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init(
-		_countof(rootParameters), //we have 1 root parameter for now
+		_countof(rootParameters),
 		rootParameters, //pointer to the start of the root parameters array
 		1, //we have one static sampler
 		&sampler, //pointer to our static sampler (array)

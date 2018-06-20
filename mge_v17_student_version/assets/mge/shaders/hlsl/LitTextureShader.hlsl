@@ -1,4 +1,7 @@
-#define NUM_DIR_LIGHTS 2
+#define NUM_DIR_LIGHTS 0
+#define NUM_POINT_LIGHTS 2
+#define NUM_SPOT_LIGHTS 0
+
 #include "LightingUtil.hlsl"
 
 struct VS_OUTPUT{
@@ -14,11 +17,13 @@ cbuffer ConstantBuffer : register(b1)
 	float3 eyePosW;
 	float tiling;
 	Light light[MaxLights];
+	float specularMultiplier;
 }
 
 Texture2D _MainTex : register(t0);
 Texture2D _NormalTex : register(t1);
 Texture2D _SpecularTex : register(t2);
+Texture2D _EmissionTex : register(t3);
 
 SamplerState _SampleState :register(s0);
 
@@ -51,9 +56,10 @@ float4 main(VS_OUTPUT i) : SV_TARGET
 
 	float4 ambient = float4(.1,.1,.1,0) * diffuseAlbedo;
 	float specularity = _SpecularTex.Sample(_SampleState, i.uv * tiling).r;
-	Material mat = {diffuseAlbedo, float3(0.0,0.0,0.0), specularity};
-	float4 directlight = ComputeLighting(light, mat, i.worldPosition, bumpedNormalW, toEyeW, .75f);
-	float4 litcolor = ambient + directlight;
+	Material mat = {diffuseAlbedo, float3(0.0,0.0,0.0), specularity * specularMultiplier};
+	float4 directlight = ComputeLighting(light, mat, i.worldPosition, bumpedNormalW, toEyeW, 1);
+	float4 emission = _EmissionTex.Sample(_SampleState, i.uv * tiling);
+	float4 litcolor = ambient + directlight + emission;
 
 	litcolor.a = diffuseAlbedo.a;
 	return litcolor;
