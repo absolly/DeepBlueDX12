@@ -222,11 +222,13 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(Configuration) ($(Platform))\executable\</OutDir>
     <IntDir>$(Configuration) ($(Platform))\build\</IntDir>
+    <TargetName>$(ProjectName)OGL</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Debug Static OpenGL|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(Configuration) ($(Platform))\executable\</OutDir>
     <IntDir>$(Configuration) ($(Platform))\build\</IntDir>
+    <TargetName>$(ProjectName)OGL(Debug)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Release Static OpenGL|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -244,6 +246,7 @@
     <IntDir>$(Configuration) ($(Platform))\build\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)DX12</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Debug Static DX12|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -251,6 +254,7 @@
     <IntDir>$(Configuration) ($(Platform))\build\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)DX12(Debug)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vs17 Release Static DX12|x64'">
     <LinkIncremental>false</LinkIncremental>

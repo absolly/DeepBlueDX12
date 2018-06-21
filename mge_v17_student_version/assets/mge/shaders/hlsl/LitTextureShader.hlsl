@@ -57,7 +57,6 @@ float4 main(VS_OUTPUT i) : SV_TARGET
 	float4 directlight = ComputeLighting(light, mat, i.worldPosition, bumpedNormalW, toEyeW, num_dir_light, num_point_light, num_spot_light);
 	float4 emission = _EmissionTex.Sample(_SampleState, i.uv * tiling);
 	float4 litcolor = ambient + directlight + emission;
-	//return float4(specularity,0,0,1);
 
 	litcolor.a = diffuseAlbedo.a;
 	return litcolor;

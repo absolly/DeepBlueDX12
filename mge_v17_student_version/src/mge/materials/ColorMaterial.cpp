@@ -108,7 +108,11 @@ void ColorMaterial::_lazyInitializeShader() {
 	ID3DBlob* vertexShader; //d3d blob for holding shader bytecode
 	HRESULT hr;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
+#ifdef DEBUG
 	hr = CompileShaderFromFile(L"UnlitVertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
+#else
+	hr = CompileShaderFromFile(L"UnlitVertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &vertexShader, &errorBuffer);
+#endif
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr); 
@@ -123,7 +127,11 @@ void ColorMaterial::_lazyInitializeShader() {
 	// compile pixel shader
 	ID3DBlob* pixelShader;
 	//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
+#ifdef DEBUG
 	hr = CompileShaderFromFile(L"ColorPixelShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
+#else
+	hr = CompileShaderFromFile(L"ColorPixelShader.hlsl", nullptr, nullptr, "main", "ps_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &pixelShader, &errorBuffer);
+#endif
 	if (FAILED(hr)) {
 		OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
 		ThrowIfFailed(hr);
