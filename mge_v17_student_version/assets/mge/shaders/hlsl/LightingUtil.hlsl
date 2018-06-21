@@ -5,8 +5,8 @@
 //***************************************************************************************
 
 #define NUM_DIR_LIGHTS 1
-#define NUM_POINT_LIGHTS 0
-#define NUM_SPOT_LIGHTS 1
+#define NUM_POINT_LIGHTS 9
+#define NUM_SPOT_LIGHTS 6
 
 #define MaxLights 16
 
@@ -82,11 +82,11 @@ float3 ComputePointLight(Light L, Material mat, float3 pos, float3 normal, float
     lightVec /= d;
 
     // Scale light down by Lambert's cosine law.
-    float ndotl = max(dot(-lightVec, normal), 0.0f);
+    float ndotl = max(dot(lightVec, normal), 0.0f);
     float3 lightStrength = L.Strength * ndotl;
 
     // Attenuate light by distance.
-    float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd); //TODO
+    float att = CalcAttenuation(d, L.FalloffStart, L.FalloffEnd);
     lightStrength *= att;
 
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);

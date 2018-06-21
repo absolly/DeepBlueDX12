@@ -2,8 +2,8 @@
 #version 330 core// for glsl version (12 is for older versions , say opengl 2.1
 
 #define NUM_DIR_LIGHTS 1
-#define NUM_POINT_LIGHTS 0
-#define NUM_SPOT_LIGHTS 1
+#define NUM_POINT_LIGHTS 9
+#define NUM_SPOT_LIGHTS 6
 
 uniform sampler2D   textureDiffuse;
 uniform sampler2D   textureSpecular;
@@ -13,12 +13,12 @@ uniform sampler2D	emissionMap;
 uniform vec3        eyePosW;
 uniform int         tiling;
 //light
-uniform vec3        lightPosition[2];
-uniform float       falloffStart[2];
-uniform vec3        lightColor[2];
-uniform float       falloffEnd[2];
-uniform vec3        lightDirection[2];
-uniform float       spotPower[2];
+uniform vec3        lightPosition[16];
+uniform float       falloffStart[16];
+uniform vec3        lightColor[16];
+uniform float       falloffEnd[16];
+uniform vec3        lightDirection[16];
+uniform float       spotPower[16];
 //
 uniform int         num_dir_light;
 uniform int         num_point_light;
@@ -80,7 +80,7 @@ vec3 ComputePointLight(vec3 lightPosition, float falloffStart, vec3 lightColor, 
     float d = length(lightVec);
 
     // Range test.
-    if(d > 1000)
+    if(d > falloffEnd)
         return vec3(0.0f);
 
     // Normalize the light vector.
@@ -91,7 +91,7 @@ vec3 ComputePointLight(vec3 lightPosition, float falloffStart, vec3 lightColor, 
     vec3 lightStrength = lightColor * ndotl;
 
     // Attenuate light by distance.
-    float att = CalcAttenuation(d, 800, 1000); //TODO
+    float att = CalcAttenuation(d, falloffStart, falloffEnd);
     lightStrength *= att;
 
     return BlinnPhong(lightStrength, lightVec, normal, toEye, diffuseColor, shininess);

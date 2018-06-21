@@ -16,7 +16,7 @@ CameraOrbitBehaviour::~CameraOrbitBehaviour()
 }
 void CameraOrbitBehaviour::update(float pStep)
 {
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
+  /*  if(sf::Keyboard::isKeyPressed(sf::Keyboard::Period))
         _distance = 1 + (_distance/1.1f);
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Comma))
         _distance = 1 + (_distance*1.1f);
@@ -30,14 +30,14 @@ void CameraOrbitBehaviour::update(float pStep)
 	float z = glm::sin(3.14f * radX) * glm::sin(3.14f * radY);
 	float y = glm::cos(3.14f * radY);
 	_owner->setLocalPosition(_target->getLocalPosition() + _distance * glm::vec3(x,y,z));
-
-	/*radX += _rotSpeed * pStep;
+*/
+	radX += _rotSpeed * pStep;
 	float radY = glm::sin(radX) * _maxTiltAngle;
 	_owner->setTransform(glm::translate(_target->getWorldPosition()));
 	_owner->rotate(radX, glm::vec3(0, 1, 0));
 	_owner->rotate(radY, glm::vec3(1, 0, 0));
 	_owner->translate(glm::vec3(0, 0, -_distance));
-*/
+
 
 	//two ways of doing the same thing:
 

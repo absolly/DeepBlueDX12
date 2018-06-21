@@ -1,4 +1,5 @@
 #include "Light.hpp"
+#include "mge/core/World.hpp"
 
 //if(Light::activeLights != 0)
 //    Light* Light::activeLights[255] = {nullptr};
@@ -29,12 +30,11 @@ Light& Light::operator=(const Light& rhs) {
 
 void Light::setColor(glm::vec3 pColor) {
     _color = glm::normalize(pColor);
-
 }
 
 glm::vec3 Light::getColor() {
 
-	return _color / 255.0f;
+	return _color;
 }
 
 void Light::setLightIntensity(float pIntensity)

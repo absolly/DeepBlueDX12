@@ -62,7 +62,7 @@ void DeferredTestScene::_initializeScene() {
     _world->setMainCamera(camera);
 	GameObject* go = new GameObject();
 	_world->add(go);
-	camera->addBehaviour(new CameraOrbitBehaviour(250, 0, 0.5, 1, go));
+	camera->addBehaviour(new CameraOrbitBehaviour(80, 0, 0.5, 1, go));
 
     //MESHES
 	string fishModel = "MantaRay.obj";
@@ -103,6 +103,8 @@ void DeferredTestScene::_initializeScene() {
 	Mesh* coral2Mesh = Mesh::load(Config::MGE_MODEL_PATH + "TubeCoral.OBJ");
     Mesh* coral3Mesh = Mesh::load(Config::MGE_MODEL_PATH + "TableCoral.obj");
     Mesh* coral4Mesh = Mesh::load(Config::MGE_MODEL_PATH + "StaghornCoral.OBJ");
+	Mesh* coneMesh = Mesh::load(Config::MGE_MODEL_PATH + "dive_scooter.obj");
+
     //MATERIALS
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_BaseBEIG.png"), 1, 0, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_Normal2.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
 	AbstractMaterial* unlitTextureMaterial = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TubeCoral_BasePURP.png"), 1);
@@ -124,6 +126,8 @@ void DeferredTestScene::_initializeScene() {
 			(i/(NUM_OBJECTS.x * NUM_OBJECTS.z) % NUM_OBJECTS.y) * (GRID_SIZE.y / NUM_OBJECTS.y) - (GRID_SIZE.y / 2),
 			(i / NUM_OBJECTS.x % NUM_OBJECTS.z) * (GRID_SIZE.z / NUM_OBJECTS.z) - (GRID_SIZE.z / 2)
 		));
+		go->rotate(rand() % 360, glm::vec3(1, 1, 0));
+		go->addBehaviour(new RotatingBehaviour());
 		switch (i%4)
 		{
 		case 0:
@@ -149,89 +153,102 @@ void DeferredTestScene::_initializeScene() {
 		
 		_world->add(go);
 	}
-
-   
-
-
-	//Player* player = new Player();
-	////AbstractBehaviour * playerap = new PlayerFishAbilityBehaviour(_world, player->getChildAt(0));
-	////player->getChildAt(0)->addBehaviour(playerap);
-	//_world->add(player);
-	//_world->setMainCamera(player->getCamera());
-	//RigidBody* playerRigidbody = player->getChildAt(0)->getBehaviour<RigidBody>();
-
-	//Mesh* smallFish = Mesh::load(Config::MGE_MODEL_PATH + "fishLP.obj");
-
-	//FishTank* fishTank = new FishTank(glm::vec3(0, 1, 0), _world, player, "", 50, 150);
-	//fishTank->setMesh(smallFish);
-	//AbstractMaterial * gpuinstancing = new ColorMaterial(glm::vec3(.7f,0,0.5f));
-	//fishTank->setMaterial(gpuinstancing);
-	//_world->add(fishTank);
-
-	//GameObject* teapot = new GameObject("teapot", glm::vec3(11, 1, 11));
-	//std::vector<glm::vec3> _waypoints;
-
-
-	//float random = 9;
-	//std:: cout << "random seed: " << random << std::endl;
-	//srand (random);
-	//for(int i = 0; i < 4; i++) {
-	//    glm::vec3* lightColor = new glm::vec3(rand() % 100,rand() % 100,rand() % 100);
-	//	glm::vec3 pos = glm::vec3(rand() % 100 - 50, 5, rand() % 100 - 50);
-	//    Light* light = new Light (Light::lightType::POINT, "light1", pos, *lightColor, 20, glm::vec3(0,0,1));
-	//	_waypoints.push_back(pos);
-	//    light->setMesh (cubeMeshF);
-	//    AbstractMaterial* colorMaterial2 = new ColorMaterial ((*lightColor));
-	//    //light->setBehaviour(new LookAt(teapot));
-	//    light->setMaterial(colorMaterial2);
-	//    _world->add(light);
-	//}
-
-	//teapot->addBehaviour(new PredatorBehaviour(player,_waypoints, _world));
-	/*teapot->setMesh(teapotMeshS);
-	teapot->setMaterial(waveMaterial);
-	_world->add(teapot);
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			GameObject* teapot = new GameObject("teapot", glm::vec3(i*2, 1, j*2));
-			teapot->setMesh(teapotMeshS);
-			teapot->setMaterial(textureMaterial2);
-			teapot->addBehaviour(new KeysBehaviour());
-			_world->add(teapot);
-		}
-	}*/
-	//FishTank* tank = new FishTank(glm::vec3(0,0,0),_world,"",20,30);
-
-
-
-	glm::vec3* lightColor = new glm::vec3(127,239,217);
-	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,150,0), *lightColor, 3000, glm::vec3(0, 0, 1));
-	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
+	///directional light
+	glm::vec3* dirLightColor = new glm::vec3(127,239,217);
+	Light* light = new Light(Light::lightType::DIRECTIONAL, "dirLight", glm::vec3(0,150,0), *dirLightColor, 11, glm::vec3(0, 0, 1));
+	AbstractMaterial* colorMaterial2 = new ColorMaterial(*dirLightColor);
 	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
-	light->addBehaviour(new RotatingBehaviour());
-	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
 	light->setMaterial(colorMaterial2);
 	_world->add(light);
 
-	glm::vec3* lightColor2 = new glm::vec3( 239, 127, 217);
-	Light* light2 = new Light(Light::lightType::SPOT, "light2", glm::vec3(150, 150, 0), *lightColor2, 2000, glm::vec3(0, 0, 1));
-	//light2->setMesh(mantaMeshF);
-	AbstractMaterial* colorMaterial3 = new ColorMaterial(*lightColor2);
-	light2->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
-	light2->addBehaviour(new RotatingBehaviour());
-	light2->addBehaviour(new RotatingBehaviour());
-	//light->addBehaviour(new LookAt(glm::vec3(0.0001f,0.00001f,0.0001f)));
-	light2->setMaterial(colorMaterial3);
-	_world->add(light2);
+	///point lights(9, grid corners and center)
+	const glm::ivec3 POINT_LIGHT_DIST = (glm::ivec3)((glm::vec3)GRID_SIZE * 0.52f);
+	for (int i = 0; i < 9; i++) {
+		glm::vec3 pointLightColor = glm::normalize(glm::vec3(rand() % 255, rand() % 255, rand() % 255));
+		glm::vec3 postion;
+		switch (i)
+		{
+		case 0:
+			postion = POINT_LIGHT_DIST * glm::ivec3(1, 1, 1);
+			break;
+		case 1:
+			postion = POINT_LIGHT_DIST * glm::ivec3(-1, 1, 1);
+			break;
+		case 2:
+			postion = POINT_LIGHT_DIST * glm::ivec3(1, -1, 1);
+			break;
+		case 3:
+			postion = POINT_LIGHT_DIST * glm::ivec3(1, 1, -1);
+			break;
+		case 4:
+			postion = POINT_LIGHT_DIST * glm::ivec3(-1, -1, 1);
+			break;
+		case 5:
+			postion = POINT_LIGHT_DIST * glm::ivec3(1, -1, -1);
+			break;
+		case 6:
+			postion = POINT_LIGHT_DIST * glm::ivec3(-1, 1, -1);
+			break;
+		case 7:
+			postion = POINT_LIGHT_DIST * glm::ivec3(-1, -1, -1);
+			break;
+		case 8:
+			postion = glm::vec3(0);
+			break;
+		}
+		Light* pointLight = new Light(Light::lightType::POINT, "pointLight" + i, postion, pointLightColor, 22, glm::vec3(0, 20, 1));
+		pointLight->setMesh(coral1Mesh);
+		pointLight->setMaterial(new ColorMaterial(pointLightColor * 255));
+		_world->add(pointLight);
 
-////    Light* light3 = new Light (Light::lightType::POINT, "light3", glm::vec3(10,2,-10), *lightColor, 100.f, Light::lightDirection::CONSTANT);
-////    light3->setMesh (cubeMeshF);
-////    light3->setMaterial(colorMaterial2);
-////    _world->add(light3);
+	}
 
-	//SoundManager * soundmng = new SoundManager();
-	//EnvironmentSoundPlayer* environmentSoundPlayer = new EnvironmentSoundPlayer(*soundmng);
-	//_world->add(environmentSoundPlayer);
+	///spot lights(8, all grid sides, spining)
+	const glm::ivec3 SPOT_LIGHT_DIST = (glm::ivec3)((glm::vec3)GRID_SIZE * 0.8f);
+	for (int i = 0; i < 6; i++) {
+		glm::vec3 spotLightColor = glm::normalize(glm::vec3(rand() % 255, rand() % 255, rand() % 255));
+		glm::vec3 postion;
+		glm::vec3 rot;
+		int y = 0;
+		switch (i)
+		{
+		case 0:
+			postion = SPOT_LIGHT_DIST * glm::ivec3(1, 0, 0);
+			rot = glm::ivec3(1, 0, 0);
+			break;
+		case 1:
+			postion = SPOT_LIGHT_DIST * glm::ivec3(0, 1, 0);
+			rot = glm::ivec3(0, 1, 0);
+			y = 1;
+			break;
+		case 2:
+			postion = SPOT_LIGHT_DIST * glm::ivec3(0, 0, 1);
+			rot = glm::ivec3(0, 0, 1);
+			break;
+		case 3:
+			postion = SPOT_LIGHT_DIST * glm::ivec3(-1, 0, 0);
+			rot = glm::ivec3(-1, 0, 0);
+			break;
+		case 4:
+			postion = SPOT_LIGHT_DIST * glm::ivec3(0, -1, 0);
+			rot = glm::ivec3(0, -1, 0);
+			y = -1;
+			break;
+		case 5:
+			postion = SPOT_LIGHT_DIST * glm::ivec3(0, 0, -1);
+			rot = glm::ivec3(0, 0, -1);
+			break;
+		}
+		Light* spotLight = new Light(Light::lightType::SPOT, "spotLight" + i, postion, spotLightColor, 44, glm::vec3(0, 50, 1), 60);
+		spotLight->setMesh(coneMesh);
+		spotLight->setMaterial(new ColorMaterial(spotLightColor * 255));
+		if (y != 0) {
+			spotLight->rotate(90, glm::vec3(y, 0, 0));
+		}
+		else
+			spotLight->addBehaviour(new LookAt(spotLight->getWorldPosition() + rot));
+		_world->add(spotLight);
+	}
 }
 
 void DeferredTestScene::_render() {
@@ -240,7 +257,7 @@ void DeferredTestScene::_render() {
 	if (Config::POST_FX)
 		AbstractGame::_renderToQuad();
 
-	_updateHud();
+	//_updateHud();
 #endif
 }
 

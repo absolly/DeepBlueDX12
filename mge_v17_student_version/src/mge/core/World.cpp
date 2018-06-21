@@ -4,7 +4,7 @@
 
 using namespace std;
 
-set<Light*> World::activeLights = set<Light*>();
+set<Light*, lightComp> World::activeLights = set<Light*, lightComp>();
 PhysicsWorld* World::physics;
 Camera* World::_mainCamera = nullptr;
 
