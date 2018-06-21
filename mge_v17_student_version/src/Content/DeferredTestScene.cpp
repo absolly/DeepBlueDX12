@@ -116,8 +116,8 @@ void DeferredTestScene::_initializeScene() {
 	//_world->add(go2);
 	//seed random so results are the same every time
 	srand(9);
-	const glm::ivec3 NUM_OBJECTS = glm::vec3(10,10,10);
-	const glm::ivec3 GRID_SIZE = glm::vec3(20, 20, 20);
+	const glm::ivec3 NUM_OBJECTS = glm::vec3(20,20,20);
+	const glm::ivec3 GRID_SIZE = glm::vec3(60, 60, 60);
 	for (int i = 0; i < NUM_OBJECTS.x * NUM_OBJECTS.y * NUM_OBJECTS.z; i++) {
 		GameObject* go = new GameObject("go" + i, glm::vec3(
 			(i % NUM_OBJECTS.x) * (GRID_SIZE.x / NUM_OBJECTS.x) - (GRID_SIZE.x/2),
@@ -136,11 +136,13 @@ void DeferredTestScene::_initializeScene() {
 			break;
 		case 2:
 			go->setMesh(coral3Mesh);
+			go->scale(glm::vec3(0.7f));
 			go->setMaterial(textureMaterial2);
 			break;
 		case 3:
 			go->setMesh(coral4Mesh);
-			AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(rand(), rand(), rand()));
+			go->translate(glm::vec3(.5, 0, 0));
+			AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(rand()%255, rand() % 255, rand() % 255));
 			go->setMaterial(unlitColorMaterial);
 			break;
 		}

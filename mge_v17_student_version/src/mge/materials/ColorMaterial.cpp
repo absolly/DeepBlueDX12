@@ -52,6 +52,9 @@ void ColorMaterial::_lazyInitializeShader() {
 }
 #elif defined(API_DIRECTX)
 void ColorMaterial::_lazyInitializeShader() {
+	if (pipelineStateObject)
+		return;
+
 	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 	rootCBVDescriptor.RegisterSpace = 0;
 	rootCBVDescriptor.ShaderRegister = 0;
@@ -183,7 +186,7 @@ void ColorMaterial::_lazyInitializeShader() {
 		ThrowIfFailed(Renderer::device->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 *10), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&constantBufferUploadHeaps[i])
