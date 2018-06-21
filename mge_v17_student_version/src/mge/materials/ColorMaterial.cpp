@@ -21,8 +21,11 @@ ID3D12RootSignature* ColorMaterial::rootSignature = nullptr;
 ID3D12Resource* ColorMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
 UINT8* ColorMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
 #endif // API_DIRECTX
-ColorMaterial::ColorMaterial(glm::vec3 pDiffuseColor):_diffuseColor (pDiffuseColor)
+unsigned int ColorMaterial::_materialCount = 0;
+
+ColorMaterial::ColorMaterial(glm::vec3 pDiffuseColor) :_diffuseColor(pDiffuseColor), _id(_materialCount)
 {
+	_materialCount++;
     //every time we create an instance of colormaterial we check if the corresponding shader has already been loaded
     _lazyInitializeShader();
 }
@@ -229,8 +232,8 @@ void ColorMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
 
-	memcpy(cbvGPUAddress[0], &(_diffuseColor/255), sizeof(_diffuseColor)); //constant buffer is only one vec3 in this case
-	Renderer::commandList->SetGraphicsRootConstantBufferView(1, constantBufferUploadHeaps[0]->GetGPUVirtualAddress() /*+ cbvsize * _id TODO!!!*/);
+	memcpy(cbvGPUAddress[0] + cbPerMatAlignedSize * _id, &(_diffuseColor/255), sizeof(_diffuseColor)); //constant buffer is only one vec3 in this case
+	Renderer::commandList->SetGraphicsRootConstantBufferView(1, constantBufferUploadHeaps[0]->GetGPUVirtualAddress() + cbPerMatAlignedSize * _id);
 
 
 	pMesh->streamToDirectX();

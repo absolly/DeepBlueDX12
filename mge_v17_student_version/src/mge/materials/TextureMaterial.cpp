@@ -14,7 +14,7 @@ ID3D12PipelineState* TextureMaterial::pipelineStateObject = nullptr;
 ID3D12RootSignature* TextureMaterial::rootSignature = nullptr;
 ID3D12Resource* TextureMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
 UINT8* TextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
-ID3D12DescriptorHeap* TextureMaterial::mainDescriptorHeap = nullptr;
+ID3D12DescriptorHeap* TextureMaterial::textureDescriptorHeap = nullptr;
 UINT TextureMaterial::mCbvSrvDescriptorSize = 0;
 
 #endif // API_DIRECTX
@@ -25,10 +25,11 @@ _diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTe
 	_lazyInitializeShader();
 
 #ifdef API_DIRECTX
-	_materialCount += 4;
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	_materialCount++;
+	int offsetFromHeapStart = _id * 4;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(textureDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	hDescriptor.Offset(offsetFromHeapStart /*4 textures*/, mCbvSrvDescriptorSize);
 	
-	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
 	Renderer::device->CreateShaderResourceView(pDiffuseTexture->textureBuffer, &pDiffuseTexture->srvDesc, hDescriptor);
 	hDescriptor.Offset(1, mCbvSrvDescriptorSize);
 	Renderer::device->CreateShaderResourceView(pNormalTexture->textureBuffer, &pNormalTexture->srvDesc, hDescriptor);
@@ -59,7 +60,7 @@ void TextureMaterial::_lazyInitializeShader() {
 	heapDesc.NumDescriptors = 256; //max number of textures
 	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&mainDescriptorHeap)));
+	ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&textureDescriptorHeap)));
 
 	mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
@@ -235,7 +236,7 @@ void TextureMaterial::_lazyInitializeShader() {
 		ThrowIfFailed(Renderer::device->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 * 10), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&constantBufferUploadHeaps[i])
@@ -349,7 +350,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
 	//set the descriptor heap
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mainDescriptorHeap };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { textureDescriptorHeap };
 	Renderer::commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	//todo: do this outside of render loop
@@ -379,16 +380,17 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 		i++;
 	}
 	//could be done once per material instead of per object.
-	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
 
 	Renderer::commandList->SetGraphicsRootSignature(rootSignature);
 	Renderer::commandList->SetPipelineState(pipelineStateObject);
 
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
-	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
+	memcpy(cbvGPUAddress[0] + cbPerMatAlignedSize * _id, &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
+	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress() + cbPerMatAlignedSize * _id);
 
-	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
+	//textures
+	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(textureDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	hDescriptor.Offset(_id*4, mCbvSrvDescriptorSize);
 	Renderer::commandList->SetGraphicsRootDescriptorTable(1, hDescriptor);
 
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.

@@ -20,6 +20,8 @@ class ColorMaterial : public AbstractMaterial
 #ifdef API_DIRECTX
 		virtual void render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress) override;
 #endif // API_DIRECTX
+		static unsigned int _materialCount;
+		unsigned int _id;
 
         //in rgb values
         void setDiffuseColor (glm::vec3 pDiffuseColor);
@@ -48,6 +50,8 @@ class ColorMaterial : public AbstractMaterial
 
 		static UINT8* cbvGPUAddress[Renderer::frameBufferCount]; // pointers to the memory locations we get when we map the constant buffers
 																 // constant buffers must be 256 byte aligned
+		int cbPerMatAlignedSize = (sizeof(glm::vec3) + 255) & ~255;
+
 #endif // API_DIRECTX
 
         //this one is unique per instance of color material

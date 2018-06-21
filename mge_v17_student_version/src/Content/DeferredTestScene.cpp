@@ -99,35 +99,25 @@ void DeferredTestScene::_initializeScene() {
     //load a bunch of meshes we will be using throughout this demo
     //each mesh only has to be loaded once, but can be used multiple times:
     //F is flat shaded, S is smooth shaded (normals aligned or not), check the models folder!
-    Mesh* planeMeshDefault = Mesh::load (Config::MGE_MODEL_PATH+ groundModel);
-    Mesh* mantaMeshF = Mesh::load (Config::MGE_MODEL_PATH+ fishModel);
-	Mesh* lightMeshS = Mesh::load(Config::MGE_MODEL_PATH + playerModel);
-    // Mesh* carMesh = Mesh::load(config::MGE_MODEL_PATH+"car.obj");
+    Mesh* coral1Mesh = Mesh::load(Config::MGE_MODEL_PATH + "BrainCoral.obj");
+	Mesh* coral2Mesh = Mesh::load(Config::MGE_MODEL_PATH + "TubeCoral.OBJ");
+    Mesh* coral3Mesh = Mesh::load(Config::MGE_MODEL_PATH + "TableCoral.obj");
+    Mesh* coral4Mesh = Mesh::load(Config::MGE_MODEL_PATH + "StaghornCoral.OBJ");
     //MATERIALS
+	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_BaseBEIG.png"), 1, 0, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_Normal2.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
+	AbstractMaterial* unlitTextureMaterial = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TubeCoral_BasePURP.png"), 1);
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_BaseBLU.png"), 1, 5, Texture::load(Config::MGE_TEXTURE_PATH + "testtextue.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
 
-
-    //10 specular teapot material
-    //AbstractMaterial* waveMaterial = new LitWaveMaterial(Texture::load (Config::MGE_TEXTURE_PATH+ fishTexture), Texture::load(Config::MGE_TEXTURE_PATH + fishMovementMap), 1, 1, Texture::load(Config::MGE_TEXTURE_PATH + fishSpecular), Texture::load(Config::MGE_TEXTURE_PATH + fishNormal));
-	//AbstractMaterial* coralMaterial = new TextureMaterial(Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Base.png"), 1, 0, Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"), Texture::load(config::MGE_TEXTURE_PATH + "TubeCoral_Normal.png"));
-	//AbstractMaterial* textureMaterial = new ColorMaterial(glm::vec3(1, 1, 1));
-	//AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + groundTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + groundSpecular), Texture::load(Config::MGE_TEXTURE_PATH + groundNormal));
-	//AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + playerTexture), groundTiling, 1, Texture::load(Config::MGE_TEXTURE_PATH + playerSpecular), Texture::load(Config::MGE_TEXTURE_PATH + playerNormal));
-	AbstractMaterial* unlitTextureMaterial = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4);
-	AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(221,0,210));
-	
-	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Rocks_normal.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "grass_texture.jpg"), 4, 5, Texture::load(Config::MGE_TEXTURE_PATH + "missing.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "Rocks_normal.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
-	
 	//SCENE SETUP
 	//GameObject* go2 = new GameObject("go");
 	//go2->setMesh(planeMeshDefault);
-	//go2->setMaterial(unlitTextureMaterial);
+	//go2->setMaterial(textureMaterial);
 	//go2->scale(glm::vec3(0.01f));
 	//_world->add(go2);
 	//seed random so results are the same every time
 	srand(9);
-	const glm::ivec3 NUM_OBJECTS = glm::vec3(20,20,20);
-	const glm::ivec3 GRID_SIZE = glm::vec3(400, 400, 400);
+	const glm::ivec3 NUM_OBJECTS = glm::vec3(10,10,10);
+	const glm::ivec3 GRID_SIZE = glm::vec3(20, 20, 20);
 	for (int i = 0; i < NUM_OBJECTS.x * NUM_OBJECTS.y * NUM_OBJECTS.z; i++) {
 		GameObject* go = new GameObject("go" + i, glm::vec3(
 			(i % NUM_OBJECTS.x) * (GRID_SIZE.x / NUM_OBJECTS.x) - (GRID_SIZE.x/2),
@@ -137,16 +127,24 @@ void DeferredTestScene::_initializeScene() {
 		switch (i%4)
 		{
 		case 0:
+			go->setMesh(coral1Mesh);
+			go->setMaterial(textureMaterial);
 			break;
 		case 1:
+			go->setMesh(coral2Mesh);
+			go->setMaterial(unlitTextureMaterial);
 			break;
 		case 2:
+			go->setMesh(coral3Mesh);
+			go->setMaterial(textureMaterial2);
 			break;
 		case 3:
+			go->setMesh(coral4Mesh);
+			AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(rand(), rand(), rand()));
+			go->setMaterial(unlitColorMaterial);
 			break;
 		}
-		go->setMesh(lightMeshS);
-		go->setMaterial(textureMaterial2);
+		
 		_world->add(go);
 	}
 
@@ -206,7 +204,6 @@ void DeferredTestScene::_initializeScene() {
 
 	glm::vec3* lightColor = new glm::vec3(127,239,217);
 	Light* light = new Light(Light::lightType::DIRECTIONAL, "light1", glm::vec3(0,150,0), *lightColor, 3000, glm::vec3(0, 0, 1));
-	light->setMesh(mantaMeshF);
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*lightColor);
 	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
 	light->addBehaviour(new RotatingBehaviour());
@@ -216,7 +213,7 @@ void DeferredTestScene::_initializeScene() {
 
 	glm::vec3* lightColor2 = new glm::vec3( 239, 127, 217);
 	Light* light2 = new Light(Light::lightType::SPOT, "light2", glm::vec3(150, 150, 0), *lightColor2, 2000, glm::vec3(0, 0, 1));
-	light2->setMesh(mantaMeshF);
+	//light2->setMesh(mantaMeshF);
 	AbstractMaterial* colorMaterial3 = new ColorMaterial(*lightColor2);
 	light2->rotate(glm::radians(-90.f), glm::vec3(0, 1, 0));
 	light2->addBehaviour(new RotatingBehaviour());

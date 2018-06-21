@@ -67,7 +67,7 @@ class TextureMaterial : public AbstractMaterial
         TextureMaterial(const TextureMaterial&);
         TextureMaterial& operator=(const TextureMaterial&);
 		static unsigned int _materialCount;
-		unsigned int _id; 
+		unsigned int _id = 0; 
 #ifdef API_DIRECTX
 		// drawing objects stuff //
 		static ID3D12PipelineState* pipelineStateObject; //pso containing a pipeline state (in this case the vertex data for 1 object)
@@ -77,9 +77,10 @@ class TextureMaterial : public AbstractMaterial
 
 		static UINT8* cbvGPUAddress[Renderer::frameBufferCount]; // pointers to the memory locations we get when we map the constant buffers
 																 // constant buffers must be 256 byte aligned
-		static ID3D12DescriptorHeap* mainDescriptorHeap;
+		static ID3D12DescriptorHeap* textureDescriptorHeap;
 		static UINT mCbvSrvDescriptorSize;
-		
+		int cbPerMatAlignedSize = (sizeof(cbPerMaterial) + 255) & ~255;
+
 #endif // API_DIRECTX
 
 
