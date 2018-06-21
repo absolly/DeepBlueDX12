@@ -58,9 +58,6 @@ class TextureMaterial : public AbstractMaterial
 			float tiling;
 			LightBase lights[16];
 			float specularMultiplier;
-			int numDirLight;
-			int numPointLight;
-			int numSpotLight;
 		};
 		ConstantBufferPerMaterial cbPerMaterial;
 

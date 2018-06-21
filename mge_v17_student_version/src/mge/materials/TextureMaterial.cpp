@@ -302,9 +302,6 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
 	GLfloat falloffEnd[16]{};
     glm::vec3 lightDirection[16]{};
     GLfloat lightSpotPower[16] {};
-	GLfloat numDirLight;
-	GLfloat numPointLight;
-	GLfloat numSpotLight;
 	
     int i = 0;
     for(Light* light : World::activeLights) {
@@ -316,18 +313,6 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
         lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
         lightSpotPower[i] = light->angle;
         i++;
-		switch (light->type)
-		{
-			case Light::lightType::DIRECTIONAL:
-				numDirLight++;
-				break;
-			case Light::lightType::POINT:
-				numPointLight++;
-				break;
-			case Light::lightType::SPOT:
-				numSpotLight++;
-				break;
-		}
     }
 
     glUniform3fv(_shader->getUniformLocation("lightPosition"), 16, glm::value_ptr(lightPosition[0]));
@@ -336,9 +321,6 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1fv(_shader->getUniformLocation("falloffEnd"), 16, falloffEnd);
     glUniform3fv(_shader->getUniformLocation("lightDirection"), 16, glm::value_ptr(lightDirection[0]));
     glUniform1fv(_shader->getUniformLocation("spotPower"), 16, lightSpotPower);
-    glUniform1i(_shader->getUniformLocation("num_dir_light"), numDirLight);
-	glUniform1i(_shader->getUniformLocation("num_point_light"), numPointLight);
-	glUniform1i(_shader->getUniformLocation("num_spot_light"), numSpotLight);
     glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
 	glUniform3fv(_shader->getUniformLocation("eyePosW"), 1, glm::value_ptr(World::getMainCamera()->getWorldPosition()));
     glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
@@ -377,17 +359,6 @@ void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 		cbPerMaterial.lights[i].falloffEnd = light->falloff.y;
 		cbPerMaterial.lights[i].Color = glm::vec3(light->getColor()) * light->intensity;
 		cbPerMaterial.lights[i].Angle = light->angle;
-		switch (light->type){
-		case Light::lightType::DIRECTIONAL:
-			cbPerMaterial.numDirLight++;
-			break;
-		case Light::lightType::POINT:
-			cbPerMaterial.numPointLight++;
-			break;
-		case Light::lightType::SPOT:
-			cbPerMaterial.numSpotLight++;
-			break;
-		}
 		i++;
 	}
 	//could be done once per material instead of per object.
