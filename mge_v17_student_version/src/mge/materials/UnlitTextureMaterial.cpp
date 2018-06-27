@@ -229,7 +229,7 @@ void UnlitTextureMaterial::_lazyInitializeShader() {
 			ThrowIfFailed(Renderer::device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 				D3D12_HEAP_FLAG_NONE,
-				&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 * 10), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+				&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 * 40), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
 				D3D12_RESOURCE_STATE_GENERIC_READ,
 				nullptr,
 				IID_PPV_ARGS(&constantBufferUploadHeaps[i])
@@ -295,7 +295,9 @@ void UnlitTextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAdd
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
 	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
 
-	Renderer::commandList->SetGraphicsRootDescriptorTable(1, mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
+	Renderer::commandList->SetGraphicsRootDescriptorTable(1, hDescriptor);
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.
 
 	pMesh->streamToDirectX();

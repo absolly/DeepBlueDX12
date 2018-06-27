@@ -118,15 +118,6 @@ class AbstractGame
 		// fullscreen setting
 		bool FullScreen = false;
 
-		//direct3d api setup
-		/*
-		Render Targets:     Number of frame buffers
-		Command Allocators: Number of frame buffers * number of threads
-		Fences:             (Number of frame buffers * ??) Number of threads
-		Fence Values:       Number of threads
-		Fence Events:       Number of threads
-		Command Lists:      Number of threads
-		*/
 		IDXGIFactory4* dxgiFactory;
 
 #endif // API_DIRECTX

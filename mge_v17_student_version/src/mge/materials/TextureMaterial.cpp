@@ -205,7 +205,7 @@ void TextureMaterial::_lazyInitializeShader() {
 		//fill out an input layout description struct
 		D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
 
-		//we can get teh number of elements in an array by "sizeof(array)/sizeof(arrayElementType)"
+		//we can get the number of elements in an array by "sizeof(array)/sizeof(arrayElementType)"
 		inputLayoutDesc.NumElements = sizeof(inputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
 		inputLayoutDesc.pInputElementDescs = inputLayout;
 

@@ -155,7 +155,7 @@ void ColorMaterial::_lazyInitializeShader() {
 	//fill out an input layout description struct
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
 
-	//we can get teh number of elements in an array by "sizeof(array)/sizeof(arrayElementType)"
+	//we can get the number of elements in an array by "sizeof(array)/sizeof(arrayElementType)"
 	inputLayoutDesc.NumElements = sizeof(inputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
 	inputLayoutDesc.pInputElementDescs = inputLayout;
 
@@ -194,7 +194,7 @@ void ColorMaterial::_lazyInitializeShader() {
 		ThrowIfFailed(Renderer::device->CreateCommittedResource(
 			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 *10), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 *40), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&constantBufferUploadHeaps[i])

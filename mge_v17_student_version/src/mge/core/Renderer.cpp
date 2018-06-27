@@ -224,12 +224,12 @@ Renderer::Renderer(HWND hwnd) {
 		rtvHeapDesc.NumDescriptors = frameBufferCount;
 		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; //this is a rtv heap
 
-														   //this heap will not be directly visible to shaders as it will store teh output from the pipeline
-														   // otherwise we would set teh heap's flag to D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE
+														   //this heap will not be directly visible to shaders as it will store the output from the pipeline
+														   // otherwise we would set the heap's flag to D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE
 		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 		ThrowIfFailed(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap)));
 
-		//get the size of teh descriptor in this heap (this is a rtv heap so only rtv descriptors should be stored in it)
+		//get the size of the descriptor in this heap (this is a rtv heap so only rtv descriptors should be stored in it)
 		//descriptor sizes may vary from device to device. which is where there is no set size and we must ask the device to give us the size
 		// we will use the given size to increment a discriptor handle offset
 		rtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);

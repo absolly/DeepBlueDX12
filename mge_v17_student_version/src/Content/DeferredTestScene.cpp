@@ -107,8 +107,15 @@ void DeferredTestScene::_initializeScene() {
 
     //MATERIALS
 	AbstractMaterial* textureMaterial = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_BaseBEIG.png"), 1, 0, Texture::load(Config::MGE_TEXTURE_PATH + "black.png"), Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_Normal2.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
-	AbstractMaterial* unlitTextureMaterial = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TubeCoral_BasePURP.png"), 1);
-	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_BaseBLU.png"), 1, 5, Texture::load(Config::MGE_TEXTURE_PATH + "testtextue.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
+	AbstractMaterial* textureMaterial2 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TubeCoral_BasePURP.png"), 1, 5, Texture::load(Config::MGE_TEXTURE_PATH + "testtextue.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
+	AbstractMaterial* textureMaterial3 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_BaseBLU.png"), 1, 5, Texture::load(Config::MGE_TEXTURE_PATH + "testtextue.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
+	AbstractMaterial* textureMaterial4 = new TextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "Staghorn_BaseYEL.png"), 1, 5, Texture::load(Config::MGE_TEXTURE_PATH + "testtextue.jpg"), Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_Normal.png"), Texture::load(Config::MGE_TEXTURE_PATH + "yellowemission.png"));
+
+	AbstractMaterial* unlitTextureMaterial = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "BrainCoral_BaseBEIG.png"), 1);
+	AbstractMaterial* unlitTextureMaterial2 = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TubeCoral_BasePURP.png"), 1);
+	AbstractMaterial* unlitTextureMaterial3 = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "TableCoral_BaseBLU.png"), 1);
+	AbstractMaterial* unlitTextureMaterial4 = new UnlitTextureMaterial(Texture::load(Config::MGE_TEXTURE_PATH + "Staghorn_BaseYEL.png"), 1);
+
 
 	//SCENE SETUP
 	//GameObject* go2 = new GameObject("go");
@@ -118,36 +125,73 @@ void DeferredTestScene::_initializeScene() {
 	//_world->add(go2);
 	//seed random so results are the same every time
 	srand(9);
-	const glm::ivec3 NUM_OBJECTS = glm::vec3(20,20,20);
+	const glm::ivec3 NUM_OBJECTS = glm::vec3(20, 20, 20);
 	const glm::ivec3 GRID_SIZE = glm::vec3(60, 60, 60);
 	for (int i = 0; i < NUM_OBJECTS.x * NUM_OBJECTS.y * NUM_OBJECTS.z; i++) {
 		GameObject* go = new GameObject("go" + i, glm::vec3(
 			(i % NUM_OBJECTS.x) * (GRID_SIZE.x / NUM_OBJECTS.x) - (GRID_SIZE.x/2),
-			(i/(NUM_OBJECTS.x * NUM_OBJECTS.z) % NUM_OBJECTS.y) * (GRID_SIZE.y / NUM_OBJECTS.y) - (GRID_SIZE.y / 2),
-			(i / NUM_OBJECTS.x % NUM_OBJECTS.z) * (GRID_SIZE.z / NUM_OBJECTS.z) - (GRID_SIZE.z / 2)
+			((i/(NUM_OBJECTS.x * NUM_OBJECTS.z)) % NUM_OBJECTS.y) * (GRID_SIZE.y / NUM_OBJECTS.y) - (GRID_SIZE.y / 2),
+			((i / NUM_OBJECTS.x) % NUM_OBJECTS.z) * (GRID_SIZE.z / NUM_OBJECTS.z) - (GRID_SIZE.z / 2)
 		));
 		go->rotate(rand() % 360, glm::vec3(1, 1, 0));
 		go->addBehaviour(new RotatingBehaviour());
-		switch (i%4)
+		switch (0)
+		{
+		case 0:
+			switch (i % 4) {
+			case 0:
+				go->setMaterial(textureMaterial);
+				break;
+			case 1:
+				go->setMaterial(textureMaterial2);
+				break;
+			case 2:
+				go->setMaterial(textureMaterial3);
+				break;
+			case 3:
+				go->setMaterial(textureMaterial4);
+				break;
+			}
+			break;
+		case 1:
+			switch (i % 4) {
+			case 0:
+				go->setMaterial(unlitTextureMaterial);
+				break;
+			case 1:
+				go->setMaterial(unlitTextureMaterial2);
+				break;
+			case 2:
+				go->setMaterial(unlitTextureMaterial3);
+				break;
+			case 3:
+				go->setMaterial(unlitTextureMaterial4);
+				break;
+			}
+			break;
+		case 2:
+			go->setMaterial(textureMaterial2);
+			break;
+		case 3:
+			AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(rand()%255, rand() % 255, rand() % 255));
+			go->setMaterial(unlitColorMaterial);
+			break;
+		}
+		switch (i % 4)
 		{
 		case 0:
 			go->setMesh(coral1Mesh);
-			go->setMaterial(textureMaterial);
 			break;
 		case 1:
 			go->setMesh(coral2Mesh);
-			go->setMaterial(unlitTextureMaterial);
 			break;
 		case 2:
 			go->setMesh(coral3Mesh);
 			go->scale(glm::vec3(0.7f));
-			go->setMaterial(textureMaterial2);
 			break;
 		case 3:
 			go->setMesh(coral4Mesh);
 			go->translate(glm::vec3(.5, 0, 0));
-			AbstractMaterial* unlitColorMaterial = new ColorMaterial(glm::vec3(rand()%255, rand() % 255, rand() % 255));
-			go->setMaterial(unlitColorMaterial);
 			break;
 		}
 		
@@ -158,7 +202,7 @@ void DeferredTestScene::_initializeScene() {
 	Light* light = new Light(Light::lightType::DIRECTIONAL, "dirLight", glm::vec3(0,150,0), *dirLightColor, 11, glm::vec3(0, 0, 1));
 	AbstractMaterial* colorMaterial2 = new ColorMaterial(*dirLightColor);
 	light->rotate(glm::radians(-90.f), glm::vec3(1, 0, 0));
-	light->setMaterial(colorMaterial2);
+	//light->setMaterial(colorMaterial2);
 	_world->add(light);
 
 	///point lights(9, grid corners and center)
@@ -197,8 +241,8 @@ void DeferredTestScene::_initializeScene() {
 			break;
 		}
 		Light* pointLight = new Light(Light::lightType::POINT, "pointLight" + i, postion, pointLightColor, 22, glm::vec3(0, 20, 1));
-		pointLight->setMesh(coral1Mesh);
-		pointLight->setMaterial(new ColorMaterial(pointLightColor * 255));
+		//pointLight->setMesh(coral1Mesh);
+		//pointLight->setMaterial(new ColorMaterial(pointLightColor * 255));
 		_world->add(pointLight);
 
 	}
@@ -240,8 +284,8 @@ void DeferredTestScene::_initializeScene() {
 			break;
 		}
 		Light* spotLight = new Light(Light::lightType::SPOT, "spotLight" + i, postion, spotLightColor, 44, glm::vec3(0, 50, 1), 60);
-		spotLight->setMesh(coneMesh);
-		spotLight->setMaterial(new ColorMaterial(spotLightColor * 255));
+		//spotLight->setMesh(coneMesh);
+		//spotLight->setMaterial(new ColorMaterial(spotLightColor * 255));
 		if (y != 0) {
 			spotLight->rotate(90, glm::vec3(y, 0, 0));
 		}

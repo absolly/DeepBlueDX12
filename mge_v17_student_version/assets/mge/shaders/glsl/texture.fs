@@ -176,5 +176,5 @@ void main( void ) {
 
 	vec3 emissionColor = texture(emissionMap, texCoord * tiling).rgb;
 
-    fragment_color = vec4(combinedColor + emissionColor, MaterialDiffuseColor.a);
+    fragment_color = vec4(combinedColor + emissionColor, MaterialDiffuseColor.a) + ambient;
 }
