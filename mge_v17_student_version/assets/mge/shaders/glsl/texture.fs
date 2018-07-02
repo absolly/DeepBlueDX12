@@ -164,7 +164,7 @@ void main( void ) {
     //loop through the 3 light types seperately
 
     for(int i = 0; i < NUM_DIR_LIGHTS; i++){
-        combinedColor += 0.5 * ComputeDirectionalLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x, bumpedNormalW, toEyeW);
+        combinedColor += ComputeDirectionalLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x, bumpedNormalW, toEyeW);
     }
     for(int i = NUM_DIR_LIGHTS; i < NUM_DIR_LIGHTS + NUM_POINT_LIGHTS; i++){
         combinedColor += ComputePointLight(lightPosition[i],falloffStart[i],lightColor[i],falloffEnd[i],lightDirection[i],spotPower[i], MaterialDiffuseColor, MaterialSpecularColor.x,Position_worldspace, bumpedNormalW, toEyeW);
