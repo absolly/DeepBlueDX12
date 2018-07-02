@@ -290,7 +290,7 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glUniform1i (_shader->getUniformLocation("textureNormal"), 2);
 
 	//setup texture slot 3
-	glActiveTexture(GL_TEXTURE4);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, _emissionMap->getId());
 	glUniform1i(_shader->getUniformLocation("emissionMap"), 3);
 
