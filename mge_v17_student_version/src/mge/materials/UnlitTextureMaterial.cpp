@@ -1,74 +1,62 @@
 #include <glm.hpp>
 
-#include "mge/materials/TextureMaterial.hpp"
+#include "mge/materials/UnlitTextureMaterial.hpp"
 #include "mge/core/Texture.hpp"
 #include "mge/core/Mesh.hpp"
 #include "mge/core/GameObject.hpp"
 #include "mge/core/Light.hpp"
 #include "mge/core/Renderer.hpp"
 
-ShaderProgram* TextureMaterial::_shader = NULL;
-
+ShaderProgram* UnlitTextureMaterial::_shader = NULL;
 #ifdef API_DIRECTX
-ID3D12PipelineState* TextureMaterial::pipelineStateObject = nullptr;
-ID3D12RootSignature* TextureMaterial::rootSignature = nullptr;
-ID3D12Resource* TextureMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
-UINT8* TextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
-ID3D12DescriptorHeap* TextureMaterial::textureDescriptorHeap = nullptr;
-UINT TextureMaterial::mCbvSrvDescriptorSize = 0;
-
+ID3D12PipelineState* UnlitTextureMaterial::pipelineStateObject = nullptr;
+ID3D12RootSignature* UnlitTextureMaterial::rootSignature = nullptr;
+ID3D12Resource* UnlitTextureMaterial::constantBufferUploadHeaps[Renderer::frameBufferCount] = {};
+UINT8* UnlitTextureMaterial::cbvGPUAddress[Renderer::frameBufferCount] = {};
+ID3D12DescriptorHeap* UnlitTextureMaterial::mainDescriptorHeap = nullptr;
+UINT UnlitTextureMaterial::mCbvSrvDescriptorSize = 0;
 #endif // API_DIRECTX
-unsigned int TextureMaterial::_materialCount = 0;
+unsigned int UnlitTextureMaterial::_materialCount = 0;
 
-TextureMaterial::TextureMaterial(Texture* pDiffuseTexture, float pTiling, float pSpecularMultiplier, Texture* pSpecularTexture, Texture* pNormalTexture, Texture* pEmissionMap):
-_diffuseTexture(pDiffuseTexture), _tiling(pTiling), _specularTexture(pSpecularTexture), _specularMultiplier(pSpecularMultiplier), _normalTexture(pNormalTexture), _emissionMap(pEmissionMap), cbPerMaterial(pSpecularMultiplier, pTiling), _id(_materialCount) {
-	_lazyInitializeShader();
+UnlitTextureMaterial::UnlitTextureMaterial(Texture* pDiffuseTexture, float pTiling, glm::vec3 pColor):
+_diffuseTexture(pDiffuseTexture), cbPerMaterial(pColor, pTiling), _id(_materialCount) {
+    _lazyInitializeShader();
+
 #ifdef API_DIRECTX
 	_materialCount++;
-	mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	int offsetFromHeapStart = _id * 4;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE hDescriptor(textureDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	hDescriptor.Offset(offsetFromHeapStart /*4 textures*/, mCbvSrvDescriptorSize);
-	
+	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
 	Renderer::device->CreateShaderResourceView(pDiffuseTexture->textureBuffer, &pDiffuseTexture->srvDesc, hDescriptor);
-	hDescriptor.Offset(mCbvSrvDescriptorSize);
-	Renderer::device->CreateShaderResourceView(pNormalTexture->textureBuffer, &pNormalTexture->srvDesc, hDescriptor);
-	hDescriptor.Offset(mCbvSrvDescriptorSize);
-	Renderer::device->CreateShaderResourceView(pSpecularTexture->textureBuffer, &pSpecularTexture->srvDesc, hDescriptor);
-	hDescriptor.Offset(mCbvSrvDescriptorSize);
-	Renderer::device->CreateShaderResourceView(pEmissionMap->textureBuffer, &pEmissionMap->srvDesc, hDescriptor);
 #endif // API_DIRECTX
-
 }
 
-TextureMaterial::~TextureMaterial() {}
+UnlitTextureMaterial::~UnlitTextureMaterial() {}
 
 #ifdef API_OPENGL
-void TextureMaterial::_lazyInitializeShader() {
+void UnlitTextureMaterial::_lazyInitializeShader() {
     if (!_shader) {
         _shader = new ShaderProgram();
-        _shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH+"texture.vs");
-        _shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH+"texture.fs");
+        _shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH+"unlittexture.vs");
+        _shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH+"unlittexture.fs");
         _shader->finalize();
     }
 }
 #elif defined(API_DIRECTX)
-void TextureMaterial::_lazyInitializeShader() {
+void UnlitTextureMaterial::_lazyInitializeShader() {
 	if (!pipelineStateObject) {
 		//create the descriptor heap that will store our shader resource views
 		D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 		heapDesc.NumDescriptors = 256; //max number of textures
 		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&textureDescriptorHeap)));
+		ThrowIfFailed(Renderer::device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&mainDescriptorHeap)));
 
 		mCbvSrvDescriptorSize = Renderer::device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 		rootCBVDescriptor.RegisterSpace = 0;
 		rootCBVDescriptor.ShaderRegister = 0;
-
 
 		D3D12_ROOT_DESCRIPTOR materialCBVDescriptor;
 		materialCBVDescriptor.RegisterSpace = 0;
@@ -77,7 +65,7 @@ void TextureMaterial::_lazyInitializeShader() {
 		//create the descriptor range and fill it out
 		D3D12_DESCRIPTOR_RANGE descriptorTableRanges[1];
 		descriptorTableRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV; //this is the range of shader resource views
-		descriptorTableRanges[0].NumDescriptors = 4; //we only have 1 texture right now
+		descriptorTableRanges[0].NumDescriptors = 1; //we only have 1 texture right now
 		descriptorTableRanges[0].BaseShaderRegister = 0; //start index of the shader registers in the range
 		descriptorTableRanges[0].RegisterSpace = 0; //space can usually be 0 according to msdn. don't know why
 		descriptorTableRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; //appends the range to the end of the root signature descriptor tables
@@ -86,7 +74,6 @@ void TextureMaterial::_lazyInitializeShader() {
 		D3D12_ROOT_DESCRIPTOR_TABLE descriptorTable;
 		descriptorTable.NumDescriptorRanges = _countof(descriptorTableRanges); //only one right now
 		descriptorTable.pDescriptorRanges = &descriptorTableRanges[0]; //pointer to the start of the ranges array
-
 
 																	   //create a root parameter
 		D3D12_ROOT_PARAMETER rootParameters[3];
@@ -98,14 +85,15 @@ void TextureMaterial::_lazyInitializeShader() {
 		rootParameters[0].Descriptor = rootCBVDescriptor;
 		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX; //only the vertex shader will be able to access the parameter
 
-																			 //descriptor table
+		//descriptor table
 		rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 		rootParameters[1].DescriptorTable = descriptorTable;
 		rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only visible to pixel since this should contain the texture.
 
 		rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //this is a constant buffer view
 		rootParameters[2].Descriptor = materialCBVDescriptor;
-		rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //visible to all stages (contains vertex and pixel data)
+		rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //only the pixel shader will be able to access the parameter
+
 
 		//create a static sampler
 		D3D12_STATIC_SAMPLER_DESC sampler = {};
@@ -126,7 +114,7 @@ void TextureMaterial::_lazyInitializeShader() {
 		//fill out the root signature
 		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 		rootSignatureDesc.Init(
-			_countof(rootParameters),
+			_countof(rootParameters), //we have 1 root parameter for now
 			rootParameters, //pointer to the start of the root parameters array
 			1, //we have one static sampler
 			&sampler, //pointer to our static sampler (array)
@@ -139,8 +127,7 @@ void TextureMaterial::_lazyInitializeShader() {
 		ID3DBlob* errorBuffer; //a buffer holding the error data if any
 		ID3DBlob* signature;
 		ThrowIfFailed(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &errorBuffer));
-
-
+		
 		ThrowIfFailed(Renderer::device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&rootSignature)));
 
 
@@ -156,9 +143,9 @@ void TextureMaterial::_lazyInitializeShader() {
 		HRESULT hr;
 		//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
 #ifdef DEBUG
-		hr = CompileShaderFromFile(L"LitVertexShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
+		hr = CompileShaderFromFile(L"UnlitVertexShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &vertexShader, &errorBuffer);
 #else
-		hr = CompileShaderFromFile(L"LitVertexShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &vertexShader, &errorBuffer);
+		hr = CompileShaderFromFile(L"UnlitVertexShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &vertexShader, &errorBuffer);
 #endif
 		if (FAILED(hr)) {
 			OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
@@ -175,9 +162,9 @@ void TextureMaterial::_lazyInitializeShader() {
 		ID3DBlob* pixelShader;
 		//shader file,		  defines  includes, entry,	sm		  compile flags,							efect flags, shader blob, error blob
 #ifdef DEBUG
-		hr = CompileShaderFromFile(L"LitTextureShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
+		hr = CompileShaderFromFile(L"UnlitTextureShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 0, &pixelShader, &errorBuffer);
 #else
-		hr = CompileShaderFromFile(L"LitTextureShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &pixelShader, &errorBuffer);
+		hr = CompileShaderFromFile(L"UnlitTextureShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_OPTIMIZATION_LEVEL3, 0, &pixelShader, &errorBuffer);
 #endif
 		if (FAILED(hr)) {
 			OutputDebugStringA((char*)errorBuffer->GetBufferPointer());
@@ -196,10 +183,7 @@ void TextureMaterial::_lazyInitializeShader() {
 
 		D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-			{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 		};
 
 		//fill out an input layout description struct
@@ -238,13 +222,14 @@ void TextureMaterial::_lazyInitializeShader() {
 		// create the pso
 		ThrowIfFailed(Renderer::device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pipelineStateObject)));
 
+
 		//create a resource heap, descriptor heap, and pointer to cbv for every framebuffer
 		for (int i = 0; i < Renderer::frameBufferCount; i++)
 		{
 			ThrowIfFailed(Renderer::device->CreateCommittedResource(
 				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 				D3D12_HEAP_FLAG_NONE,
-				&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 * 100), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
+				&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64 * 40), //must be a multiple of 64kb thus 64 bytes * 1024 (4mb multiple for multi-sampled textures)
 				D3D12_RESOURCE_STATE_GENERIC_READ,
 				nullptr,
 				IID_PPV_ARGS(&constantBufferUploadHeaps[i])
@@ -263,13 +248,11 @@ void TextureMaterial::_lazyInitializeShader() {
 }
 #endif // API_OPENGL / API_DIRECTX
 
-void TextureMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
+void UnlitTextureMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
     _diffuseTexture = pDiffuseTexture;
 }
 
-
-
-void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
+void UnlitTextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const glm::mat4& pViewMatrix, const glm::mat4& pProjectionMatrix) {
     if (!_diffuseTexture) return;
 
     _shader->use();
@@ -278,58 +261,15 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _diffuseTexture->getId());
     glUniform1i (_shader->getUniformLocation("textureDiffuse"), 0);
+	glUniform1f(_shader->getUniformLocation("tiling"), cbPerMaterial.tiling);
+	glUniform3fv(_shader->getUniformLocation("color"), 1, glm::value_ptr(cbPerMaterial.color));
 
-    //setup texture slot 1
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _specularTexture->getId());
-    glUniform1i (_shader->getUniformLocation("textureSpecular"), 1);
 
-    //setup texture slot 2
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, _normalTexture->getId());
-    glUniform1i (_shader->getUniformLocation("textureNormal"), 2);
-
-	//setup texture slot 3
-	glActiveTexture(GL_TEXTURE3);
-	glBindTexture(GL_TEXTURE_2D, _emissionMap->getId());
-	glUniform1i(_shader->getUniformLocation("emissionMap"), 3);
-
-    //glUniform1i(_shader->getUniformLocation("lightCount"), sizeof(World::activeLights));
-
-    glm::vec3 lightPosition[16] {};
-    GLfloat falloffStart[16] {}; //radius
-    glm::vec3 lightColor[16] {}; // color + intensity
-	GLfloat falloffEnd[16]{};
-    glm::vec3 lightDirection[16]{};
-    GLfloat lightSpotPower[16] {};
-	
-    int i = 0;
-    for(Light* light : World::activeLights) {
-		
-        lightPosition[i] = light->getWorldPosition();
-		falloffStart[i] = light->falloff.x;
-        lightColor[i] = light->getColor() * light->intensity;
-		falloffEnd[i] = light->falloff.y;
-        lightDirection[i] = light->getWorldTransform()[2]; // * glm::vec4(0,0,1,0);
-        lightSpotPower[i] = light->angle;
-        i++;
-    }
-
-    glUniform3fv(_shader->getUniformLocation("lightPosition"), 16, glm::value_ptr(lightPosition[0]));
-	glUniform1fv(_shader->getUniformLocation("falloffStart"), 16, falloffStart);
-    glUniform3fv(_shader->getUniformLocation("lightColor"), 16, glm::value_ptr(lightColor[0]));
-    glUniform1fv(_shader->getUniformLocation("falloffEnd"), 16, falloffEnd);
-    glUniform3fv(_shader->getUniformLocation("lightDirection"), 16, glm::value_ptr(lightDirection[0]));
-    glUniform1fv(_shader->getUniformLocation("spotPower"), 16, lightSpotPower);
-    glUniform1i(_shader->getUniformLocation("tiling"), _tiling);
-	glUniform3fv(_shader->getUniformLocation("eyePosW"), 1, glm::value_ptr(World::getMainCamera()->getWorldPosition()));
-    glUniform1i(_shader->getUniformLocation("specularMultiplier"), _specularMultiplier);
     //pass in all MVP matrices separately
     glUniformMatrix4fv ( _shader->getUniformLocation("viewMatrix"),1, GL_FALSE, glm::value_ptr(pViewMatrix));
     glUniformMatrix4fv ( _shader->getUniformLocation("modelMatrix"), 1, GL_FALSE, glm::value_ptr(pModelMatrix));
 	glUniformMatrix4fv(_shader->getUniformLocation("projectionMatrix"), 1, GL_FALSE, glm::value_ptr(pProjectionMatrix));
 
-	//std::cout << "ID HERE FUADnwnow iawndI OawndI nawdi Nawdi Naw::::::::::" << _shader->getAttribLocation("tangent") << std::endl;
     //now inform mesh of where to stream its data
     pMesh->streamToOpenGL(
         _shader->getAttribLocation("vertex"),
@@ -340,41 +280,24 @@ void TextureMaterial::render(Mesh* pMesh, const glm::mat4& pModelMatrix, const g
     );
 }
 #ifdef API_DIRECTX
-void TextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
+void UnlitTextureMaterial::render(Mesh* pMesh, D3D12_GPU_VIRTUAL_ADDRESS pGPUAddress)
 {
 	//set the descriptor heap
-	ID3D12DescriptorHeap* descriptorHeaps[] = { textureDescriptorHeap };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mainDescriptorHeap };
 	Renderer::commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	//todo: do this outside of render loop
-	//lights could be passed once per frame instead of once per object.
-	cbPerMaterial.eyePosW = World::getMainCamera()->getWorldPosition();
-	int i = 0;
-	for (Light* light : World::activeLights) {
-
-		LightBase base;
-		cbPerMaterial.lights[i].Position = light->getWorldPosition();
-		cbPerMaterial.lights[i].falloffStart = light->falloff.x;
-		cbPerMaterial.lights[i].Direction = glm::vec3(-light->getWorldTransform()[2]);
-		cbPerMaterial.lights[i].falloffEnd = light->falloff.y;
-		cbPerMaterial.lights[i].Color = glm::vec3(light->getColor()) * light->intensity;
-		cbPerMaterial.lights[i].Angle = light->angle;
-		i++;
-	}
-	//could be done once per material instead of per object.
+	memcpy(cbvGPUAddress[0], &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
 
 	Renderer::commandList->SetGraphicsRootSignature(rootSignature);
 	Renderer::commandList->SetPipelineState(pipelineStateObject);
 
 	Renderer::commandList->SetGraphicsRootConstantBufferView(0, pGPUAddress);
-	memcpy(cbvGPUAddress[0] + cbPerMatAlignedSize * _id, &cbPerMaterial, sizeof(cbPerMaterial)); //material's constant buffer data
-	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress() + cbPerMatAlignedSize * _id);
+	Renderer::commandList->SetGraphicsRootConstantBufferView(2, constantBufferUploadHeaps[0]->GetGPUVirtualAddress());
 
-	//textures
-	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(textureDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-	hDescriptor.Offset(_id * 4, mCbvSrvDescriptorSize);
+	CD3DX12_GPU_DESCRIPTOR_HANDLE hDescriptor(mainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	hDescriptor.Offset(_id, mCbvSrvDescriptorSize);
 	Renderer::commandList->SetGraphicsRootDescriptorTable(1, hDescriptor);
-	
 	//if there is an error here the descriptor heap was not set propperly at the start of the render loop.
 
 	pMesh->streamToDirectX();

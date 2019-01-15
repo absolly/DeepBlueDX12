@@ -7,6 +7,14 @@
 #include "mge/core/Menu.hpp"
 #include "mge/core/ShaderProgram.hpp"
 #include "mge/core/Texture.hpp"
+#include <windows.h>
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <D3Dcompiler.h>
+#include "d3dx12.h"
+
+// this will only call release if an object exists (prevents exceptions calling release on non existant objects)
+#define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
 
 using namespace std;
 
@@ -30,13 +38,13 @@ class AbstractGame
         virtual ~AbstractGame();
 
         //creates a window, initializes glew, a renderer and a world instance
-        virtual void initialize();
+        virtual void initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd);
         //run the actual process of updating all objects, rendering them and processing events
         virtual void run();
 
 		sf::RenderWindow * getRenderWindow();
 
-		virtual void _initializeWindow();
+		virtual bool _initializeWindow(HINSTANCE hInstance, int ShowCnd, bool fullscreen);
 
     protected:
 
@@ -46,7 +54,7 @@ class AbstractGame
         //print info about the current driver version etc
         virtual void _printVersionInfo();
         //initialize the extension wrangler
-        virtual void _initializeGlew();
+        virtual void _initializeAPI();
         //create our own custom renderer instance
         virtual void _initializeRenderer();
         //initialize a scene root to which we can attach/add objects
@@ -97,6 +105,30 @@ class AbstractGame
 		GLuint skyboxVBO;
 		GLuint cubemapTexture;
 		sf::Time _timeSinceStart;
+
+#ifdef API_DIRECTX
+		// Handle to the window
+		HWND hwnd = NULL;
+		// name of the window
+		LPCTSTR WindowName = L"DX12TestRenderer";
+
+		// title of the window
+		LPCTSTR WindowTitle = L"DX12TestRenderWindow";
+
+		// fullscreen setting
+		bool FullScreen = false;
+
+		IDXGIFactory4* dxgiFactory;
+
+#endif // API_DIRECTX
+		bool Running = true;
+
+
 };
+
+#ifdef API_DIRECTX
+//Callback function for windows messages (e.g. window close)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif // API_DIRECTX
 
 #endif // ABSTRACTGAME_H

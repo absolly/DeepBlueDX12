@@ -121,7 +121,7 @@ int LuaScriptParser::playSound(lua_State * lua)
 
 	bool repeatedSong = (_lastSong == song);
 	std::cout << "Lua called play sound" << std::endl;
-	_soundManager->PlaySound(song, channel, loop, interrupt, repeatedSong, volume, subtitle, Random::Range(minPitch, maxPitch));
+	_soundManager->PlayAudio(song, channel, loop, interrupt, repeatedSong, volume, subtitle, Random::Range(minPitch, maxPitch));
 
 
 	//std::string soundToPlay = song;

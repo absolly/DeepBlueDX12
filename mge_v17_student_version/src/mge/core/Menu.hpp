@@ -1,5 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
+#define NOMINMAX //quick fix for conficts with windows.h and sfml
 
 #include <vector>
 #include <string>

@@ -25,7 +25,7 @@ void DebugDrawer::useShader()
 DebugDrawer::DebugDrawer()
 	:m_debugMode(0)
 {
-	_debugRenderMaterial = new DebugRenderMaterial(glm::vec3(1));
+	//_debugRenderMaterial = new DebugRenderMaterial(glm::vec3(1)); TODO
 }
 
 void DebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)

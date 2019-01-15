@@ -102,7 +102,7 @@ void SoundManager::PlayMusic(std::string pSoundName, float volume, bool loop)
 	music.play();
 }
 
-void SoundManager::PlaySound(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume, std::string subtitle, float pitch)
+void SoundManager::PlayAudio(std::string pSoundBufferName, std::string pSoundChannel, bool pLoop, bool pInterrupt, bool repeatedSong, int pVolume, std::string subtitle, float pitch)
 {
 	if (sounds[pSoundChannel].getStatus() == sf::Sound::Status::Stopped || !repeatedSong)
 	{

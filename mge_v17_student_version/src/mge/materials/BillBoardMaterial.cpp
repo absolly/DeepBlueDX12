@@ -41,17 +41,20 @@ BillBoardMaterial::BillBoardMaterial(ParticleSystem * pParticleSystem, Texture *
 		0.5f,  0.5f, 0.0f,
 	};
 
+#ifdef API_OPENGL
 	glGenBuffers(1, &billboard_vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_DYNAMIC_DRAW);
+#endif
 }
 
+#ifdef API_OPENGL
 void BillBoardMaterial::_lazyInitializeShader() {
     //this shader contains everything the material can do (it can render something in 3d using a single color)
     if (!_shader) {
         _shader = new ShaderProgram();
-        _shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH +"billboard.vs");
-        _shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH+"billboard.fs");
+        _shader->addShader(GL_VERTEX_SHADER, Config::MGE_SHADER_PATH + "billboard.vs");
+        _shader->addShader(GL_FRAGMENT_SHADER, Config::MGE_SHADER_PATH + "billboard.fs");
         _shader->finalize();
 
         //cache all the uniform and attribute indexes
@@ -74,6 +77,12 @@ void BillBoardMaterial::_lazyInitializeShader() {
 
     }
 }
+#elif defined(API_DIRECTX)
+void BillBoardMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
+
 //
 BillBoardMaterial::~BillBoardMaterial()
 {

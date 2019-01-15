@@ -3,6 +3,7 @@
 
 #include <mge/core/AbstractGame.hpp>
 #include "mge/core/LuaParser.hpp"
+#include "Content\Hud\Hud.hpp"
 
 class DebugHud;
 
@@ -14,7 +15,7 @@ class DeferredTestScene: public AbstractGame
 		DeferredTestScene();
 		virtual ~DeferredTestScene();
 
-        virtual void initialize();
+        virtual void initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd);
 
 	protected:
         virtual void _initializeScene();

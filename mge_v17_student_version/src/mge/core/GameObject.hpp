@@ -88,6 +88,8 @@ class GameObject
 
         int getChildCount();
         GameObject* getChildAt (int pIndex);
+		const int constantBufferID;
+
 	protected:
 		glm::vec3 * _cachedWorldPosition;
 		std::string _name;
@@ -104,8 +106,8 @@ class GameObject
         //update children list administration
         void _innerAdd (GameObject* pChild);
 		void _innerRemove (GameObject* pChild);
-
     private:
+		static int _gameobjects;
         GameObject(const GameObject&);
         GameObject& operator=(const GameObject&);
 };

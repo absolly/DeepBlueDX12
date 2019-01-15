@@ -14,7 +14,7 @@ class MGEDemo: public AbstractGame
 		MGEDemo();
 		virtual ~MGEDemo();
 
-        virtual void initialize();
+        virtual void initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd);
 
 	protected:
         virtual void _initializeScene();

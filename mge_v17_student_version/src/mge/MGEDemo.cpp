@@ -32,9 +32,9 @@ using namespace std;
 MGEDemo::MGEDemo():AbstractGame (),_hud(0) {
 }
 
-void MGEDemo::initialize() {
+void MGEDemo::initialize(HINSTANCE pHinstance, HINSTANCE pPrevInstance, int pShowCmd) {
     //setup the core part
-    AbstractGame::initialize();
+    AbstractGame::initialize(pHinstance, pPrevInstance, pShowCmd);
 
     //setup the custom part
     cout << "Initializing HUD" << endl;

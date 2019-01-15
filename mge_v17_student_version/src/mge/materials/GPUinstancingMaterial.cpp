@@ -35,6 +35,7 @@ GPUinstancingMaterial::GPUinstancingMaterial(std::vector<GameObject*> pGameObjec
 	std::cout << _gameObjects.size();
 }
 
+#ifdef API_OPENGL
 void GPUinstancingMaterial::_lazyInitializeShader() {
     //this shader contains everything the material can do (it can render something in 3d using a single color)
     if (!_shader) {
@@ -54,6 +55,12 @@ void GPUinstancingMaterial::_lazyInitializeShader() {
         _aBitangent = _shader->getAttribLocation("bitangent");
     }
 }
+#elif defined(API_DIRECTX)
+void GPUinstancingMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
+
 //
 GPUinstancingMaterial::~GPUinstancingMaterial()
 {

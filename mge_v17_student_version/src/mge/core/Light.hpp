@@ -2,13 +2,12 @@
 #define LIGHT_H
 
 #include "mge/core/GameObject.hpp"
-#include "mge/core/World.hpp"
 
 class Light : public GameObject {
     public:
         enum lightType{
-            POINT,
             DIRECTIONAL,
+            POINT,
             SPOT
         };
 
@@ -25,7 +24,6 @@ class Light : public GameObject {
         float angle;
         void setParent (GameObject* pGameObject);
 		void setLightIntensity(float pIntensity);
-
     protected:
     private:
 

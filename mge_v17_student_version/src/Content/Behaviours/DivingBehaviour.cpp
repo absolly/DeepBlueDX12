@@ -20,11 +20,11 @@ void DivingBehaviour::update(float pStep)
 
 	if (_airLeft <= 15 && previousAirLeft > 15)
 	{
-		SoundManager::getInstance()->PlaySound("Careful with the air", "Careful with the air", false, true, false);
+		SoundManager::getInstance()->PlayAudio("Careful with the air", "Careful with the air", false, true, false);
 	}
 	if (_airLeft <= 0 && previousAirLeft > 0)
 	{
-		SoundManager::getInstance()->PlaySound("suffocating", "suffocating", false, true, false);
+		SoundManager::getInstance()->PlayAudio("suffocating", "suffocating", false, true, false);
 	}
 
 	_refillCooldownTimer -= pStep;
@@ -68,7 +68,7 @@ void DivingBehaviour::onCollisionAddAir(OnCollisionArgs onCollisionArgs)
 		Hud::getInstance()->addCoin(-cost);
 		_airLeft = _tankSize;
 		_refillCooldownTimer = _refillCooldown;
-		SoundManager::getInstance()->PlaySound("treasure_grab", "treasure_grab", false, true, false);
+		SoundManager::getInstance()->PlayAudio("treasure_grab", "treasure_grab", false, true, false);
 		SoundManager::getInstance()->StopSoundChannel("suffocating");
 	}
 }

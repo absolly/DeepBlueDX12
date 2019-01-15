@@ -16,6 +16,7 @@ TerrainMaterial::TerrainMaterial(Texture* pHeightMap, Texture* pSplatMap, Textur
 
 TerrainMaterial::~TerrainMaterial() {}
 
+#ifdef API_OPENGL
 void TerrainMaterial::_lazyInitializeShader() {
     if (!_shader) {
         _shader = new ShaderProgram();
@@ -24,6 +25,11 @@ void TerrainMaterial::_lazyInitializeShader() {
         _shader->finalize();
     }
 }
+#elif defined(API_DIRECTX)
+void TerrainMaterial::_lazyInitializeShader() {
+	std::cout << "DirectX version of Material not implemented" << std::endl;
+}
+#endif // API_OPENGL / API_DIRECTX
 
 void TerrainMaterial::setDiffuseTexture (Texture* pDiffuseTexture) {
     //_diffuseTexture = pDiffuseTexture;

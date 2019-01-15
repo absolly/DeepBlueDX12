@@ -6,7 +6,11 @@
 
 std::string Config::MGE_MODEL_PATH = "mge/models/";
 std::string Config::MGE_TEXTURE_PATH = "mge/textures/";
-std::string Config::MGE_SHADER_PATH = "mge/shaders/";
+#ifdef API_OPENGL
+std::string Config::MGE_SHADER_PATH = "mge/shaders/glsl/";
+#elif defined(API_DIRECTX)
+std::wstring Config::MGE_SHADER_PATH = L"mge/shaders/hlsl/";
+#endif // API_OPENGL
 std::string Config::MGE_FONT_PATH = "mge/fonts/";
 std::string Config::MGE_LEVEL_PATH = "mge/levels/";
 std::string Config::MGE_SETTINGS_PATH = "mge/settings/";
@@ -14,6 +18,7 @@ std::string Config::MGE_SPRITES_PATH = "mge/sprites/";
 std::string Config::MGE_SOUNDS_PATH = "mge/sounds/";
 sf::Vector2f Config::HUD_SCALE_FACTOR;
 bool Config::FULL_SCREEN = false;
+bool Config::POST_FX = false;
 sf::Vector2i Config::SCREEN_RESOLUTION = sf::Vector2i(false ? 1920 : 1600, false ? 1080 : 900);
 EventNoArgs Config::onConfigUpdated;
 

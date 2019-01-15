@@ -4,9 +4,9 @@
 
 using namespace std;
 
-set<Light*> World::activeLights = set<Light*>();
+set<Light*, lightComp> World::activeLights = set<Light*, lightComp>();
 PhysicsWorld* World::physics;
-
+Camera* World::_mainCamera = nullptr;
 
 std::vector<btVector3> collisions;
 void myTickCallback(btDynamicsWorld *dynamicsWorld, btScalar timeStep) {
@@ -37,7 +37,7 @@ void myTickCallback(btDynamicsWorld *dynamicsWorld, btScalar timeStep) {
 }
 
 
-World::World():GameObject("root"), _mainCamera(NULL) {
+World::World():GameObject("root") {
     //ctor
 
 	physics = new PhysicsWorld(this);
